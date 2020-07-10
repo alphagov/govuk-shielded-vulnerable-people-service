@@ -1,0 +1,29 @@
+{%- from "govuk_frontend_jinja/components/error-summary/macro.html" import govukErrorSummary -%}
+{%- from 'govuk_frontend_jinja/components/back-link/macro.html' import govukBackLink -%}
+
+{% extends "base.html" %}
+
+{% block beforeContent %}
+  {{ govukBackLink({
+    "href": previous_path,
+    "text": "Back"
+  }) }}
+{% endblock %}
+
+{% block centered_content %}
+    <form method="post" novalidate>
+        {% if error_list != None and error_list|length > 0 %}
+            {{ govukErrorSummary({
+              "titleText": "There is a problem",
+              "errorList": error_list            
+             }) }}
+        {% endif %}
+        {% block form_fields %}
+        {% endblock %}
+        {{ govukButton({
+          "text": "Continue",
+          "type": "Submit",
+          "preventDoubleClick": true,
+        }) }}
+    </form>
+{% endblock %}

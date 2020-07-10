@@ -1,0 +1,48 @@
+{% extends 'govuk_frontend_jinja/template.html' %}
+
+{%- from 'govuk_frontend_jinja/components/button/macro.html' import govukButton -%}
+{%- from 'govuk_frontend_jinja/components/footer/macro.html' import govukFooter -%}
+
+{% set assetPath = url_for('static', filename='').rstrip('/') %}
+
+{% block head %}
+  <!--[if gt IE 8]><!--><link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='govuk-frontend-3.7.0.min.css') }}" /><!--<![endif]-->
+  <!--[if IE 8]><link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='govuk-frontend-ie8-3.7.0.min.css') }}" /><![endif]-->
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% block centered_content %}
+      {% endblock %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block footer %}
+  {{ govukFooter({
+    'meta': {
+      'items': [
+        {
+          'href': "/privacy",
+          'text': "Privacy"
+        },
+        {
+          'href': "/cookies",
+          'text': "Cookies"
+        },
+        {
+          'href': "/accessibility-statement",
+          'text': "Accessibility statement"
+        },
+      ]
+    }
+  }) }}
+{% endblock %}
+
+{% block bodyEnd %}
+  <!--[if gt IE 8]><!-->
+  <script src="{{ url_for('static', filename='govuk-frontend-3.7.0.min.js') }}"> </script>
+  <script>window.GOVUKFrontend.initAll()</script>
+  <!--<![endif]-->
+{% endblock %}
