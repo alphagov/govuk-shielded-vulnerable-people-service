@@ -1,0 +1,19 @@
+{%- from "govuk_frontend_jinja/components/radios/macro.html" import govukRadios -%}
+
+{% extends "form-base.html" %}
+
+{% block form_fields %}
+    {{ govukRadios({
+      "idPrefix": "nhs_letter",
+      "name": "nhs_letter",
+      "errorMessage": error_messages.get('nhs_letter'),
+      "hint": {"text": '’Shielding’ means staying at home as much as possible and keeping visits outside to a minimum.'},
+      "fieldset": {
+        "legend": {
+          "text": "Have you had a letter from the NHS or been told by your doctor to ’shield’ because you’re clinically extremely vulnerable to coronavirus?",
+          "isPageHeading": true,
+          "classes": "govuk-fieldset__legend--xl"
+        }
+      },
+      "items": radio_items}) }}
+{% endblock %}

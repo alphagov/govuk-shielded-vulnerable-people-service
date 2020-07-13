@@ -80,6 +80,7 @@ def get_live_in_england():
         radio_items=get_radio_options_from_enum(
             LiveInEnglandAnswers, form_answers().get("live_in_england")
         ),
+        previous_path="/",
         **get_errors_from_session("live_in_england"),
     )
 
@@ -94,3 +95,40 @@ def post_live_in_england():
     if LiveInEnglandAnswers(live_in_england) is LiveInEnglandAnswers.YES:
         return redirect("/nhs-letter")
     return redirect("/not-eligible-england")
+
+
+@enum.unique
+class NHSLetterAnswers(enum.Enum):
+    YES = "Yes, I’ve been told to shield"
+    NO = "No, I haven’t been told to shield"
+    NOT_SURE = "Not sure"
+
+
+def validate_nhs_letter():
+    return validate_radio_button(
+        NHSLetterAnswers, "nhs_letter", "Select if you received the letter from the NHS"
+    )
+
+
+@form.route("/nhs-letter", methods=["POST"])
+def post_nhs_letter():
+    if not validate_nhs_letter():
+        return redirect("/nhs-letter")
+
+    update_session_answers_from_form()
+    nhs_letter = request.form.get("nhs_letter")
+    if NHSLetterAnswers(nhs_letter) is NHSLetterAnswers.YES:
+        return redirect("/name")
+    return redirect("/medical-conditions")
+
+
+@form.route("/nhs-letter", methods=["GET"])
+def get_nhs_letter():
+    return render_template(
+        "nhs-letter.html",
+        radio_items=get_radio_options_from_enum(
+            NHSLetterAnswers, form_answers().get("nhs_letter")
+        ),
+        previous_path="/live-in-england",
+        **get_errors_from_session("nhs_letter"),
+    )
