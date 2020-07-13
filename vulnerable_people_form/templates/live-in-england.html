@@ -1,0 +1,19 @@
+{%- from "govuk_frontend_jinja/components/radios/macro.html" import govukRadios -%}
+
+{% extends "form-base.html" %}
+
+{% block form_fields %}
+    {{ govukRadios({
+      "idPrefix": "live_in_england",
+      "name": "live_in_england",
+      "errorMessage": error_messages.get('live_in_england'),
+      "fieldset": {
+        "legend": {
+          "text": "Do you live in England?",
+          "isPageHeading": true,
+          "classes": "govuk-fieldset__legend--xl"
+        }
+      },
+      "items": radio_items,
+    }) }}
+{% endblock %}
