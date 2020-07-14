@@ -170,3 +170,52 @@ def get_medical_conditions():
         previous_path="/nhs-letter",
         **get_errors_from_session("medical_conditions"),
     )
+
+
+def validate_mandatory_form_field(section_key, value_key, error_message):
+    if not request.form.get(value_key):
+        existing_section = session.setdefault("error_items", {}).setdefault(
+            section_key, {}
+        )
+        session["error_items"] = {
+            **session.setdefault("error_items", {}),
+            section_key: {**existing_section, value_key: error_message},
+        }
+        return False
+    return True
+
+
+def validate_name():
+    return all(
+        [
+            validate_mandatory_form_field(
+                "name", "first_name", "Enter your first name"
+            ),
+            validate_mandatory_form_field("name", "last_name", "Enter your last name"),
+        ]
+    )
+
+
+@form.route("/name", methods=["POST"])
+def post_name():
+    session["form_answers"] = {
+        **session.setdefault("form_answers", {}),
+        "name": {**request.form},
+    }
+    if not validate_name():
+        return redirect("/name")
+
+    session["error_items"] = {}
+    return redirect("/date-of-birth")
+
+
+@form.route("/name", methods=["GET"])
+def get_name():
+    return render_template(
+        "name.html",
+        values=form_answers().get("name", {}),
+        previous_path="/medical-conditions"
+        if session.get("medical_conditions")
+        else "/nhs-letter",
+        **get_errors_from_session("name"),
+    )

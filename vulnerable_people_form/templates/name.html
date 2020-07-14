@@ -1,0 +1,50 @@
+{%- from 'govuk_frontend_jinja/components/input/macro.html' import govukInput -%}
+
+{% extends "form-base.html" %}
+
+
+{% block form_fields %}
+  <h1 class="govuk-heading-xl govuk-!-margin-top-0 govuk-!-margin-bottom-3">What is your name?</h1>
+  <p class="govuk-body">If you’re applying for someone else, enter the name of the person who needs support.</p>
+{{ 
+govukInput({
+  "label": {
+    "text": "First name"
+  },
+  "id": "first_name",
+  "name": "first_name",
+  "autocomplete": "given-name",
+  "errorMessage": error_messages.get("first_name"),
+  "attributes": {
+    "spellcheck": "false"
+  },
+  "value": values.get("first_name")
+  }) 
+}}
+{{
+govukInput({
+  "label": {
+    "text": "Middle names (optional)"
+  },
+  "id": "middle_name",
+  "name": "middle_name",
+  "attributes": {
+    "spellcheck": "false"
+  },
+  "value": values.get("middle_name")
+}) 
+}}
+{{ govukInput({
+  "label": {
+    "text": "Last name"
+  },
+  "id": "last_name",
+  "name": "last_name",
+  "errorMessage": error_messages.get("last_name"),
+  "autocomplete": "family-name",
+  "attributes": {
+    "spellcheck": "false"
+  },
+  "value": values.get("last_name")
+}) }}
+{% endblock %}
