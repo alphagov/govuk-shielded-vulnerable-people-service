@@ -132,3 +132,41 @@ def get_nhs_letter():
         previous_path="/live-in-england",
         **get_errors_from_session("nhs_letter"),
     )
+
+
+@enum.unique
+class MedicalConditionsAnswers(enum.Enum):
+    YES = "Yes, I have one of the listed medical conditions"
+    NO = "No, I do not have one of the listed medical conditions"
+
+
+def validate_medical_conditions():
+    return validate_radio_button(
+        MedicalConditionsAnswers,
+        "medical_conditions",
+        "Select yes if you have one of the medical conditions on the list",
+    )
+
+
+@form.route("/medical-conditions", methods=["POST"])
+def post_medical_conditions():
+    if not validate_medical_conditions():
+        return redirect("/medical-conditions")
+
+    update_session_answers_from_form()
+    nhs_letter = request.form.get("medical_conditions")
+    if MedicalConditionsAnswers(nhs_letter) is MedicalConditionsAnswers.YES:
+        return redirect("/name")
+    return redirect("/not-eligible-medical")
+
+
+@form.route("/medical-conditions", methods=["GET"])
+def get_medical_conditions():
+    return render_template(
+        "medical-conditions.html",
+        radio_items=get_radio_options_from_enum(
+            MedicalConditionsAnswers, form_answers().get("medical_conditions")
+        ),
+        previous_path="/nhs-letter",
+        **get_errors_from_session("medical_conditions"),
+    )

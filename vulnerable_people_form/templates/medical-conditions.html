@@ -1,0 +1,38 @@
+{%- from "govuk_frontend_jinja/components/radios/macro.html" import govukRadios -%}
+{%- from 'govuk_frontend_jinja/components/inset-text/macro.html' import govukInsetText -%}
+
+{% extends "form-base.html" %}
+
+{% block form_fields %}
+    {{ govukRadios({
+      "idPrefix": "medical_conditions",
+      "name": "medical_conditions",
+      "errorMessage": error_messages.get('medical_conditions'),
+      "hint": {"html": govukInsetText({
+            "html": '
+<p class="govuk-body">You have one of the listed medical conditions if you:</p>
+<ul class="govuk-list govuk-list--bullet app-list--spaced">
+  <li>Have had a solid organ transplant</li>
+  <li>Have any cancer and are getting chemotherapy</li>
+  <li>Have lung cancer and are getting radical radiotherapy</li>
+  <li>Have cancer of the blood or bone marrow, at any stage of treatment - for example, leukaemia, lymphoma or myeloma</li>
+  <li>Have any cancer for which you’re getting immunotherapy or other continuing antibody treatments</li>
+  <li>Have any cancer for which you’re getting a targeted treatment which can affect the immune system - for example, protein kinase inhibitors or PARP inhibitors</li>
+  <li>Have had bone marrow or stem cell transplants in the last 6 months, or are still taking immunosuppression drugs</li>
+  <li>Have a severe respiratory condition - including cystic fibrosis, severe asthma or severe COPD (Chronic Obstructive Pulmonary Disease)</li>
+  <li>Have a rare disease or inborn error of metabolism that significantly increases your risk of infection - for example SCID or homozygous sickle cell</li>
+  <li>Are getting an immunosuppression therapy that’s sufficient to significantly increase your risk of infection</li>
+  <li>Are pregnant, and have a significant congenital or acquired heart disease</li>
+</ul> '
+      })
+      },
+      "fieldset": {
+        "legend": {
+          "text": "Have you had a letter from the NHS or been told by your doctor to ’shield’ because you’re clinically extremely vulnerable to coronavirus?",
+          "isPageHeading": true,
+          "classes": "govuk-fieldset__legend--xl"
+        }
+      },
+      "items": radio_items}) }}
+{% endblock %}
+
