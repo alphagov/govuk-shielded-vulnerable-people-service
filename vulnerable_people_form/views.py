@@ -219,3 +219,88 @@ def get_name():
         else "/nhs-letter",
         **get_errors_from_session("name"),
     )
+
+
+def isNumber(string):
+    try:
+        int(string)
+        return True
+    except ValueError:
+        return False
+
+
+def isPositiveInt(string):
+    try:
+        value = int(string)
+    except ValueError:
+        return False
+    return value == float(string) and value > 0
+
+
+def failing_field(field_bools, field_names):
+    return field_names[field_bools.index(True)]
+
+
+def validate_date_of_birth():
+    day = request.form.get("day", "")
+    month = request.form.get("month", "")
+    year = request.form.get("year", "")
+
+    fields = [month, day, year]
+    fieldsEmpty = [period == "" for period in fields]
+    fieldsNotNumbers = [not isNumber(period) for period in fields]
+    fieldsNotPositiveInt = [not isPositiveInt(period) for period in fields]
+    fieldNames = ("month", "day", "year")
+
+    error = None
+    if all(fieldsEmpty):
+        error = "Enter your date of birth"
+    elif any(fieldsEmpty):
+        error = "Enter your date of birth and include a day month and a year"
+    elif any(fieldsNotNumbers):
+        error = f"Enter {failing_field(fieldsNotNumbers, fieldNames)} as a number"
+    elif any(fieldsNotPositiveInt):
+        error = f"Enter a real {failing_field(fieldsNotPositiveInt, fieldNames)}"
+
+    invalid_date_message = "Enter a real date of birth"
+    if error is None:
+        try:
+            date = datetime.date(int(year), int(day), int(month))
+        except ValueError:
+            error = invalid_date_message
+    if error is None:
+        if (date - datetime.date.today()).days > 0:
+            error = "Date of birth must be in the past"
+        elif (datetime.date.today() - date).days / 365.25 > 150:
+            error = invalid_date_message
+
+    session["error_items"] = {
+        **session.setdefault("error_items", {}),
+        "date_of_birth": {"date_of_birth": error},
+    }
+
+    return error is None
+
+
+@form.route("/date-of-birth", methods=["POST"])
+def post_date_of_birth():
+    session["form_answers"] = {
+        **session.setdefault("form_answers", {}),
+        "date_of_birth": {**request.form},
+    }
+    if not validate_date_of_birth():
+        return redirect("/date-of-birth")
+
+    session["error_items"] = {}
+    return redirect("/postcode-lookup")
+
+
+@form.route("/date-of-birth", methods=["GET"])
+def get_date_of_birth():
+    return render_template(
+        "date-of-birth.html",
+        previous_path="/name",
+        values=form_answers().get("date_of_birth", {}),
+        **get_errors_from_session("date_of_birth"),
+    )
+
