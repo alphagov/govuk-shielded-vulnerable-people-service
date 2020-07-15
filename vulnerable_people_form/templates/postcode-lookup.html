@@ -1,0 +1,24 @@
+{%- from 'govuk_frontend_jinja/components/input/macro.html' import govukInput -%}
+
+{% extends "form-base.html" %}
+
+
+{% block form_fields %}
+  <h1 class="govuk-heading-xl govuk-!-margin-top-0 govuk-!-margin-bottom-3">What is the postcode where you need support?</h1>
+  <p class="govuk-body">If you’re applying for someone else, enter the postcode of the person who needs support.</p>
+{{ 
+govukInput({
+  "label": {
+    "text": "Postcode"
+  },
+  "id": "postcode",
+  "name": "postcode",
+  "autocomplete": "postal-code",
+  "errorMessage": error_messages.get("postcode"),
+  "attributes": {
+    "spellcheck": "false"
+  },
+  "value": values.get("postcode")
+  }) 
+}}
+{% endblock %}
