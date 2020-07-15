@@ -1,0 +1,82 @@
+{%- from 'govuk_frontend_jinja/components/input/macro.html' import govukInput -%}
+
+{% extends "form-base.html" %}
+
+
+{% block form_fields %}
+  <h1 class="govuk-heading-xl govuk-!-margin-top-0 govuk-!-margin-bottom-3">What is the address where you need support?</h1>
+  <p class="govuk-body">If you’re applying for someone else, enter the address of the person who needs support.</p>
+{{ 
+govukInput({
+  "label": {
+    "text": "Building and Street"
+  },
+  "id": "building_and_street_line_1",
+  "name": "building_and_street_line_1",
+  "autocomplete": "address-line1",
+  "errorMessage": error_messages.get("building_and_street_line_1"),
+  "attributes": {
+    "spellcheck": "false"
+  },
+  "value": values.get("building_and_street_line_1")
+  }) 
+}}
+{{ 
+govukInput({
+  "label": { },
+  "id": "building_and_street_line_2",
+  "name": "building_and_street_line_2",
+  "autocomplete": "address-line2",
+  "errorMessage": error_messages.get("building_and_street_line_2"),
+  "attributes": {
+    "spellcheck": "false"
+  },
+  "value": values.get("building_and_street_line_2")
+  }) 
+}}
+{{ 
+govukInput({
+  "label": {
+    "text": "Town or city"
+  },
+  "id": "town_city",
+  "name": "town_city",
+  "autocomplete": "address-level2",
+  "errorMessage": error_messages.get("town_city"),
+  "attributes": {
+    "spellcheck": "false"
+  },
+  "value": values.get("town_city")
+  }) 
+}}
+{{
+  govukInput({
+    "label": {
+      "text": "County"
+    },
+    "id": "county",
+    "name": "county",
+    "autocomplete": "address-level1",
+    "errorMessage": error_messages.get("county"),
+    "attributes": {
+      "spellcheck": "false"
+    },
+    "value": values.get("county")
+    }) 
+}}
+{{ 
+govukInput({
+  "label": {
+    "text": "Postcode"
+  },
+  "id": "postcode",
+  "name": "postcode",
+  "autocomplete": "postal-code",
+  "errorMessage": error_messages.get("postcode"),
+  "attributes": {
+    "spellcheck": "false"
+  },
+  "value": values.get("postcode")
+  }) 
+}}
+{% endblock %}

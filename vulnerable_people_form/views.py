@@ -349,3 +349,78 @@ def get_postcode_lookup():
         **get_errors_from_session("postcode"),
     )
 
+
+def validate_length(form_answer_key_list, max_length, error_string):
+    import pprint
+
+    pprint.pprint(get_answer_from_form(form_answer_key_list))
+    if len(get_answer_from_form(form_answer_key_list) or "") > max_length:
+        session["error_items"] = {
+            **session.setdefault("error_items", {}),
+            form_answer_key_list[0]: {
+                **session["error_items"].get(form_answer_key_list[0], {}),
+                form_answer_key_list[-1]: error_string,
+            },
+        }
+        return False
+    return True
+
+
+def validate_support_address():
+    length_fstring = "'{}' cannot be longer than {} characters"
+    value = all(
+        [
+            validate_length(
+                ("support_address", "building_and_street_line_1"),
+                75,
+                length_fstring.format("Address line 1", 75),
+            ),
+            validate_length(
+                ("support_address", "building_and_street_line_2"),
+                75,
+                length_fstring.format("Address line 2", 75),
+            ),
+            validate_length(
+                ("support_address", "town_city"),
+                50,
+                length_fstring.format("Town or City", 50),
+            ),
+            validate_length(
+                ("support_address", "county"), 50, length_fstring.format("County", 50)
+            ),
+            validate_mandatory_form_field(
+                "support_address",
+                "building_and_street_line_1",
+                "Enter a building and street",
+            ),
+            validate_mandatory_form_field(
+                "support_address", "town_city", "Enter a town or city"
+            ),
+            validate_postcode("support_address"),
+        ]
+    )
+    return value
+
+
+@form.route("/support-address", methods=["POST"])
+def post_support_address():
+    session["form_answers"] = {
+        **session.setdefault("form_answers", {}),
+        "support_address": {**request.form},
+    }
+    session["error_items"] = {}
+    if not validate_support_address():
+        return redirect("/support-address")
+
+    return redirect("/contact-details")
+
+
+@form.route("/support-address", methods=["GET"])
+def get_support_address():
+    return render_template(
+        "support-address.html",
+        previous_path="/name",
+        values=form_answers().get("support_address", {}),
+        **get_errors_from_session("support_address"),
+    )
+
