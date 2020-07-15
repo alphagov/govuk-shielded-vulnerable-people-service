@@ -1,0 +1,50 @@
+{%- from 'govuk_frontend_jinja/components/input/macro.html' import govukInput -%}
+
+{% extends "form-base.html" %}
+
+
+{% block form_fields %}
+  <h1 class="govuk-heading-xl govuk-!-margin-top-0 govuk-!-margin-bottom-3">What are your contact details?</h1>
+  <p class="govuk-body">You can use someone else’s contact details if that’s easier.</p>
+{{ 
+govukInput({
+  "label": { "text": "Phone number (for phone calls)" },
+  "id": "phone_number_calls",
+  "name": "phone_number_calls",
+  "autocomplete": "tel",
+  "errorMessage": error_messages.get("phone_number_calls"),
+  "attributes": {
+    "spellcheck": "false"
+  },
+  "value": values.get("phone_number_calls")
+  }) 
+}}
+{{ 
+govukInput({
+  "label": { "text": "Phone number (for phone texts)" },
+  "id": "phone_number_texts",
+  "name": "phone_number_texts",
+  "autocomplete": "tel",
+  "errorMessage": error_messages.get("phone_number_texts"),
+  "attributes": {
+    "spellcheck": "false"
+  },
+  "value": values.get("phone_number_texts")
+  }) 
+}}
+{{
+  govukInput({
+    "label": {
+      "text": "Email address"
+    },
+    "id": "email",
+    "name": "email",
+    "autocomplete": "email",
+    "errorMessage": error_messages.get("email"),
+    "attributes": {
+      "spellcheck": "false"
+    },
+    "value": values.get("email")
+    }) 
+}}
+{% endblock %}headingj

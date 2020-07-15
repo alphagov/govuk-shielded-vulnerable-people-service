@@ -1,5 +1,7 @@
 import datetime
 import enum
+import email
+import phonenumbers
 import re
 
 from flask import current_app, Blueprint, render_template, redirect, request, session
@@ -422,5 +424,89 @@ def get_support_address():
         previous_path="/name",
         values=form_answers().get("support_address", {}),
         **get_errors_from_session("support_address"),
+    )
+
+
+def format_phone_number_if_valid(phone_number):
+    try:
+        return phonenumbers.format_number(
+            phonenumbers.parse(phone_number, region="GB"),
+            phonenumbers.PhoneNumberFormat.NATIONAL,
+        )
+    except phonenumbers.NumberParseException:
+        return phone_number
+
+
+def validate_phone_number_if_present(section_key, phone_number_key):
+    try:
+        phone_number = request.form.get(phone_number_key, "")
+        if phone_number:
+            phonenumbers.parse(phone_number, region="GB")
+    except phonenumbers.NumberParseException:
+        error_message = (
+            "Enter a telephone number, like 020 7946 0000, 07700900000 or +44 0808 157 0192",
+        )
+        error_section = session.setdefault("error_items", {}).get(section_key, {})
+        session["error_items"] = {
+            **session.setdefault("error_items", {}),
+            section_key: {**error_section, phone_number_key: error_message},
+        }
+        return False
+    return True
+
+
+def validate_email_if_present(section_key, email_key):
+    email_address = request.form.get(email_key)
+    email_regex = r"([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})"
+    if email_address and re.match(email_regex, email_address) is None:
+        error_message = (
+            "Enter email address in the correct format, like name@example.com"
+        )
+        error_section = session.setdefault("error_items", {}).get(section_key, {})
+        session["error_items"] = {
+            **session.setdefault("error_items", {}),
+            section_key: {**error_section, email_key: error_message},
+        }
+        return False
+    return True
+
+
+def validate_contact_details():
+    value = all(
+        [
+            validate_email_if_present("contact_details", "email"),
+            validate_phone_number_if_present("contact_details", "phone_number_calls"),
+            validate_phone_number_if_present("contact_details", "phone_number_texts"),
+        ]
+    )
+    return value
+
+
+@form.route("/contact-details", methods=["POST"])
+def post_contact_details():
+    session["form_answers"] = {
+        **session.setdefault("form_answers", {}),
+        "contact_details": {
+            **request.form,
+            **{
+                phone_key: format_phone_number_if_valid(request.form.get(phone_key))
+                for phone_key in ("phone_number_calls", "phone_number_texts")
+            },
+        },
+    }
+    session["error_items"] = {}
+    if not validate_contact_details():
+        return redirect("/contact-details")
+
+    return redirect("/check-contact-details")
+
+
+@form.route("/contact-details", methods=["GET"])
+def get_contact_details():
+    return render_template(
+        "contact-details.html",
+        previous_path="/name",
+        values=form_answers().get("contact_details", {}),
+        **get_errors_from_session("contact_details"),
     )
 

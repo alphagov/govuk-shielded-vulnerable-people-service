@@ -1,5 +1,6 @@
 Flask==1.1.2
 govuk-frontend-jinja==0.2.1
+phonenumbers==8.12.6
 python-stdnum==1.13
 oic==1.2.0
 blinker==1.4
