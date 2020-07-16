@@ -528,12 +528,12 @@ def validate_email_if_present(section_key, email_key):
     return True
 
 
-def validate_contact_details():
+def validate_contact_details(section_key):
     value = all(
         [
-            validate_email_if_present("contact_details", "email"),
-            validate_phone_number_if_present("contact_details", "phone_number_calls"),
-            validate_phone_number_if_present("contact_details", "phone_number_texts"),
+            validate_email_if_present(section_key, "email"),
+            validate_phone_number_if_present(section_key, "phone_number_calls"),
+            validate_phone_number_if_present(section_key, "phone_number_texts"),
         ]
     )
     return value
@@ -552,7 +552,7 @@ def post_contact_details():
         },
     }
     session["error_items"] = {}
-    if not validate_contact_details():
+    if not validate_contact_details("contact_details"):
         return redirect("/contact-details")
 
     return redirect("/check-contact-details")
@@ -565,4 +565,29 @@ def get_contact_details():
         previous_path="/name",
         values=form_answers().get("contact_details", {}),
         **get_errors_from_session("contact_details"),
+    )
+
+
+@form.route("/check-contact-details", methods=["POST"])
+def post_check_contact_details():
+    existing_answers = form_answers().get("contact_details", {})
+    session["form_answers"] = {
+        **session.setdefault("form_answers", {}),
+        "contact_details": {**existing_answers, **request.form,},
+    }
+    session["error_items"] = {}
+    if not validate_contact_details("check_contact_details"):
+        return redirect("/check-contact-details")
+
+    return redirect("/nhs-number")
+
+
+@form.route("/check-contact-details", methods=["GET"])
+def get_check_contact_details():
+    return render_template(
+        "check-contact-details.html",
+        previous_path="/contact-details",
+        values=form_answers().get("contact_details", {}),
+        button_text="These details are correct",
+        **get_errors_from_session("check_contact_details"),
     )

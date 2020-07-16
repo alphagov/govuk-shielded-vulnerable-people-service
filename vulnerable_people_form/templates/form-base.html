@@ -21,7 +21,7 @@
         {% block form_fields %}
         {% endblock %}
         {{ govukButton({
-          "text": "Continue",
+          "text": button_text|default("Continue", true),
           "type": "Submit",
           "preventDoubleClick": true,
         }) }}

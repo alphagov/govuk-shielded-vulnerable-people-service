@@ -1,0 +1,25 @@
+{%- from 'govuk_frontend_jinja/components/input/macro.html' import govukInput -%}
+
+{% extends "form-base.html" %}
+
+
+{% block form_fields %}
+  <h1 class="govuk-heading-xl govuk-!-margin-top-0 govuk-!-margin-bottom-3">
+Check this is correct
+</h1>
+{{
+  govukInput({
+    "label": {
+      "text": "Email address"
+    },
+    "id": "email",
+    "name": "email",
+    "autocomplete": "email",
+    "errorMessage": error_messages.get("email"),
+    "attributes": {
+      "spellcheck": "false"
+    },
+    "value": values.get("email")
+    }) 
+}}
+{% endblock %}
