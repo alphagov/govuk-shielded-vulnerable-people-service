@@ -1,0 +1,30 @@
+{%- from 'govuk_frontend_jinja/components/select/macro.html' import govukSelect -%}
+
+{% extends "form-base.html" %}
+
+
+{% block form_fields %}
+  <h1 class="govuk-heading-xl govuk-!-margin-top-0 govuk-!-margin-bottom-3">What is the address where you need support?</h1>
+  <p class="govuk-body">If you’re applying for someone else, enter the address of the person who needs support.</p>
+  <h2 class="govuk-heading-m govuk-!-margin-top-0 govuk-!-margin-bottom-3">Postcode</h2>
+<p class="govuk-body">
+<span class="govuk-!-font-weight-bold govuk-!-padding-right-3">{{postcode}}</span>
+<a href={{previous_path}} class="govuk-link govuk-link--no-visited-state">change</a>
+</p>
+{{ 
+govukSelect({
+  "id": "address",
+  "name": "address",
+  "errorMessage": error_messages.get("postcode"),
+  "label": {
+    "text": "Select your address",
+    "classes": "govuk-label--m"
+  },
+  "heading_size": "m",
+  "items": addresses,
+  }) 
+  }}
+  <p class="govuk-body">
+    <a class="govuk-link" href="/support-address">My address isn't listed or is wrong</a>
+  </p>
+{% endblock %}

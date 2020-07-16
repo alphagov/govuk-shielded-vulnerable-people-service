@@ -1,11 +1,14 @@
 import datetime
 import enum
 import email
+import json
 import phonenumbers
 import re
 
 from flask import current_app, Blueprint, render_template, redirect, request, session
 
+
+from . import postcode_lookup_helper
 
 form = Blueprint("form", __name__)
 
@@ -329,6 +332,60 @@ def validate_postcode(section):
     return error is None
 
 
+@form.route("/address-lookup", methods=["POST"])
+def post_address_lookup():
+    if not validate_mandatory_form_field(
+        "address_lookup", "address", "An address must be selected"
+    ):
+        return redirect("/address-lookup")
+    session["form_answers"] = {
+        **session.setdefault("form_answers", {}),
+        "support_address": {**json.loads(request.form["address"])},
+    }
+
+    session["error_items"] = {}
+    return redirect("/support-address")
+
+
+@form.route("/address-lookup", methods=["GET"])
+def get_address_lookup():
+    postcode = form_answers()["postcode"]["postcode"]
+    try:
+        addresses = postcode_lookup_helper.get_addresses_from_postcode(postcode)
+    except postcode_lookup_helper.PostcodeNotFound:
+        session["error_items"] = {
+            **session.setdefault("error_items", {}),
+            "support_address": {"postcode", "Could not find postcode"},
+        }
+        redirect("/postcode-lookup")
+    except postcode_lookup_helper.NoAddressesFoundAtPostcode:
+        session["error_items"] = {
+            **session.setdefault("error_items", {}),
+            "support_address": {
+                "support_address",
+                f"No addresses found for {postcode}",
+            },
+        }
+        redirect("/support-address")
+    except postcode_lookup_helper.ErrorFindingAddress:
+        session["error_items"] = {
+            **session.setdefault("error_items", {}),
+            "support_address": {
+                "support_address",
+                "An error has occurred, please enter your address manually",
+            },
+        }
+        redirect("/support-address")
+
+    return render_template(
+        "address-lookup.html",
+        previous_path="/postcode-lookup",
+        postcode=postcode,
+        addresses=addresses,
+        **get_errors_from_session("postcode"),
+    )
+
+
 @form.route("/postcode-lookup", methods=["POST"])
 def post_postcode_lookup():
     session["form_answers"] = {
@@ -339,14 +396,14 @@ def post_postcode_lookup():
         return redirect("/postcode-lookup")
 
     session["error_items"] = {}
-    return redirect("/support-address")
+    return redirect("/address-lookup")
 
 
 @form.route("/postcode-lookup", methods=["GET"])
 def get_postcode_lookup():
     return render_template(
         "postcode-lookup.html",
-        previous_path="/name",
+        previous_path="/date-of-birth",
         values=form_answers().get("postcode", {}),
         **get_errors_from_session("postcode"),
     )
@@ -421,7 +478,7 @@ def post_support_address():
 def get_support_address():
     return render_template(
         "support-address.html",
-        previous_path="/name",
+        previous_path="/address-lookup",
         values=form_answers().get("support_address", {}),
         **get_errors_from_session("support_address"),
     )
@@ -509,4 +566,3 @@ def get_contact_details():
         values=form_answers().get("contact_details", {}),
         **get_errors_from_session("contact_details"),
     )
-
