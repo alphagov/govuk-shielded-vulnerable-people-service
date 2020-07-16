@@ -3,6 +3,10 @@ import enum
 import email
 import json
 import phonenumbers
+
+import stdnum
+import stdnum.gb.nhs
+
 import re
 
 from flask import current_app, Blueprint, render_template, redirect, request, session
@@ -590,4 +594,52 @@ def get_check_contact_details():
         values=form_answers().get("contact_details", {}),
         button_text="These details are correct",
         **get_errors_from_session("check_contact_details"),
+    )
+
+
+def validate_nhs_number():
+    error = None
+    nhs_number = request.form.get("nhs_number")
+    if nhs_number:
+        try:
+            stdnum.gb.nhs.validate(nhs_number)
+        except stdnum.exceptions.InvalidLength:
+            error = "Enter your 10-digit NHS number"
+        except (
+            stdnum.exceptions.InvalidChecksum,
+            stdnum.exceptions.InvalidComponent,
+            stdnum.exceptions.InvalidFormat,
+        ):
+            error = "Enter a real NHS number"
+    else:
+        error = "Enter your 10-digit NHS number"
+
+    if error is not None:
+        session["error_items"] = {
+            **session.setdefault("error_items", {}),
+            "nhs_number": {"nhs_number": error},
+        }
+    return error is None
+
+
+@form.route("/nhs-number", methods=["POST"])
+def post_nhs_number():
+    session["form_answers"] = {
+        **session.setdefault("form_answers", {}),
+        "nhs_number": {**request.form,},
+    }
+    session["error_items"] = {}
+    if not validate_nhs_number():
+        return redirect("/nhs-number")
+
+    return redirect("/essential-supplies")
+
+
+@form.route("/nhs-number", methods=["GET"])
+def get_nhs_number():
+    return render_template(
+        "nhs-number.html",
+        previous_path="/contact-details",
+        values=form_answers().get("nhs_number", {}),
+        **get_errors_from_session("nhs_number"),
     )

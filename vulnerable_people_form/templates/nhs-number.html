@@ -1,0 +1,42 @@
+{%- from 'govuk_frontend_jinja/components/input/macro.html' import govukInput -%}
+{%- from 'govuk_frontend_jinja/components/details/macro.html' import govukDetails -%}
+
+{% extends "form-base.html" %}
+
+{% block meta_tags %}
+      <!-- stop iOS treating the NHS number as a phone number -->
+      <meta name="format-detection" content="telephone=no" />
+{% endblock %}
+
+{% block form_fields %}
+  <h1 class="govuk-heading-xl govuk-!-margin-top-0 govuk-!-margin-bottom-3">
+What is your NHS number?
+</h1>
+          <p class="govuk-body">An NHS Number is a 10 digit number, like 485 777 3456.</p>
+          <p class="govuk-body">You can find it on any letter the NHS has sent you, on a prescription, or by logging in to a GP practice online service.</p>
+
+{{
+  govukInput({
+    "label": {
+      "text": "NHS number"
+    },
+    "id": "nhs_number",
+    "name": "nhs_number",
+    "errorMessage": error_messages.get("nhs_number"),
+    "attributes": {
+      "spellcheck": "false"
+    },
+    "value": values.get("nhs_number")
+    }) 
+}}
+{% set detail_html = '
+    <p class="govuk-body">If you cannot find your NHS number on a letter or prescription, ask your GP.</p>
+    <p class="govuk-body">You may have an old NHS number with less than 10 digits. If so, you can find your new NHS number on an NHS letter or prescription - or ask your GP.</p>
+    <p class="govuk-body">If you do not have an NHS number <a class="govuk-link" href="https://www.nhs.uk/using-the-nhs/nhs-services/gps/how-to-register-with-a-gp-practice/">register with a GP</a>.</p>
+' %}
+{{ govukDetails({
+  "summaryText": "I cannot find my NHS number",
+  "html": detail_html})
+}}
+
+{% endblock %}

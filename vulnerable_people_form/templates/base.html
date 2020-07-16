@@ -8,6 +8,8 @@
 {% block head %}
   <!--[if gt IE 8]><!--><link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='govuk-frontend-3.7.0.min.css') }}" /><!--<![endif]-->
   <!--[if IE 8]><link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='govuk-frontend-ie8-3.7.0.min.css') }}" /><![endif]-->
+  {% block meta_tags %}
+  {% endblock %}
 {% endblock %}
 
 {% block content %}
