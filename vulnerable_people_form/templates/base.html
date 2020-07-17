@@ -4,6 +4,9 @@
 {%- from 'govuk_frontend_jinja/components/footer/macro.html' import govukFooter -%}
 
 {% set assetPath = url_for('static', filename='').rstrip('/') %}
+{% block pageTitle %}
+  {{title_text}} - GOV.UK
+{% endblock %}
 
 {% block head %}
   <!--[if gt IE 8]><!--><link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='govuk-frontend-3.7.0.min.css') }}" /><!--<![endif]-->

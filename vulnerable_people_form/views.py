@@ -16,6 +16,35 @@ from . import postcode_lookup_helper
 
 form = Blueprint("form", __name__)
 
+PAGE_TITLES = {
+    "address-lookup": "Select your address",
+    "basic-care-needs": "Are your basic care needs being met at the moment?",
+    "carry-supplies": "Is there someone in the house who’s able to carry a delivery of supplies inside?	",
+    "check-contact-details": "Check this is correct",
+    "check-your-answers": "Are you ready to send your application?",
+    "contact-details": "What are your contact details?",
+    "date-of-birth": "What is your date of birth?",
+    "dietary-requirements": "Do you have any special dietary requirements?",
+    "essential-supplies": "Do you have a way of getting essential supplies delivered at the moment?",
+    "live-in-england": "Do you live in England?",
+    "medical-conditions": "Do you have one of the listed medical conditions?",
+    "name": "What is your name?	",
+    "nhs-letter": "Have you had a letter from the NHS or been told by your doctor to ’shield’ because you’re clinically extremely vulnerable to coronavirus?",
+    "nhs-number": "Do you know your NHS number?",
+    "postcode-lookup": "What is the postcode where you need support?",
+    "support-address": "What is the address where you need support?",
+}
+
+
+def render_template_with_title(template_name, *args, **kwargs):
+    if not template_name.endswith(".html"):
+        raise ValueError(
+            "Template names must end with '.html' for a title to be assigned"
+        )
+    return render_template(
+        template_name, *args, title_text=PAGE_TITLES[template_name[:-5]], **kwargs
+    )
+
 
 def update_session_answers_from_form():
     session["form_answers"] = {**session.setdefault("form_answers", {}), **request.form}
@@ -88,7 +117,7 @@ def get_start():
 
 @form.route("/live-in-england", methods=["GET"])
 def get_live_in_england():
-    return render_template(
+    return render_template_with_title(
         "live-in-england.html",
         radio_items=get_radio_options_from_enum(
             YesNoAnswers, form_answers().get("live_in_england")
@@ -137,7 +166,7 @@ def post_nhs_letter():
 
 @form.route("/nhs-letter", methods=["GET"])
 def get_nhs_letter():
-    return render_template(
+    return render_template_with_title(
         "nhs-letter.html",
         radio_items=get_radio_options_from_enum(
             NHSLetterAnswers, form_answers().get("nhs_letter")
@@ -175,7 +204,7 @@ def post_medical_conditions():
 
 @form.route("/medical-conditions", methods=["GET"])
 def get_medical_conditions():
-    return render_template(
+    return render_template_with_title(
         "medical-conditions.html",
         radio_items=get_radio_options_from_enum(
             MedicalConditionsAnswers, form_answers().get("medical_conditions")
@@ -224,7 +253,7 @@ def post_name():
 
 @form.route("/name", methods=["GET"])
 def get_name():
-    return render_template(
+    return render_template_with_title(
         "name.html",
         values=form_answers().get("name", {}),
         previous_path="/medical-conditions"
@@ -310,7 +339,7 @@ def post_date_of_birth():
 
 @form.route("/date-of-birth", methods=["GET"])
 def get_date_of_birth():
-    return render_template(
+    return render_template_with_title(
         "date-of-birth.html",
         previous_path="/name",
         values=form_answers().get("date_of_birth", {}),
@@ -384,7 +413,7 @@ def get_address_lookup():
         }
         redirect("/support-address")
 
-    return render_template(
+    return render_template_with_title(
         "address-lookup.html",
         previous_path="/postcode-lookup",
         postcode=postcode,
@@ -408,7 +437,7 @@ def post_postcode_lookup():
 
 @form.route("/postcode-lookup", methods=["GET"])
 def get_postcode_lookup():
-    return render_template(
+    return render_template_with_title(
         "postcode-lookup.html",
         previous_path="/date-of-birth",
         values=form_answers().get("postcode", {}),
@@ -483,7 +512,7 @@ def post_support_address():
 
 @form.route("/support-address", methods=["GET"])
 def get_support_address():
-    return render_template(
+    return render_template_with_title(
         "support-address.html",
         previous_path="/address-lookup",
         values=form_answers().get("support_address", {}),
@@ -567,7 +596,7 @@ def post_contact_details():
 
 @form.route("/contact-details", methods=["GET"])
 def get_contact_details():
-    return render_template(
+    return render_template_with_title(
         "contact-details.html",
         previous_path="/name",
         values=form_answers().get("contact_details", {}),
@@ -591,7 +620,7 @@ def post_check_contact_details():
 
 @form.route("/check-contact-details", methods=["GET"])
 def get_check_contact_details():
-    return render_template(
+    return render_template_with_title(
         "check-contact-details.html",
         previous_path="/contact-details",
         values=form_answers().get("contact_details", {}),
@@ -640,7 +669,7 @@ def post_nhs_number():
 
 @form.route("/nhs-number", methods=["GET"])
 def get_nhs_number():
-    return render_template(
+    return render_template_with_title(
         "nhs-number.html",
         previous_path="/contact-details",
         values=form_answers().get("nhs_number", {}),
@@ -658,7 +687,7 @@ def validate_essential_supplies():
 
 @form.route("/essential-supplies", methods=["GET"])
 def get_essential_supplies():
-    return render_template(
+    return render_template_with_title(
         "essential-supplies.html",
         radio_items=get_radio_options_from_enum(
             YesNoAnswers, form_answers().get("essential_supplies")
@@ -696,7 +725,7 @@ def get_basic_care_needs():
     previous_path = (
         "/carry-supplies" if did_supplies_questions else "/essential-supplies"
     )
-    return render_template(
+    return render_template_with_title(
         "basic-care-needs.html",
         previous_path=previous_path,
         radio_items=get_radio_options_from_enum(
@@ -725,7 +754,7 @@ def validate_dietary_requirements():
 
 @form.route("/dietary-requirements", methods=["GET"])
 def get_dietary_requirements():
-    return render_template(
+    return render_template_with_title(
         "dietary-requirements.html",
         radio_items=get_radio_options_from_enum(
             YesNoAnswers, form_answers().get("dietary_requirements")
@@ -754,7 +783,7 @@ def validate_carry_supplies():
 
 @form.route("/carry-supplies", methods=["GET"])
 def get_carry_supplies():
-    return render_template(
+    return render_template_with_title(
         "carry-supplies.html",
         radio_items=get_radio_options_from_enum(
             YesNoAnswers, form_answers().get("carry_supplies")
