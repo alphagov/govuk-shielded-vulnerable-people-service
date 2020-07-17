@@ -9,7 +9,14 @@ import stdnum.gb.nhs
 
 import re
 
-from flask import current_app, Blueprint, render_template, redirect, request, session
+from flask import (
+    current_app,
+    Blueprint,
+    render_template,
+    redirect,
+    request,
+    session,
+)
 
 
 from . import postcode_lookup_helper
@@ -658,7 +665,7 @@ def validate_nhs_number():
 def post_nhs_number():
     session["form_answers"] = {
         **session.setdefault("form_answers", {}),
-        "nhs_number": {**request.form,},
+        **request.form,
     }
     session["error_items"] = {}
     if not validate_nhs_number():
@@ -672,7 +679,7 @@ def get_nhs_number():
     return render_template_with_title(
         "nhs-number.html",
         previous_path="/contact-details",
-        values=form_answers().get("nhs_number", {}),
+        values={"nhs_number": form_answers().get("nhs_number", "")},
         **get_errors_from_session("nhs_number"),
     )
 
@@ -795,6 +802,106 @@ def get_carry_supplies():
 
 @form.route("/carry-supplies", methods=["POST"])
 def post_carry_supplies():
+    if not validate_carry_supplies():
+        return redirect("/carry-supplies")
+    update_session_answers_from_form()
+
+    return redirect("/basic-care-needs")
+
+
+def _slice(keys, _dict):
+    return (_dict[key] for key in keys if _dict[key])
+
+
+def get_summary_rows_from_form_answers():
+    summary_rows = []
+    answers = form_answers()
+    order = [
+        "live_in_england",
+        "nhs_letter",
+        "medical_conditions",
+        "name",
+        "date_of_birth",
+        "support_address",
+        "contact_details",
+        "nhs_number",
+        "essential_supplies",
+        "dietary_requirements",
+        "carry_supplies",
+        "basic_care_needs",
+    ]
+
+    for key in order:
+        if key not in answers:
+            continue
+
+        answer = answers[key]
+        dashed_key = key.replace("_", "-")
+        question = PAGE_TITLES[dashed_key]
+
+        value = {}
+        row = {
+            "key": {"text": question, "classes": "govuk-!-width-two-thirds",},
+            "value": {},
+            "actions": {
+                "items": [
+                    {
+                        "href": f"/{dashed_key}",
+                        "text": "Change",
+                        "visuallyHiddenText": question,
+                    }
+                ]
+            },
+        }
+        if key == "support_address":
+            value["html"] = "<br>".join(
+                _slice(
+                    [
+                        "building_and_street_line_1",
+                        "building_and_street_line_2",
+                        "town_city",
+                        "county",
+                        "postcode",
+                    ],
+                    answer,
+                )
+            )
+        elif key == "name":
+            value["text"] = " ".join(
+                _slice(["first_name", "middle_name", "last_name"], answer)
+            )
+        elif key == "contact_details":
+            value["html"] = "<br>".join(
+                [
+                    f"Phone number: {answer['phone_number_calls']}",
+                    f"Text: {answer['phone_number_texts']}",
+                    f"Email: {answer['email']}",
+                ]
+            )
+        elif key == "date_of_birth":
+            value["text"] = "{day:02}/{month:02}/{year}".format(
+                **{k: int(v) for k, v in answer.items()}
+            )
+        else:
+            value["text"] = answers[key]
+
+        row["value"] = value
+        summary_rows.append(row)
+
+    return summary_rows
+
+
+@form.route("/check-your-answers", methods=["GET"])
+def get_check_your_answers():
+    return render_template_with_title(
+        "check-your-answers.html",
+        previous_path="/basic-care-needs",
+        summary_rows=get_summary_rows_from_form_answers(),
+    )
+
+
+@form.route("/carry-supplies", methods=["POST"])
+def post_check_your_answers():
     if not validate_carry_supplies():
         return redirect("/carry-supplies")
     update_session_answers_from_form()
