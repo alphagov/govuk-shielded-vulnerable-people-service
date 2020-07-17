@@ -678,3 +678,32 @@ def post_essential_supplies():
     if YesNoAnswers(essential_supplies) is YesNoAnswers.YES:
         return redirect("/basic-care-needs")
     return redirect("/dietary-requirements")
+
+
+def validate_basic_care_needs():
+    return validate_radio_button(
+        YesNoAnswers,
+        "basic_care_needs",
+        "Select yes if your basic care needs are being met at the moment",
+    )
+
+
+@form.route("/basic-care-needs", methods=["GET"])
+def get_basic_care_needs():
+    return render_template(
+        "basic-care-needs.html",
+        radio_items=get_radio_options_from_enum(
+            YesNoAnswers, form_answers().get("basic_care_needs")
+        ),
+        previous_path="/nhs-number",
+        **get_errors_from_session("basic_care_needs"),
+    )
+
+
+@form.route("/basic-care-needs", methods=["POST"])
+def post_basic_care_needs():
+    if not validate_basic_care_needs():
+        return redirect("/basic-care-needs")
+    update_session_answers_from_form()
+
+    return redirect("/check-your-answers")

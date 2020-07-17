@@ -1,0 +1,22 @@
+{%- from "govuk_frontend_jinja/components/radios/macro.html" import govukRadios -%}
+
+{% extends "form-base.html" %}
+
+{% block form_fields %}
+    {{ govukRadios({
+      "idPrefix": "basic_care_needs",
+      "name": "basic_care_needs",
+      "errorMessage": error_messages.get('basic_care_needs'),
+      "hint": {
+        "text": "For example, you have family, friends or neighbours you can talk to, and who can help you wash, bathe and keep your house clean if you need them to."
+      },
+      "fieldset": {
+        "legend": {
+          "text": "Are your basic care needs being met at the moment?",
+          "isPageHeading": true,
+          "classes": "govuk-fieldset__legend--xl"
+        }
+      },
+      "items": radio_items,
+    }) }}
+{% endblock %}
