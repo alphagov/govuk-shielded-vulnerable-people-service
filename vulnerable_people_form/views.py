@@ -690,12 +690,18 @@ def validate_basic_care_needs():
 
 @form.route("/basic-care-needs", methods=["GET"])
 def get_basic_care_needs():
+    did_supplies_questions = (
+        YesNoAnswers(form_answers().get("essential_supplies")) is YesNoAnswers.NO
+    )
+    previous_path = (
+        "/carry-supplies" if did_supplies_questions else "/essential-supplies"
+    )
     return render_template(
         "basic-care-needs.html",
+        previous_path=previous_path,
         radio_items=get_radio_options_from_enum(
             YesNoAnswers, form_answers().get("basic_care_needs")
         ),
-        previous_path="/nhs-number",
         **get_errors_from_session("basic_care_needs"),
     )
 
@@ -724,7 +730,7 @@ def get_dietary_requirements():
         radio_items=get_radio_options_from_enum(
             YesNoAnswers, form_answers().get("dietary_requirements")
         ),
-        previous_path="/nhs-number",
+        previous_path="/essential-supplies",
         **get_errors_from_session("dietary_requirements"),
     )
 
@@ -735,4 +741,33 @@ def post_dietary_requirements():
         return redirect("/dietary-requirements")
     update_session_answers_from_form()
 
-    return redirect("/")
+    return redirect("/carry-supplies")
+
+
+def validate_carry_supplies():
+    return validate_radio_button(
+        YesNoAnswers,
+        "carry_supplies",
+        "Select yes if there’s someone in the house who’s able to carry a delivery of supplies inside",
+    )
+
+
+@form.route("/carry-supplies", methods=["GET"])
+def get_carry_supplies():
+    return render_template(
+        "carry-supplies.html",
+        radio_items=get_radio_options_from_enum(
+            YesNoAnswers, form_answers().get("carry_supplies")
+        ),
+        previous_path="/dietary-requirements",
+        **get_errors_from_session("carry_supplies"),
+    )
+
+
+@form.route("/carry-supplies", methods=["POST"])
+def post_carry_supplies():
+    if not validate_carry_supplies():
+        return redirect("/carry-supplies")
+    update_session_answers_from_form()
+
+    return redirect("/basic-care-needs")
