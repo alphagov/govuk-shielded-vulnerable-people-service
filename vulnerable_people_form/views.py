@@ -707,3 +707,32 @@ def post_basic_care_needs():
     update_session_answers_from_form()
 
     return redirect("/check-your-answers")
+
+
+def validate_dietary_requirements():
+    return validate_radio_button(
+        YesNoAnswers,
+        "dietary_requirements",
+        "Select yes if you have special dietary requirements",
+    )
+
+
+@form.route("/dietary-requirements", methods=["GET"])
+def get_dietary_requirements():
+    return render_template(
+        "dietary-requirements.html",
+        radio_items=get_radio_options_from_enum(
+            YesNoAnswers, form_answers().get("dietary_requirements")
+        ),
+        previous_path="/nhs-number",
+        **get_errors_from_session("dietary_requirements"),
+    )
+
+
+@form.route("/dietary-requirements", methods=["POST"])
+def post_dietary_requirements():
+    if not validate_dietary_requirements():
+        return redirect("/dietary-requirements")
+    update_session_answers_from_form()
+
+    return redirect("/")
