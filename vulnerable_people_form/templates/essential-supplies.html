@@ -1,0 +1,22 @@
+{%- from "govuk_frontend_jinja/components/radios/macro.html" import govukRadios -%}
+
+{% extends "form-base.html" %}
+
+{% block form_fields %}
+    {{ govukRadios({
+      "idPrefix": "essential_supplies",
+      "name": "essential_supplies",
+      "errorMessage": error_messages.get('essential_supplies'),
+      "hint": {
+        "text": "For example, friends or family who can make sure you have enough food."
+      },
+      "fieldset": {
+        "legend": {
+          "text": "Do you have a way of getting essential supplies delivered at the moment?",
+          "isPageHeading": true,
+          "classes": "govuk-fieldset__legend--xl"
+        }
+      },
+      "items": radio_items,
+    }) }}
+{% endblock %}

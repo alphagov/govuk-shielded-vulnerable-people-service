@@ -38,7 +38,7 @@ def get_radio_options_from_enum(target_enum, selected_value):
 
 
 @enum.unique
-class LiveInEnglandAnswers(enum.Enum):
+class YesNoAnswers(enum.Enum):
     YES = "Yes"
     NO = "No"
 
@@ -65,7 +65,10 @@ def validate_radio_button(EnumClass, value_key, error_message):
     try:
         EnumClass(value)
     except ValueError:
-        session.setdefault("error_items", {})[value_key] = {value_key: error_message}
+        session["error_items"] = {
+            **session.setdefault("error_items", {}),
+            value_key: {value_key: error_message},
+        }
         return False
     if session.get("error_items"):
         session["error_items"].pop(value_key)
@@ -74,7 +77,7 @@ def validate_radio_button(EnumClass, value_key, error_message):
 
 def validate_live_in_england():
     return validate_radio_button(
-        LiveInEnglandAnswers, "live_in_england", "Select yes if you live in England"
+        YesNoAnswers, "live_in_england", "Select yes if you live in England"
     )
 
 
@@ -88,7 +91,7 @@ def get_live_in_england():
     return render_template(
         "live-in-england.html",
         radio_items=get_radio_options_from_enum(
-            LiveInEnglandAnswers, form_answers().get("live_in_england")
+            YesNoAnswers, form_answers().get("live_in_england")
         ),
         previous_path="/",
         **get_errors_from_session("live_in_england"),
@@ -102,7 +105,7 @@ def post_live_in_england():
     update_session_answers_from_form()
 
     live_in_england = request.form["live_in_england"]
-    if LiveInEnglandAnswers(live_in_england) is LiveInEnglandAnswers.YES:
+    if YesNoAnswers(live_in_england) is YesNoAnswers.YES:
         return redirect("/nhs-letter")
     return redirect("/not-eligible-england")
 
@@ -643,3 +646,35 @@ def get_nhs_number():
         values=form_answers().get("nhs_number", {}),
         **get_errors_from_session("nhs_number"),
     )
+
+
+def validate_essential_supplies():
+    return validate_radio_button(
+        YesNoAnswers,
+        "essential_supplies",
+        "Select yes if you have a way of getting essential supplies delivered at the moment",
+    )
+
+
+@form.route("/essential-supplies", methods=["GET"])
+def get_essential_supplies():
+    return render_template(
+        "essential-supplies.html",
+        radio_items=get_radio_options_from_enum(
+            YesNoAnswers, form_answers().get("essential_supplies")
+        ),
+        previous_path="/nhs-number",
+        **get_errors_from_session("essential_supplies"),
+    )
+
+
+@form.route("/essential-supplies", methods=["POST"])
+def post_essential_supplies():
+    if not validate_essential_supplies():
+        return redirect("/essential-supplies")
+    update_session_answers_from_form()
+
+    essential_supplies = request.form["essential_supplies"]
+    if YesNoAnswers(essential_supplies) is YesNoAnswers.YES:
+        return redirect("/basic-care-needs")
+    return redirect("/dietary-requirements")
