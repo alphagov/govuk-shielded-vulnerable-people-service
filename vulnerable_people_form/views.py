@@ -24,6 +24,7 @@ from . import postcode_lookup_helper
 form = Blueprint("form", __name__)
 
 PAGE_TITLES = {
+    "privacy": "Privacy",
     "address-lookup": "Select your address",
     "basic-care-needs": "Are your basic care needs being met at the moment?",
     "carry-supplies": "Is there someone in the house who’s able to carry a delivery of supplies inside?	",
@@ -907,3 +908,9 @@ def post_check_your_answers():
     update_session_answers_from_form()
 
     return redirect("/basic-care-needs")
+
+
+@form.route("/privacy", methods=["GET"])
+def get_privacy():
+    return render_template_with_title("privacy.html")
+
