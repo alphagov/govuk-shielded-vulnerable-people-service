@@ -26,6 +26,7 @@ form = Blueprint("form", __name__)
 PAGE_TITLES = {
     "privacy": "Privacy",
     "accessibility": "Accessibility statement",
+    "cookies": "Cookies",
     "address-lookup": "Select your address",
     "basic-care-needs": "Are your basic care needs being met at the moment?",
     "carry-supplies": "Is there someone in the house who’s able to carry a delivery of supplies inside?	",
@@ -919,3 +920,12 @@ def get_privacy():
 @form.route("/accessibility", methods=["GET"])
 def get_accessibility():
     return render_template_with_title("accessibility.html")
+
+
+def redirect_url(default="/"):
+    return request.args.get("next") or request.referrer or default
+
+
+@form.route("/cookies", methods=["GET"])
+def get_cookies():
+    return render_template_with_title("cookies.html", back_url=redirect_url())

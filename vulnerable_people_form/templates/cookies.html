@@ -1,0 +1,482 @@
+{%- from "govuk_frontend_jinja/components/table/macro.html" import govukTable -%}
+{%- from "govuk_frontend_jinja/components/radios/macro.html" import govukRadios -%}
+{%- from 'govuk_frontend_jinja/components/button/macro.html' import govukButton -%}
+
+{% extends "base-with-home-breadcrumb.html" %}
+
+{% block centered_content %}
+  <style>
+    .cookie-settings__form-wrapper{
+      display: None;
+    }
+
+    .js-enabled .cookie-settings__form-wrapper {
+      display: block;
+      padding-top: 30px;
+    }
+
+    .js-enabled .cookie-settings__no-js {
+      display: none;
+    }
+
+    .cookie-settings__list {
+      list-style-type: initial;
+      margin: 4px;
+      padding-left: 6px;
+    }
+
+    .cookie-settings__confirmation {
+      display: none;
+    }
+
+    .cookies-content {
+      @include govuk-font(19);
+    }
+
+    .cookie-settings__table-wrapper {
+      padding-top: 30px;
+    }
+  </style>
+  <div class="cookie-settings__confirmation" data-cookie-confirmation="true">
+        <section class="govuk-!-margin-bottom-8" aria-label="Notice" aria-live="polite" role="region">
+          <h2 class="govuk-heading-m">Cookies</h2>
+          <p>Your cookie settings were saved</p>
+          <a class="govuk-link cookie-settings__prev-page" href={{back_url}}>
+            Go back to the page you were looking at
+          </a>
+        </section>  
+  </div>
+  <h1 class="govuk-heading-xl govuk-!-margin-top-0 govuk-!-margin-bottom-8">
+    {{ title_text }}
+  </h1>
+  <p class="govuk-body">This service puts small files (known as ‘cookies’) onto your computer.</p>
+  <p class="govuk-body">Cookies are used to:</p>
+  <ul class="govuk-list govuk-list--bullet">
+    <li>remember which question you’re up to and how you’ve answered previous questions</li>
+    <li>measure how you use the website so it can be updated and improved based on your needs</li>
+  </ul>
+  <a class="govuk-link" href="https://ico.org.uk/your-data-matters/online/cookies/">Find out how to manage cookies</a>
+  
+
+  <div class="cookie-settings__no-js">
+    <p>We use Javascript to set most of our cookies. Unfortunately Javascript is not running on your browser, so you cannot change your settings. You can try:</p>
+    <ul>
+      <li>reloading the page</li>
+      <li>turning on Javascript in your browser</li>
+    </ul>
+  </div>
+  <h2 class="govuk-heading-m govuk-!-margin-bottom-3 govuk-!-margin-top-8">Essential cookies</h2>
+  <p class="govuk-body">These cookies are required for this service to operate. We do not need to ask permission to use them.</p>
+    {{ govukTable({
+      "firstCellIsHeader": true,
+      "head": [
+        {
+          "text": "Name",
+          "classes": "govuk-!-width-one-quarter"
+        },
+        {
+          "text": "Purpose",
+          "classes": "govuk-!-width-one-half"
+        },
+        {
+          "text": "Expires",
+          "classes": "govuk-!-width-one-quarter"
+        }
+      ],
+      "rows": [
+        [
+          {
+            "text": "cookie_preferences_set"
+          },
+          {
+            "text": "Lets us know whether you’ve already set your cookies preferences."
+          },
+          {
+            "text": "1 year"
+          }
+        ],
+        [
+          {
+            "text": "cookie_preferences"
+          },
+          {
+            "text": "Let us know what your cookie preferences are."
+          },
+          {
+            "text": "1 year"
+          }
+        ],
+        [
+          {
+            "text": "_session_id"
+          },
+          {
+            "text": "Remembers which question you’re up to and how you answered previous questions."
+          },
+          {
+            "text": "4 hours"
+          }
+        ]
+      ]
+      }) 
+    }}
+  <h2 class="govuk-heading-m govuk-!-margin-bottom-3 govuk-!-margin-top-8">Measuring website usage (Google Analytics)</h2>
+  <p class="govuk-body">We use Google Analytics software to collect anonymised information about how you use the service. We do this to help make sure the site is meeting the needs of its users and to help us make improvements.</p> <p class="govuk-body">Google Analytics stores information about:</p>
+  <ul class="govuk-list govuk-list--bullet">
+    <li>the pages you visit</li>
+    <li>how long you spend on each page</li>
+    <li>how you arrived at the site</li>
+    <li>what you click on while you’re visiting the site</li>
+    <li>the device and browser you’re using</li>
+  </ul>
+  <p class="govuk-body">We don’t collect or store your personal information (for example your name or address) so this information can’t be used to identify who you are.</p>
+  <p class="govuk-body">We don’t allow Google to use or share our analytics data.</p>
+  <p class="govuk-body">Google Analytics sets the following cookies:</p>
+    {{ govukTable({
+      "firstCellIsHeader": true,
+      "classes": "cookie-settings__table-wrapper",
+      "head": [
+        {
+          "text": "Name",
+          "classes": "govuk-!-width-one-quarter"
+        },
+        {
+          "text": "Purpose",
+          "classes": "govuk-!-width-one-half"
+        },
+        {
+          "text": "Expires",
+          "classes": "govuk-!-width-one-quarter"
+        }
+      ],
+      "rows": [
+        [
+          {
+            "text": "_ga"
+          },
+          {
+            "text": "This helps us count how many people visit the service by tracking if you’ve visited before"
+          },
+          {
+            "text": "2 years"
+          }
+        ],
+        [
+          {
+            "text": "_gid"
+          },
+          {
+            "text": "This helps us count how many people visit the service by tracking if you’ve visited before"
+          },
+          {
+            "text": "3 days"
+          }
+        ],
+      ]
+    }) }}
+
+  <div class="cookie-settings__form-wrapper">
+    <form data-module="cookie-settings">
+    {{ govukRadios({
+      "name": "cookies-usage",
+      "fieldset": {
+        "legend": {
+          "text": "Do you want to accept analytics cookies?",
+          "classes": "govuk-fieldset__legend--m"
+        }
+      },
+      "hint": {
+        "text": "This includes changing your last name or spelling your name differently."
+      },
+      "items": [
+        {
+          "value": "on",
+          "text": "Yes"
+        },
+        {
+          "value": "off",
+          "text": "No"
+        }
+      ]
+    }) }}
+
+    {{ govukButton({
+      "text": "Save changes"
+    }) }}
+    </form>
+  </div>
+  <script>  
+    //TODO: Consider breaking out into separate script
+    function CookieSettings () {}
+
+    var DEFAULT_COOKIE_CONSENT = {
+      essential: true,
+      settings: false,
+      usage: false,
+      campaigns: false
+    }
+
+    var COOKIE_CATEGORIES = {
+      cookies_policy: 'essential',
+      seen_cookie_message: 'essential',
+      cookie_preferences_set: 'essential',
+      cookies_preferences_set: 'essential',
+      '_email-alert-frontend_session': 'essential',
+      licensing_session: 'essential',
+      govuk_contact_referrer: 'essential',
+      multivariatetest_cohort_coronavirus_extremely_vulnerable_rate_limit: 'essential',
+      dgu_beta_banner_dismissed: 'settings',
+      global_bar_seen: 'settings',
+      govuk_browser_upgrade_dismisssed: 'settings',
+      govuk_not_first_visit: 'settings',
+      analytics_next_page_call: 'usage',
+      _ga: 'usage',
+      _gid: 'usage',
+      _gat: 'usage',
+      'JS-Detection': 'usage',
+      TLSversion: 'usage'
+    }
+
+    CookieSettings.cookie = function (name, value, options) {
+      if (typeof value !== 'undefined') {
+        if (value === false || value === null) {
+          return CookieSettings.setCookie(name, '', { days: -1 })
+        } else {
+          // Default expiry date of 30 days
+          if (typeof options === 'undefined') {
+            options = { days: 30 }
+          }
+          return CookieSettings.setCookie(name, value, options)
+        }
+      } else {
+        return CookieSettings.getCookie(name)
+      }
+    }
+
+    CookieSettings.setDefaultConsentCookie = function () {
+      CookieSettings.setConsentCookie(DEFAULT_COOKIE_CONSENT)
+    }
+
+    CookieSettings.getConsentCookie = function () {
+      var consentCookie = CookieSettings.cookie('cookies_policy')
+      var consentCookieObj
+
+      if (consentCookie) {
+        try {
+          consentCookieObj = JSON.parse(consentCookie)
+        } catch (err) {
+          return null
+        }
+
+        if (typeof consentCookieObj !== 'object' && consentCookieObj !== null) {
+          consentCookieObj = JSON.parse(consentCookieObj)
+        }
+      } else {
+        return null
+      }
+
+      return consentCookieObj
+    }
+
+    CookieSettings.setConsentCookie = function (options) {
+      var cookieConsent = CookieSettings.getConsentCookie()
+
+      if (!cookieConsent) {
+        cookieConsent = JSON.parse(JSON.stringify(DEFAULT_COOKIE_CONSENT))
+      }
+
+      for (var cookieType in options) {
+        cookieConsent[cookieType] = options[cookieType]
+
+        // Delete cookies of that type if consent being set to false
+        if (!options[cookieType]) {
+          for (var cookie in COOKIE_CATEGORIES) {
+            if (COOKIE_CATEGORIES[cookie] === cookieType) {
+              CookieSettings.deleteCookie(cookie)
+            }
+          }
+        }
+      }
+
+      CookieSettings.setCookie('cookies_policy', JSON.stringify(cookieConsent), { days: 365 })
+    }
+
+    CookieSettings.checkConsentCookieCategory = function (cookieName, cookieCategory) {
+      var currentConsentCookie = CookieSettings.getConsentCookie()
+
+      // If the consent cookie doesn't exist, but the cookie is in our known list, return true
+      if (!currentConsentCookie && COOKIE_CATEGORIES[cookieName]) {
+        return true
+      }
+
+      currentConsentCookie = CookieSettings.getConsentCookie()
+
+      // Sometimes currentConsentCookie is malformed in some of the tests, so we need to handle these
+      try {
+        return currentConsentCookie[cookieCategory]
+      } catch (e) {
+        console.error(e)
+        return false
+      }
+    }
+
+    CookieSettings.checkConsentCookie = function (cookieName, cookieValue) {
+      // If we're setting the consent cookie OR deleting a cookie, allow by default
+      if (cookieName === 'cookies_policy' || (cookieValue === null || cookieValue === false)) {
+        return true
+      }
+
+      // Survey cookies are dynamically generated, so we need to check for these separately
+      if (cookieName.match('^govuk_surveySeen') || cookieName.match('^govuk_taken')) {
+        return CookieSettings.checkConsentCookieCategory(cookieName, 'settings')
+      }
+
+      if (COOKIE_CATEGORIES[cookieName]) {
+        var cookieCategory = COOKIE_CATEGORIES[cookieName]
+
+        return CookieSettings.checkConsentCookieCategory(cookieName, cookieCategory)
+      } else {
+        // Deny the cookie if it is not known to us
+        return false
+      }
+    }
+
+    CookieSettings.setCookie = function (name, value, options) {
+      if (CookieSettings.checkConsentCookie(name, value)) {
+        if (typeof options === 'undefined') {
+          options = {}
+        }
+        var cookieString = name + '=' + value + '; path=/'
+        if (options.days) {
+          var date = new Date()
+          date.setTime(date.getTime() + (options.days * 24 * 60 * 60 * 1000))
+          cookieString = cookieString + '; expires=' + date.toGMTString()
+        }
+        if (document.location.protocol === 'https:') {
+          cookieString = cookieString + '; Secure'
+        }
+        document.cookie = cookieString
+      }
+    }
+
+    CookieSettings.getCookie = function (name) {
+      var nameEQ = name + '='
+      var cookies = document.cookie.split(';')
+      for (var i = 0, len = cookies.length; i < len; i++) {
+        var cookie = cookies[i]
+        while (cookie.charAt(0) === ' ') {
+          cookie = cookie.substring(1, cookie.length)
+        }
+        if (cookie.indexOf(nameEQ) === 0) {
+          return decodeURIComponent(cookie.substring(nameEQ.length))
+        }
+      }
+      return null
+    }
+
+    CookieSettings.getCookieCategory = function (cookie) {
+      return COOKIE_CATEGORIES[cookie]
+    }
+
+    CookieSettings.deleteCookie = function (cookie) {
+      CookieSettings.cookie(cookie, null)
+
+      if (CookieSettings.cookie(cookie)) {
+        // We need to handle deleting cookies on the domain and the .domain
+        document.cookie = cookie + '=;expires=' + new Date() + ';'
+        document.cookie = cookie + '=;expires=' + new Date() + ';domain=' + window.location.hostname + ';path=/'
+      }
+    }
+
+    CookieSettings.deleteUnconsentedCookies = function () {
+      var currentConsent = CookieSettings.getConsentCookie()
+
+      for (var cookieType in currentConsent) {
+        // Delete cookies of that type if consent being set to false
+        if (!currentConsent[cookieType]) {
+          for (var cookie in COOKIE_CATEGORIES) {
+            if (COOKIE_CATEGORIES[cookie] === cookieType) {
+              CookieSettings.deleteCookie(cookie)
+            }
+          }
+        }
+      }
+    }
+
+
+    CookieSettings.start = function () {
+
+      var cookieForm = document.querySelector('form[data-module=cookie-settings]');
+
+      if (cookieForm) {
+        cookieForm.addEventListener('submit', this.submitSettingsForm)
+        this.setInitialFormValues()
+      }
+    }
+
+    CookieSettings.setInitialFormValues = function () {
+      if (!CookieSettings.cookie('cookies_policy')) {
+        CookieSettings.setDefaultConsentCookie()
+      }
+
+      var currentConsentCookie = CookieSettings.cookie('cookies_policy')
+      var currentConsentCookieJSON = JSON.parse(currentConsentCookie)
+
+      // We don't need the essential value as this cannot be changed by the user
+      delete currentConsentCookieJSON["essential"]
+      // We don't need the campaigns/settings values as these aren't required by
+      // the service.
+      delete currentConsentCookieJSON["campaigns"]
+      delete currentConsentCookieJSON["settings"]
+
+      for (var cookieType in currentConsentCookieJSON) {
+        var radioButton
+
+        if (currentConsentCookieJSON[cookieType]) {
+          radioButton = document.querySelector('input[name=cookies-' + cookieType + '][value=on]')
+        } else {
+          radioButton = document.querySelector('input[name=cookies-' + cookieType + '][value=off]')
+        }
+
+        radioButton.checked = true
+      }
+    }
+
+    CookieSettings.submitSettingsForm = function (event) {
+      event.preventDefault()
+
+      var formInputs = event.target.getElementsByTagName("input")
+      var options = {}
+
+      for ( var i = 0; i < formInputs.length; i++ ) {
+        var input = formInputs[i]
+        if (input.checked) {
+          var name = input.name.replace('cookies-', '')
+          var value = input.value === "on" ? true : false
+
+          options[name] = value
+        }
+      }
+
+      CookieSettings.showConfirmationMessage()
+
+      CookieSettings.setConsentCookie(options)
+      CookieSettings.setCookie('cookies_preferences_set', true, { days: 365 });
+      if (window.GOVUK) {
+        window.GOVUK.analyticsInit()
+      }
+
+      return false
+    }
+
+    CookieSettings.showConfirmationMessage = function () {
+      var confirmationMessage = document.querySelector('.cookie-settings__confirmation');
+
+      document.body.scrollTop = document.documentElement.scrollTop = 0
+
+      confirmationMessage.style.display = "block"
+    }
+
+    window.CookieSettings.start()
+  </script>
+{% endblock %}
