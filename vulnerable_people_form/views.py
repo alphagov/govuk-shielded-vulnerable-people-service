@@ -49,6 +49,53 @@ PAGE_TITLES = {
 }
 
 
+def route_to_next_form_page():
+    current_form = request.url_rule.rule.strip("/")
+    answer = form_answers().get(current_form.replace("-", "_"))
+
+    if current_form == "address-lookup":
+        return redirect("/support-address")
+    elif current_form == "basic-care-needs":
+        return redirect("/check-your-answers")
+    elif current_form == "carry-supplies":
+        return redirect("/basic-care-needs")
+    elif current_form == "check-contact-details":
+        return redirect("/nhs-number")
+    elif current_form == "contact-details":
+        return redirect("/check-contact-details")
+    elif current_form == "date-of-birth":
+        return redirect("/postcode-lookup")
+    elif current_form == "dietary-requirements":
+        return redirect("/carry-supplies")
+    elif current_form == "essential-supplies":
+        essential_supplies = request.form["essential_supplies"]
+        if YesNoAnswers(essential_supplies) is YesNoAnswers.YES:
+            return redirect("/basic-care-needs")
+        return redirect("/dietary-requirements")
+    elif current_form == "live-in-england":
+        if YesNoAnswers(answer) is YesNoAnswers.YES:
+            return redirect("/nhs-letter")
+        return redirect("/not-eligible-england")
+    elif current_form == "medical-conditions":
+        if MedicalConditionsAnswers(answer) is MedicalConditionsAnswers.YES:
+            return redirect("/name")
+        return redirect("/not-eligible-medical")
+    elif current_form == "name":
+        return redirect("/date-of-birth")
+    elif current_form == "nhs-letter":
+        if NHSLetterAnswers(answer) is NHSLetterAnswers.YES:
+            return redirect("/name")
+        return redirect("/medical-conditions")
+    elif current_form == "nhs-number":
+        return redirect("/essential-supplies")
+    elif current_form == "postcode-lookup":
+        return redirect("/address-lookup")
+    elif current_form == "support-address":
+        return redirect("/contact-details")
+    else:
+        raise RuntimeError("An unexpected error occurred")
+
+
 def render_template_with_title(template_name, *args, **kwargs):
     if not template_name.endswith(".html"):
         raise ValueError(
@@ -145,11 +192,7 @@ def post_live_in_england():
     if not validate_live_in_england():
         return redirect("/live-in-england")
     update_session_answers_from_form()
-
-    live_in_england = request.form["live_in_england"]
-    if YesNoAnswers(live_in_england) is YesNoAnswers.YES:
-        return redirect("/nhs-letter")
-    return redirect("/not-eligible-england")
+    return route_to_next_form_page()
 
 
 @enum.unique
@@ -169,12 +212,8 @@ def validate_nhs_letter():
 def post_nhs_letter():
     if not validate_nhs_letter():
         return redirect("/nhs-letter")
-
     update_session_answers_from_form()
-    nhs_letter = request.form.get("nhs_letter")
-    if NHSLetterAnswers(nhs_letter) is NHSLetterAnswers.YES:
-        return redirect("/name")
-    return redirect("/medical-conditions")
+    return route_to_next_form_page()
 
 
 @form.route("/nhs-letter", methods=["GET"])
@@ -209,10 +248,7 @@ def post_medical_conditions():
         return redirect("/medical-conditions")
 
     update_session_answers_from_form()
-    nhs_letter = request.form.get("medical_conditions")
-    if MedicalConditionsAnswers(nhs_letter) is MedicalConditionsAnswers.YES:
-        return redirect("/name")
-    return redirect("/not-eligible-medical")
+    return route_to_next_form_page()
 
 
 @form.route("/medical-conditions", methods=["GET"])
@@ -261,7 +297,7 @@ def post_name():
         return redirect("/name")
 
     session["error_items"] = {}
-    return redirect("/date-of-birth")
+    return route_to_next_form_page()
 
 
 @form.route("/name", methods=["GET"])
@@ -347,7 +383,7 @@ def post_date_of_birth():
         return redirect("/date-of-birth")
 
     session["error_items"] = {}
-    return redirect("/postcode-lookup")
+    return route_to_next_form_page()
 
 
 @form.route("/date-of-birth", methods=["GET"])
@@ -391,9 +427,8 @@ def post_address_lookup():
         **session.setdefault("form_answers", {}),
         "support_address": {**json.loads(request.form["address"])},
     }
-
     session["error_items"] = {}
-    return redirect("/support-address")
+    return route_to_next_form_page()
 
 
 @form.route("/address-lookup", methods=["GET"])
@@ -445,7 +480,7 @@ def post_postcode_lookup():
         return redirect("/postcode-lookup")
 
     session["error_items"] = {}
-    return redirect("/address-lookup")
+    return route_to_next_form_page()
 
 
 @form.route("/postcode-lookup", methods=["GET"])
@@ -519,8 +554,7 @@ def post_support_address():
     session["error_items"] = {}
     if not validate_support_address():
         return redirect("/support-address")
-
-    return redirect("/contact-details")
+    return route_to_next_form_page()
 
 
 @form.route("/support-address", methods=["GET"])
@@ -603,8 +637,7 @@ def post_contact_details():
     session["error_items"] = {}
     if not validate_contact_details("contact_details"):
         return redirect("/contact-details")
-
-    return redirect("/check-contact-details")
+    return route_to_next_form_page()
 
 
 @form.route("/contact-details", methods=["GET"])
@@ -628,7 +661,7 @@ def post_check_contact_details():
     if not validate_contact_details("check_contact_details"):
         return redirect("/check-contact-details")
 
-    return redirect("/nhs-number")
+    return route_to_next_form_page()
 
 
 @form.route("/check-contact-details", methods=["GET"])
@@ -677,7 +710,7 @@ def post_nhs_number():
     if not validate_nhs_number():
         return redirect("/nhs-number")
 
-    return redirect("/essential-supplies")
+    return route_to_next_form_page()
 
 
 @form.route("/nhs-number", methods=["GET"])
@@ -715,11 +748,7 @@ def post_essential_supplies():
     if not validate_essential_supplies():
         return redirect("/essential-supplies")
     update_session_answers_from_form()
-
-    essential_supplies = request.form["essential_supplies"]
-    if YesNoAnswers(essential_supplies) is YesNoAnswers.YES:
-        return redirect("/basic-care-needs")
-    return redirect("/dietary-requirements")
+    return route_to_next_form_page()
 
 
 def validate_basic_care_needs():
@@ -753,8 +782,7 @@ def post_basic_care_needs():
     if not validate_basic_care_needs():
         return redirect("/basic-care-needs")
     update_session_answers_from_form()
-
-    return redirect("/check-your-answers")
+    return route_to_next_form_page()
 
 
 def validate_dietary_requirements():
@@ -782,8 +810,7 @@ def post_dietary_requirements():
     if not validate_dietary_requirements():
         return redirect("/dietary-requirements")
     update_session_answers_from_form()
-
-    return redirect("/carry-supplies")
+    return route_to_next_form_page()
 
 
 def validate_carry_supplies():
@@ -811,7 +838,6 @@ def post_carry_supplies():
     if not validate_carry_supplies():
         return redirect("/carry-supplies")
     update_session_answers_from_form()
-
     return redirect("/basic-care-needs")
 
 
@@ -948,6 +974,7 @@ def get_not_eligible_medical():
 
 @form.route("/not-eligible-england", methods=["GET"])
 def get_not_eligible_england():
+    update_session_answers_from_form()
     return render_template_with_title(
         "not-eligible-england.html", back_url=redirect_url()
     )
