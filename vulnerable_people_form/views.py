@@ -41,6 +41,7 @@ PAGE_TITLES = {
     "name": "What is your name?	",
     "nhs-letter": "Have you had a letter from the NHS or been told by your doctor to ’shield’ because you’re clinically extremely vulnerable to coronavirus?",
     "nhs-number": "Do you know your NHS number?",
+    "not-eligible-england": "Sorry, this service is only available in England",
     "not-eligible-medical": "Sorry, you’re not eligible for help through this service",
     "postcode-lookup": "What is the postcode where you need support?",
     "support-address": "What is the address where you need support?",
@@ -936,4 +937,11 @@ def get_cookies():
 def get_not_eligible_medical():
     return render_template_with_title(
         "not-eligible-medical.html", back_url=redirect_url()
+    )
+
+
+@form.route("/not-eligible-england", methods=["GET"])
+def get_not_eligible_england():
+    return render_template_with_title(
+        "not-eligible-england.html", back_url=redirect_url()
     )
