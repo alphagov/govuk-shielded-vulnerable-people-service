@@ -49,6 +49,14 @@ PAGE_TITLES = {
 }
 
 
+def blank_form_sections(*sections_to_blank):
+    session["form_answers"] = {
+        section: {**answers} if isinstance(answers, dict) else answers
+        for section, answers in session.get("form_answers", {}).items()
+        if section not in sections_to_blank
+    }
+
+
 def route_to_next_form_page():
     current_form = request.url_rule.rule.strip("/")
     answer = form_answers().get(current_form.replace("-", "_"))
@@ -70,6 +78,7 @@ def route_to_next_form_page():
     elif current_form == "essential-supplies":
         essential_supplies = request.form["essential_supplies"]
         if YesNoAnswers(essential_supplies) is YesNoAnswers.YES:
+            blank_form_sections("dietary_requirements", "carry_supplies")
             return redirect("/basic-care-needs")
         return redirect("/dietary-requirements")
     elif current_form == "live-in-england":
@@ -84,6 +93,7 @@ def route_to_next_form_page():
         return redirect("/date-of-birth")
     elif current_form == "nhs-letter":
         if NHSLetterAnswers(answer) is NHSLetterAnswers.YES:
+            blank_form_sections("medical_conditions")
             return redirect("/name")
         return redirect("/medical-conditions")
     elif current_form == "nhs-number":
