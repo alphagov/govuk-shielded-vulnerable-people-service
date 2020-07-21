@@ -49,12 +49,47 @@ PAGE_TITLES = {
 }
 
 
+FORM_PAGE_TO_DATA_CHECK_SECTION_NAME = {
+    "address-lookup": "support_address",
+    "applying-on-own-behalf": "applying_on_own_behalf",
+    "basic-care-needs": "basic_care_needs",
+    "carry-supplies": "carry_supplies",
+    "check-contact-details": "check_contact_details",
+    "check-your-answers": "check_you_answers",
+    "contact-details": "contact_details",
+    "date-of-birth": "date_of_birth",
+    "dietary-requirements": "dietary_requirements",
+    "essential-supplies": "essential_supplies",
+    "live-in-england": "live_in_england",
+    "medical-conditions": "medical_conditions",
+    "name": "name",
+    "nhs-letter": "nhs_letter",
+    "nhs-login": "nhs_login",
+    "nhs-number": "nhs_number",
+    "postcode-lookup": "support_address",
+    "support-address": "support_address",
+}
+
+
 def blank_form_sections(*sections_to_blank):
     session["form_answers"] = {
         section: {**answers} if isinstance(answers, dict) else answers
         for section, answers in session.get("form_answers", {}).items()
         if section not in sections_to_blank
     }
+
+
+def redirect_to_next_form_page(redirect_target=True):
+    next_page_has_answer = (
+        form_answers().get(
+            FORM_PAGE_TO_DATA_CHECK_SECTION_NAME[redirect_target.strip("/")]
+        )
+        is not None
+    )
+    if session.get("check_answers_page_seen") and next_page_has_answer:
+        return redirect("/check-your-answers")
+
+    return redirect(redirect_target)
 
 
 def route_to_next_form_page():
@@ -64,44 +99,44 @@ def route_to_next_form_page():
     if current_form == "address-lookup":
         return redirect("/support-address")
     elif current_form == "basic-care-needs":
-        return redirect("/check-your-answers")
+        return redirect_to_next_form_page("/check-your-answers")
     elif current_form == "carry-supplies":
-        return redirect("/basic-care-needs")
+        return redirect_to_next_form_page("/basic-care-needs")
     elif current_form == "check-contact-details":
-        return redirect("/nhs-number")
+        return redirect_to_next_form_page("/nhs-number")
     elif current_form == "contact-details":
-        return redirect("/check-contact-details")
+        return redirect_to_next_form_page("/check-contact-details")
     elif current_form == "date-of-birth":
-        return redirect("/postcode-lookup")
+        return redirect_to_next_form_page("/postcode-lookup")
     elif current_form == "dietary-requirements":
-        return redirect("/carry-supplies")
+        return redirect_to_next_form_page("/carry-supplies")
     elif current_form == "essential-supplies":
         essential_supplies = request.form["essential_supplies"]
         if YesNoAnswers(essential_supplies) is YesNoAnswers.YES:
             blank_form_sections("dietary_requirements", "carry_supplies")
-            return redirect("/basic-care-needs")
-        return redirect("/dietary-requirements")
+            return redirect_to_next_form_page("/basic-care-needs")
+        return redirect_to_next_form_page("/dietary-requirements")
     elif current_form == "live-in-england":
         if YesNoAnswers(answer) is YesNoAnswers.YES:
-            return redirect("/nhs-letter")
+            return redirect_to_next_form_page("/nhs-letter")
         return redirect("/not-eligible-england")
     elif current_form == "medical-conditions":
         if MedicalConditionsAnswers(answer) is MedicalConditionsAnswers.YES:
-            return redirect("/name")
+            return redirect_to_next_form_page("/name")
         return redirect("/not-eligible-medical")
     elif current_form == "name":
-        return redirect("/date-of-birth")
+        return redirect_to_next_form_page("/date-of-birth")
     elif current_form == "nhs-letter":
         if NHSLetterAnswers(answer) is NHSLetterAnswers.YES:
             blank_form_sections("medical_conditions")
-            return redirect("/name")
-        return redirect("/medical-conditions")
+            return redirect_to_next_form_page("/name")
+        return redirect_to_next_form_page("/medical-conditions")
     elif current_form == "nhs-number":
-        return redirect("/essential-supplies")
+        return redirect_to_next_form_page("/essential-supplies")
     elif current_form == "postcode-lookup":
         return redirect("/address-lookup")
     elif current_form == "support-address":
-        return redirect("/contact-details")
+        return redirect_to_next_form_page("/contact-details")
     else:
         raise RuntimeError("An unexpected error occurred")
 
@@ -848,7 +883,7 @@ def post_carry_supplies():
     if not validate_carry_supplies():
         return redirect("/carry-supplies")
     update_session_answers_from_form()
-    return redirect("/basic-care-needs")
+    return route_to_next_form_page()
 
 
 def _slice(keys, _dict):
@@ -935,6 +970,7 @@ def get_summary_rows_from_form_answers():
 
 @form.route("/check-your-answers", methods=["GET"])
 def get_check_your_answers():
+    session["check_answers_page_seen"] = True
     return render_template_with_title(
         "check-your-answers.html",
         previous_path="/basic-care-needs",
