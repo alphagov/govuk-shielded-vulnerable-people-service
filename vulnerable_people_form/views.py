@@ -44,6 +44,7 @@ PAGE_TITLES = {
     "not-eligible-england": "Sorry, this service is only available in England",
     "not-eligible-medical": "Sorry, you’re not eligible for help through this service",
     "postcode-lookup": "What is the postcode where you need support?",
+    "confirmation": "Registration complete",
     "support-address": "What is the address where you need support?",
 }
 
@@ -905,13 +906,18 @@ def get_check_your_answers():
     )
 
 
-@form.route("/carry-supplies", methods=["POST"])
+@form.route("/check-your-answers", methods=["POST"])
 def post_check_your_answers():
-    if not validate_carry_supplies():
-        return redirect("/carry-supplies")
-    update_session_answers_from_form()
+    return redirect("/confirmation",)
 
-    return redirect("/basic-care-needs")
+
+@form.route("/confirmation", methods=["GET"])
+def get_confirmation():
+    return render_template_with_title(
+        "confirmation.html",
+        contact_gp=NHSLetterAnswers(form_answers()["nhs_letter"])
+        is NHSLetterAnswers.YES,
+    )
 
 
 @form.route("/privacy", methods=["GET"])

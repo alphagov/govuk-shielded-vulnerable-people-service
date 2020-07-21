@@ -13,7 +13,11 @@
     }) }}
     <h2 class="govuk-heading-m govuk-!-margin-bottom-3">Now send your application</h2>
     <p class="govuk-body">By submitting this application you’re confirming that, as far as you know, the details you’re providing are correct.</p>
-    {{ govukButton({
-      "text": "Accept and send"
-    }) }}
+    <form method="post">
+      {{ govukButton({
+        "text": "Accept and send",
+        "preventDoubleClick": true,
+        "type": "submit",
+      }) }}
+    </form>
 {% endblock %}
