@@ -1,4 +1,5 @@
 Flask==1.1.2
+Flask-WTF==0.14.3
 govuk-frontend-jinja==0.2.1
 phonenumbers==8.12.6
 python-stdnum==1.13

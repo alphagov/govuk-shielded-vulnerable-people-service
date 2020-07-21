@@ -5,6 +5,7 @@
 
 {% block centered_content %}
     <form method="post" novalidate>
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         {% if error_list != None and error_list|length > 0 %}
             {{ govukErrorSummary({
               "titleText": "There is a problem",

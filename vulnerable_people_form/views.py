@@ -111,7 +111,7 @@ def route_to_next_form_page():
     elif current_form == "dietary-requirements":
         return redirect_to_next_form_page("/carry-supplies")
     elif current_form == "essential-supplies":
-        essential_supplies = request.form["essential_supplies"]
+        essential_supplies = request_form()["essential_supplies"]
         if YesNoAnswers(essential_supplies) is YesNoAnswers.YES:
             blank_form_sections("dietary_requirements", "carry_supplies")
             return redirect_to_next_form_page("/basic-care-needs")
@@ -152,7 +152,10 @@ def render_template_with_title(template_name, *args, **kwargs):
 
 
 def update_session_answers_from_form():
-    session["form_answers"] = {**session.setdefault("form_answers", {}), **request.form}
+    session["form_answers"] = {
+        **session.setdefault("form_answers",),
+        **request_form(),
+    }
     session["error_items"] = {}
 
 
@@ -195,7 +198,7 @@ def get_errors_from_session(error_group_name):
 
 
 def validate_radio_button(EnumClass, value_key, error_message):
-    value = request.form.get(value_key)
+    value = request_form().get(value_key)
     try:
         EnumClass(value)
     except ValueError:
@@ -309,7 +312,7 @@ def get_medical_conditions():
 
 
 def validate_mandatory_form_field(section_key, value_key, error_message):
-    if not request.form.get(value_key):
+    if not request_form().get(value_key):
         existing_section = session.setdefault("error_items", {}).setdefault(
             section_key, {}
         )
@@ -332,11 +335,15 @@ def validate_name():
     )
 
 
+def request_form():
+    return {k: v for k, v in request.form.items() if k != "csrf_token"}
+
+
 @form.route("/name", methods=["POST"])
 def post_name():
     session["form_answers"] = {
         **session.setdefault("form_answers", {}),
-        "name": {**request.form},
+        "name": {**request_form()},
     }
     if not validate_name():
         return redirect("/name")
@@ -378,9 +385,9 @@ def failing_field(field_bools, field_names):
 
 
 def validate_date_of_birth():
-    day = request.form.get("day", "")
-    month = request.form.get("month", "")
-    year = request.form.get("year", "")
+    day = request_form().get("day", "")
+    month = request_form().get("month", "")
+    year = request_form().get("year", "")
 
     fields = [month, day, year]
     fieldsEmpty = [period == "" for period in fields]
@@ -422,7 +429,7 @@ def validate_date_of_birth():
 def post_date_of_birth():
     session["form_answers"] = {
         **session.setdefault("form_answers", {}),
-        "date_of_birth": {**request.form},
+        "date_of_birth": {**request_form()},
     }
     if not validate_date_of_birth():
         return redirect("/date-of-birth")
@@ -442,7 +449,7 @@ def get_date_of_birth():
 
 
 def validate_postcode(section):
-    postcode = request.form.get("postcode")
+    postcode = session.get("postcode")
 
     postcode.replace(" ", "")
     postcode_regex = "(([A-Z]{1,2}[0-9][A-Z0-9]?|ASCN|STHL|TDCU|BBND|[BFS]IQQ|PCRN|TKCA) ?[0-9][A-Z]{2}|BFPO ?[0-9]{1,4}|(KY[0-9]|MSR|VG|AI)[ -]?[0-9]{4}|[A-Z]{2} ?[0-9]{2}|GE ?CX|GIR ?0A{2}|SAN ?TA1)"
@@ -470,7 +477,7 @@ def post_address_lookup():
         return redirect("/address-lookup")
     session["form_answers"] = {
         **session.setdefault("form_answers", {}),
-        "support_address": {**json.loads(request.form["address"])},
+        "support_address": {**json.loads(request_form()["address"])},
     }
     session["error_items"] = {}
     return route_to_next_form_page()
@@ -478,7 +485,7 @@ def post_address_lookup():
 
 @form.route("/address-lookup", methods=["GET"])
 def get_address_lookup():
-    postcode = form_answers()["postcode"]["postcode"]
+    postcode = session["postcode"]
     try:
         addresses = postcode_lookup_helper.get_addresses_from_postcode(postcode)
     except postcode_lookup_helper.PostcodeNotFound:
@@ -517,10 +524,7 @@ def get_address_lookup():
 
 @form.route("/postcode-lookup", methods=["POST"])
 def post_postcode_lookup():
-    session["form_answers"] = {
-        **session.setdefault("form_answers", {}),
-        "postcode": {**request.form},
-    }
+    session["postcode"] = request_form().get("postcode")
     if not validate_postcode("postcode"):
         return redirect("/postcode-lookup")
 
@@ -533,7 +537,7 @@ def get_postcode_lookup():
     return render_template_with_title(
         "postcode-lookup.html",
         previous_path="/date-of-birth",
-        values=form_answers().get("postcode", {}),
+        values={"postcode": session.get("postcode", "")},
         **get_errors_from_session("postcode"),
     )
 
@@ -592,10 +596,14 @@ def validate_support_address():
 
 @form.route("/support-address", methods=["POST"])
 def post_support_address():
-    session["form_answers"] = {
-        **session.setdefault("form_answers", {}),
-        "support_address": {**request.form},
+    original_address = {
+        k: v for k, v in form_answers()["support_address"].items() if k != "uprn"
     }
+    if original_address != request_form():
+        session["form_answers"] = {
+            **session.setdefault("form_answers", {}),
+            "support_address": {**request_form(), "uprn": None},
+        }
     session["error_items"] = {}
     if not validate_support_address():
         return redirect("/support-address")
@@ -624,7 +632,7 @@ def format_phone_number_if_valid(phone_number):
 
 def validate_phone_number_if_present(section_key, phone_number_key):
     try:
-        phone_number = request.form.get(phone_number_key, "")
+        phone_number = request_form().get(phone_number_key, "")
         if phone_number:
             phonenumbers.parse(phone_number, region="GB")
     except phonenumbers.NumberParseException:
@@ -641,7 +649,7 @@ def validate_phone_number_if_present(section_key, phone_number_key):
 
 
 def validate_email_if_present(section_key, email_key):
-    email_address = request.form.get(email_key)
+    email_address = request_form().get(email_key)
     email_regex = r"([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})"
     if email_address and re.match(email_regex, email_address) is None:
         error_message = (
@@ -672,9 +680,9 @@ def post_contact_details():
     session["form_answers"] = {
         **session.setdefault("form_answers", {}),
         "contact_details": {
-            **request.form,
+            **request_form(),
             **{
-                phone_key: format_phone_number_if_valid(request.form.get(phone_key))
+                phone_key: format_phone_number_if_valid(request_form().get(phone_key))
                 for phone_key in ("phone_number_calls", "phone_number_texts")
             },
         },
@@ -700,7 +708,7 @@ def post_check_contact_details():
     existing_answers = form_answers().get("contact_details", {})
     session["form_answers"] = {
         **session.setdefault("form_answers", {}),
-        "contact_details": {**existing_answers, **request.form,},
+        "contact_details": {**existing_answers, **request_form(),},
     }
     session["error_items"] = {}
     if not validate_contact_details("check_contact_details"):
@@ -722,7 +730,7 @@ def get_check_contact_details():
 
 def validate_nhs_number():
     error = None
-    nhs_number = request.form.get("nhs_number")
+    nhs_number = request_form().get("nhs_number")
     if nhs_number:
         try:
             stdnum.gb.nhs.validate(nhs_number)
@@ -749,7 +757,8 @@ def validate_nhs_number():
 def post_nhs_number():
     session["form_answers"] = {
         **session.setdefault("form_answers", {}),
-        **request.form,
+        **request_form(),
+        "know_nhs_number": "Yes, I know my NHS number",
     }
     session["error_items"] = {}
     if not validate_nhs_number():
