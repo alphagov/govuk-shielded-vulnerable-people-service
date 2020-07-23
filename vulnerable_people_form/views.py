@@ -2,6 +2,8 @@ import datetime
 import enum
 import email
 import json
+import jsonschema
+import os
 import phonenumbers
 
 import stdnum
@@ -989,6 +991,14 @@ def get_check_your_answers():
 
 @form.route("/check-your-answers", methods=["POST"])
 def post_check_your_answers():
+    answers = form_answers()
+    with open(os.path.join(current_app.root_path, "answers_schema.json")) as fh:
+        schema = json.load(fh)
+    try:
+        jsonschema.validate(instance=answers, schema=schema)
+    except jsonschema.exceptions.ValidationError as e:
+        #TODO Add govuk.notify call here
+        current_app.logger.exception("JSON Schema validation error in form answers", e)
     form_response_model.write_answers_to_table(form_answers())
     return redirect("/confirmation",)
 
