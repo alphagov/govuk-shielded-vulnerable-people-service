@@ -19,7 +19,7 @@ from flask import (
 )
 
 
-from . import postcode_lookup_helper
+from . import postcode_lookup_helper, form_response_model
 
 form = Blueprint("form", __name__)
 
@@ -989,6 +989,7 @@ def get_check_your_answers():
 
 @form.route("/check-your-answers", methods=["POST"])
 def post_check_your_answers():
+    form_response_model.write_answers_to_table(form_answers())
     return redirect("/confirmation",)
 
 

@@ -1,29 +1,55 @@
+import boto3
+import datetime
+import decimal
+import secrets
 import time
-import os
 
-from pynamodb.models import Model
-from pynamodb.attributes import UnicodeAttribute, NumberAttribute, JSONAttribute
 from flask import current_app
 
 
-class FormResponse(Model):
-    class Meta:
-        table_name = os.environ.get(
-            "AWS_DYNAMODB_SUBMISSIONS_TABLE_NAME", "coronavirus-vulnerable-people"
-        )
-        host = os.environ.get("USE_LOCALHOST_FOR_DYNAMODB", "http://localhost:8000")
-
-        # The following lines are required for table creation
-        write_capacity_units = 20
-        read_capacity_units = 100
-
-    reference_id = UnicodeAttribute(hash_key=True, attr_name="ReferenceId")
-    unix_timestamp = NumberAttribute(
-        range_key=True, attr_name="UnixTimestamp", default=time.time()
+def get_dynamodb_client():
+    return boto3.resource(
+        "dynamodb", endpoint_url=current_app.config.get("AWS_ENDPOINT_URL")
     )
-    form_response = JSONAttribute(attr_name="FormResponse")
+
+
+def _form_response_tablename():
+    return current_app.config.get(
+        "AWS_DYNAMODB_SUBMISSIONS_TABLE_NAME", "coronavirus-vulnerable-people"
+    )
+
+
+def generate_reference_number():
+    return f'{datetime.datetime.now().strftime("%Y%m%d-%H%M%S")}-{secrets.token_hex(3)}'
+
+
+def write_answers_to_table(answers):
+    get_dynamodb_client().Table(_form_response_tablename()).put_item(
+        Item={
+            "ReferenceId": generate_reference_number(),
+            "UnixTimestamp": decimal.Decimal(time.time()),
+            "FormResponse": answers,
+        }
+    )
 
 
 def create_tables_if_not_exist():
-    if not FormResponse.exists():
-        FormResponse.create_table()
+    # get_dynamodb_client().delete_table(TableName="coronavirus-vulnerable-people")
+    client = get_dynamodb_client()
+    try:
+        client.create_table(
+            TableName=_form_response_tablename(),
+            KeySchema=[
+                {"AttributeName": "ReferenceId", "KeyType": "HASH"},
+                {"AttributeName": "UnixTimestamp", "KeyType": "RANGE"},
+            ],
+            AttributeDefinitions=[
+                {"AttributeName": "ReferenceId", "AttributeType": "S"},
+                {"AttributeName": "UnixTimestamp", "AttributeType": "N"},
+            ],
+            ProvisionedThroughput={"ReadCapacityUnits": 120, "WriteCapacityUnits": 20},
+        )
+    except client.meta.client.exceptions.ResourceInUseException:
+        return False
+    return True
+

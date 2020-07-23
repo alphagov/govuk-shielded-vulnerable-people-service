@@ -19,7 +19,8 @@ def create_app(config_filename):
         ]
     )
 
-    form_response_model.create_tables_if_not_exist()
+    with app.app_context():
+        form_response_model.create_tables_if_not_exist()
     app.register_blueprint(views.form)
     CSRFProtect(app)
     return app
