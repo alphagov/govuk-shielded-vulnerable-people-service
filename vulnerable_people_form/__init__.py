@@ -6,6 +6,13 @@ from . import views
 from . import form_response_model
 
 
+def generate_error_handler(code):
+    def handle_error(_):
+        return render_template(f"{code}.html"), code
+
+    return handle_error
+
+
 def create_app(config_filename):
     app = Flask(__name__, static_url_path="/assets", instance_relative_config=True)
     app.config.from_pyfile(config_filename)
@@ -23,4 +30,8 @@ def create_app(config_filename):
         form_response_model.create_tables_if_not_exist()
     app.register_blueprint(views.form)
     CSRFProtect(app)
+
+    app.register_error_handler(404, generate_error_handler(404))
+    app.register_error_handler(500, generate_error_handler(500))
+
     return app
