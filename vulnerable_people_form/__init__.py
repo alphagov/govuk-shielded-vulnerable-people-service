@@ -4,6 +4,7 @@ from flask_wtf.csrf import CSRFProtect
 
 from . import views
 from . import form_response_model
+from . import nhs_openconnect_id
 
 
 def generate_error_handler(code):
@@ -30,6 +31,9 @@ def create_app(config_filename):
         form_response_model.create_tables_if_not_exist()
     app.register_blueprint(views.form)
     CSRFProtect(app)
+
+    app.nhs_oidc_client = nhs_openconnect_id.NHSOIDCDetails()
+    app.nhs_oidc_client.init_app(app)
 
     app.register_error_handler(404, generate_error_handler(404))
     app.register_error_handler(500, generate_error_handler(500))
