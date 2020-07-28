@@ -1,0 +1,21 @@
+{%- from "govuk_frontend_jinja/components/radios/macro.html" import govukRadios -%}
+
+{% extends "form-base.html" %}
+
+{% block form_fields %}
+    {{ govukRadios({
+      "idPrefix": "nhs_login",
+      "name": "nhs_login",
+      "errorMessage": error_messages.get('nhs_login'),
+      "hint": {
+        "text": "Logging into this service with your NHS Login account means you won't have to answer some questions, and you will be able to retrieve and edit your answers in the future."},
+      "fieldset": {
+        "legend": {
+          "text": title_text, 
+          "isPageHeading": true,
+          "classes": "govuk-fieldset__legend--xl"
+        }
+      },
+      "items": radio_items,
+    }) }}
+{% endblock %}

@@ -12,6 +12,7 @@ import stdnum.gb.nhs
 import re
 
 from flask import (
+    abort,
     current_app,
     Blueprint,
     render_template,
@@ -28,6 +29,7 @@ form = Blueprint("form", __name__)
 PAGE_TITLES = {
     "privacy": "Privacy",
     "accessibility": "Accessibility statement",
+    "applying-on-own-behalf": "Are you applying on your own behalf?",
     "cookies": "Cookies",
     "address-lookup": "Select your address",
     "basic-care-needs": "Are your basic care needs being met at the moment?",
@@ -42,6 +44,7 @@ PAGE_TITLES = {
     "medical-conditions": "Do you have one of the listed medical conditions?",
     "name": "What is your name?	",
     "nhs-letter": "Have you had a letter from the NHS or been told by your doctor to ’shield’ because you’re clinically extremely vulnerable to coronavirus?",
+    "nhs-login": "Would you like to use an existing NHS login to access this service?",
     "nhs-number": "Do you know your NHS number?",
     "not-eligible-england": "Sorry, this service is only available in England",
     "not-eligible-medical": "Sorry, you’re not eligible for help through this service",
@@ -107,6 +110,11 @@ def route_to_next_form_page():
             is ApplyingOnOwnBehalfAnswers.YES
         ):
             return redirect_to_next_form_page("/nhs-login")
+        return redirect_to_next_form_page("/live-in-england")
+    elif current_form == "nhs-login":
+        applying_on_own_behalf = request_form()["nhs_login"]
+        if YesNoAnswers(applying_on_own_behalf) is YesNoAnswers.YES:
+            return redirect(current_app.nhs_oidc_client.get_authorization_url())
         return redirect_to_next_form_page("/live-in-england")
     elif current_form == "basic-care-needs":
         return redirect_to_next_form_page("/check-your-answers")
@@ -260,6 +268,67 @@ def post_applying_on_own_behalf():
         return redirect("/applying-on-own-behalf")
     update_session_answers_from_form()
     return route_to_next_form_page()
+
+
+def validate_nhs_login():
+    return validate_radio_button(
+        YesNoAnswers, "nhs_login", "Select yes if you want log in with you NHS details",
+    )
+
+
+@form.route("/nhs-login", methods=["GET"])
+def get_nhs_login():
+    return render_template_with_title(
+        "nhs-login.html",
+        radio_items=get_radio_options_from_enum(
+            YesNoAnswers, form_answers().get("nhs_login")
+        ),
+        previous_path="/",
+        **get_errors_from_session("nhs_login"),
+    )
+
+
+@form.route("/nhs-login", methods=["POST"])
+def post_nhs_login():
+    if not validate_nhs_login():
+        return redirect("/nhs-login")
+    update_session_answers_from_form()
+    return route_to_next_form_page()
+
+
+@form.route("/nhs-login-callback", methods=["GET"])
+def get_nhs_login_callback():
+    if "error" in request.args:
+        abort(500)
+    nhs_user_info = current_app.nhs_oidc_client.get_nhs_user_info(request.args)
+
+    # populate form from nhs information
+    {
+        "aud": "initial-spark",
+        "birthdate": "1968-02-12",
+        "email": "testuserlive@demo.signin.nhs.uk",
+        "email_verified": True,
+        "family_name": "MILLAR",
+        "identity_proofing_level": "P9",
+        "iss": "https://auth.sandpit.signin.nhs.uk",
+        "nhs_number": "9686368973",
+        "phone_number": "+447940497586",
+        "phone_number_verified": True,
+        "sub": "49f470a1-cc52-49b7-beba-0f9cec937c46",
+    }
+
+    import pprint
+
+    pprint.pprint(nhs_user_info)
+
+    year, month, day = nhs_user_info.split("-")
+    session.get("date_of_birth", {})["day"] = day
+    session.get("date_of_birth", {})["month"] = month
+    session.get("date_of_birth", {})["year"] = year
+
+    session["nhs_number"] = nhs_user_info["nhs_number"]
+
+    return redirect("live-in-england")
 
 
 @form.route("/start", methods=["GET"])
@@ -1040,7 +1109,7 @@ def post_check_your_answers():
     try:
         jsonschema.validate(instance=answers, schema=schema)
     except jsonschema.exceptions.ValidationError as e:
-        #TODO Add govuk.notify call here
+        # TODO Add govuk.notify call here
         current_app.logger.exception("JSON Schema validation error in form answers", e)
     form_response_model.write_answers_to_table(form_answers())
     return redirect("/confirmation",)
