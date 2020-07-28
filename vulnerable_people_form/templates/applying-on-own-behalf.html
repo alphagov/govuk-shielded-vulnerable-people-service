@@ -1,0 +1,19 @@
+{%- from "govuk_frontend_jinja/components/radios/macro.html" import govukRadios -%}
+
+{% extends "form-base.html" %}
+
+{% block form_fields %}
+    {{ govukRadios({
+      "idPrefix": "applying_on_own_behalf",
+      "name": "applying_on_own_behalf",
+      "errorMessage": error_messages.get('applying_on_own_behalf'),
+      "fieldset": {
+        "legend": {
+          "text": title_text, 
+          "isPageHeading": true,
+          "classes": "govuk-fieldset__legend--xl"
+        }
+      },
+      "items": radio_items,
+    }) }}
+{% endblock %}

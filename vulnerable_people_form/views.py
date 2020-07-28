@@ -100,6 +100,14 @@ def route_to_next_form_page():
 
     if current_form == "address-lookup":
         return redirect("/support-address")
+    elif current_form == "applying-on-own-behalf":
+        applying_on_own_behalf = request_form()["applying_on_own_behalf"]
+        if (
+            ApplyingOnOwnBehalfAnswers(applying_on_own_behalf)
+            is ApplyingOnOwnBehalfAnswers.YES
+        ):
+            return redirect_to_next_form_page("/nhs-login")
+        return redirect_to_next_form_page("/live-in-england")
     elif current_form == "basic-care-needs":
         return redirect_to_next_form_page("/check-your-answers")
     elif current_form == "carry-supplies":
@@ -220,9 +228,43 @@ def validate_live_in_england():
     )
 
 
+@enum.unique
+class ApplyingOnOwnBehalfAnswers(enum.Enum):
+    YES = "Yes, I'm applying on my own behalf."
+    NO = "No, I'm applying on behalf of someone else."
+
+
+@form.route("/applying-on-own-behalf", methods=["GET"])
+def get_apply_on_own_behalf():
+    return render_template_with_title(
+        "applying-on-own-behalf.html",
+        radio_items=get_radio_options_from_enum(
+            ApplyingOnOwnBehalfAnswers, form_answers().get("applying_on_own_behalf")
+        ),
+        previous_path="/",
+        **get_errors_from_session("applying_on_own_behalf"),
+    )
+
+
+def validate_applying_on_own_behalf():
+    return validate_radio_button(
+        ApplyingOnOwnBehalfAnswers,
+        "applying_on_own_behalf",
+        "Select yes if you are applying on your own behalf",
+    )
+
+
+@form.route("/applying-on-own-behalf", methods=["POST"])
+def post_applying_on_own_behalf():
+    if not validate_applying_on_own_behalf():
+        return redirect("/applying-on-own-behalf")
+    update_session_answers_from_form()
+    return route_to_next_form_page()
+
+
 @form.route("/start", methods=["GET"])
 def get_start():
-    return redirect("/live-in-england")
+    return redirect("/applying-on-own-behalf")
 
 
 @form.route("/live-in-england", methods=["GET"])
@@ -232,7 +274,7 @@ def get_live_in_england():
         radio_items=get_radio_options_from_enum(
             YesNoAnswers, form_answers().get("live_in_england")
         ),
-        previous_path="/",
+        previous_path="/applying-on-own-behalf",
         **get_errors_from_session("live_in_england"),
     )
 
@@ -905,6 +947,7 @@ def get_summary_rows_from_form_answers():
     summary_rows = []
     answers = form_answers()
     order = [
+        "applying_on_own_behalf",
         "live_in_england",
         "nhs_letter",
         "medical_conditions",
