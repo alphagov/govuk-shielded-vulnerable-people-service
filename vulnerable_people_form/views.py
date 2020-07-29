@@ -302,31 +302,38 @@ def get_nhs_login_callback():
         abort(500)
     nhs_user_info = current_app.nhs_oidc_client.get_nhs_user_info(request.args)
 
-    # populate form from nhs information
-    {
-        "aud": "initial-spark",
-        "birthdate": "1968-02-12",
-        "email": "testuserlive@demo.signin.nhs.uk",
-        "email_verified": True,
-        "family_name": "MILLAR",
-        "identity_proofing_level": "P9",
-        "iss": "https://auth.sandpit.signin.nhs.uk",
-        "nhs_number": "9686368973",
-        "phone_number": "+447940497586",
-        "phone_number_verified": True,
-        "sub": "49f470a1-cc52-49b7-beba-0f9cec937c46",
-    }
+    # birthdate is not necessarily known
+    if "birthdate" in nhs_user_info and len(nhs_user_info["birthdate"]) > 0:
+        year, month, day = nhs_user_info["birthdate"].split("-")
 
-    import pprint
+        session["nhs_sub"] = nhs_user_info["sub"]
 
-    pprint.pprint(nhs_user_info)
+        session.setdefault("form_answers", {}).setdefault("date_of_birth", {})[
+            "day"
+        ] = day
+        session["form_answers"]["date_of_birth"]["month"] = month
+        session["form_answers"]["date_of_birth"]["year"] = year
 
-    year, month, day = nhs_user_info.split("-")
-    session.get("date_of_birth", {})["day"] = day
-    session.get("date_of_birth", {})["month"] = month
-    session.get("date_of_birth", {})["year"] = year
+    session.setdefault("form_answers", {}).setdefault("name", {})[
+        "first_name"
+    ] = nhs_user_info.get(
+        "given_name", ""
+    )  # given name is only in returned info if the users identity is verified
 
-    session["nhs_number"] = nhs_user_info["nhs_number"]
+    session["form_answers"]["name"]["last_name"] = nhs_user_info["family_name"]
+
+    session["form_answers"]["know_nhs_number"] = True  # required for validation
+    session["form_answers"]["nhs_number"] = nhs_user_info["nhs_number"]
+
+    session["form_answers"].setdefault("contact_details", {})[
+        "phone_number_calls"
+    ] = session["form_answers"]["contact_details"][
+        "phone_number_texts"
+    ] = nhs_user_info.get(
+        "phone_number", ""
+    )
+
+    session["form_answers"]["contact_details"]["email"] = nhs_user_info.get("email", "")
 
     return redirect("live-in-england")
 
