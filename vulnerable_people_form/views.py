@@ -97,6 +97,62 @@ def redirect_to_next_form_page(redirect_target=True):
     return redirect(redirect_target)
 
 
+def clear_errors_after(fn):
+    def wrapper(*args, **kwargs):
+        result = fn(*args, **kwargs)
+        session["error_items"] = {}
+        return result
+
+    return wrapper
+
+
+def is_nhs_login_user():
+    return session.get("nhs_sub") is not None
+
+
+@clear_errors_after
+def get_next_form_url_after_eligibility_check():
+    if is_nhs_login_user() and validate_name():
+        return get_next_form_url_after_name()
+    else:
+        return "/name"
+
+
+@clear_errors_after
+def get_next_form_url_after_name():
+    if is_nhs_login_user() and validate_date_of_birth():
+        return get_next_form_url_after_date_of_birth()
+    else:
+        return "/date-of-birth"
+
+
+@clear_errors_after
+def get_next_form_url_after_date_of_birth():
+    if is_nhs_login_user() and validate_contact_details("contact_details"):
+        return get_next_form_url_after_contact_details()
+    else:
+        return "/contact-details"
+
+
+@clear_errors_after
+def get_next_form_url_after_contact_details():
+    if is_nhs_login_user():
+        if validate_contact_details("contact_details"):
+            return get_next_form_url_after_check_contact_details()
+        else:
+            return "/contact-details"
+    else:
+        return "/check-contact-details"
+
+
+@clear_errors_after
+def get_next_form_url_after_check_contact_details():
+    if is_nhs_login_user():
+        return "/postcode-lookup"
+    else:
+        return "/nhs-number"
+
+
 def route_to_next_form_page():
     current_form = request.url_rule.rule.strip("/")
     answer = form_answers().get(current_form.replace("-", "_"))
@@ -121,11 +177,13 @@ def route_to_next_form_page():
     elif current_form == "carry-supplies":
         return redirect_to_next_form_page("/basic-care-needs")
     elif current_form == "check-contact-details":
-        return redirect_to_next_form_page("/nhs-number")
+        return redirect_to_next_form_page(
+            get_next_form_url_after_check_contact_details()
+        )
     elif current_form == "contact-details":
-        return redirect_to_next_form_page("/check-contact-details")
+        return redirect_to_next_form_page(get_next_form_url_after_contact_details())
     elif current_form == "date-of-birth":
-        return redirect_to_next_form_page("/postcode-lookup")
+        return redirect_to_next_form_page(get_next_form_url_after_date_of_birth())
     elif current_form == "dietary-requirements":
         return redirect_to_next_form_page("/carry-supplies")
     elif current_form == "essential-supplies":
@@ -140,21 +198,25 @@ def route_to_next_form_page():
         return redirect("/not-eligible-england")
     elif current_form == "medical-conditions":
         if MedicalConditionsAnswers(answer) is MedicalConditionsAnswers.YES:
-            return redirect_to_next_form_page("/name")
+            return redirect_to_next_form_page(
+                get_next_form_url_after_eligibility_check()
+            )
         return redirect("/not-eligible-medical")
     elif current_form == "name":
-        return redirect_to_next_form_page("/date-of-birth")
+        return redirect_to_next_form_page(get_next_form_url_after_name())
     elif current_form == "nhs-letter":
         if NHSLetterAnswers(answer) is NHSLetterAnswers.YES:
             blank_form_sections("medical_conditions")
-            return redirect_to_next_form_page("/name")
+            return redirect_to_next_form_page(
+                get_next_form_url_after_eligibility_check()
+            )
         return redirect_to_next_form_page("/medical-conditions")
     elif current_form == "nhs-number":
-        return redirect_to_next_form_page("/essential-supplies")
+        return redirect_to_next_form_page("/postcode-lookup")
     elif current_form == "postcode-lookup":
         return redirect("/address-lookup")
     elif current_form == "support-address":
-        return redirect_to_next_form_page("/contact-details")
+        return redirect_to_next_form_page("/essential-supplies")
     else:
         raise RuntimeError("An unexpected error occurred")
 
