@@ -264,9 +264,9 @@ def validate_applying_on_own_behalf():
 
 @form.route("/applying-on-own-behalf", methods=["POST"])
 def post_applying_on_own_behalf():
+    update_session_answers_from_form()
     if not validate_applying_on_own_behalf():
         return redirect("/applying-on-own-behalf")
-    update_session_answers_from_form()
     return route_to_next_form_page()
 
 
@@ -290,9 +290,9 @@ def get_nhs_login():
 
 @form.route("/nhs-login", methods=["POST"])
 def post_nhs_login():
+    update_session_answers_from_form()
     if not validate_nhs_login():
         return redirect("/nhs-login")
-    update_session_answers_from_form()
     return route_to_next_form_page()
 
 
@@ -357,9 +357,9 @@ def get_live_in_england():
 
 @form.route("/live-in-england", methods=["POST"])
 def post_live_in_england():
+    update_session_answers_from_form()
     if not validate_live_in_england():
         return redirect("/live-in-england")
-    update_session_answers_from_form()
     return route_to_next_form_page()
 
 
@@ -378,9 +378,9 @@ def validate_nhs_letter():
 
 @form.route("/nhs-letter", methods=["POST"])
 def post_nhs_letter():
+    update_session_answers_from_form()
     if not validate_nhs_letter():
         return redirect("/nhs-letter")
-    update_session_answers_from_form()
     return route_to_next_form_page()
 
 
@@ -412,10 +412,9 @@ def validate_medical_conditions():
 
 @form.route("/medical-conditions", methods=["POST"])
 def post_medical_conditions():
+    update_session_answers_from_form()
     if not validate_medical_conditions():
         return redirect("/medical-conditions")
-
-    update_session_answers_from_form()
     return route_to_next_form_page()
 
 
@@ -919,9 +918,9 @@ def get_essential_supplies():
 
 @form.route("/essential-supplies", methods=["POST"])
 def post_essential_supplies():
+    update_session_answers_from_form()
     if not validate_essential_supplies():
         return redirect("/essential-supplies")
-    update_session_answers_from_form()
     return route_to_next_form_page()
 
 
@@ -953,9 +952,9 @@ def get_basic_care_needs():
 
 @form.route("/basic-care-needs", methods=["POST"])
 def post_basic_care_needs():
+    update_session_answers_from_form()
     if not validate_basic_care_needs():
         return redirect("/basic-care-needs")
-    update_session_answers_from_form()
     return route_to_next_form_page()
 
 
@@ -981,9 +980,9 @@ def get_dietary_requirements():
 
 @form.route("/dietary-requirements", methods=["POST"])
 def post_dietary_requirements():
+    update_session_answers_from_form()
     if not validate_dietary_requirements():
         return redirect("/dietary-requirements")
-    update_session_answers_from_form()
     return route_to_next_form_page()
 
 
@@ -1009,9 +1008,9 @@ def get_carry_supplies():
 
 @form.route("/carry-supplies", methods=["POST"])
 def post_carry_supplies():
+    update_session_answers_from_form()
     if not validate_carry_supplies():
         return redirect("/carry-supplies")
-    update_session_answers_from_form()
     return route_to_next_form_page()
 
 
