@@ -216,7 +216,7 @@ def get_errors_from_session(error_group_name):
 
 
 def validate_radio_button(EnumClass, value_key, error_message):
-    value = request_form().get(value_key)
+    value = form_answers().get(value_key)
     try:
         EnumClass(value)
     except ValueError:
@@ -431,13 +431,23 @@ def get_medical_conditions():
 
 
 def validate_mandatory_form_field(section_key, value_key, error_message):
-    if not request_form().get(value_key):
+    if not form_answers().get(section_key, {}).get(value_key):
         existing_section = session.setdefault("error_items", {}).setdefault(
             section_key, {}
         )
         session["error_items"] = {
             **session.setdefault("error_items", {}),
             section_key: {**existing_section, value_key: error_message},
+        }
+        return False
+    return True
+
+
+def validate_address_lookup():
+    if not request_form().get("address"):
+        session["error_items"] = {
+            **session.setdefault("error_items", {}),
+            "address_lookup": {"address": "You must select an address",},
         }
         return False
     return True
@@ -504,9 +514,9 @@ def failing_field(field_bools, field_names):
 
 
 def validate_date_of_birth():
-    day = request_form().get("day", "")
-    month = request_form().get("month", "")
-    year = request_form().get("year", "")
+    day = form_answers().get("date_of_birth", {}).get("day", "")
+    month = form_answers().get("date_of_birth", {}).get("month", "")
+    year = form_answers().get("date_of_birth", {}).get("year", "")
 
     fields = [month, day, year]
     fieldsEmpty = [period == "" for period in fields]
@@ -590,15 +600,13 @@ def validate_postcode(section):
 
 @form.route("/address-lookup", methods=["POST"])
 def post_address_lookup():
-    if not validate_mandatory_form_field(
-        "address_lookup", "address", "An address must be selected"
-    ):
-        return redirect("/address-lookup")
     session["form_answers"] = {
         **session.setdefault("form_answers", {}),
         "support_address": {**json.loads(request_form()["address"])},
     }
     session["error_items"] = {}
+    if not validate_address_lookup():
+        return redirect("/address-lookup")
     return route_to_next_form_page()
 
 
@@ -751,7 +759,7 @@ def format_phone_number_if_valid(phone_number):
 
 def validate_phone_number_if_present(section_key, phone_number_key):
     try:
-        phone_number = request_form().get(phone_number_key, "")
+        phone_number = form_answers()["contact_details"].get(phone_number_key, "")
         if phone_number:
             phonenumbers.parse(phone_number, region="GB")
     except phonenumbers.NumberParseException:
@@ -768,7 +776,7 @@ def validate_phone_number_if_present(section_key, phone_number_key):
 
 
 def validate_email_if_present(section_key, email_key):
-    email_address = request_form().get(email_key)
+    email_address = form_answers()["contact_details"].get(email_key)
     email_regex = r"([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})"
     if email_address and re.match(email_regex, email_address) is None:
         error_message = (
@@ -849,7 +857,7 @@ def get_check_contact_details():
 
 def validate_nhs_number():
     error = None
-    nhs_number = request_form().get("nhs_number")
+    nhs_number = form_answers().get("nhs_number")
     if nhs_number:
         try:
             stdnum.gb.nhs.validate(nhs_number)
