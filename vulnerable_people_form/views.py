@@ -1187,7 +1187,13 @@ def post_check_your_answers():
     except jsonschema.exceptions.ValidationError as e:
         # TODO Add govuk.notify call here
         current_app.logger.exception("JSON Schema validation error in form answers", e)
-    form_response_model.write_answers_to_table(form_answers())
+
+    # We use a slightly strange value here for non-nhs login users. DynamoDB
+    # does not allow us to not set a value for the key schema, so we set it to
+    # an invalid oidc subject identifier (one that is > 255 chars)
+    form_response_model.write_answers_to_table(
+        session.get("nhs_sub", f"non_nhs_login_dummy_sub{' ' * 255}"), form_answers()
+    )
     return redirect("/confirmation",)
 
 
