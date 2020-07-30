@@ -1,4 +1,5 @@
 import boto3
+from boto3.dynamodb.conditions import Key
 import datetime
 import decimal
 import secrets
@@ -36,6 +37,26 @@ def write_answers_to_table(nhs_sub, answers):
         }
     )
     return reference_number
+
+
+def get_record_using_nhs_sub(nhs_sub):
+    result = (
+        get_dynamodb_client()
+        .Table(_form_response_tablename())
+        .query(
+            IndexName="NHSSub-index", KeyConditionExpression=Key("NHSSub").eq(nhs_sub)
+        )
+    )
+    if result["ResponseMetadata"]["HTTPStatusCode"] != 200:
+        raise RuntimeError(
+            f"Could not retrieve stored answers from dynamodb retrieved ResponseMetadata {result['ResponseMetadata']}"
+        )
+    items = result["Items"]
+    if len(items) > 1:
+        current_app.logger.error(
+            f"Found {len(items)} results for nhs_sub: {nhs_sub} expected 1 item continuing with oldest item"
+        )
+    return min(items, default=None, key=lambda item: item["UnixTimestamp"])
 
 
 def create_tables_if_not_exist():

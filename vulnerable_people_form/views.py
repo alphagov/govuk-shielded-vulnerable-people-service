@@ -412,11 +412,17 @@ def get_nhs_login_callback():
         abort(500)
     nhs_user_info = current_app.nhs_oidc_client.get_nhs_user_info(request.args)
 
+    nhs_sub = session["nhs_sub"] = nhs_user_info["sub"]
+
+    existing_record = form_response_model.get_record_using_nhs_sub(nhs_sub)
+    if existing_record:
+        session["form_answers"] = {**existing_record["FormResponse"], **form_answers()}
+        form_response_model.write_answers_to_table(nhs_sub, session["form_answers"])
+        return redirect("/check-your-answers")
+
     # birthdate is not necessarily known
     if "birthdate" in nhs_user_info and len(nhs_user_info["birthdate"]) > 0:
         year, month, day = nhs_user_info["birthdate"].split("-")
-
-        session["nhs_sub"] = nhs_user_info["sub"]
 
         session.setdefault("form_answers", {}).setdefault("date_of_birth", {})[
             "day"
