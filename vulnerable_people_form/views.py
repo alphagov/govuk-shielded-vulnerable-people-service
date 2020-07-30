@@ -52,6 +52,7 @@ PAGE_TITLES = {
     "confirmation": "Registration complete",
     "support-address": "What is the address where you need support?",
     "view-or-setup": "Do you want to set up this service, or access an existing account?",
+    "view-answers": "Your saved details",
 }
 
 
@@ -61,7 +62,7 @@ FORM_PAGE_TO_DATA_CHECK_SECTION_NAME = {
     "basic-care-needs": "basic_care_needs",
     "carry-supplies": "carry_supplies",
     "check-contact-details": "check_contact_details",
-    "check-your-answers": "check_you_answers",
+    "check-your-answers": "basic_care_needs",
     "contact-details": "contact_details",
     "date-of-birth": "date_of_birth",
     "dietary-requirements": "dietary_requirements",
@@ -132,17 +133,36 @@ def blank_form_sections(*sections_to_blank):
     }
 
 
+def accessing_saved_answers():
+    return session.get("accessing_saved_answers", False)
+
+
+def get_redirect_to_terminal_page():
+    if accessing_saved_answers():
+        return redirect("/view-answers")
+    return redirect("/check-your-answers")
+
+
+def get_redirect_to_terminal_page_if_applicable():
+    if accessing_saved_answers() or session.get("check_answers_page_seen"):
+        return redirect("/view-answers")
+
+
 def redirect_to_next_form_page(redirect_target=True):
-    next_page_has_answer = (
-        form_answers().get(
-            FORM_PAGE_TO_DATA_CHECK_SECTION_NAME[redirect_target.strip("/")]
-        )
+    next_page_name = redirect_target.strip("/")
+    next_page_does_not_need_answer = (
+        form_answers().get(FORM_PAGE_TO_DATA_CHECK_SECTION_NAME[next_page_name])
         is not None
     )
-    if session.get("check_answers_page_seen") and next_page_has_answer:
-        return redirect("/check-your-answers")
 
-    return redirect(redirect_target)
+    if accessing_saved_answers():
+        form_response_model.write_answers_to_table(session["nhs_sub"], form_answers())
+
+    maybe_redirect_to_terminal_page = None
+    if next_page_does_not_need_answer:
+        maybe_redirect_to_terminal_page = get_redirect_to_terminal_page_if_applicable()
+
+    return maybe_redirect_to_terminal_page or redirect(redirect_target)
 
 
 def clear_errors_after(fn):
@@ -221,7 +241,7 @@ def route_to_next_form_page():
             return redirect(current_app.nhs_oidc_client.get_authorization_url())
         return redirect_to_next_form_page("/live-in-england")
     elif current_form == "basic-care-needs":
-        return redirect_to_next_form_page("/check-your-answers")
+        return get_redirect_to_terminal_page()
     elif current_form == "carry-supplies":
         return redirect_to_next_form_page("/basic-care-needs")
     elif current_form == "check-contact-details":
@@ -275,7 +295,15 @@ def render_template_with_title(template_name, *args, **kwargs):
             "Template names must end with '.html' for a title to be assigned"
         )
     return render_template(
-        template_name, *args, title_text=PAGE_TITLES[template_name[:-5]], **kwargs
+        template_name,
+        *args,
+        title_text=PAGE_TITLES[template_name[:-5]],
+        **{
+            "button_text": "Save and continue"
+            if accessing_saved_answers()
+            else "Continue",
+            **kwargs,
+        },
     )
 
 
@@ -418,7 +446,8 @@ def get_nhs_login_callback():
     if existing_record:
         session["form_answers"] = {**existing_record["FormResponse"], **form_answers()}
         form_response_model.write_answers_to_table(nhs_sub, session["form_answers"])
-        return redirect("/check-your-answers")
+        session["accessing_saved_answers"] = True
+        return redirect("/view-answers")
 
     # birthdate is not necessarily known
     if "birthdate" in nhs_user_info and len(nhs_user_info["birthdate"]) > 0:
@@ -1228,6 +1257,14 @@ def get_check_your_answers():
         "check-your-answers.html",
         previous_path="/basic-care-needs",
         summary_rows=get_summary_rows_from_form_answers(),
+    )
+
+
+@form.route("/view-answers", methods=["GET"])
+def get_view_answers():
+    session["check_answers_page_seen"] = True
+    return render_template_with_title(
+        "view-answers.html", summary_rows=get_summary_rows_from_form_answers(),
     )
 
 
