@@ -51,6 +51,7 @@ PAGE_TITLES = {
     "postcode-lookup": "What is the postcode where you need support?",
     "confirmation": "Registration complete",
     "support-address": "What is the address where you need support?",
+    "view-or-setup": "Do you want to set up this service, or access an existing account?",
 }
 
 
@@ -74,6 +75,53 @@ FORM_PAGE_TO_DATA_CHECK_SECTION_NAME = {
     "postcode-lookup": "support_address",
     "support-address": "support_address",
 }
+
+
+@enum.unique
+class ViewOrSetupAnswers(enum.Enum):
+    VIEW = (
+        "I would like to access an existing account on this service using my NHS login"
+    )
+    SETUP = "I would like to set up an account"
+
+
+@form.route("/view-or-setup", methods=["GET"])
+def get_view_or_setup():
+    return render_template_with_title(
+        "view-or-setup.html",
+        radio_items=get_radio_options_from_enum(
+            ViewOrSetupAnswers, form_answers().get("live_in_england")
+        ),
+        previous_path="/applying-on-own-behalf",
+        **get_errors_from_session("view_or_setup"),
+    )
+
+
+def validate_view_or_setup():
+    value = request_form().get("view_or_setup")
+    try:
+        ViewOrSetupAnswers(value)
+    except ValueError:
+        session["error_items"] = {
+            **session.setdefault("error_items", {}),
+            "view_or_setup": {
+                "view_or_setup": "You must select if you would like to set up an account, or access an account via your NHS Login."
+            },
+        }
+        return False
+    if session.get("error_items"):
+        session["error_items"].pop("view_or_setup")
+    return True
+
+
+@form.route("/view-or-setup", methods=["POST"])
+def post_view_or_setup():
+    if not validate_view_or_setup():
+        return redirect("/view-or-setup")
+    answer = ViewOrSetupAnswers(request_form().get("view_or_setup"))
+    if answer is ViewOrSetupAnswers.VIEW:
+        return redirect(current_app.nhs_oidc_client.get_authorization_url())
+    return redirect("/applying-on-own-behalf")
 
 
 def blank_form_sections(*sections_to_blank):
@@ -402,7 +450,7 @@ def get_nhs_login_callback():
 
 @form.route("/start", methods=["GET"])
 def get_start():
-    return redirect("/applying-on-own-behalf")
+    return redirect("/view-or-setup")
 
 
 @form.route("/live-in-england", methods=["GET"])
