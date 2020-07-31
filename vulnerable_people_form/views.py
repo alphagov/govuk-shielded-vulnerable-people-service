@@ -46,6 +46,7 @@ PAGE_TITLES = {
     "nhs-letter": "Have you had a letter from the NHS or been told by your doctor to ’shield’ because you’re clinically extremely vulnerable to coronavirus?",
     "nhs-login": "Would you like to use an existing NHS login to access this service?",
     "nhs-number": "Do you know your NHS number?",
+    "nhs-registration": "Would you like to register an NHS Login to use with an account on this service?",
     "not-eligible-england": "Sorry, this service is only available in England",
     "not-eligible-medical": "Sorry, you’re not eligible for help through this service",
     "postcode-lookup": "What is the postcode where you need support?",
@@ -241,7 +242,19 @@ def route_to_next_form_page():
             return redirect(current_app.nhs_oidc_client.get_authorization_url())
         return redirect_to_next_form_page("/live-in-england")
     elif current_form == "basic-care-needs":
-        return get_redirect_to_terminal_page()
+        contact_details = form_answers().get("contact_details", {})
+        maybe_redirect_to_terminal_page = get_redirect_to_terminal_page_if_applicable()
+        if (
+            maybe_redirect_to_terminal_page
+            or session.get("nhs_sub")
+            or not contact_details.get("phone_number_texts")
+            or not contact_details.get("email")
+            or ApplyingOnOwnBehalfAnswers(form_answers().get("applying_on_own_behalf"))
+            is ApplyingOnOwnBehalfAnswers.NO
+        ):
+            return maybe_redirect_to_terminal_page
+        else:
+            return redirect("/nhs-registration")
     elif current_form == "carry-supplies":
         return redirect_to_next_form_page("/basic-care-needs")
     elif current_form == "check-contact-details":
@@ -432,6 +445,72 @@ def post_nhs_login():
     if not validate_nhs_login():
         return redirect("/nhs-login")
     return route_to_next_form_page()
+
+
+def validate_register_with_nhs():
+    value = request_form().get("nhs_registration")
+    try:
+        YesNoAnswers(value)
+    except ValueError:
+        session["error_items"] = {
+            **session.setdefault("error_items", {}),
+            "nhs_registration": {
+                "nhs_registration": "You need to select if you want to register an account with the NHS in order to retrieve your answers at a alater point."
+            },
+        }
+        return False
+    if session.get("error_items"):
+        session["error_items"].pop("nhs_registration")
+    return True
+
+
+@form.route("/nhs-registration", methods=["GET"])
+def get_nhs_registration():
+    return render_template_with_title(
+        "nhs-registration.html",
+        radio_items=get_radio_options_from_enum(
+            YesNoAnswers, form_answers().get("nhs_registration")
+        ),
+        previous_path="/basic-care-needs",
+        **get_errors_from_session("nhs_registration"),
+    )
+
+
+@form.route("/nhs-registration", methods=["POST"])
+def post_nhs_registration():
+    if not validate_register_with_nhs():
+        return redirect("/nhs-registration")
+    answer = YesNoAnswers(request_form()["nhs_registration"])
+    if answer is YesNoAnswers.YES:
+        return redirect(current_app.nhs_oidc_client.get_registration_url())
+    else:
+        # TODO: better handle the case where an existing record is found.
+        return redirect("/check-your-answers")
+
+
+def set_session_variable_from_nhs_userinfo_if_not_set(
+    nhs_user_info, nhs_user_info_key, answers_key_list
+):
+    if nhs_user_info_key not in nhs_user_info:
+        return
+
+    answers = session["form_answers"]
+    for key in answers_key_list[:-1]:
+        answers = answers.setdefault(key, {})
+    if not answers.get(answers_key_list[-1]):
+        answers[answers_key_list[-1]] = nhs_user_info[nhs_user_info_key]
+
+
+@form.route("/nhs-registration-callback", methods=["GET"])
+def get_nhs_registration_callback():
+    if "error" in request.args:
+        abort(500)
+    nhs_user_info = current_app.nhs_oidc_client.get_nhs_user_info_from_registration_callback(
+        request.args
+    )
+    session["nhs_sub"] = nhs_user_info["sub"]
+    session["form_answers"]["nhs_number"] = nhs_user_info["nhs_number"]
+    return redirect("/check-your-answers")
 
 
 @form.route("/nhs-login-callback", methods=["GET"])
@@ -677,7 +756,7 @@ def validate_date_of_birth():
     invalid_date_message = "Enter a real date of birth"
     if error is None:
         try:
-            date = datetime.date(int(year), int(day), int(month))
+            date = datetime.date(int(year), int(month), int(day))
         except ValueError:
             error = invalid_date_message
     if error is None:
