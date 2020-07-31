@@ -438,7 +438,9 @@ def post_nhs_login():
 def get_nhs_login_callback():
     if "error" in request.args:
         abort(500)
-    nhs_user_info = current_app.nhs_oidc_client.get_nhs_user_info(request.args)
+    nhs_user_info = current_app.nhs_oidc_client.get_nhs_user_info_from_authorization_callback(
+        request.args
+    )
 
     nhs_sub = session["nhs_sub"] = nhs_user_info["sub"]
 
