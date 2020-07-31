@@ -449,7 +449,6 @@ def get_nhs_login_callback():
         session["accessing_saved_answers"] = True
         return redirect("/view-answers")
 
-    # birthdate is not necessarily known
     if "birthdate" in nhs_user_info and len(nhs_user_info["birthdate"]) > 0:
         year, month, day = nhs_user_info["birthdate"].split("-")
 
@@ -459,26 +458,20 @@ def get_nhs_login_callback():
         session["form_answers"]["date_of_birth"]["month"] = month
         session["form_answers"]["date_of_birth"]["year"] = year
 
-    session.setdefault("form_answers", {}).setdefault("name", {})[
-        "first_name"
-    ] = nhs_user_info.get(
-        "given_name", ""
-    )  # given name is only in returned info if the users identity is verified
-
-    session["form_answers"]["name"]["last_name"] = nhs_user_info["family_name"]
+    nhs_user_info_to_form_answers = {
+        ("name", "first_name"): "given_name",
+        ("name", "last_name"): "family_name",
+        ("contact_details", "phone_number_calls"): "phone_number",
+        ("contact_details", "phone_number_texts"): "phone_number",
+        ("contact_details", "email"): "email",
+    }
+    for answers_key_list, nhs_user_info_key in nhs_user_info_to_form_answers.items():
+        set_session_variable_from_nhs_userinfo_if_not_set(
+            nhs_user_info, nhs_user_info_key, answers_key_list
+        )
 
     session["form_answers"]["know_nhs_number"] = True  # required for validation
     session["form_answers"]["nhs_number"] = nhs_user_info["nhs_number"]
-
-    session["form_answers"].setdefault("contact_details", {})[
-        "phone_number_calls"
-    ] = session["form_answers"]["contact_details"][
-        "phone_number_texts"
-    ] = nhs_user_info.get(
-        "phone_number", ""
-    )
-
-    session["form_answers"]["contact_details"]["email"] = nhs_user_info.get("email", "")
 
     return redirect("live-in-england")
 
