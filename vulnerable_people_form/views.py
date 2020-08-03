@@ -1,6 +1,7 @@
 import datetime
 import enum
 import email
+from functools import partial
 import json
 import jsonschema
 import os
@@ -252,7 +253,7 @@ def route_to_next_form_page():
             or ApplyingOnOwnBehalfAnswers(form_answers().get("applying_on_own_behalf"))
             is ApplyingOnOwnBehalfAnswers.NO
         ):
-            return maybe_redirect_to_terminal_page
+            return get_redirect_to_terminal_page()
         else:
             return redirect("/nhs-registration")
     elif current_form == "carry-supplies":
@@ -488,29 +489,86 @@ def post_nhs_registration():
         return redirect("/check-your-answers")
 
 
-def set_form_answer_from_nhs_userinfo(
-    nhs_user_info, nhs_user_info_key, answers_key_list
-):
-    if nhs_user_info_key not in nhs_user_info:
-        return
+def get_answers_formatted_date_from_userinfo(nhs_user_info):
+    if "birthdate" in nhs_user_info and len(nhs_user_info["birthdate"]) > 0:
+        year, month, day = nhs_user_info["birthdate"].split("-")
 
+        return {
+            "year": year,
+            "month": month,
+            "day": day,
+        }
+    return {}
+
+
+def get_partial_date_from_userinfo(partial_date_key, nhs_user_info):
+    return get_answers_formatted_date_from_userinfo(nhs_user_info).get(partial_date_key)
+
+
+NHS_USER_INFO_TO_FORM_ANSWERS = {
+    ("name", "first_name"): "given_name",
+    ("name", "last_name"): "family_name",
+    ("contact_details", "phone_number_calls"): "phone_number",
+    ("contact_details", "phone_number_texts"): "phone_number",
+    ("contact_details", "email"): "email",
+    ("nhs_number",): "nhs_number",
+    ("date_of_birth", "day"): partial(get_partial_date_from_userinfo, "day"),
+    ("date_of_birth", "month"): partial(get_partial_date_from_userinfo, "month"),
+    ("date_of_birth", "year"): partial(get_partial_date_from_userinfo, "year"),
+}
+
+
+def get_answer_from_form(answers_key_list):
+    answers = session["form_answers"]
+    for key in answers_key_list:
+        answers = answers.get(key)
+        if answers is None:
+            break
+    return answers
+
+
+def log_form_and_nhs_answers_differences(nhs_user_info):
+    different_answers = []
+    for answers_key, nhs_user_info_key in NHS_USER_INFO_TO_FORM_ANSWERS.items():
+        form_value = get_answer_from_form(answers_key)
+        nhs_value = (
+            nhs_user_info_key(nhs_user_info)
+            if callable(nhs_user_info_key)
+            else nhs_user_info.get(nhs_user_info_key)
+        )
+        if form_value != nhs_value:
+            different_answers.append(
+                {
+                    "key": "/".join(answers_key),
+                    "nhs_value": nhs_value,
+                    "form_value": form_value,
+                }
+            )
+    if len(different_answers) > 0:
+        current_app.logger.warn(
+            "Differences were encountered between the results collected from "
+            "the NHS oidc procedure at registration, and the values entered into "
+            f"the form. {json.dumps({'differences': different_answers})}"
+        )
+
+
+def set_form_answers_from_nhs_userinfo(nhs_user_info):
+    for answers_key, maybe_key in NHS_USER_INFO_TO_FORM_ANSWERS.items():
+        nhs_answer = (
+            maybe_key(nhs_user_info)
+            if callable(maybe_key)
+            else nhs_user_info.get(maybe_key)
+        )
+        if nhs_answer is None:
+            continue
+        set_form_answer(answers_key, nhs_answer)
+
+
+def set_form_answer(answers_key_list, answer):
     answers = session["form_answers"]
     for key in answers_key_list[:-1]:
         answers = answers.setdefault(key, {})
-    answers[answers_key_list[-1]] = nhs_user_info[nhs_user_info_key]
-
-
-def log_differences_between_user_supplied_and_nhs_supplied_values(
-    nhs_user_info, nhs_user_info_key, answers_key_list
-):
-    if nhs_user_info_key not in nhs_user_info:
-        return
-
-    answers = session["form_answers"]
-    for key in answers_key_list[:-1]:
-        answers = answers.setdefault(key, {})
-    if not answers.get(answers_key_list[-1]):
-        answers[answers_key_list[-1]] = nhs_user_info[nhs_user_info_key]
+    answers[answers_key_list[-1]] = answer
 
 
 @form.route("/nhs-registration-callback", methods=["GET"])
@@ -520,6 +578,7 @@ def get_nhs_registration_callback():
     nhs_user_info = current_app.nhs_oidc_client.get_nhs_user_info_from_registration_callback(
         request.args
     )
+    log_form_and_nhs_answers_differences(nhs_user_info)
     session["nhs_sub"] = nhs_user_info["sub"]
     session["form_answers"]["nhs_number"] = nhs_user_info["nhs_number"]
     return redirect("/check-your-answers")
@@ -538,32 +597,10 @@ def get_nhs_login_callback():
     existing_record = form_response_model.get_record_using_nhs_sub(nhs_sub)
     if existing_record:
         session["form_answers"] = {**existing_record["FormResponse"], **form_answers()}
-        form_response_model.write_answers_to_table(nhs_sub, session["form_answers"])
         session["accessing_saved_answers"] = True
-        return redirect("/view-answers")
+        return get_redirect_to_terminal_page()
 
-    if "birthdate" in nhs_user_info and len(nhs_user_info["birthdate"]) > 0:
-        year, month, day = nhs_user_info["birthdate"].split("-")
-
-        session.setdefault("form_answers", {}).setdefault("date_of_birth", {})[
-            "day"
-        ] = day
-        session["form_answers"]["date_of_birth"]["month"] = month
-        session["form_answers"]["date_of_birth"]["year"] = year
-
-    nhs_user_info_to_form_answers = {
-        ("name", "first_name"): "given_name",
-        ("name", "last_name"): "family_name",
-        ("contact_details", "phone_number_calls"): "phone_number",
-        ("contact_details", "phone_number_texts"): "phone_number",
-        ("contact_details", "email"): "email",
-        ("nhs_number"): "nhs_number",
-    }
-    for answers_key_list, nhs_user_info_key in nhs_user_info_to_form_answers.items():
-        set_form_answer_from_nhs_userinfo(
-            nhs_user_info, nhs_user_info_key, answers_key_list
-        )
-
+    set_form_answers_from_nhs_userinfo(nhs_user_info)
     session["form_answers"]["know_nhs_number"] = True  # required for validation
 
     return redirect("live-in-england")
