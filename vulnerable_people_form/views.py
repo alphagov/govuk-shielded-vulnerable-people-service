@@ -488,7 +488,19 @@ def post_nhs_registration():
         return redirect("/check-your-answers")
 
 
-def set_session_variable_from_nhs_userinfo_if_not_set(
+def set_form_answer_from_nhs_userinfo(
+    nhs_user_info, nhs_user_info_key, answers_key_list
+):
+    if nhs_user_info_key not in nhs_user_info:
+        return
+
+    answers = session["form_answers"]
+    for key in answers_key_list[:-1]:
+        answers = answers.setdefault(key, {})
+    answers[answers_key_list[-1]] = nhs_user_info[nhs_user_info_key]
+
+
+def log_differences_between_user_supplied_and_nhs_supplied_values(
     nhs_user_info, nhs_user_info_key, answers_key_list
 ):
     if nhs_user_info_key not in nhs_user_info:
@@ -545,14 +557,14 @@ def get_nhs_login_callback():
         ("contact_details", "phone_number_calls"): "phone_number",
         ("contact_details", "phone_number_texts"): "phone_number",
         ("contact_details", "email"): "email",
+        ("nhs_number"): "nhs_number",
     }
     for answers_key_list, nhs_user_info_key in nhs_user_info_to_form_answers.items():
-        set_session_variable_from_nhs_userinfo_if_not_set(
+        set_form_answer_from_nhs_userinfo(
             nhs_user_info, nhs_user_info_key, answers_key_list
         )
 
     session["form_answers"]["know_nhs_number"] = True  # required for validation
-    session["form_answers"]["nhs_number"] = nhs_user_info["nhs_number"]
 
     return redirect("live-in-england")
 
