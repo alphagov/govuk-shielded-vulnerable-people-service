@@ -22,6 +22,8 @@ from flask import (
     session,
 )
 
+from flask_wtf.csrf import CSRFError
+
 
 from . import postcode_lookup_helper, form_response_model
 
@@ -80,6 +82,14 @@ FORM_PAGE_TO_DATA_CHECK_SECTION_NAME = {
 }
 
 
+@form.errorhandler(CSRFError)
+def handle_csrf_error(e):
+    if "form_started" not in session:
+        return render_template("session-expired.html")
+    else:
+        return render_template("400.html")
+
+
 @enum.unique
 class ViewOrSetupAnswers(enum.Enum):
     VIEW = (
@@ -90,6 +100,8 @@ class ViewOrSetupAnswers(enum.Enum):
 
 @form.route("/view-or-setup", methods=["GET"])
 def get_view_or_setup():
+    session.clear()
+    session["form_started"] = True
     return render_template_with_title(
         "view-or-setup.html",
         radio_items=get_radio_options_from_enum(
