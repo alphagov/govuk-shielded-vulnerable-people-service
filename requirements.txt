@@ -5,6 +5,7 @@ notifications-python-client==5.6.0
 jsonschema==3.2.0
 phonenumbers==8.12.6
 boto3==1.14.26
+prometheus-flask-exporter==0.15.4
 python-stdnum==1.13
 oic==1.2.0
 blinker==1.4

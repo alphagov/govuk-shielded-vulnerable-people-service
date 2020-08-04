@@ -1,6 +1,7 @@
 from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_wtf.csrf import CSRFProtect
+from prometheus_flask_exporter import PrometheusMetrics
 
 from . import views
 from . import form_response_model
@@ -38,4 +39,17 @@ def create_app(config_filename):
     app.register_error_handler(404, generate_error_handler(404))
     app.register_error_handler(500, generate_error_handler(500))
 
+    metrics = PrometheusMetrics(app)
+    metrics.register_default(
+        metrics.counter(
+            "by_path_counter",
+            "Request count by request paths",
+            labels={"path": lambda: request.path},
+        ),
+        metrics.histogram(
+            "requests_by_status_and_path",
+            "Request latencies by status and path",
+            labels={"status": lambda r: r.status_code, "path": lambda: request.path,},
+        ),
+    )
     return app
