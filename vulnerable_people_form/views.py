@@ -82,6 +82,14 @@ FORM_PAGE_TO_DATA_CHECK_SECTION_NAME = {
 }
 
 
+@form.before_request
+def redirect_to_first_page():
+    if not session.get("form_started"):
+        session.clear()
+        session["form_started"] = True
+        return redirect("/view-or-setup")
+
+
 @form.errorhandler(CSRFError)
 def handle_csrf_error(e):
     if "form_started" not in session:
