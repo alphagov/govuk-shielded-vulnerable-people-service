@@ -2,6 +2,13 @@ from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
 from flask import Flask, render_template, request
 from flask_wtf.csrf import CSRFProtect
 from prometheus_flask_exporter import PrometheusMetrics
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
+
+sentry_sdk.init(
+    dsn="https://examplePublicKey@o0.ingest.sentry.io/0",
+    integrations=[FlaskIntegration()],
+)
 
 from . import views
 from . import form_response_model
@@ -18,7 +25,6 @@ def generate_error_handler(code):
 def create_app(config_filename):
     app = Flask(__name__, static_url_path="/assets", instance_relative_config=True)
     app.config.from_pyfile(config_filename)
-
     app.jinja_loader = ChoiceLoader(
         [
             PackageLoader("vulnerable_people_form"),
@@ -52,4 +58,9 @@ def create_app(config_filename):
             labels={"status": lambda r: r.status_code, "path": lambda: request.path,},
         ),
     )
+
+    sentry_sdk.init(
+        dsn=app.config["SENTRY_DSN"], integrations=[FlaskIntegration()],
+    )
+
     return app
