@@ -1,0 +1,14 @@
+{%- from "govuk_frontend_jinja/components/summary-list/macro.html" import govukSummaryList -%}
+{%- from 'govuk_frontend_jinja/components/button/macro.html' import govukButton -%}
+
+{% extends "base-with-home-breadcrumb.html" %}
+
+{% block centered_content %}
+  <h1 class="govuk-heading-xl govuk-!-margin-top-0 govuk-!-margin-bottom-3">
+    {{ title_text }}
+  </h1>
+  <p class="govuk-body"> This is a summary of the details you have saved on this service.</p>
+    {{ govukSummaryList({
+      "rows": summary_rows,
+    }) }}
+{% endblock %}
