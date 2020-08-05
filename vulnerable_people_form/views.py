@@ -7,6 +7,7 @@ import jsonschema
 import os
 import phonenumbers
 
+import sentry_sdk
 import stdnum
 import stdnum.gb.nhs
 
@@ -25,7 +26,7 @@ from flask import (
 from flask_wtf.csrf import CSRFError
 
 
-from . import postcode_lookup_helper, form_response_model
+from . import postcode_lookup_helper, form_response_model, govuk_notify_client
 
 form = Blueprint("form", __name__)
 
@@ -333,6 +334,7 @@ def render_template_with_title(template_name, *args, **kwargs):
         *args,
         title_text=PAGE_TITLES[template_name[:-5]],
         **{
+            "nhs_user": session.get("nhs_sub") is not None,
             "button_text": "Save and continue"
             if accessing_saved_answers()
             else "Continue",
@@ -606,6 +608,7 @@ def get_nhs_registration_callback():
 
 @form.route("/nhs-login-callback", methods=["GET"])
 def get_nhs_login_callback():
+    session.permanent = True
     if "error" in request.args:
         abort(500)
     nhs_user_info = current_app.nhs_oidc_client.get_nhs_user_info_from_authorization_callback(
@@ -1411,8 +1414,24 @@ def get_view_answers():
     )
 
 
-@form.route("/check-your-answers", methods=["POST"])
-def post_check_your_answers():
+def send_sms_and_email_notifications_if_applicable(reference_number):
+    first_name = get_answer_from_form(["name", "first_name"])
+    last_name = get_answer_from_form(["name", "last_name"])
+    phone_number = get_answer_from_form(["contact_details", "phone_number_texts"])
+    email = get_answer_from_form(["contact_details", "email"])
+    contact_gp = should_contact_gp()
+
+    if phone_number:
+        govuk_notify_client.try_send_confirmation_sms(
+            phone_number, first_name, last_name, contact_gp
+        )
+    if email:
+        govuk_notify_client.try_send_confirmation_email(
+            phone_number, first_name, last_name, reference_number, contact_gp
+        )
+
+
+def try_validating_answers_against_json_schema():
     answers = form_answers()
     with open(os.path.join(current_app.root_path, "answers_schema.json")) as fh:
         schema = json.load(fh)
@@ -1422,21 +1441,29 @@ def post_check_your_answers():
         # TODO Add govuk.notify call here
         current_app.logger.exception("JSON Schema validation error in form answers", e)
 
+
+@form.route("/check-your-answers", methods=["POST"])
+def post_check_your_answers():
+    try_validating_answers_against_json_schema()
     # We use a slightly strange value here for non-nhs login users. DynamoDB
     # does not allow us to not set a value for the key schema, so we set it to
     # an invalid oidc subject identifier (one that is > 255 chars)
-    form_response_model.write_answers_to_table(
+    reference_number = form_response_model.write_answers_to_table(
         session.get("nhs_sub", f"non_nhs_login_dummy_sub{' ' * 255}"), form_answers()
     )
+    send_sms_and_email_notifications_if_applicable(reference_number)
+
     return redirect("/confirmation",)
+
+
+def should_contact_gp():
+    return NHSLetterAnswers(form_answers()["nhs_letter"]) is NHSLetterAnswers.YES
 
 
 @form.route("/confirmation", methods=["GET"])
 def get_confirmation():
     return render_template_with_title(
-        "confirmation.html",
-        contact_gp=NHSLetterAnswers(form_answers()["nhs_letter"])
-        is NHSLetterAnswers.YES,
+        "confirmation.html", contact_gp=should_contact_gp()
     )
 
 
