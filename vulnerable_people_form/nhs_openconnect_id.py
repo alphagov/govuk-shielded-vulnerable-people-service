@@ -1,17 +1,12 @@
-import jwt
 import os
 import uuid
 
+import jwt
 from oic import rndstr
+from oic.oauth2 import AuthorizationResponse
 from oic.oic import Client
 from oic.utils.authn.client import CLIENT_AUTHN_METHOD
-
 from oic.utils.time_util import utc_time_sans_frac
-
-from oic.oauth2 import AuthorizationResponse
-
-from flask import Blueprint
-from flask import current_app
 
 
 class NHSOIDCDetails:

@@ -1,6 +1,6 @@
 import json
-import requests
 
+import requests
 from flask import current_app
 
 

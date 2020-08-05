@@ -1,18 +1,16 @@
-from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
+import sentry_sdk
 from flask import Flask, render_template, request
 from flask_wtf.csrf import CSRFProtect
+from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
 from prometheus_flask_exporter import PrometheusMetrics
-import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
+
+from . import form_pages, form_response_model, nhs_openconnect_id
 
 sentry_sdk.init(
     dsn="https://examplePublicKey@o0.ingest.sentry.io/0",
     integrations=[FlaskIntegration()],
 )
-
-from . import views
-from . import form_response_model
-from . import nhs_openconnect_id
 
 
 def generate_error_handler(code):
@@ -36,7 +34,7 @@ def create_app(config_filename):
 
     with app.app_context():
         form_response_model.create_tables_if_not_exist()
-    app.register_blueprint(views.form)
+    app.register_blueprint(form_pages.blueprint.form)
     CSRFProtect(app)
 
     app.nhs_oidc_client = nhs_openconnect_id.NHSOIDCDetails()

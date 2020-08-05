@@ -1,10 +1,10 @@
-import boto3
-from boto3.dynamodb.conditions import Key
 import datetime
 import decimal
 import secrets
 import time
 
+import boto3
+from boto3.dynamodb.conditions import Key
 from flask import current_app
 
 
@@ -91,4 +91,3 @@ def create_tables_if_not_exist():
     except client.meta.client.exceptions.ResourceInUseException:
         return False
     return True
-
