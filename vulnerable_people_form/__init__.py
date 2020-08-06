@@ -20,9 +20,9 @@ def generate_error_handler(code):
     return handle_error
 
 
-def create_app(config_filename):
+def create_app(scriptinfo):
     app = Flask(__name__, static_url_path="/assets", instance_relative_config=True)
-    app.config.from_pyfile(config_filename)
+    app.config.from_pyfile("config.py")
     app.jinja_loader = ChoiceLoader(
         [
             PackageLoader("vulnerable_people_form"),
