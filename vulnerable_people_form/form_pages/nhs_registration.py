@@ -32,5 +32,4 @@ def post_nhs_registration():
     if answer is YesNoAnswers.YES:
         return redirect(current_app.nhs_oidc_client.get_registration_url())
     else:
-        # TODO: better handle the case where an existing record is found.
-        return redirect("/check-your-answers")
+        return redirect("/confirmation")

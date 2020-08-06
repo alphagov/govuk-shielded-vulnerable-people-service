@@ -3,6 +3,7 @@ from flask import redirect, session
 from .. import form_response_model, govuk_notify_client
 from .blueprint import form
 from .render_utils import render_template_with_title
+from .routing_utils import route_to_next_form_page
 from .session_utils import (
     form_answers,
     get_answer_from_form,
@@ -52,4 +53,4 @@ def post_check_your_answers():
     )
     send_sms_and_email_notifications_if_applicable(reference_number)
 
-    return redirect("/confirmation",)
+    return route_to_next_form_page()

@@ -2,6 +2,7 @@ import json
 
 from flask import abort, current_app, redirect, request, session
 
+from .. import form_response_model
 from .blueprint import form
 from .constants import NHS_USER_INFO_TO_FORM_ANSWERS
 from .session_utils import (
@@ -47,6 +48,7 @@ def get_nhs_registration_callback():
         request.args
     )
     log_form_and_nhs_answers_differences(nhs_user_info)
-    session["nhs_sub"] = nhs_user_info["sub"]
+    nhs_sub = session["nhs_sub"] = nhs_user_info["sub"]
     session["form_answers"]["nhs_number"] = nhs_user_info["nhs_number"]
-    return redirect("/check-your-answers")
+    form_response_model.write_answers_to_table(nhs_sub, form_answers())
+    return redirect("/registration-complete")

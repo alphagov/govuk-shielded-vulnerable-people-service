@@ -53,7 +53,7 @@ def get_redirect_to_terminal_page():
 
 def get_redirect_to_terminal_page_if_applicable():
     if accessing_saved_answers() or session.get("check_answers_page_seen"):
-        return redirect("/view-answers")
+        return get_redirect_to_terminal_page()
 
 
 def redirect_to_next_form_page(redirect_target=True):
@@ -145,19 +145,20 @@ def route_to_next_form_page():
             return redirect(current_app.nhs_oidc_client.get_authorization_url())
         return redirect_to_next_form_page("/live-in-england")
     elif current_form == "basic-care-needs":
+        return get_redirect_to_terminal_page()
+    elif current_form == "check-your-answers":
         contact_details = form_answers().get("contact_details", {})
-        maybe_redirect_to_terminal_page = get_redirect_to_terminal_page_if_applicable()
         if (
-            maybe_redirect_to_terminal_page
-            or session.get("nhs_sub")
+            session.get("nhs_sub")
             or not contact_details.get("phone_number_texts")
             or not contact_details.get("email")
             or ApplyingOnOwnBehalfAnswers(form_answers().get("applying_on_own_behalf"))
             is ApplyingOnOwnBehalfAnswers.NO
         ):
-            return get_redirect_to_terminal_page()
+            return redirect("/confirmation")
         else:
             return redirect("/nhs-registration")
+        return redirect_to_next_form_page("/basic-care-needs")
     elif current_form == "carry-supplies":
         return redirect_to_next_form_page("/basic-care-needs")
     elif current_form == "check-contact-details":

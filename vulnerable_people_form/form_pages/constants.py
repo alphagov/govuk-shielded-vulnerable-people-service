@@ -37,7 +37,7 @@ PAGE_TITLES = {
     "nhs-letter": "Have you had a letter from the NHS or been told by your doctor to ’shield’ because you’re clinically extremely vulnerable to coronavirus?",
     "nhs-login": "Would you like to use an existing NHS login to access this service?",
     "nhs-number": "Do you know your NHS number?",
-    "nhs-registration": "Would you like to register an NHS Login to use with an account on this service?",
+    "nhs-registration": "Would you like to create an NHS Login you can use to retrieve your answers in the future?",
     "not-eligible-england": "Sorry, this service is only available in England",
     "not-eligible-medical": "Sorry, you’re not eligible for help through this service",
     "postcode-lookup": "What is the postcode where you need support?",
