@@ -1,6 +1,6 @@
 from flask import redirect, session
 
-from .. import form_response_model, govuk_notify_client
+from ..integrations import form_response_model, govuk_notify_client
 from .blueprint import form
 from .render_utils import render_template_with_title
 from .routing_utils import route_to_next_form_page

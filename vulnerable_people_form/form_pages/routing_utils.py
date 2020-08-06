@@ -1,7 +1,7 @@
 from flask import current_app, redirect, request, session
 
-from .. import form_response_model
-from .. import postcode_eligibility
+from ..integrations import form_response_model
+from ..integrations import postcode_eligibility
 from .answers_enums import (
     ApplyingOnOwnBehalfAnswers,
     MedicalConditionsAnswers,

@@ -1,6 +1,6 @@
 from flask import abort, current_app, redirect, request, session
 
-from .. import form_response_model
+from ..integrations import form_response_model
 from .blueprint import form
 from .constants import NHS_USER_INFO_TO_FORM_ANSWERS
 from .routing_utils import get_redirect_to_terminal_page

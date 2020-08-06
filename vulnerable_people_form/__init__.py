@@ -5,7 +5,8 @@ from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
 from prometheus_flask_exporter import PrometheusMetrics
 from sentry_sdk.integrations.flask import FlaskIntegration
 
-from . import form_pages, form_response_model, nhs_openconnect_id
+from . import form_pages
+from .integrations import form_response_model, nhs_openconnect_id
 
 sentry_sdk.init(
     dsn="https://examplePublicKey@o0.ingest.sentry.io/0",
