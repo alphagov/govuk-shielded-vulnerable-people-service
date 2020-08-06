@@ -2,9 +2,9 @@ from flask import redirect, session
 
 from ..integrations import form_response_model, govuk_notify_client
 from .blueprint import form
-from .render_utils import render_template_with_title
-from .routing_utils import route_to_next_form_page
-from .session_utils import (
+from .shared.render import render_template_with_title
+from .shared.routing import route_to_next_form_page
+from .shared.session import (
     form_answers,
     get_answer_from_form,
     get_summary_rows_from_form_answers,
@@ -12,7 +12,7 @@ from .session_utils import (
     should_contact_gp,
     update_session_answers_from_form,
 )
-from .validation import try_validating_answers_against_json_schema
+from .shared.validation import try_validating_answers_against_json_schema
 
 
 def send_sms_and_email_notifications_if_applicable(reference_number):

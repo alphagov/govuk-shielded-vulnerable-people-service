@@ -1,16 +1,16 @@
 from flask import redirect
 
-from .answers_enums import YesNoAnswers, get_radio_options_from_enum
+from .shared.answers_enums import YesNoAnswers, get_radio_options_from_enum
 from .blueprint import form
-from .render_utils import render_template_with_title
-from .routing_utils import route_to_next_form_page
-from .session_utils import (
+from .shared.render import render_template_with_title
+from .shared.routing import route_to_next_form_page
+from .shared.session import (
     form_answers,
     get_errors_from_session,
     request_form,
     update_session_answers_from_form,
 )
-from .validation import validate_essential_supplies
+from .shared.validation import validate_essential_supplies
 
 
 @form.route("/essential-supplies", methods=["GET"])

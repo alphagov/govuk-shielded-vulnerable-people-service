@@ -1,7 +1,7 @@
 from flask import render_template, session
 
 from .constants import PAGE_TITLES
-from .session_utils import accessing_saved_answers
+from .session import accessing_saved_answers
 
 
 def render_template_with_title(template_name, *args, **kwargs):

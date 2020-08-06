@@ -6,8 +6,8 @@ from flask import abort, current_app, redirect, request, session
 from ..integrations import form_response_model
 from ..integrations import google_analytics
 from .blueprint import form
-from .constants import NHS_USER_INFO_TO_FORM_ANSWERS
-from .session_utils import (
+from .shared.constants import NHS_USER_INFO_TO_FORM_ANSWERS
+from .shared.session import (
     form_answers,
     get_answer_from_form,
     get_summary_rows_from_form_answers,

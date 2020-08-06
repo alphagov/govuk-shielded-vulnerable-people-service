@@ -15,7 +15,7 @@ from .answers_enums import (
     ViewOrSetupAnswers,
     YesNoAnswers,
 )
-from .session_utils import form_answers, get_answer_from_form, request_form
+from .session import form_answers, get_answer_from_form, request_form
 
 
 def validate_mandatory_form_field(section_key, value_key, error_message):

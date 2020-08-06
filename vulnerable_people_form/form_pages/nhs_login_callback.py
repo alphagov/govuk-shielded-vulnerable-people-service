@@ -2,9 +2,9 @@ from flask import abort, current_app, redirect, request, session
 
 from ..integrations import form_response_model
 from .blueprint import form
-from .constants import NHS_USER_INFO_TO_FORM_ANSWERS
-from .routing_utils import get_redirect_to_terminal_page
-from .session_utils import (
+from .shared.constants import NHS_USER_INFO_TO_FORM_ANSWERS
+from .shared.routing import get_redirect_to_terminal_page
+from .shared.session import (
     form_answers,
     get_answer_from_form,
     get_summary_rows_from_form_answers,

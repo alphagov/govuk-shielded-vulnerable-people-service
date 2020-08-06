@@ -1,15 +1,15 @@
 from flask import current_app, redirect
 
-from .answers_enums import YesNoAnswers, get_radio_options_from_enum
+from .shared.answers_enums import YesNoAnswers, get_radio_options_from_enum
 from .blueprint import form
-from .render_utils import render_template_with_title
-from .session_utils import (
+from .shared.render import render_template_with_title
+from .shared.session import (
     form_answers,
     get_errors_from_session,
     request_form,
     update_session_answers_from_form,
 )
-from .validation import validate_register_with_nhs
+from .shared.validation import validate_register_with_nhs
 
 
 @form.route("/nhs-registration", methods=["GET"])

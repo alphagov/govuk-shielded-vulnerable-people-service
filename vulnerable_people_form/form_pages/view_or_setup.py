@@ -1,10 +1,10 @@
 from flask import current_app, redirect, session
 
-from .answers_enums import ViewOrSetupAnswers, get_radio_options_from_enum
+from .shared.answers_enums import ViewOrSetupAnswers, get_radio_options_from_enum
 from .blueprint import form
-from .render_utils import render_template_with_title
-from .session_utils import form_answers, get_errors_from_session, request_form
-from .validation import validate_view_or_setup
+from .shared.render import render_template_with_title
+from .shared.session import form_answers, get_errors_from_session, request_form
+from .shared.validation import validate_view_or_setup
 
 
 @form.route("/view-or-setup", methods=["GET"])
