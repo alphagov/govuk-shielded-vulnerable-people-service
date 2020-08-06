@@ -3,6 +3,8 @@ import json
 from flask import abort, current_app, redirect, request, session
 
 from .. import form_response_model
+from .. import google_analytics
+from .. import sentry_sdk
 from .blueprint import form
 from .constants import NHS_USER_INFO_TO_FORM_ANSWERS
 from .session_utils import (
@@ -25,19 +27,18 @@ def log_form_and_nhs_answers_differences(nhs_user_info):
             else nhs_user_info.get(nhs_user_info_key)
         )
         if form_value != nhs_value:
-            different_answers.append(
-                {
-                    "key": "/".join(answers_key),
-                    "nhs_value": nhs_value,
-                    "form_value": form_value,
-                }
-            )
+            if answers_key == ("nhs_number",):
+                google_analytics.track_nhs_number_and_form_value_differs()
+            else:
+                different_answers.append(
+                    {
+                        "key": "/".join(answers_key),
+                        "nhs_value": nhs_value,
+                        "form_value": form_value,
+                    }
+                )
     if len(different_answers) > 0:
-        current_app.logger.warn(
-            "Differences were encountered between the results collected from "
-            "the NHS oidc procedure at registration, and the values entered into "
-            f"the form. {json.dumps({'differences': different_answers})}"
-        )
+        google_analytics.track_nhs_userinfo_and_form_answers_differs()
 
 
 @form.route("/nhs-registration-callback", methods=["GET"])
@@ -51,4 +52,4 @@ def get_nhs_registration_callback():
     nhs_sub = session["nhs_sub"] = nhs_user_info["sub"]
     session["form_answers"]["nhs_number"] = nhs_user_info["nhs_number"]
     form_response_model.write_answers_to_table(nhs_sub, form_answers())
-    return redirect("/registration-complete")
+    return redirect("/confirmation")
