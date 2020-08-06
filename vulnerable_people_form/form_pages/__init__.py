@@ -24,6 +24,7 @@ from . import (
     nhs_registration_callback,
     not_eligible_england,
     not_eligible_medical,
+    postcode_eligibility,
     postcode_lookup,
     privacy,
     support_address,

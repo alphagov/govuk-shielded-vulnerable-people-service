@@ -53,7 +53,7 @@ def get_nhs_login_callback():
     set_form_answers_from_nhs_userinfo(nhs_user_info)
     session["form_answers"]["know_nhs_number"] = True  # required for validation
 
-    return redirect("live-in-england")
+    return redirect("postcode-eligibility")
 
 
 @form.route("/start", methods=["GET"])

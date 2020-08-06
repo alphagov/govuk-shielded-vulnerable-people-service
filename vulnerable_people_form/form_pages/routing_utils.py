@@ -1,6 +1,7 @@
 from flask import current_app, redirect, request, session
 
 from .. import form_response_model
+from .. import postcode_eligibility
 from .answers_enums import (
     ApplyingOnOwnBehalfAnswers,
     MedicalConditionsAnswers,
@@ -32,6 +33,7 @@ FORM_PAGE_TO_DATA_CHECK_SECTION_NAME = {
     "nhs-letter": "nhs_letter",
     "nhs-login": "nhs_login",
     "nhs-number": "nhs_number",
+    "postcode-eligibility": "postcode",
     "postcode-lookup": "support_address",
     "support-address": "support_address",
 }
@@ -120,9 +122,16 @@ def get_next_form_url_after_contact_details():
 @clear_errors_after
 def get_next_form_url_after_check_contact_details():
     if is_nhs_login_user():
-        return "/postcode-lookup"
+        return "/address-lookup"
     else:
         return "/nhs-number"
+
+
+def return_redirect_if_postcode_valid(_redirect):
+    if postcode_eligibility.check_postcode(session["postcode"]):
+        return _redirect
+    else:
+        return redirect("/not-eligible-postcode")
 
 
 def route_to_next_form_page():
@@ -138,12 +147,14 @@ def route_to_next_form_page():
             is ApplyingOnOwnBehalfAnswers.YES
         ):
             return redirect_to_next_form_page("/nhs-login")
-        return redirect_to_next_form_page("/live-in-england")
+        return redirect_to_next_form_page("/postcode-eligibility")
+    elif current_form == "postcode-eligibility":
+        return return_redirect_if_postcode_valid(redirect("/live-in-england"))
     elif current_form == "nhs-login":
         applying_on_own_behalf = request_form()["nhs_login"]
         if YesNoAnswers(applying_on_own_behalf) is YesNoAnswers.YES:
             return redirect(current_app.nhs_oidc_client.get_authorization_url())
-        return redirect_to_next_form_page("/live-in-england")
+        return redirect_to_next_form_page("/postcode-eligibility")
     elif current_form == "basic-care-needs":
         return get_redirect_to_terminal_page()
     elif current_form == "check-your-answers":
@@ -197,11 +208,13 @@ def route_to_next_form_page():
             )
         return redirect_to_next_form_page("/medical-conditions")
     elif current_form == "nhs-number":
-        return redirect_to_next_form_page("/postcode-lookup")
+        return redirect_to_next_form_page("/address-lookup")
     elif current_form == "postcode-lookup":
-        return redirect("/address-lookup")
+        return return_redirect_if_postcode_valid(redirect("/address-lookup"))
     elif current_form == "support-address":
-        return redirect_to_next_form_page("/essential-supplies")
+        return return_redirect_if_postcode_valid(
+            redirect_to_next_form_page("/essential-supplies")
+        )
     else:
         raise RuntimeError("An unexpected error occurred")
 
