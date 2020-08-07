@@ -3,7 +3,6 @@ import sentry_sdk
 
 from flask import abort, current_app, redirect, request, session
 
-from ..integrations import form_response_model
 from ..integrations import google_analytics
 from .blueprint import form
 from .shared.constants import NHS_USER_INFO_TO_FORM_ANSWERS
@@ -14,6 +13,7 @@ from .shared.session import (
     request_form,
     should_contact_gp,
     update_session_answers_from_form,
+    persist_answers_from_session,
 )
 
 
@@ -49,7 +49,7 @@ def get_nhs_registration_callback():
         request.args
     )
     log_form_and_nhs_answers_differences(nhs_user_info)
-    nhs_sub = session["nhs_sub"] = nhs_user_info["sub"]
+    session["nhs_sub"] = nhs_user_info["sub"]
     session["form_answers"]["nhs_number"] = nhs_user_info["nhs_number"]
-    form_response_model.write_answers_to_table(nhs_sub, form_answers())
+    persist_answers_from_session()
     return redirect("/confirmation")

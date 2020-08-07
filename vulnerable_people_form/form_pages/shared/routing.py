@@ -1,6 +1,5 @@
 from flask import current_app, redirect, request, session
 
-from ...integrations import form_response_model
 from ...integrations import postcode_eligibility
 from .answers_enums import (
     ApplyingOnOwnBehalfAnswers,
@@ -13,6 +12,7 @@ from .session import (
     form_answers,
     is_nhs_login_user,
     request_form,
+    persist_answers_from_session,
 )
 from .validation import (
     validate_contact_details,
@@ -70,7 +70,7 @@ def redirect_to_next_form_page(redirect_target=True):
     )
 
     if accessing_saved_answers():
-        form_response_model.write_answers_to_table(session["nhs_sub"], form_answers())
+        persist_answers_from_session()
 
     maybe_redirect_to_terminal_page = None
     if next_page_does_not_need_answer:

@@ -6,7 +6,7 @@ from prometheus_flask_exporter import PrometheusMetrics
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 from . import form_pages
-from .integrations import form_response_model, nhs_openconnect_id
+from .integrations import nhs_openconnect_id
 
 sentry_sdk.init(
     dsn="https://examplePublicKey@o0.ingest.sentry.io/0",
@@ -33,8 +33,6 @@ def create_app(scriptinfo):
         ]
     )
 
-    with app.app_context():
-        form_response_model.create_tables_if_not_exist()
     app.register_blueprint(form_pages.blueprint.form)
     CSRFProtect(app)
 

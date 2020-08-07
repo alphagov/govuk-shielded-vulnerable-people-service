@@ -1,11 +1,12 @@
 from flask import redirect, session
 
-from ..integrations import form_response_model, govuk_notify_client
+from ..integrations import govuk_notify_client
 from .blueprint import form
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
 from .shared.session import (
     form_answers,
+    persist_answers_from_session,
     get_answer_from_form,
     get_summary_rows_from_form_answers,
     request_form,
@@ -48,9 +49,7 @@ def post_check_your_answers():
     # We use a slightly strange value here for non-nhs login users. DynamoDB
     # does not allow us to not set a value for the key schema, so we set it to
     # an invalid oidc subject identifier (one that is > 255 chars)
-    reference_number = form_response_model.write_answers_to_table(
-        session.get("nhs_sub", f"non_nhs_login_dummy_sub{' ' * 255}"), form_answers()
-    )
+    reference_number = persist_answers_from_session()
     send_sms_and_email_notifications_if_applicable(reference_number)
 
     return route_to_next_form_page()
