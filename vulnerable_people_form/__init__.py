@@ -21,9 +21,33 @@ def generate_error_handler(code):
     return handle_error
 
 
+def verify_config(app):
+    required_keys = {
+        "SECRET_KEY",
+        "ORDNANCE_SURVEY_PLACES_API_KEY",
+        "AWS_DYNAMODB_SUBMISSIONS_TABLE_NAME",
+        "PERMANENT_SESSION_LIFETIME",
+        "GA_TRACKING_ID",
+        # SENTRY CONFIG
+        "SENTRY_DSN",
+        # NHS OIDC config
+        "NHS_OIDC_AUTHORITY_URL",
+        "NHS_OIDC_CLIENT_ID",
+        "NHS_OIDC_REGISTRATION_CALLBACK_URL",
+        "NHS_OIDC_REGISTRATION_CALLBACK_URL",
+        "NHS_OIDC_LOGIN_CALLBACK_URL",
+    }
+    present_keys = set(k for k in app.config.keys() if app.config[k] is not None)
+    if not present_keys.issuperset(required_keys):
+        raise ValueError(
+            f"The following config keys are missing: {', '.join(required_keys - present_keys)}"
+        )
+
+
 def create_app(scriptinfo):
     app = Flask(__name__, static_url_path="/assets", instance_relative_config=True)
-    app.config.from_pyfile("config.py")
+    app.config.from_envvar("FLASK_CONFIG_FILE")
+    verify_config(app)
     app.jinja_loader = ChoiceLoader(
         [
             PackageLoader("vulnerable_people_form"),

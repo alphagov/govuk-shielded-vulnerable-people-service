@@ -17,8 +17,8 @@ class NHSOIDCDetails:
             self.registration_callback_url = app.config[
                 "NHS_OIDC_REGISTRATION_CALLBACK_URL"
             ]
-            self.scopes = app.config["NHS_OIDC_SCOPES"]
-            self.vtr = app.config["NHS_OIDC_VTR"]
+            self.scopes = ["openid", "profile", "email", "phone", "profile_extended"]
+            self.vtr = ["P0.Cp.Cd", "P0.Cp.Ck", "P0.Cm"]
             self.authority_url = app.config["NHS_OIDC_AUTHORITY_URL"]
         except ValueError as e:
             raise ValueError(f"Missing NHS OIDC configuration: {e!r}")

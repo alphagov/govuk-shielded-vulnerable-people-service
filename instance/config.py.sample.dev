@@ -1,0 +1,16 @@
+SECRET_KEY = "Something super secret"
+TEMPLATES_AUTO_RELOAD = True
+ORDNANCE_SURVEY_PLACES_API_KEY = 
+AWS_DYNAMODB_SUBMISSIONS_TABLE_NAME = "flask-form-response"
+LOCAL_AWS_ENDPOINT_URL = "http://localhost:8000"
+PERMANENT_SESSION_LIFETIME = 20 * 60
+GA_TRACKING_ID = 
+
+# SENTRY CONFIG
+SENTRY_DSN = 
+
+# NHS OIDC config
+NHS_OIDC_AUTHORITY_URL = "https://auth.sandpit.signin.nhs.uk"
+NHS_OIDC_CLIENT_ID = 
+NHS_OIDC_REGISTRATION_CALLBACK_URL = "http://localhost:5000/nhs-registration-callback"
+NHS_OIDC_LOGIN_CALLBACK_URL = "http://localhost:5000/nhs-login-callback"
