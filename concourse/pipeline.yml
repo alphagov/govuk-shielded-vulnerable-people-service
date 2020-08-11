@@ -1,0 +1,149 @@
+---
+resource_types:
+  - name: cf-cli
+    type: docker-image
+    source:
+      repository: nulldriver/cf-cli-resource
+
+  - name: slack-notification
+    type: docker-image
+    source:
+      repository: cfcommunity/slack-notification-resource
+      tag: latest
+
+resources:
+  - name: git-master
+    type: git
+    icon: github-circle
+    source:
+      uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
+      branch: task/deployment-to-concourse
+
+  - name: git-master-python-dockerfile
+    type: git
+    icon: github-circle
+    source:
+      uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
+      branch: task/deployment-to-concourse
+      paths:
+        - concourse/Dockerfile
+
+  - name: every-day
+    type: time
+    source:
+      interval: 24h
+
+  - name: tests-image
+    type: docker-image
+    icon: docker
+    source:
+      repository: ((readonly_private_ecr_repo_url))
+      tag: govuk-shielded-vulnerable-people-tests-image
+
+  - name: govuk-coronavirus-services-tech-slack
+    type: slack-notification
+    source:
+      url: https://hooks.slack.com/((slack_webhook_url))
+
+jobs:
+  - name: update-pipeline
+    serial: true
+    plan:
+      - get: git-master
+        trigger: true
+      - set_pipeline: svp-form
+        file: git-master/concourse/pipeline.yml
+
+  - name: build-tests-image
+    serial: true
+    build_logs_to_retain: 100
+    plan:
+      - get: every-day
+        trigger: true
+      - get: git-master-python-dockerfile
+        trigger: true
+      - put: tests-image
+        params:
+          build: git-master-python-dockerfile
+          dockerfile: git-master-python-dockerfile/concourse/Dockerfile
+
+  - name: run-quality-checks
+    serial: true
+    plan:
+      - get: tests-image
+        passed: [build-tests-image]
+        trigger: true
+      - get: git-master
+        trigger: true
+      - task: run-tests-task
+        image: tests-image
+        config:
+          inputs:
+            - name: git-master
+          platform: linux
+          run:
+            dir: git-master
+            path: bash
+            args:
+              - -c
+              - |
+                set -eu
+                echo "hello"
+
+  - name: deploy-to-staging
+    serial: true
+    plan:
+      - get: git-master
+        trigger: true
+        passed: [run-quality-checks]
+      - task: deploy-to-paas
+        config:
+        file: git-master/concourse/tasks/deploy-to-govuk-paas.yml
+        params:
+          CF_SPACE: staging
+          INSTANCES: 5
+          CF_STARTUP_TIMEOUT: 5 # minutes
+          HOSTNAME: gds-shielded-vulnerable-people-service-staging
+          GOVUK_NOTIFY_EMAIL_TEMPLATE_ID: d4fddfce-1dfd-4ff5-ab42-156e6ba3e76b
+          GOVUK_NOTIFY_SMS_TEMPLATE_ID: a2166a39-91f5-4370-bbbf-c59276975d49
+          NOTIFY_API_KEY: ((svp-form/notify-api-key-stg))
+          NHS_OIDC_AUTHORITY_URL: https://auth.aos.signin.nhs.uk
+          NHS_OIDC_REGISTRATION_CALLBACK_URL: TODO
+          NHS_OIDC_LOGIN_CALLBACK_URL: TODO
+          AWS_ACCESS_KEY_ID: ((svp-form/aws-access-key-id-stg))
+          AWS_SECRET_ACCESS_KEY: ((svp-form/aws-secret-access-key-stg))
+        on_failure:
+          put: govuk-coronavirus-services-tech-slack
+          params:
+            channel: '#covid-engineering-team'
+            username: 'Concourse (Shielded Vulnerable Service)'
+            icon_emoji: ':concourse:'
+            silent: true
+            text: |
+              :kaboom:
+              Deploy to staging for the Shielded Vulnerable service has failed
+              Failed build: http://cd.gds-reliability.engineering/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
+
+  - name: smoke-test-staging
+    plan:
+      - get: git-master
+        trigger: true
+        passed: [deploy-to-staging]
+      - get: tests-image
+        passed: [build-tests-image]
+      - task: smoke-test
+        file: git-master/concourse/tasks/smoke-test.yml
+        params:
+          URL: 'https://gds-shielded-vulnerable-people-service-staging.cloudapps.digital/live-in-england'
+          MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
+        on_failure:
+          put: govuk-coronavirus-services-tech-slack
+          params:
+            channel: '#covid-engineering-team'
+            username: 'Concourse (Shielded Vulnerable Service)'
+            icon_emoji: ':concourse:'
+            silent: true
+            text: |
+              :kaboom:
+              Staging smoke tests for the Shielded Vulnerable service have failed
+              Failed build: http://cd.gds-reliability.engineering/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
