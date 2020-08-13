@@ -8,7 +8,7 @@ from .shared.session import (
     form_answers,
     get_errors_from_session,
     request_form,
-    update_session_answers_from_form,
+    update_session_answers_from_form_for_enum,
 )
 from .shared.validation import validate_essential_supplies
 
@@ -27,7 +27,7 @@ def get_essential_supplies():
 
 @form.route("/essential-supplies", methods=["POST"])
 def post_essential_supplies():
-    update_session_answers_from_form()
+    update_session_answers_from_form_for_enum()
     if not validate_essential_supplies():
         return redirect("/essential-supplies")
     return route_to_next_form_page()

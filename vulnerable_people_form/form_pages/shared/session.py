@@ -35,7 +35,7 @@ def accessing_saved_answers():
     return session.get("accessing_saved_answers", False)
 
 
-def update_session_answers_from_form():
+def update_session_answers_from_form_for_enum():
     session["form_answers"] = {
         **session.setdefault("form_answers",),
         **request_form(),
