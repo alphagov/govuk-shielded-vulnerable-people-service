@@ -45,7 +45,7 @@ def validate_name():
 def validate_view_or_setup():
     value = request_form().get("view_or_setup")
     try:
-        ViewOrSetupAnswers(value)
+        ViewOrSetupAnswers(int(value))
     except ValueError:
         session["error_items"] = {
             **session.setdefault("error_items", {}),
@@ -70,7 +70,7 @@ def validate_applying_on_own_behalf():
 def validate_radio_button(EnumClass, value_key, error_message):
     value = form_answers().get(value_key)
     try:
-        EnumClass(value)
+        EnumClass(int(value))
     except ValueError:
         session["error_items"] = {
             **session.setdefault("error_items", {}),
@@ -103,7 +103,7 @@ def validate_nhs_login():
 def validate_register_with_nhs():
     value = request_form().get("nhs_registration")
     try:
-        YesNoAnswers(value)
+        YesNoAnswers(int(value))
     except ValueError:
         session["error_items"] = {
             **session.setdefault("error_items", {}),

@@ -1,6 +1,9 @@
 from flask import redirect
 
-from .shared.answers_enums import ApplyingOnOwnBehalfAnswers, get_radio_options_from_enum
+from .shared.answers_enums import (
+    ApplyingOnOwnBehalfAnswers,
+    get_radio_options_from_enum,
+)
 from .blueprint import form
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page

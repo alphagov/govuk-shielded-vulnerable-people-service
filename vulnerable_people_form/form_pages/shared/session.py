@@ -1,6 +1,11 @@
 from flask import request, session
 
-from .answers_enums import NHSLetterAnswers
+from .answers_enums import (
+    NHSLetterAnswers,
+    ApplyingOnOwnBehalfAnswers,
+    MedicalConditionsAnswers,
+    YesNoAnswers,
+)
 from .constants import PAGE_TITLES
 
 from ...integrations import persistence
@@ -38,7 +43,7 @@ def accessing_saved_answers():
 def update_session_answers_from_form_for_enum():
     session["form_answers"] = {
         **session.setdefault("form_answers",),
-        **request_form(),
+        **{k: int(v) for k, v in request_form().items()},
     }
     session["error_items"] = {}
 
@@ -82,6 +87,17 @@ def get_summary_rows_from_form_answers():
         "carry_supplies",
         "basic_care_needs",
     ]
+
+    answers_to_key = {
+        "applying_on_own_behalf": ApplyingOnOwnBehalfAnswers,
+        "live_in_england": YesNoAnswers,
+        "nhs_letter": NHSLetterAnswers,
+        "medical_conditions": MedicalConditionsAnswers,
+        "essential_supplies": YesNoAnswers,
+        "dietary_requirements": YesNoAnswers,
+        "carry_supplies": YesNoAnswers,
+        "basic_care_needs": YesNoAnswers,
+    }
 
     for key in order:
         if key not in answers:
@@ -134,6 +150,8 @@ def get_summary_rows_from_form_answers():
             value["text"] = "{day:02}/{month:02}/{year}".format(
                 **{k: int(v) for k, v in answer.items()}
             )
+        elif key in answers_to_key:
+            value["text"] = answers_to_key[key](answer).value_as_text
         else:
             value["text"] = answers[key]
 
