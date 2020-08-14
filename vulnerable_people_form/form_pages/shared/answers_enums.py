@@ -45,8 +45,8 @@ class YesNoAnswers(EnumWithText):
 @enum.unique
 class NHSLetterAnswers(EnumWithText):
     YES = 1
-    NO = 0
-    NOT_SURE = 2
+    NO = 2
+    NOT_SURE = 3
 
     __text_values__ = {
         YES: "Yes, I’ve been told to shield",

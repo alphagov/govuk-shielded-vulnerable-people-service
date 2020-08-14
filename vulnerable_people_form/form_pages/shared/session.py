@@ -162,37 +162,37 @@ def get_summary_rows_from_form_answers():
 
 
 def persist_answers_from_session():
-    args = [
+    address_postcode = form_answers()["support_address"]["postcode"]
+    if len(address_postcode) == 6 and " " not in address_postcode:
+        address_postcode = f"{address_postcode[:3]} {address_postcode[3:]}"
+    submission_reference = persistence.persist_answers(
         form_answers()["nhs_number"],
-        form_answers()["nhs_letter"],
         form_answers()["name"]["first_name"],
-        form_answers()["name"]["middle_name"],
+        form_answers()["name"].get("middle_name"),
         form_answers()["name"]["last_name"],
-        form_answers()["address"]["address_line1"],
-        form_answers()["address"]["address_town_city"],
-        form_answers()["address"]["address_postcode"],
-        form_answers()["address"]["address_county"],
-        form_answers()["address"]["address_uprn"],
+        form_answers()["date_of_birth"],
+        form_answers()["support_address"]["building_and_street_line_1"],
+        form_answers()["support_address"].get("building_and_street_line_2"),
+        form_answers()["support_address"]["town_city"],
+        form_answers()["support_address"]["county"],
+        address_postcode,
+        form_answers()["support_address"]["uprn"],
         form_answers()["contact_details"]["phone_number_calls"],
         form_answers()["contact_details"]["phone_number_texts"],
         form_answers()["contact_details"]["email"],
-        form_answers()["essential_supplies"],
-        form_answers()["medical_conditions"],
+        session.get("nhs_sub"),
         form_answers()["applying_on_own_behalf"],
-        form_answers()["date_of_birth"],
-    ]
-    kwargs = {
-        "carry_supplies": form_answers().get("carry_supplies"),
-        "uid_nhs_login": session.get("nhs_sub"),
-        "address_line2": form_answers().get("address_line2"),
-        "dietary_requirements": form_answers().get("dietary_requirements"),
-    }
-    form_uid = session.get("form_uid")
-    if form_uid is None:
-        session["form_uid"] = persistence.save_answers(*args, **kwargs)
-    else:
-        persistence.update_answers(form_uid, *args, **kwargs)
-    return session["form_uid"]
+        form_answers()["nhs_letter"],
+        form_answers()["essential_supplies"],
+        form_answers()["basic_care_needs"],
+        form_answers().get("dietary_requirements"),
+        form_answers().get("carry_supplies"),
+        form_answers().get("medical_conditions"),
+    )
+
+    session["form_uid"] = submission_reference
+
+    return submission_reference
 
 
 def load_answers_into_session_if_available():
