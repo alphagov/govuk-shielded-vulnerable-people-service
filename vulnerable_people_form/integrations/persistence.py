@@ -156,9 +156,13 @@ def persist_answers(
 
 
 def load_answers(nhs_uid):
-    records = get_rds_data_client().execute_sql(
-        "CALL retrieve_answers(:nhs_uid)", (nhs_uid,)
+    records = execute_sql(
+        "CALL cv_base.retrieve_latest_web_submission_for_nhs_login("
+        "    :uid_nhs_login"
+        ")",
+        (generate_string_parameter("uid_nhs_login", nhs_uid),),
     )["records"]
-    if len(records) > 0:
+
+    if len(records) > 1:
         raise ValueError("Answers returned more than one result")
     return None if not records else records[0]

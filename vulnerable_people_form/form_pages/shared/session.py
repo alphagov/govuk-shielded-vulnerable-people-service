@@ -199,38 +199,24 @@ def load_answers_into_session_if_available():
     nhs_sub = session.get("nhs_sub")
     if nhs_sub is None:
         raise RuntimeError("Could not find nhs_sub in session")
+
     stored_answers = persistence.load_answers(nhs_sub)
-    if stored_answers:
+    if stored_answers is not None:
+        (_, nhs_number, first_name, middle_name, last_name,) = persistence.load_answers(
+            nhs_sub
+        )
         session["form_answers"] = {
-            "nhs_number": stored_answers["nhs_number"],
-            "nhs_letter": stored_answers["nhs_letter"],
+            "nhs_number": nhs_number["stringValue"],
             "name": {
-                "first_name": stored_answers["first_name"],
-                "middle_name": stored_answers["middle_name"],
-                "last_name": stored_answers["last_name"],
+                k: v
+                for k, v in {
+                    "first_name": first_name["stringValue"],
+                    "last_name": last_name["stringValue"],
+                    "middle_name": middle_name.get("stringValue"),
+                }.items()
+                if v is not None
             },
-            "postcode": stored_answers["address_postcode"],
-            "address": {
-                "address_line1": stored_answers["address_line1"],
-                "address_line2": stored_answers["address_line2"],
-                "town_city": stored_answers["town_city"],
-                "county": stored_answers["county"],
-                "uprn": stored_answers["uprn"],
-            },
-            "contact_details": {
-                "phone_number_calls": stored_answers["contact_number_calls"],
-                "phone_number_texts": stored_answers["contact_number_texts"],
-                "email": stored_answers["contact_email"],
-            },
-            "essential_supplies": stored_answers["essential_supplies"],
-            "medical_conditions": stored_answers["medical_conditions"],
-            "applying_on_own_behalf": stored_answers["applying_on_own_behalf"],
-            "date_of_birth": stored_answers["date_of_birth"],
-            "carry_supplies": stored_answers["carry_supplies"],
-            "dietary_requirements": stored_answers["dietary_requirements"],
-            "basic_care_needs": stored_answers["basic_care_needs"],
         }
-        session["nhs_sub"] = (stored_answers["nhs_uid"],)
         session["accessing_saved_answers"] = True
         return True
     return False
