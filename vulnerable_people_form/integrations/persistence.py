@@ -8,12 +8,50 @@ import time
 from flask import current_app
 
 
-def get_rds_data_client():
-    return boto3.client("rds-data")
+def get_rds_data_client(app=current_app):
+    return boto3.client(
+        "rds-data", endpoint_url=app.config.get("LOCAL_AWS_ENDPOINT_URL")
+    )
 
 
-def _form_response_database_name():
-    return current_app.config.get("AWS_RDS_DATABASE", "coronavirus-vulnerable-people")
+def get_rds_client(app=current_app):
+    return boto3.client("rds", endpoint_url=app.config.get("LOCAL_AWS_ENDPOINT_URL"))
+
+
+def get_secretsmanager_client(app=current_app):
+    return boto3.client(
+        "secretsmanager", endpoint_url=app.config.get("LOCAL_AWS_ENDPOINT_URL")
+    )
+
+
+def _find_database_arn(app):
+    rds = get_rds_client(app=app)
+    clusters = rds.describe_db_clusters()["DBClusters"]
+    coronavirus_rds = [
+        x
+        for x in clusters
+        if x["DBClusterIdentifier"].startswith(app.config["DATABASE_CLUSTER_PREFIX"])
+    ][0]
+    return coronavirus_rds["DBClusterArn"]
+
+
+def _find_database_secret_arn(app):
+    secrets_manager = get_secretsmanager_client(app=app)
+    return secrets_manager.list_secrets(
+        Filters=[{"Key": "tag-value", "Values": app.config["DATABASE_SECRET_TAGS"]}]
+    )["SecretList"][0]["ARN"]
+
+
+def init_app(app):
+    if app.config.get("AWS_RDS_DATABASE_ARN_OVERRIDE"):
+        app.config["AWS_RDS_DATABASE_ARN"] = app.config["AWS_RDS_DATABASE_ARN_OVERRIDE"]
+    else:
+        app.config["AWS_RDS_DATABASE_ARN"] = _find_database_arn(app)
+
+    if app.config.get("AWS_RDS_SECRET_ARN_OVERRIDE"):
+        app.config["AWS_RDS_SECRET_ARN"] = app.config["AWS_RDS_SECRET_ARN_OVERRIDE"]
+    else:
+        app.config["AWS_RDS_SECRET_ARN"] = _find_database_secret_arn(app)
 
 
 def generate_string_parameter(name, value):
@@ -48,11 +86,11 @@ def generate_date_parameter(name, value):
 
 
 def execute_sql(sql, parameters):
-    return get_rds_data_client().execute_sql(
+    return get_rds_data_client().execute_statement(
         sql=sql,
         parameters=parameters,
-        database=current_app.config["AWS_RDS_DATABASE"],
-        resourceArn=current_app.config["AWS_RDS_RESOURCE_ARN"],
+        database=current_app.config["AWS_RDS_DATABASE_NAME"],
+        resourceArn=current_app.config["AWS_RDS_DATABASE_ARN"],
         secretArn=current_app.config["AWS_RDS_SECRET_ARN"],
         schema=current_app.config.get("AWS_RDS_DATABASE_SCHEMA"),
     )

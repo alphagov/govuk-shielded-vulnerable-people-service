@@ -6,7 +6,7 @@ from prometheus_flask_exporter import PrometheusMetrics
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 from . import form_pages
-from .integrations import nhs_openconnect_id
+from .integrations import nhs_openconnect_id, persistence
 
 sentry_sdk.init(
     dsn="https://examplePublicKey@o0.ingest.sentry.io/0",
@@ -38,6 +38,8 @@ def create_app(scriptinfo):
 
     app.nhs_oidc_client = nhs_openconnect_id.NHSOIDCDetails()
     app.nhs_oidc_client.init_app(app)
+
+    persistence.init_app(app)
 
     app.register_error_handler(404, generate_error_handler(404))
     app.register_error_handler(500, generate_error_handler(500))
