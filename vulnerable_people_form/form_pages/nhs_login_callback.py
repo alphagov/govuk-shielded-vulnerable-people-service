@@ -10,7 +10,6 @@ from .shared.session import (
     load_answers_into_session_if_available,
     request_form,
     should_contact_gp,
-    update_session_answers_from_form,
 )
 
 

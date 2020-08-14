@@ -11,7 +11,6 @@ from .shared.session import (
     get_summary_rows_from_form_answers,
     request_form,
     should_contact_gp,
-    update_session_answers_from_form,
 )
 
 

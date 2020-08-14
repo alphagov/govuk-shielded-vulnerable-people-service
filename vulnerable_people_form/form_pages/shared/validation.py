@@ -1,12 +1,9 @@
 import datetime
-import json
-import os
 import re
 
-import jsonschema
 import phonenumbers
 import stdnum.gb.nhs
-from flask import current_app, session
+from flask import session
 
 from .answers_enums import (
     ApplyingOnOwnBehalfAnswers,
