@@ -13,7 +13,6 @@ from .shared.session import (
     should_contact_gp,
     update_session_answers_from_form,
 )
-from .shared.validation import try_validating_answers_against_json_schema
 
 
 def send_sms_and_email_notifications_if_applicable(reference_number):
@@ -45,10 +44,6 @@ def get_check_your_answers():
 
 @form.route("/check-your-answers", methods=["POST"])
 def post_check_your_answers():
-    try_validating_answers_against_json_schema()
-    # We use a slightly strange value here for non-nhs login users. DynamoDB
-    # does not allow us to not set a value for the key schema, so we set it to
-    # an invalid oidc subject identifier (one that is > 255 chars)
     reference_number = persist_answers_from_session()
     send_sms_and_email_notifications_if_applicable(reference_number)
 

@@ -367,14 +367,3 @@ def validate_carry_supplies():
         "carry_supplies",
         "Select yes if there’s someone in the house who’s able to carry a delivery of supplies inside",
     )
-
-
-def try_validating_answers_against_json_schema():
-    answers = form_answers()
-    with open(os.path.join(current_app.root_path, "answers_schema.json")) as fh:
-        schema = json.load(fh)
-    try:
-        jsonschema.validate(instance=answers, schema=schema)
-    except jsonschema.exceptions.ValidationError as e:
-        # TODO Add govuk.notify call here
-        current_app.logger.exception("JSON Schema validation error in form answers", e)
