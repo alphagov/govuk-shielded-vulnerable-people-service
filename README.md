@@ -53,6 +53,13 @@ structured like this:
     government design system js files currently) and places them in
     `vulnerable_people_form/static`.
 
+  - `Procfile`: This file contains a gunicorn command, intended for use in
+    production by CloudFoundry. It is also possible to run it using a 
+    Procfile runner.
+
+  - `runtime.txt`: A file containing the version of python that CloudFoundry 
+    will use to run the application with.
+
 ## AWS integration
 
 This app persists and retrieves form responses from an Amazon Aurora RDS
@@ -73,83 +80,71 @@ privileges to perform those operations.
 ## Setup
 
 Instance-level configuration and keys are stored in the instance
-folder. When deploying this folder will need to be created manually.
+folder. There are two files in the instance folder. The first at
+`instance/config.py.sample.dev` is a sample config file suitable for
+development. The second is a file (`instance/env_to_config_shim.py`)
+that allows the use of environment variables for app configuration,
+which is intended to smooth production deployments.
 
-### Development setup
+### Development configuration
 
 To set up the app for local development you need to follow these steps:
 
-1.  Create a new instance directory:
+1.  Copy the configuration template file to a config file: 
     ```sh
-    mkdir instance
+    cp instance/config.py.sample.dev instance/config.py
     ```
 
-2.  Create a new file at `instance/config.py` and place this
-    configuration into it: 
-    ```python
-    SECRET_KEY = "Something super secret"
-    TEMPLATES_AUTO_RELOAD = True
-    ORDNANCE_SURVEY_PLACES_API_KEY = 
-    PERMANENT_SESSION_LIFETIME = 30 * 60
-    GA_TRACKING_ID =
-
-    # SENTRY CONFIG
-    SENTRY_DSN =
-
-    # NHS OIDC config
-    NHS_OIDC_AUTHORITY_URL = "https://auth.sandpit.signin.nhs.uk"
-    NHS_OIDC_CLIENT_ID =
-    NHS_OIDC_REGISTRATION_CALLBACK_URL = "http://localhost:5000/nhs-registration-callback"
-    NHS_OIDC_LOGIN_CALLBACK_URL = "http://localhost:5000/nhs-login-callback"
-    NHS_OIDC_SCOPES=["openid", "profile", "email", "phone", "profile_extended"]
-    NHS_OIDC_VTR=["P0.Cp.Cd", "P0.Cp.Ck", "P0.Cm"]
-
-    # AWS CONFIG
-    AWS_RDS_DATABASE_NAME = "coronavirus"
-    AWS_RDS_DATABASE_SCHEMA = ""
-    ```
-    Obviously, change the example hostnames as appropriate for your
-    setup.
-
-3.  Fill in the missing configuration values as per the **Configuration
+2.  Fill in the missing configuration values as per the **Configuration
     Variables Guide** section, and set the AWS environment variables as
     per the ***Environment Variables Guide***.
 
-4.  Place the private key file for your NHS oidc client id into the
+3.  Place the private key file for your NHS oidc client id into the
     path `instance/private_key.pem`.
 
-5.  Set the `FLASK_CONFIG_FILE` environment variable so that it points at
+4.  Set the `FLASK_CONFIG_FILE` environment variable so that it points at
     the new file. (Note: the root path for Flask config is the `instance`
     folder.) I.e.:
     ```sh
     export FLASK_CONFIG_FILE='config.py'
     ```
     
-6.  Set the Flask environment to development, and let Flask know where
+5.  Set the Flask environment to development, and let Flask know where
     the app file is stored:
     ```sh
     export FLASK_ENV='development'
     export FLASK_APP='run.py'
     ```
-
-7.  Run the build script that downloads the government dependencies:
-    ```sh
-    bash build.sh
-    ```
-
-8.  Set up the Python environment:
-    ```sh
-    python -m venv venv
-    source venv/bin/activate
-    pip install -r requirements.txt
-    ```
 	
-9.  Run the app:
+6.  Run the app:
     ```sh
     flask run
     ```
+		
+### Production configuration
 
-10. Navigate to: http://localhost:5000/start in a web browser.
+In production the app is intended to retrieve its configuration from
+environment variables. To do this it uses the file at
+`instance/env_to_config.shim` as its path.
+
+1.  Set the Flask environment to development, and let Flask know where
+    the app file is stored:
+    ```sh
+    export FLASK_CONFIG=`env_to_config_shim.py`
+    export FLASK_ENV=`production`
+    export FLASK_APP=`run,py`
+    ```
+
+2.  Place the NHS openconnect private key file into the instance config
+    at `instance/private_key.pem`
+
+3.  Set environment variables as per the **Configuration Variables
+    Guide** section.
+
+4.  Set the additional environment variable for gunicorn
+    (`$GUNICORN_WORKERS_COUNT`).
+
+5.  Run the app via the Procfile, using any procfile runner.
 
 ### Environment variables guide
 
@@ -163,20 +158,12 @@ To set up the app for local development you need to follow these steps:
   - `FLASK_APP` **\[required\]**: The path to the Flask app's run file.
     This should be set to `run.py`.
 
-  - `AWS_DEFAULT_REGION` **\[required\]**: This variable sets the AWS
-    region that the app will communicate with to persist form answers.
-
-  - `AWS_ACCESS_KEY_ID` **\[required\]**: This variable sets the AWS
-    access key that the app needs to communicate with AWS servers.
- 
-  - `AWS_SECRET_ACCESS_KEY` **\[required\]**: This variable sets the
-    AWS secret access key that the app needs to communicate with AWS
-    servers.
-
 ### Configuration variables guide
 
-The following variables are set in the config file pointed at
-by the `FLASK_CONFIG` environment variable.
+The following variables can either be set in the config file pointed at
+by the `FLASK_CONFIG` environment variable, or if using the
+`env_to_config_shim.py` configuration, configured as environment
+variables.
 
   - `SECRET_KEY` **\[required\]**: This is the secret key that Flask
     will use to encrypt the session.
@@ -213,9 +200,19 @@ by the `FLASK_CONFIG` environment variable.
   - `AWS_RDS_DATABASE_NAME` **\[required\]**: This variable sets the
     database that the app will use to persist form answers.
 
-  - `AWS_RDS_DATABASE_SCHEMA` **\[optional\]**: this variable sets the
+  - `AWS_RDS_DATABASE_SCHEMA` **\[required\]**: this variable sets the
     schema of the database that the app will use to persist form
     answers.
+
+  - `AWS_REGION` **\[required\]**: This variable sets the AWS region
+    that the app will communicate with to persist form answers.
+
+  - `AWS_ACCESS_KEY` **\[required\]**: This variable sets the AWS
+    access key that the app needs to communicate with AWS servers.
+ 
+  - `AWS_SECRET_ACCESS_KEY` **\[required\]**: This variable sets the
+    AWS secret access key that the app needs to communicate with AWS
+    servers. A blank string can be used if no schema is required.
 
   - `DATABASE_CLUSTER_PREFIX` **\[either this or
     `AWS_RDS_DATABASE_ARN_OVERRIDE` required\]**: This variable is used
