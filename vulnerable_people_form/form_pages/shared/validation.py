@@ -1,12 +1,9 @@
 import datetime
-import json
-import os
 import re
 
-import jsonschema
 import phonenumbers
 import stdnum.gb.nhs
-from flask import current_app, session
+from flask import session
 
 from .answers_enums import (
     ApplyingOnOwnBehalfAnswers,
@@ -45,7 +42,7 @@ def validate_name():
 def validate_view_or_setup():
     value = request_form().get("view_or_setup")
     try:
-        ViewOrSetupAnswers(value)
+        ViewOrSetupAnswers(int(value))
     except ValueError:
         session["error_items"] = {
             **session.setdefault("error_items", {}),
@@ -70,7 +67,7 @@ def validate_applying_on_own_behalf():
 def validate_radio_button(EnumClass, value_key, error_message):
     value = form_answers().get(value_key)
     try:
-        EnumClass(value)
+        EnumClass(int(value))
     except ValueError:
         session["error_items"] = {
             **session.setdefault("error_items", {}),
@@ -103,7 +100,7 @@ def validate_nhs_login():
 def validate_register_with_nhs():
     value = request_form().get("nhs_registration")
     try:
-        YesNoAnswers(value)
+        YesNoAnswers(int(value))
     except ValueError:
         session["error_items"] = {
             **session.setdefault("error_items", {}),
@@ -367,14 +364,3 @@ def validate_carry_supplies():
         "carry_supplies",
         "Select yes if there’s someone in the house who’s able to carry a delivery of supplies inside",
     )
-
-
-def try_validating_answers_against_json_schema():
-    answers = form_answers()
-    with open(os.path.join(current_app.root_path, "answers_schema.json")) as fh:
-        schema = json.load(fh)
-    try:
-        jsonschema.validate(instance=answers, schema=schema)
-    except jsonschema.exceptions.ValidationError as e:
-        # TODO Add govuk.notify call here
-        current_app.logger.exception("JSON Schema validation error in form answers", e)

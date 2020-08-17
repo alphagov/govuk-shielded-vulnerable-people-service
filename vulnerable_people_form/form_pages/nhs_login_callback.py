@@ -1,6 +1,5 @@
 from flask import abort, current_app, redirect, request, session
 
-from ..integrations import form_response_model
 from .blueprint import form
 from .shared.constants import NHS_USER_INFO_TO_FORM_ANSWERS
 from .shared.routing import get_redirect_to_terminal_page
@@ -8,9 +7,9 @@ from .shared.session import (
     form_answers,
     get_answer_from_form,
     get_summary_rows_from_form_answers,
+    load_answers_into_session_if_available,
     request_form,
     should_contact_gp,
-    update_session_answers_from_form,
 )
 
 
@@ -42,16 +41,12 @@ def get_nhs_login_callback():
         request.args
     )
 
-    nhs_sub = session["nhs_sub"] = nhs_user_info["sub"]
+    session["nhs_sub"] = nhs_user_info["sub"]
 
-    existing_record = form_response_model.get_record_using_nhs_sub(nhs_sub)
-    if existing_record:
-        session["form_answers"] = {**existing_record["FormResponse"], **form_answers()}
-        session["accessing_saved_answers"] = True
+    if load_answers_into_session_if_available():
         return get_redirect_to_terminal_page()
 
     set_form_answers_from_nhs_userinfo(nhs_user_info)
-    session["form_answers"]["know_nhs_number"] = True  # required for validation
 
     return redirect("postcode-eligibility")
 

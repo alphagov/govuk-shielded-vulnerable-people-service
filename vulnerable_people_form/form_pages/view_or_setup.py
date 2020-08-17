@@ -25,7 +25,7 @@ def get_view_or_setup():
 def post_view_or_setup():
     if not validate_view_or_setup():
         return redirect("/view-or-setup")
-    answer = ViewOrSetupAnswers(request_form().get("view_or_setup"))
+    answer = ViewOrSetupAnswers(int(request_form().get("view_or_setup")))
     if answer is ViewOrSetupAnswers.VIEW:
         return redirect(current_app.nhs_oidc_client.get_authorization_url())
     return redirect("/applying-on-own-behalf")

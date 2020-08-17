@@ -7,7 +7,7 @@ from .shared.routing import route_to_next_form_page
 from .shared.session import (
     form_answers,
     get_errors_from_session,
-    update_session_answers_from_form,
+    update_session_answers_from_form_for_enum,
 )
 from .shared.validation import validate_nhs_letter
 
@@ -26,7 +26,7 @@ def get_nhs_letter():
 
 @form.route("/nhs-letter", methods=["POST"])
 def post_nhs_letter():
-    update_session_answers_from_form()
+    update_session_answers_from_form_for_enum()
     if not validate_nhs_letter():
         return redirect("/nhs-letter")
     return route_to_next_form_page()
