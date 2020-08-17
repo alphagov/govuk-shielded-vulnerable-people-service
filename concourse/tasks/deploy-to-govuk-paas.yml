@@ -26,12 +26,19 @@ params:
   PERMANENT_SESSION_LIFETIME: 60
   NHS_OIDC_AUTHORITY_URL:
   NHS_OIDC_CLIENT_ID: gds-svp
-  NHS_OIDC_REGISTRATION_CALLBACK_URL:
   NHS_OIDC_LOGIN_CALLBACK_URL:
-  AWS_ACCESS_KEY_ID:
+  AWS_ACCESS_KEY:
   AWS_SECRET_ACCESS_KEY:
   AWS_REGION: eu-west-2
   GUNICORN_WORKER_COUNT: 5
+  FLASK_ENV: production
+  FLASK_CONFIG: env_to_config_shim.py
+  NHS_OIDC_REGISTRATION_CALLBACK_URL:
+  DATABASE_CLUSTER_PREFIX: coronavirus-
+  DATABASE_SECRET_TAGS: test
+  SECRET_KEY:
+  AWS_RDS_DATABASE_SCHEMA: IDK
+  AWS_RDS_DATABASE_NAME: IDK
 
 run:
   dir: src
@@ -63,14 +70,21 @@ run:
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form PERMANENT_SESSION_LIFETIME "$PERMANENT_SESSION_LIFETIME"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form NHS_OIDC_AUTHORITY_URL "$NHS_OIDC_AUTHORITY_URL"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form NHS_OIDC_CLIENT_ID "$NHS_OIDC_CLIENT_ID"
-      cf set-env govuk-coronavirus-shielded-vulnerable-people-form NHS_OIDC_REGISTRATION_CALLBACK_URL "$NHS_OIDC_REGISTRATION_CALLBACK_URL"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form NHS_OIDC_LOGIN_CALLBACK_URL "$NHS_OIDC_LOGIN_CALLBACK_URL"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form NHS_OIDC_REGISTRATION_CALLBACK_URL "$NHS_OIDC_REGISTRATION_CALLBACK_URL"
 
-      cf set-env govuk-coronavirus-shielded-vulnerable-people-form AWS_ACCESS_KEY_ID "$AWS_ACCESS_KEY_ID"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form AWS_ACCESS_KEY "$AWS_ACCESS_KEY"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form AWS_REGION "$AWS_REGION"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form AWS_SECRET_ACCESS_KEY "$AWS_SECRET_ACCESS_KEY"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form DATABASE_CLUSTER_PREFIX "$DATABASE_CLUSTER_PREFIX"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form DATABASE_SECRET_TAGS "$DATABASE_SECRET_TAGS"
 
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form GUNICORN_WORKER_COUNT "$GUNICORN_WORKER_COUNT"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form FLASK_ENV "$FLASK_ENV"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form FLASK_CONFIG_FILE "$FLASK_CONFIG"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form SECRET_KEY "$SECRET_KEY"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form AWS_RDS_DATABASE_NAME "$AWS_RDS_DATABASE_NAME"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form AWS_RDS_DATABASE_SCHEMA "$AWS_RDS_DATABASE_SCHEMA"
 
       cf push govuk-coronavirus-shielded-vulnerable-people-form --strategy rolling
       cf map-route govuk-coronavirus-shielded-vulnerable-people-form cloudapps.digital --hostname "$HOSTNAME"

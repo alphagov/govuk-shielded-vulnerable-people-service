@@ -107,10 +107,11 @@ jobs:
           GOVUK_NOTIFY_EMAIL_TEMPLATE_ID: d4fddfce-1dfd-4ff5-ab42-156e6ba3e76b
           GOVUK_NOTIFY_SMS_TEMPLATE_ID: a2166a39-91f5-4370-bbbf-c59276975d49
           NOTIFY_API_KEY: ((svp-form/notify-api-key-stg))
+          SECRET_KEY: 'secret-key-base-staging'
           NHS_OIDC_AUTHORITY_URL: https://auth.aos.signin.nhs.uk
-          NHS_OIDC_REGISTRATION_CALLBACK_URL: TODO
-          NHS_OIDC_LOGIN_CALLBACK_URL: TODO
-          AWS_ACCESS_KEY_ID: ((svp-form/aws-access-key-id-stg))
+          NHS_OIDC_LOGIN_CALLBACK_URL: https://gds-shielded-vulnerable-people-service-staging.cloudapps.digital/nhs-login-callback
+          NHS_OIDC_REGISTRATION_CALLBACK_URL: https://gds-shielded-vulnerable-people-service-staging.cloudapps.digital/nhs-registration-callback
+          AWS_ACCESS_KEY: ((svp-form/aws-access-key-id-stg))
           AWS_SECRET_ACCESS_KEY: ((svp-form/aws-secret-access-key-stg))
         on_failure:
           put: govuk-coronavirus-services-tech-slack
