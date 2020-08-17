@@ -3,20 +3,25 @@ import boto3
 from flask import current_app
 
 
+def get_client_kwargs(app=current_app):
+    return {
+        "endpoint_url": app.config.get("LOCAL_AWS_ENDPOINT_URL"),
+        "aws_access_key_id": app.config.get("AWS_ACCESS_KEY"),
+        "aws_secret_access_key": app.config.get("AWS_SECRET_ACCESS_KEY"),
+        "region_name": app.config.get("AWS_REGION"),
+    }
+
+
 def get_rds_data_client(app=current_app):
-    return boto3.client(
-        "rds-data", endpoint_url=app.config.get("LOCAL_AWS_ENDPOINT_URL")
-    )
+    return boto3.client("rds-data", **get_client_kwargs(app))
 
 
 def get_rds_client(app=current_app):
-    return boto3.client("rds", endpoint_url=app.config.get("LOCAL_AWS_ENDPOINT_URL"))
+    return boto3.client("rds", **get_client_kwargs(app))
 
 
 def get_secretsmanager_client(app=current_app):
-    return boto3.client(
-        "secretsmanager", endpoint_url=app.config.get("LOCAL_AWS_ENDPOINT_URL")
-    )
+    return boto3.client("secretsmanager", **get_client_kwargs(app))
 
 
 def _find_database_arn(app):

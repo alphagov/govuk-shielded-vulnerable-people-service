@@ -25,7 +25,6 @@ def verify_config(app):
     required_keys = {
         "SECRET_KEY",
         "ORDNANCE_SURVEY_PLACES_API_KEY",
-        "AWS_DYNAMODB_SUBMISSIONS_TABLE_NAME",
         "PERMANENT_SESSION_LIFETIME",
         "GA_TRACKING_ID",
         # SENTRY CONFIG
@@ -36,6 +35,12 @@ def verify_config(app):
         "NHS_OIDC_REGISTRATION_CALLBACK_URL",
         "NHS_OIDC_REGISTRATION_CALLBACK_URL",
         "NHS_OIDC_LOGIN_CALLBACK_URL",
+        # AWS CONFIG
+        "AWS_RDS_DATABASE_NAME",
+        "AWS_RDS_DATABASE_SCHEMA",
+        "AWS_REGION",
+        "AWS_ACCESS_KEY",
+        "AWS_SECRET_ACCESS_KEY",
     }
     present_keys = set(k for k in app.config.keys() if app.config[k] is not None)
     if not present_keys.issuperset(required_keys):
