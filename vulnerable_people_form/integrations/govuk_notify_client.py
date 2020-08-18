@@ -1,4 +1,3 @@
-import sentry_sdk
 from flask import current_app
 from notifications_python_client.notifications import NotificationsAPIClient
 
@@ -99,7 +98,7 @@ def _try_and_report_exception_to_sentry(fn, *args, **kwargs):
     try:
         fn(*args, **kwargs)
     except Exception as e:
-        sentry_sdk.capture_exception(e)
+        print('method _try_and_report_exception_to_sentry exception thrown:' +e)
 
 
 def try_send_confirmation_email(*args, **kwargs):

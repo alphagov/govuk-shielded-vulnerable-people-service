@@ -14,7 +14,6 @@ params:
   CF_ORG: gds-shielded-vulnerable-people-service
   GA_VIEW_ID: UA-43115970-1
   GA_CROSS_DOMAIN_ID: UA-145652997-1
-  SENTRY_DSN: https://((svp-form/sentry-dsn))
   CF_STARTUP_TIMEOUT:
   CF_SPACE:
   HOSTNAME:
@@ -23,7 +22,7 @@ params:
   GOVUK_NOTIFY_SMS_TEMPLATE_ID:
   NOTIFY_API_KEY:
   ORDNANCE_SURVEY_PLACES_API_KEY: ((svp-form/ordnance-survey-places-api-key))
-  PERMANENT_SESSION_LIFETIME: 60
+  PERMANENT_SESSION_LIFETIME: 1200
   NHS_OIDC_AUTHORITY_URL:
   NHS_OIDC_CLIENT_ID: gds-svp
   NHS_OIDC_LOGIN_CALLBACK_URL:
@@ -35,10 +34,11 @@ params:
   FLASK_CONFIG: env_to_config_shim.py
   NHS_OIDC_REGISTRATION_CALLBACK_URL:
   DATABASE_CLUSTER_PREFIX: coronavirus-
-  DATABASE_SECRET_TAGS: test
+  DATABASE_SECRET_TAGS: role,coronavirus-web-form
   SECRET_KEY:
   AWS_RDS_DATABASE_SCHEMA: IDK
   AWS_RDS_DATABASE_NAME: IDK
+  NHS_OIDC_LOGIN_PRIVATE_KEY:
 
 run:
   dir: src
@@ -57,8 +57,8 @@ run:
       cf apply-manifest -f manifest.yml
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form CF_STARTUP_TIMEOUT "$CF_STARTUP_TIMEOUT"
 
-      cf set-env govuk-coronavirus-shielded-vulnerable-people-form SENTRY_DSN "$SENTRY_DSN"
-      cf set-env govuk-coronavirus-shielded-vulnerable-people-form SENTRY_CURRENT_ENV "$CF_SPACE"
+      cf scale -i "$INSTANCES" govuk-coronavirus-shielded-vulnerable-people-form
+
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form GA_TRACKING_ID "$GA_VIEW_ID"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form GA_CROSS_DOMAIN_ID "$GA_CROSS_DOMAIN_ID"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form GOVUK_NOTIFY_EMAIL_TEMPLATE_ID "$GOVUK_NOTIFY_EMAIL_TEMPLATE_ID"
@@ -85,6 +85,7 @@ run:
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form SECRET_KEY "$SECRET_KEY"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form AWS_RDS_DATABASE_NAME "$AWS_RDS_DATABASE_NAME"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form AWS_RDS_DATABASE_SCHEMA "$AWS_RDS_DATABASE_SCHEMA"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form NHS_OIDC_LOGIN_PRIVATE_KEY "$NHS_OIDC_LOGIN_PRIVATE_KEY"
 
-      cf push govuk-coronavirus-shielded-vulnerable-people-form --strategy rolling
-      cf map-route govuk-coronavirus-shielded-vulnerable-people-form cloudapps.digital --hostname "$HOSTNAME"
+      cf push govuk-coronavirus-shielded-vulnerable-people-form --strategy rolling --no-route
+      cf map-route govuk-coronavirus-shielded-vulnerable-people-form london.cloudapps.digital --hostname "$HOSTNAME"

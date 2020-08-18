@@ -1,18 +1,10 @@
-import sentry_sdk
 from flask import Flask, render_template, request
 from flask_wtf.csrf import CSRFProtect
 from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
 from prometheus_flask_exporter import PrometheusMetrics
-from sentry_sdk.integrations.flask import FlaskIntegration
 
 from . import form_pages
 from .integrations import nhs_openconnect_id, persistence
-
-sentry_sdk.init(
-    dsn="https://examplePublicKey@o0.ingest.sentry.io/0",
-    integrations=[FlaskIntegration()],
-)
-
 
 def generate_error_handler(code):
     def handle_error(_):
@@ -27,8 +19,6 @@ def verify_config(app):
         "ORDNANCE_SURVEY_PLACES_API_KEY",
         "PERMANENT_SESSION_LIFETIME",
         "GA_TRACKING_ID",
-        # SENTRY CONFIG
-        "SENTRY_DSN",
         # NHS OIDC config
         "NHS_OIDC_AUTHORITY_URL",
         "NHS_OIDC_CLIENT_ID",
@@ -85,10 +75,6 @@ def create_app(scriptinfo):
             "Request latencies by status and path",
             labels={"status": lambda r: r.status_code, "path": lambda: request.path,},
         ),
-    )
-
-    sentry_sdk.init(
-        dsn=app.config["SENTRY_DSN"], integrations=[FlaskIntegration()],
     )
 
     return app

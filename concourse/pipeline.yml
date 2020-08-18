@@ -5,11 +5,10 @@ resource_types:
     source:
       repository: nulldriver/cf-cli-resource
 
-  - name: slack-notification
-    type: docker-image
+  - name: slack-alert
+    type: registry-image
     source:
-      repository: cfcommunity/slack-notification-resource
-      tag: latest
+      repository: arbourd/concourse-slack-alert-resource
 
 resources:
   - name: git-master
@@ -40,10 +39,17 @@ resources:
       repository: ((readonly_private_ecr_repo_url))
       tag: govuk-shielded-vulnerable-people-tests-image
 
-  - name: govuk-coronavirus-services-tech-slack
-    type: slack-notification
+  - name: slack
+    type: slack-alert
     source:
-      url: https://hooks.slack.com/((slack_webhook_url))
+      url: ((slack_hook_automate))
+      channel: covid-engineering-team
+
+# Anchors for later
+slack_alert_on_failure: &slack_alert_on_failure
+  put: slack
+  params:
+    alert_type: failed
 
 jobs:
   - name: update-pipeline
@@ -53,6 +59,7 @@ jobs:
         trigger: true
       - set_pipeline: svp-form
         file: git-master/concourse/pipeline.yml
+    on_failure: *slack_alert_on_failure
 
   - name: build-tests-image
     serial: true
@@ -66,6 +73,7 @@ jobs:
         params:
           build: git-master-python-dockerfile
           dockerfile: git-master-python-dockerfile/concourse/Dockerfile
+        on_failure: *slack_alert_on_failure
 
   - name: run-quality-checks
     serial: true
@@ -88,7 +96,8 @@ jobs:
               - -c
               - |
                 set -eu
-                echo "hello"
+                echo "run unit tests "
+        on_failure: *slack_alert_on_failure
 
   - name: deploy-to-staging
     serial: true
@@ -107,23 +116,14 @@ jobs:
           GOVUK_NOTIFY_EMAIL_TEMPLATE_ID: d4fddfce-1dfd-4ff5-ab42-156e6ba3e76b
           GOVUK_NOTIFY_SMS_TEMPLATE_ID: a2166a39-91f5-4370-bbbf-c59276975d49
           NOTIFY_API_KEY: ((svp-form/notify-api-key-stg))
-          SECRET_KEY: 'secret-key-base-staging'
+          SECRET_KEY: ((svp-form/flask-secret-key-base-stg))
           NHS_OIDC_AUTHORITY_URL: https://auth.aos.signin.nhs.uk
-          NHS_OIDC_LOGIN_CALLBACK_URL: https://gds-shielded-vulnerable-people-service-staging.cloudapps.digital/nhs-login-callback
-          NHS_OIDC_REGISTRATION_CALLBACK_URL: https://gds-shielded-vulnerable-people-service-staging.cloudapps.digital/nhs-registration-callback
+          NHS_OIDC_LOGIN_CALLBACK_URL: https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital/nhs-login-callback
+          NHS_OIDC_REGISTRATION_CALLBACK_URL: https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital/nhs-registration-callback
           AWS_ACCESS_KEY: ((svp-form/aws-access-key-id-stg))
           AWS_SECRET_ACCESS_KEY: ((svp-form/aws-secret-access-key-stg))
-        on_failure:
-          put: govuk-coronavirus-services-tech-slack
-          params:
-            channel: '#covid-engineering-team'
-            username: 'Concourse (Shielded Vulnerable Service)'
-            icon_emoji: ':concourse:'
-            silent: true
-            text: |
-              :kaboom:
-              Deploy to staging for the Shielded Vulnerable service has failed
-              Failed build: http://cd.gds-reliability.engineering/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
+          NHS_OIDC_LOGIN_PRIVATE_KEY: ((svp-form/nhs-login-private-key-stg))
+        on_failure: *slack_alert_on_failure
 
   - name: smoke-test-staging
     plan:
@@ -135,16 +135,6 @@ jobs:
       - task: smoke-test
         file: git-master/concourse/tasks/smoke-test.yml
         params:
-          URL: 'https://gds-shielded-vulnerable-people-service-staging.cloudapps.digital/live-in-england'
+          URL: 'https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital/live-in-england'
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
-        on_failure:
-          put: govuk-coronavirus-services-tech-slack
-          params:
-            channel: '#covid-engineering-team'
-            username: 'Concourse (Shielded Vulnerable Service)'
-            icon_emoji: ':concourse:'
-            silent: true
-            text: |
-              :kaboom:
-              Staging smoke tests for the Shielded Vulnerable service have failed
-              Failed build: http://cd.gds-reliability.engineering/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME
+        on_failure: *slack_alert_on_failure

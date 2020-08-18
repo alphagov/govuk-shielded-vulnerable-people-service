@@ -1,5 +1,4 @@
 import json
-import sentry_sdk
 
 from flask import abort, current_app, redirect, request, session
 
