@@ -134,17 +134,13 @@ environment variables. To do this it uses the file at
     export FLASK_ENV=`production`
     export FLASK_APP=`run,py`
     ```
-
-2.  Place the NHS openconnect private key file into the instance config
-    at `instance/private_key.pem`
-
-3.  Set environment variables as per the **Configuration Variables
+2.  Set environment variables as per the **Configuration Variables
     Guide** section.
 
-4.  Set the additional environment variable for gunicorn
-    (`$GUNICORN_WORKERS_COUNT`).
+3.  Set the additional environment variable for gunicorn
+    (`$GUNICORN_WORKERS_COUNT`) and `NHS_OIDC_LOGIN_PRIVATE_KEY`.
 
-5.  Run the app via the Procfile, using any procfile runner.
+4.  Run the app via the Procfile, using any procfile runner.
 
 ### Environment variables guide
 
@@ -196,6 +192,12 @@ variables.
     URL passed to NHS OIDC when the user is in the login flow. It should
     have the form
     `http(s)://<externally_reachable_app_url>/nhs-login-callback`.
+    
+  - `NHS_OIDC_LOGIN_PRIVATE_KEY_PATH`: This is used to specify the path 
+     to the private key pem file locally.
+     
+  - `NHS_OIDC_LOGIN_PRIVATE_KEY`: This is used to specify the private key
+     contents in the GOV PAAS environment only. 
 
   - `AWS_RDS_DATABASE_NAME` **\[required\]**: This variable sets the
     database that the app will use to persist form answers.

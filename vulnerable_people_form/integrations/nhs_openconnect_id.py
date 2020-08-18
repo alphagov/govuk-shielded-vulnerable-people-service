@@ -28,11 +28,17 @@ class NHSOIDCDetails:
         )
         self.client.provider_config(self.authority_url)
 
-        self.private_key_path = os.path.join(app.instance_path, "private_key.pem")
-        if not os.stat(self.private_key_path):
-            raise ValueError(
-                f"Missing private key file. Expected private key file at {self.private_key_path!r}"
-            )
+        self.private_key = app.config["NHS_OIDC_LOGIN_PRIVATE_KEY"]
+        if not self.private_key:
+            private_key_path = app.config["NHS_OIDC_LOGIN_PRIVATE_KEY_PATH"]
+            if not os.stat(private_key_path):
+                raise ValueError(
+                    f"Missing private key file. Expected private key file at {self.private_key_path!r}"
+                )
+
+            with open(private_key_path) as key_file:
+                self.private_key = key_file.read()
+
 
     def get_authorization_url(self):
         return self._get_authorization_url(self.authorization_callback_url, False)
@@ -88,15 +94,14 @@ class NHSOIDCDetails:
         ).to_dict()
 
     def _get_client_assertion(self):
-        with open(self.private_key_path) as key_file:
-            return jwt.encode(
-                {
-                    "iss": self.client.client_id,
-                    "sub": self.client.client_id,
-                    "aud": self.client.token_endpoint,
-                    "jti": str(uuid.uuid4()),
-                    "exp": utc_time_sans_frac() + 120,
-                },
-                key=key_file.read(),
-                algorithm="RS512",
-            ).decode("utf-8")
+        return jwt.encode(
+            {
+                "iss": self.client.client_id,
+                "sub": self.client.client_id,
+                "aud": self.client.token_endpoint,
+                "jti": str(uuid.uuid4()),
+                "exp": utc_time_sans_frac() + 120,
+            },
+            key=self.private_key,
+            algorithm="RS512",
+        ).decode("utf-8")

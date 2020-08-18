@@ -12,6 +12,7 @@ NHS_OIDC_AUTHORITY_URL = "https://auth.sandpit.signin.nhs.uk"
 NHS_OIDC_CLIENT_ID = 
 NHS_OIDC_REGISTRATION_CALLBACK_URL = "http://localhost:5000/nhs-registration-callback"
 NHS_OIDC_LOGIN_CALLBACK_URL = "http://localhost:5000/nhs-login-callback"
+NHS_OIDC_LOGIN_PRIVATE_KEY_PATH = "instance/private_key.pem"
 
 
 # AWS CONFIG
