@@ -84,10 +84,8 @@ def execute_sql(sql, parameters):
     return get_rds_data_client().execute_statement(
         sql=sql,
         parameters=parameters,
-        database=current_app.config["AWS_RDS_DATABASE_NAME"],
         resourceArn=current_app.config["AWS_RDS_DATABASE_ARN"],
-        secretArn=current_app.config["AWS_RDS_SECRET_ARN"],
-        schema=current_app.config.get("AWS_RDS_DATABASE_SCHEMA"),
+        secretArn=current_app.config["AWS_RDS_SECRET_ARN"]
     )
 
 

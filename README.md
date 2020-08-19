@@ -103,10 +103,6 @@ To set up the app for local development you need to follow these steps:
     NHS_OIDC_LOGIN_CALLBACK_URL = "http://localhost:5000/nhs-login-callback"
     NHS_OIDC_SCOPES=["openid", "profile", "email", "phone", "profile_extended"]
     NHS_OIDC_VTR=["P0.Cp.Cd", "P0.Cp.Ck", "P0.Cm"]
-
-    # AWS CONFIG
-    AWS_RDS_DATABASE_NAME = "coronavirus"
-    AWS_RDS_DATABASE_SCHEMA = ""
     ```
     Obviously, change the example hostnames as appropriate for your
     setup.
@@ -209,13 +205,6 @@ by the `FLASK_CONFIG` environment variable.
     URL passed to NHS OIDC when the user is in the login flow. It should
     have the form
     `http(s)://<externally_reachable_app_url>/nhs-login-callback`.
-
-  - `AWS_RDS_DATABASE_NAME` **\[required\]**: This variable sets the
-    database that the app will use to persist form answers.
-
-  - `AWS_RDS_DATABASE_SCHEMA` **\[optional\]**: this variable sets the
-    schema of the database that the app will use to persist form
-    answers.
 
   - `DATABASE_CLUSTER_PREFIX` **\[either this or
     `AWS_RDS_DATABASE_ARN_OVERRIDE` required\]**: This variable is used
