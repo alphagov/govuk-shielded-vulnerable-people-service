@@ -1,21 +1,32 @@
 import boto3
+import sentry_sdk
+import time
 
+from botocore.config import Config
 from flask import current_app
+
+boto3_config = Config(
+    retries = {
+        'max_attempts': 5,
+        'mode': 'standard',
+    }
+)
 
 
 def get_rds_data_client(app=current_app):
     return boto3.client(
-        "rds-data", endpoint_url=app.config.get("LOCAL_AWS_ENDPOINT_URL")
+        "rds-data", endpoint_url=app.config.get("LOCAL_AWS_ENDPOINT_URL"),
+        config=boto3_config
     )
 
 
 def get_rds_client(app=current_app):
-    return boto3.client("rds", endpoint_url=app.config.get("LOCAL_AWS_ENDPOINT_URL"))
+    return boto3.client("rds", endpoint_url=app.config.get("LOCAL_AWS_ENDPOINT_URL"), config=boto3_config)
 
 
 def get_secretsmanager_client(app=current_app):
     return boto3.client(
-        "secretsmanager", endpoint_url=app.config.get("LOCAL_AWS_ENDPOINT_URL")
+        "secretsmanager", endpoint_url=app.config.get("LOCAL_AWS_ENDPOINT_URL"), config=boto3_config,
     )
 
 
