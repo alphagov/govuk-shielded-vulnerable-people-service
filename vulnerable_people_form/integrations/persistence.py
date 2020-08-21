@@ -1,4 +1,5 @@
 import boto3
+import botocore.exceptions
 import sentry_sdk
 import time
 
@@ -91,13 +92,25 @@ def generate_date_parameter(name, value):
     }
 
 
-def execute_sql(sql, parameters):
+def _execute_sql(sql, parameters):
     return get_rds_data_client().execute_statement(
         sql=sql,
         parameters=parameters,
         resourceArn=current_app.config["AWS_RDS_DATABASE_ARN"],
         secretArn=current_app.config["AWS_RDS_SECRET_ARN"]
     )
+
+
+def execute_sql(sql, parameters, retries=5):
+    try:
+        return _execute_sql(sql, parameters)
+    # Here we see if the client exception can be remedied via refreshing our
+    # ARN values (n.b) - retries for other, transient, exceptions are handled
+    # by the boto3 client itself.
+    except botocore.exceptions.ClientError:
+        current_app.config['AWS_DATABASE_ARN']= _find_database_arn(current_app)
+        current_app.config['AWS_DATABASE_SECRET_ARN']= _find_database_secret_arn(current_app)
+        return _execute_sql(sql, parameters)
 
 
 def persist_answers(
