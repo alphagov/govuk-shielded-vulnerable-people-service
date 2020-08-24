@@ -1,3 +1,5 @@
+import datetime
+
 from flask import request, session
 
 from .answers_enums import (
@@ -66,7 +68,7 @@ def should_contact_gp():
 
 
 def _slice(keys, _dict):
-    return (_dict[key] for key in keys if _dict[key])
+    return (_dict[key] for key in keys if key in _dict)
 
 
 def get_summary_rows_from_form_answers():
@@ -202,9 +204,34 @@ def load_answers_into_session_if_available():
 
     stored_answers = persistence.load_answers(nhs_sub)
     if stored_answers is not None:
-        (_, nhs_number, first_name, middle_name, last_name,) = persistence.load_answers(
-            nhs_sub
-        )
+        (
+            _,
+            nhs_number,
+            first_name,
+            middle_name,
+            last_name,
+            date_of_birth,
+            address_line1,
+            address_line2,
+            address_town_city,
+            address_county,
+            address_postcode,
+            address_uprn,
+            contact_number_calls,
+            contact_number_texts,
+            contact_email,
+            uid_nhs_login,
+            are_you_applying_on_behalf_of_someone_else,
+            have_you_received_an_nhs_letter,
+            do_you_want_supermarket_deliveries,
+            do_you_need_help_meeting_your_basic_care_needs,
+            do_you_have_any_special_dietary_requirements,
+            do_you_have_someone_in_the_house_to_carry_deliveries,
+            do_you_have_one_of_the_listed_medical_conditions,
+        ) = stored_answers
+
+        date_of_birth = datetime.date.fromisoformat(date_of_birth["stringValue"])
+
         session["form_answers"] = {
             "nhs_number": nhs_number["stringValue"],
             "name": {
@@ -213,6 +240,47 @@ def load_answers_into_session_if_available():
                     "first_name": first_name["stringValue"],
                     "last_name": last_name["stringValue"],
                     "middle_name": middle_name.get("stringValue"),
+                }.items()
+                if v is not None
+            },
+            "date_of_birth": {
+                "day": date_of_birth.day,
+                "year": date_of_birth.year,
+                "month": date_of_birth.month,
+            },
+            "support_address": {
+                "building_and_street_line_1": address_line1["stringValue"],
+                "building_and_street_line_2": address_line2["stringValue"],
+                "town_city": address_town_city["stringValue"],
+                "county": address_county["stringValue"],
+                "postcode": address_postcode["stringValue"],
+                "uprn": address_uprn["longValue"],
+            },
+            "contact_details": {
+                "phone_number_calls": contact_number_calls["stringValue"],
+                "phone_number_texts": contact_number_texts["stringValue"],
+                "email": contact_email["stringValue"],
+            },
+            "applying_on_own_behalf": are_you_applying_on_behalf_of_someone_else[
+                "longValue"
+            ],
+            "nhs_letter": have_you_received_an_nhs_letter["longValue"],
+            "essential_supplies": do_you_want_supermarket_deliveries["longValue"],
+            "basic_care_needs": do_you_need_help_meeting_your_basic_care_needs[
+                "longValue"
+            ],
+            **{
+                k: v
+                for k, v in {
+                    "dietary_requirements": do_you_have_any_special_dietary_requirements.get(
+                        "longValue"
+                    ),
+                    "carry_supplies": do_you_have_someone_in_the_house_to_carry_deliveries.get(
+                        "longValue"
+                    ),
+                    "medical_conditions": do_you_have_one_of_the_listed_medical_conditions.get(
+                        "longValue"
+                    ),
                 }.items()
                 if v is not None
             },
