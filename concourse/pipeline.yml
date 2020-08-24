@@ -18,27 +18,6 @@ resources:
       uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
       branch: task/deployment-to-concourse
 
-  - name: git-master-python-dockerfile
-    type: git
-    icon: github-circle
-    source:
-      uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
-      branch: task/deployment-to-concourse
-      paths:
-        - concourse/Dockerfile
-
-  - name: every-day
-    type: time
-    source:
-      interval: 24h
-
-  - name: tests-image
-    type: docker-image
-    icon: docker
-    source:
-      repository: ((readonly_private_ecr_repo_url))
-      tag: govuk-shielded-vulnerable-people-tests-image
-
   - name: slack
     type: slack-alert
     source:
@@ -51,6 +30,11 @@ slack_alert_on_failure: &slack_alert_on_failure
   params:
     alert_type: failed
 
+slack_alert_on_success: &slack_alert_on_success
+  put: slack
+  params:
+    alert_type: success
+
 jobs:
   - name: update-pipeline
     serial: true
@@ -61,50 +45,22 @@ jobs:
         file: git-master/concourse/pipeline.yml
     on_failure: *slack_alert_on_failure
 
-  - name: build-tests-image
-    serial: true
-    build_logs_to_retain: 100
-    plan:
-      - get: every-day
-        trigger: true
-      - get: git-master-python-dockerfile
-        trigger: true
-      - put: tests-image
-        params:
-          build: git-master-python-dockerfile
-          dockerfile: git-master-python-dockerfile/concourse/Dockerfile
-        on_failure: *slack_alert_on_failure
-
-  - name: run-quality-checks
+  - name: test
     serial: true
     plan:
-      - get: tests-image
-        passed: [build-tests-image]
-        trigger: true
-      - get: git-master
-        trigger: true
-      - task: run-tests-task
-        image: tests-image
-        config:
-          inputs:
-            - name: git-master
-          platform: linux
-          run:
-            dir: git-master
-            path: bash
-            args:
-              - -c
-              - |
-                set -eu
-                echo "run unit tests "
-        on_failure: *slack_alert_on_failure
+    - get: git-master
+      trigger: true
+      passed: [update-pipeline]
+    - task: test
+      file: git-master/concourse/tasks/test.yml
+#      on_failure: *slack_alert_on_failure
 
   - name: deploy-to-staging
     serial: true
     plan:
       - get: git-master
         trigger: true
-        passed: [run-quality-checks]
+        passed: [test]
       - task: deploy-to-paas
         config:
         file: git-master/concourse/tasks/deploy-to-govuk-paas.yml
@@ -123,18 +79,16 @@ jobs:
           AWS_ACCESS_KEY: ((svp-form/aws-access-key-id-stg))
           AWS_SECRET_ACCESS_KEY: ((svp-form/aws-secret-access-key-stg))
           NHS_OIDC_LOGIN_PRIVATE_KEY: ((svp-form/nhs-login-private-key-stg))
-        on_failure: *slack_alert_on_failure
+#        on_failure: *slack_alert_on_failure
 
   - name: smoke-test-staging
     plan:
       - get: git-master
         trigger: true
         passed: [deploy-to-staging]
-      - get: tests-image
-        passed: [build-tests-image]
       - task: smoke-test
         file: git-master/concourse/tasks/smoke-test.yml
         params:
           URL: 'https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital/live-in-england'
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
-        on_failure: *slack_alert_on_failure
+#        on_failure: *slack_alert_on_failure

@@ -198,10 +198,6 @@ variables.
   - `AWS_RDS_DATABASE_NAME` **\[required\]**: This variable sets the
     database that the app will use to persist form answers.
 
-  - `AWS_RDS_DATABASE_SCHEMA` **\[required\]**: this variable sets the
-    schema of the database that the app will use to persist form
-    answers.
-
   - `AWS_REGION` **\[required\]**: This variable sets the AWS region
     that the app will communicate with to persist form answers.
 

@@ -1,9 +1,7 @@
+import contextlib
+
 import boto3
 import botocore.exceptions
-import contextlib
-import sentry_sdk
-import time
-
 from botocore.config import Config
 from flask import current_app
 

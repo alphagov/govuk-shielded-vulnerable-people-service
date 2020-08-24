@@ -26,8 +26,6 @@ def verify_config(app):
         "NHS_OIDC_REGISTRATION_CALLBACK_URL",
         "NHS_OIDC_LOGIN_CALLBACK_URL",
         # AWS CONFIG
-        "AWS_RDS_DATABASE_NAME",
-        "AWS_RDS_DATABASE_SCHEMA",
         "AWS_REGION",
         "AWS_ACCESS_KEY",
         "AWS_SECRET_ACCESS_KEY",

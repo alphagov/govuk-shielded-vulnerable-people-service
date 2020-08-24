@@ -36,8 +36,6 @@ params:
   DATABASE_CLUSTER_PREFIX: coronavirus-
   DATABASE_SECRET_TAGS: role,coronavirus-web-form
   SECRET_KEY:
-  AWS_RDS_DATABASE_SCHEMA: IDK
-  AWS_RDS_DATABASE_NAME: IDK
   NHS_OIDC_LOGIN_PRIVATE_KEY:
 
 run:
@@ -56,8 +54,6 @@ run:
       cf create-app govuk-coronavirus-shielded-vulnerable-people-form || true
       cf apply-manifest -f manifest.yml
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form CF_STARTUP_TIMEOUT "$CF_STARTUP_TIMEOUT"
-
-      cf scale -i "$INSTANCES" govuk-coronavirus-shielded-vulnerable-people-form
 
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form GA_TRACKING_ID "$GA_VIEW_ID"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form GA_CROSS_DOMAIN_ID "$GA_CROSS_DOMAIN_ID"
@@ -83,8 +79,6 @@ run:
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form FLASK_ENV "$FLASK_ENV"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form FLASK_CONFIG_FILE "$FLASK_CONFIG"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form SECRET_KEY "$SECRET_KEY"
-      cf set-env govuk-coronavirus-shielded-vulnerable-people-form AWS_RDS_DATABASE_NAME "$AWS_RDS_DATABASE_NAME"
-      cf set-env govuk-coronavirus-shielded-vulnerable-people-form AWS_RDS_DATABASE_SCHEMA "$AWS_RDS_DATABASE_SCHEMA"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form NHS_OIDC_LOGIN_PRIVATE_KEY "$NHS_OIDC_LOGIN_PRIVATE_KEY"
 
       cf push govuk-coronavirus-shielded-vulnerable-people-form --strategy rolling --no-route
