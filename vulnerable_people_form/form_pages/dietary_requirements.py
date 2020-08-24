@@ -8,7 +8,7 @@ from .shared.session import (
     form_answers,
     get_errors_from_session,
     request_form,
-    update_session_answers_from_form,
+    update_session_answers_from_form_for_enum,
 )
 from .shared.validation import validate_dietary_requirements
 
@@ -27,7 +27,7 @@ def get_dietary_requirements():
 
 @form.route("/dietary-requirements", methods=["POST"])
 def post_dietary_requirements():
-    update_session_answers_from_form()
+    update_session_answers_from_form_for_enum()
     if not validate_dietary_requirements():
         return redirect("/dietary-requirements")
     return route_to_next_form_page()

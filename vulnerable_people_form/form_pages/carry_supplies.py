@@ -8,7 +8,7 @@ from .shared.session import (
     form_answers,
     get_errors_from_session,
     request_form,
-    update_session_answers_from_form,
+    update_session_answers_from_form_for_enum,
 )
 from .shared.validation import validate_carry_supplies
 
@@ -27,7 +27,7 @@ def get_carry_supplies():
 
 @form.route("/carry-supplies", methods=["POST"])
 def post_carry_supplies():
-    update_session_answers_from_form()
+    update_session_answers_from_form_for_enum()
     if not validate_carry_supplies():
         return redirect("/carry-supplies")
     return route_to_next_form_page()

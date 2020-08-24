@@ -7,7 +7,7 @@ from .shared.session import (
     form_answers,
     get_errors_from_session,
     request_form,
-    update_session_answers_from_form,
+    update_session_answers_from_form_for_enum,
 )
 from .shared.validation import validate_register_with_nhs
 
@@ -28,7 +28,7 @@ def get_nhs_registration():
 def post_nhs_registration():
     if not validate_register_with_nhs():
         return redirect("/nhs-registration")
-    answer = YesNoAnswers(request_form()["nhs_registration"])
+    answer = YesNoAnswers(int(request_form()["nhs_registration"]))
     if answer is YesNoAnswers.YES:
         return redirect(current_app.nhs_oidc_client.get_registration_url())
     else:

@@ -1,6 +1,5 @@
 from flask import current_app, redirect, request, session
 
-from ...integrations import form_response_model
 from ...integrations import postcode_eligibility
 from .answers_enums import (
     ApplyingOnOwnBehalfAnswers,
@@ -13,6 +12,7 @@ from .session import (
     form_answers,
     is_nhs_login_user,
     request_form,
+    persist_answers_from_session,
 )
 from .validation import (
     validate_contact_details,
@@ -70,7 +70,7 @@ def redirect_to_next_form_page(redirect_target=True):
     )
 
     if accessing_saved_answers():
-        form_response_model.write_answers_to_table(session["nhs_sub"], form_answers())
+        persist_answers_from_session()
 
     maybe_redirect_to_terminal_page = None
     if next_page_does_not_need_answer:
@@ -145,18 +145,13 @@ def route_to_next_form_page():
     if current_form == "address-lookup":
         return redirect("/support-address")
     elif current_form == "applying-on-own-behalf":
-        applying_on_own_behalf = request_form()["applying_on_own_behalf"]
-        if (
-            ApplyingOnOwnBehalfAnswers(applying_on_own_behalf)
-            is ApplyingOnOwnBehalfAnswers.YES
-        ):
+        if ApplyingOnOwnBehalfAnswers(answer) is ApplyingOnOwnBehalfAnswers.YES:
             return redirect_to_next_form_page("/nhs-login")
         return redirect_to_next_form_page("/postcode-eligibility")
     elif current_form == "postcode-eligibility":
         return return_redirect_if_postcode_valid(redirect("/live-in-england"))
     elif current_form == "nhs-login":
-        applying_on_own_behalf = request_form()["nhs_login"]
-        if YesNoAnswers(applying_on_own_behalf) is YesNoAnswers.YES:
+        if YesNoAnswers(answer) is YesNoAnswers.YES:
             return redirect(current_app.nhs_oidc_client.get_authorization_url())
         return redirect_to_next_form_page("/postcode-eligibility")
     elif current_form == "basic-care-needs":
@@ -187,8 +182,7 @@ def route_to_next_form_page():
     elif current_form == "dietary-requirements":
         return redirect_to_next_form_page("/carry-supplies")
     elif current_form == "essential-supplies":
-        essential_supplies = request_form()["essential_supplies"]
-        if YesNoAnswers(essential_supplies) is YesNoAnswers.YES:
+        if YesNoAnswers(answer) is YesNoAnswers.YES:
             blank_form_sections("dietary_requirements", "carry_supplies")
             return redirect_to_next_form_page("/basic-care-needs")
         return redirect_to_next_form_page("/dietary-requirements")

@@ -53,14 +53,27 @@ structured like this:
     government design system js files currently) and places them in
     `vulnerable_people_form/static`.
 
+## AWS integration
+
+This app persists and retrieves form responses from an Amazon Aurora RDS
+MySQL database backend created by the `covid-engineering` repository.
+That repository produces an endpoint, which we communicate with over an
+RDS Data HTTP connection. We call the following procedures:
+
+  - `cv_base.retrieve_latest_web_submission_for_nhs_login`
+  - `cv_staging.create_web_submission`
+
+In addition we use an `rds` client to retrieve database resource ARNs,
+and the `secretsmanager` API to retrieve the database secret ARN.
+
+The `AWS_ACCESS_KEY` and `AWS_SECRET_ACCESS_KEY` variables in this
+application need to be configured with credentials that have sufficient
+privileges to perform those operations.
+
 ## Setup
 
 Instance-level configuration and keys are stored in the instance
-folder. There are two files in the instance folder. The first at
-`instance/config.py.sample.dev` is a sample config file suitable for
-development. The second is a file (`instance/env_to_config_shim.py`)
-that allows the use of environment variables for app configuration,
-which is intended to smooth production deployments.
+folder. When deploying this folder will need to be created manually.
 
 ### Development setup
 
@@ -77,8 +90,6 @@ To set up the app for local development you need to follow these steps:
     SECRET_KEY = "Something super secret"
     TEMPLATES_AUTO_RELOAD = True
     ORDNANCE_SURVEY_PLACES_API_KEY = 
-    AWS_DYNAMODB_SUBMISSIONS_TABLE_NAME = "flask-form-response"
-    LOCAL_AWS_ENDPOINT_URL = "http://localhost:8000"
     PERMANENT_SESSION_LIFETIME = 30 * 60
     GA_TRACKING_ID =
 
@@ -117,29 +128,24 @@ To set up the app for local development you need to follow these steps:
     export FLASK_APP='run.py'
     ```
 
-7.  Run the DynamoDB backend:
-    ```sh
-    docker run -d -p 8000:8000 amazon/dynamodb-local
-    ```
-
-8.  Run the build script that downloads the government dependencies:
+7.  Run the build script that downloads the government dependencies:
     ```sh
     bash build.sh
     ```
 
-9.  Set up the Python environment:
+8.  Set up the Python environment:
     ```sh
     python -m venv venv
     source venv/bin/activate
     pip install -r requirements.txt
     ```
 	
-10. Run the app:
+9.  Run the app:
     ```sh
     flask run
     ```
 
-11. Navigate to: http://localhost:5000/start in a web browser.
+10. Navigate to: http://localhost:5000/start in a web browser.
 
 ### Environment variables guide
 
@@ -153,10 +159,10 @@ To set up the app for local development you need to follow these steps:
   - `FLASK_APP` **\[required\]**: The path to the Flask app's run file.
     This should be set to `run.py`.
 
-  - `AWS_REGION` **\[required\]**: This variable sets the AWS region
-    that the app will communicate with to persist form answers.
+  - `AWS_DEFAULT_REGION` **\[required\]**: This variable sets the AWS
+    region that the app will communicate with to persist form answers.
 
-  - `AWS_ACCESS_KEY` **\[required\]**: This variable sets the AWS
+  - `AWS_ACCESS_KEY_ID` **\[required\]**: This variable sets the AWS
     access key that the app needs to communicate with AWS servers.
  
   - `AWS_SECRET_ACCESS_KEY` **\[required\]**: This variable sets the
@@ -165,10 +171,8 @@ To set up the app for local development you need to follow these steps:
 
 ### Configuration variables guide
 
-The following variables can either be set in the config file pointed at
-by the `FLASK_CONFIG` environment variable, or if using the
-`env_to_config_shim.py` configuration, configured as environment
-variables.
+The following variables are set in the config file pointed at
+by the `FLASK_CONFIG` environment variable.
 
   - `SECRET_KEY` **\[required\]**: This is the secret key that Flask
     will use to encrypt the session.
@@ -202,9 +206,16 @@ variables.
     have the form
     `http(s)://<externally_reachable_app_url>/nhs-login-callback`.
 
-  - `AWS_DYNAMODB_SUBMISSIONS_TABLE_NAME` **\[required\]**: This
-    variable contains the table name that the app will submit form
-    responses to.
+  - `DATABASE_CLUSTER_PREFIX` **\[either this or
+    `AWS_RDS_DATABASE_ARN_OVERRIDE` required\]**: This variable is used
+    to retrieve the correct AWS database cluster ARN from RDS.
+
+  - `DATABASE_SECRET_TAGS` **\[either this or
+    `AWS_RDS_DATABASE_SECRET_OVERRIDE` required\]**: This variable
+    should be a list of tags that the app uses to retrieve the correct
+    values from the database. If set as an environment variable this
+    should be a comma-separated list of tags. If set in the `config.py`
+    file, it should be a list of Python strings.
 
 #### Useful config variables for development
 
@@ -215,3 +226,13 @@ variables.
   - `LOCAL_AWS_ENDPOINT_URL` **\[not required\]**: The presence of this
     variable will configure the app to communicate with the supplied
     endpoint URL, instead of the AWS servers.
+
+  - `AWS_RDS_DATABASE_ARN_OVERRIDE` **\[either this or
+    `DATABASE_CLUSTER_PREFIX` required\]**: If this variable is present
+    it will be used as the database or 'resource' ARN when communicating
+    with AWS.
+
+  - `AWS_RDS_SECRET_ARN_OVERRIDE` **\[either this or
+    `DATABASE_SECRET_TAGS` required\]**: If this variable is present it
+    will be used as the RDS secret ARN when communicating with AWS. 
+
