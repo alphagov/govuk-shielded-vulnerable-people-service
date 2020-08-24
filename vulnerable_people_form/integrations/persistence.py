@@ -1,5 +1,6 @@
 import boto3
 import botocore.exceptions
+import contextlib
 import sentry_sdk
 import time
 
@@ -92,13 +93,39 @@ def generate_date_parameter(name, value):
     }
 
 
+def _rds_arns():
+    return {
+        "resourceArn": current_app.config["AWS_RDS_DATABASE_ARN"],
+        "secretArn": current_app.config["AWS_RDS_SECRET_ARN"],
+    }
+
+
+@contextlib.contextmanager
+def boto3transaction(client):
+    transaction_id = client.begin_transaction(**_rds_arns(),)["transactionId"]
+    try:
+        yield transaction_id
+    except botocore.exceptions.BotoCoreError:
+        client.rollback_transaction(
+            transactionId=transaction_id, **_rds_arns(),
+        )
+    else:
+        client.commit_transaction(
+            transactionId=transaction_id, **_rds_arns(),
+        )
+
+
 def _execute_sql(sql, parameters):
-    return get_rds_data_client().execute_statement(
-        sql=sql,
-        parameters=parameters,
-        resourceArn=current_app.config["AWS_RDS_DATABASE_ARN"],
-        secretArn=current_app.config["AWS_RDS_SECRET_ARN"]
-    )
+    client = get_rds_data_client()
+    with boto3transaction(client) as transaction_id:
+        client.execute_statement(
+            sql="SET SESSION sql_mode='STRICT_ALL_TABLES'",
+            transactionId=transaction_id,
+            **_rds_arns(),
+        )
+        return client.execute_statement(
+            sql=sql, parameters=parameters, transactionId=transaction_id, **_rds_arns(),
+        )
 
 
 def execute_sql(sql, parameters, retries=5):
@@ -108,8 +135,12 @@ def execute_sql(sql, parameters, retries=5):
     # ARN values (n.b) - retries for other, transient, exceptions are handled
     # by the boto3 client itself.
     except botocore.exceptions.ClientError:
-        current_app.config['AWS_DATABASE_ARN']= _find_database_arn(current_app)
-        current_app.config['AWS_DATABASE_SECRET_ARN']= _find_database_secret_arn(current_app)
+        if current_app.config.get("AWS_RDS_DATABASE_ARN_OVERRIDE") is None:
+            current_app.config["AWS_DATABASE_ARN"] = _find_database_arn(current_app)
+        if current_app.config.get("AWS_RDS_SECRET_ARN") is None:
+            current_app.config["AWS_DATABASE_SECRET_ARN"] = _find_database_secret_arn(
+                current_app
+            )
         return _execute_sql(sql, parameters)
 
 
