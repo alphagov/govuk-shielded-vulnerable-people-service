@@ -1,4 +1,5 @@
 {%- from "govuk_frontend_jinja/components/radios/macro.html" import govukRadios -%}
+{%- from "govuk_frontend_jinja/components/details/macro.html" import govukDetails -%}
 
 {% extends "form-base.html" %}
 
@@ -8,7 +9,7 @@
       "name": "nhs_login",
       "errorMessage": error_messages.get('nhs_login'),
       "hint": {
-        "text": "Logging into this service with your NHS Login account means you won't have to answer some questions, and you will be able to retrieve and edit your answers in the future."},
+        "text": "You might have one if you've used the NHS app."},
       "fieldset": {
         "legend": {
           "text": title_text, 
@@ -17,5 +18,9 @@
         }
       },
       "items": radio_items,
+    }) }}
+    {{ govukDetails({
+      "summaryText": "What is NHS login?",
+      "html": "<p class='govuk-body'>NHS login allows you to sign into different NHS services, for example the NHS app.</p><p class='govuk-body'>If you do not have one, you'll have the option to create an account at the end of the service.</p>"
     }) }}
 {% endblock %}

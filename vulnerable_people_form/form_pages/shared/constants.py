@@ -34,7 +34,7 @@ PAGE_TITLES = {
     "medical-conditions": "Do you have one of the listed medical conditions?",
     "name": "What is your name?	",
     "nhs-letter": "Have you had a letter from the NHS or been told by your doctor to ’shield’ because you’re clinically extremely vulnerable to coronavirus?",
-    "nhs-login": "Would you like to use an existing NHS login to access this service?",
+    "nhs-login": "Do you have an NHS login?",
     "nhs-number": "Do you know your NHS number?",
     "nhs-registration": "Would you like to create an NHS Login you can use to retrieve your answers in the future?",
     "not-eligible-england": "Sorry, this service is only available in England",
