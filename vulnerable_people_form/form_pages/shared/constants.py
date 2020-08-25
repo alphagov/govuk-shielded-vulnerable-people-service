@@ -28,6 +28,7 @@ PAGE_TITLES = {
     "check-your-answers": "Are you ready to send your application?",
     "contact-details": "What are your contact details?",
     "date-of-birth": "What is your date of birth?",
+    "do-you-have-someone-to-go-shopping-for-you": "While you're shielding is there someone you can rely on to go shopping for you?",
     "essential-supplies": "Do you have a way of getting essential supplies delivered at the moment?",
     "live-in-england": "Do you live in England?",
     "medical-conditions": "Do you have one of the listed medical conditions?",

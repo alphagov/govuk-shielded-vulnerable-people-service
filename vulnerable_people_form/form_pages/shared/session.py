@@ -85,6 +85,7 @@ def get_summary_rows_from_form_answers():
         "contact_details",
         "nhs_number",
         "essential_supplies",
+        "do_you_have_someone_to_go_shopping_for_you",
         "basic_care_needs",
     ]
 
@@ -94,6 +95,7 @@ def get_summary_rows_from_form_answers():
         "nhs_letter": NHSLetterAnswers,
         "medical_conditions": MedicalConditionsAnswers,
         "essential_supplies": YesNoAnswers,
+        "do_you_have_someone_to_go_shopping_for_you": YesNoAnswers,
         "basic_care_needs": YesNoAnswers,
     }
 
@@ -183,6 +185,7 @@ def persist_answers_from_session():
         form_answers()["nhs_letter"],
         form_answers()["essential_supplies"],
         form_answers()["basic_care_needs"],
+        form_answers().get("do_you_have_someone_to_go_shopping_for_you"),
         form_answers().get("medical_conditions"),
     )
 
@@ -219,6 +222,7 @@ def load_answers_into_session_if_available():
             have_you_received_an_nhs_letter,
             do_you_want_supermarket_deliveries,
             do_you_need_help_meeting_your_basic_care_needs,
+            do_you_have_someone_to_go_shopping_for_you,
             do_you_have_one_of_the_listed_medical_conditions,
         ) = stored_answers
 
@@ -259,6 +263,9 @@ def load_answers_into_session_if_available():
             "nhs_letter": have_you_received_an_nhs_letter["longValue"],
             "essential_supplies": do_you_want_supermarket_deliveries["longValue"],
             "basic_care_needs": do_you_need_help_meeting_your_basic_care_needs[
+                "longValue"
+            ],
+            "do_you_have_someone_to_go_shopping_for_you": do_you_have_someone_to_go_shopping_for_you[
                 "longValue"
             ],
         }

@@ -348,3 +348,11 @@ def validate_basic_care_needs():
         "basic_care_needs",
         "Select yes if your basic care needs are being met at the moment",
     )
+
+
+def validate_do_you_have_someone_to_go_shopping_for_you():
+    return validate_radio_button(
+        YesNoAnswers,
+        "do_you_have_someone_to_go_shopping_for_you",
+        "Select yes if you have someone who can go shopping for you",
+    )

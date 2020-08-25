@@ -28,6 +28,7 @@ FORM_PAGE_TO_DATA_CHECK_SECTION_NAME = {
     "check-your-answers": "basic_care_needs",
     "contact-details": "contact_details",
     "date-of-birth": "date_of_birth",
+    "do-you-have-someone-to-go-shopping-for-you": "do_you_have_someone_to_go_shopping_for_you",
     "essential-supplies": "essential_supplies",
     "live-in-england": "live_in_england",
     "medical-conditions": "medical_conditions",
@@ -175,8 +176,10 @@ def route_to_next_form_page():
         return redirect_to_next_form_page(get_next_form_url_after_contact_details())
     elif current_form == "date-of-birth":
         return redirect_to_next_form_page(get_next_form_url_after_date_of_birth())
-    elif current_form == "essential-supplies":
+    elif current_form == "do-you-have-someone-to-go-shopping-for-you":
         return redirect_to_next_form_page("/basic-care-needs")
+    elif current_form == "essential-supplies":
+        return redirect_to_next_form_page("/do-you-have-someone-to-go-shopping-for-you")
     elif current_form == "live-in-england":
         if YesNoAnswers(answer) is YesNoAnswers.YES:
             return redirect_to_next_form_page("/nhs-letter")
