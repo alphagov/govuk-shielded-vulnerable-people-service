@@ -20,7 +20,7 @@ def get_answers_formatted_date_from_userinfo(nhs_user_info):
 PAGE_TITLES = {
     "privacy": "Privacy",
     "accessibility": "Accessibility statement",
-    "applying-on-own-behalf": "Are you applying on your own behalf?",
+    "applying-on-own-behalf": "Are you using this service for yourself or for someone else?",
     "cookies": "Cookies",
     "address-lookup": "Select your address",
     "basic-care-needs": "Are your basic care needs being met at the moment?",

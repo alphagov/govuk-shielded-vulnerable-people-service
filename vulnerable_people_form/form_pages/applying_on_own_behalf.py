@@ -1,4 +1,4 @@
-from flask import redirect
+from flask import redirect, request
 
 from .shared.answers_enums import (
     ApplyingOnOwnBehalfAnswers,
@@ -23,7 +23,7 @@ def get_apply_on_own_behalf():
         radio_items=get_radio_options_from_enum(
             ApplyingOnOwnBehalfAnswers, form_answers().get("applying_on_own_behalf")
         ),
-        previous_path="/",
+        previous_path=request.referrer if request.referrer else "#",
         **get_errors_from_session("applying_on_own_behalf"),
     )
 

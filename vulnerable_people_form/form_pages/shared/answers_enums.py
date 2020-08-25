@@ -26,8 +26,8 @@ class ApplyingOnOwnBehalfAnswers(EnumWithText):
     NO = 0
 
     __text_values__ = {
-        YES: "Yes, I'm applying on my own behalf.",
-        NO: "No, I'm applying on behalf of someone else.",
+        YES: "Myself",
+        NO: "Someone else",
     }
 
 
