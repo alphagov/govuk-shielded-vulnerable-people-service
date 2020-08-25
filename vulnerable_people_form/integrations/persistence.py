@@ -189,8 +189,6 @@ def persist_answers(
         ":have_you_received_an_nhs_letter,"
         ":do_you_want_supermarket_deliveries,"
         ":do_you_need_help_meeting_your_basic_care_needs,"
-        ":do_you_have_any_special_dietary_requirements,"
-        ":do_you_have_someone_in_the_house_to_carry_deliveries,"
         ":do_you_have_one_of_the_listed_medical_conditions"
         ")",
         parameters=(
@@ -221,16 +219,8 @@ def persist_answers(
                 "do_you_want_supermarket_deliveries", do_you_want_supermarket_deliveries
             ),
             generate_date_parameter("date_of_birth", date_of_birth),
-            generate_int_parameter(
-                "do_you_have_someone_in_the_house_to_carry_deliveries",
-                do_you_have_someone_in_the_house_to_carry_deliveries,
-            ),
             generate_string_parameter("uid_nhs_login", uid_nhs_login),
             generate_string_parameter("address_line2", address_line2),
-            generate_int_parameter(
-                "do_you_have_any_special_dietary_requirements",
-                do_you_have_any_special_dietary_requirements,
-            ),
             generate_int_parameter(
                 "do_you_need_help_meeting_your_basic_care_needs",
                 do_you_need_help_meeting_your_basic_care_needs,

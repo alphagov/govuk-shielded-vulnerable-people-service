@@ -85,8 +85,6 @@ def get_summary_rows_from_form_answers():
         "contact_details",
         "nhs_number",
         "essential_supplies",
-        "dietary_requirements",
-        "carry_supplies",
         "basic_care_needs",
     ]
 
@@ -96,8 +94,6 @@ def get_summary_rows_from_form_answers():
         "nhs_letter": NHSLetterAnswers,
         "medical_conditions": MedicalConditionsAnswers,
         "essential_supplies": YesNoAnswers,
-        "dietary_requirements": YesNoAnswers,
-        "carry_supplies": YesNoAnswers,
         "basic_care_needs": YesNoAnswers,
     }
 
@@ -187,8 +183,6 @@ def persist_answers_from_session():
         form_answers()["nhs_letter"],
         form_answers()["essential_supplies"],
         form_answers()["basic_care_needs"],
-        form_answers().get("dietary_requirements"),
-        form_answers().get("carry_supplies"),
         form_answers().get("medical_conditions"),
     )
 
@@ -225,8 +219,6 @@ def load_answers_into_session_if_available():
             have_you_received_an_nhs_letter,
             do_you_want_supermarket_deliveries,
             do_you_need_help_meeting_your_basic_care_needs,
-            do_you_have_any_special_dietary_requirements,
-            do_you_have_someone_in_the_house_to_carry_deliveries,
             do_you_have_one_of_the_listed_medical_conditions,
         ) = stored_answers
 
@@ -269,22 +261,13 @@ def load_answers_into_session_if_available():
             "basic_care_needs": do_you_need_help_meeting_your_basic_care_needs[
                 "longValue"
             ],
-            **{
-                k: v
-                for k, v in {
-                    "dietary_requirements": do_you_have_any_special_dietary_requirements.get(
-                        "longValue"
-                    ),
-                    "carry_supplies": do_you_have_someone_in_the_house_to_carry_deliveries.get(
-                        "longValue"
-                    ),
-                    "medical_conditions": do_you_have_one_of_the_listed_medical_conditions.get(
-                        "longValue"
-                    ),
-                }.items()
-                if v is not None
-            },
         }
+
+        medical_conditions = do_you_have_one_of_the_listed_medical_conditions.get(
+            "longValue"
+        )
+        if medical_conditions is not None:
+            session["medical_conditions"] = medical_conditions
         session["accessing_saved_answers"] = True
         return True
     return False

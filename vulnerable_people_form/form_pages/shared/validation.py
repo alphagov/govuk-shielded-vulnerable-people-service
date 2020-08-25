@@ -348,19 +348,3 @@ def validate_basic_care_needs():
         "basic_care_needs",
         "Select yes if your basic care needs are being met at the moment",
     )
-
-
-def validate_dietary_requirements():
-    return validate_radio_button(
-        YesNoAnswers,
-        "dietary_requirements",
-        "Select yes if you have special dietary requirements",
-    )
-
-
-def validate_carry_supplies():
-    return validate_radio_button(
-        YesNoAnswers,
-        "carry_supplies",
-        "Select yes if there’s someone in the house who’s able to carry a delivery of supplies inside",
-    )

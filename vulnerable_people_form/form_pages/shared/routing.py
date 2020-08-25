@@ -24,12 +24,10 @@ FORM_PAGE_TO_DATA_CHECK_SECTION_NAME = {
     "address-lookup": "support_address",
     "applying-on-own-behalf": "applying_on_own_behalf",
     "basic-care-needs": "basic_care_needs",
-    "carry-supplies": "carry_supplies",
     "check-contact-details": "check_contact_details",
     "check-your-answers": "basic_care_needs",
     "contact-details": "contact_details",
     "date-of-birth": "date_of_birth",
-    "dietary-requirements": "dietary_requirements",
     "essential-supplies": "essential_supplies",
     "live-in-england": "live_in_england",
     "medical-conditions": "medical_conditions",
@@ -169,8 +167,6 @@ def route_to_next_form_page():
         else:
             return redirect("/nhs-registration")
         return redirect_to_next_form_page("/basic-care-needs")
-    elif current_form == "carry-supplies":
-        return redirect_to_next_form_page("/basic-care-needs")
     elif current_form == "check-contact-details":
         return redirect_to_next_form_page(
             get_next_form_url_after_check_contact_details()
@@ -179,13 +175,8 @@ def route_to_next_form_page():
         return redirect_to_next_form_page(get_next_form_url_after_contact_details())
     elif current_form == "date-of-birth":
         return redirect_to_next_form_page(get_next_form_url_after_date_of_birth())
-    elif current_form == "dietary-requirements":
-        return redirect_to_next_form_page("/carry-supplies")
     elif current_form == "essential-supplies":
-        if YesNoAnswers(answer) is YesNoAnswers.YES:
-            blank_form_sections("dietary_requirements", "carry_supplies")
-            return redirect_to_next_form_page("/basic-care-needs")
-        return redirect_to_next_form_page("/dietary-requirements")
+        return redirect_to_next_form_page("/basic-care-needs")
     elif current_form == "live-in-england":
         if YesNoAnswers(answer) is YesNoAnswers.YES:
             return redirect_to_next_form_page("/nhs-letter")
