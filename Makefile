@@ -19,3 +19,6 @@ install:
 	pip3 -q install black flake8 mypy watchdog pyyaml argh pytest isort requests_mock pytest-env
 	pip3 -q install -r requirements.txt
 	echo "✔️ Pip dependencies installed!"
+
+concourse_e2e:
+	echo "Run behave tests"

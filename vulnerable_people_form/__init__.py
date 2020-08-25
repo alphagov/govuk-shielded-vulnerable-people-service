@@ -19,6 +19,7 @@ def verify_config(app):
         "ORDNANCE_SURVEY_PLACES_API_KEY",
         "PERMANENT_SESSION_LIFETIME",
         "GA_TRACKING_ID",
+        "NOTIFY_API_KEY",
         # NHS OIDC config
         "NHS_OIDC_AUTHORITY_URL",
         "NHS_OIDC_CLIENT_ID",
