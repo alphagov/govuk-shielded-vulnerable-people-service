@@ -81,6 +81,6 @@ run:
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form SECRET_KEY "$SECRET_KEY"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form NHS_OIDC_LOGIN_PRIVATE_KEY "$NHS_OIDC_LOGIN_PRIVATE_KEY"
 
-      cf push govuk-coronavirus-shielded-vulnerable-people-form --strategy rolling --no-route
+      cf push govuk-coronavirus-shielded-vulnerable-people-form --strategy rolling --no-route -i "$INSTANCES"
       cf map-route govuk-coronavirus-shielded-vulnerable-people-form london.cloudapps.digital --hostname "$HOSTNAME"
 
