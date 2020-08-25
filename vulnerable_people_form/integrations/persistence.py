@@ -175,7 +175,6 @@ def persist_answers(
         ":date_of_birth,"
         ":address_line1,"
         ":address_line2,"
-        ":address_town_city,"
         ":address_county,"
         ":address_postcode,"
         ":address_uprn,"
@@ -199,7 +198,6 @@ def persist_answers(
             generate_string_parameter("middle_name", middle_name),
             generate_string_parameter("last_name", last_name),
             generate_string_parameter("address_line1", address_line1),
-            generate_string_parameter("address_town_city", address_town_city),
             generate_string_parameter("address_postcode", address_postcode),
             generate_string_parameter("address_county", address_county),
             generate_bigint_parameter("address_uprn", address_uprn),

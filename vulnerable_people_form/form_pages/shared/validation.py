@@ -242,20 +242,12 @@ def validate_support_address():
                 length_fstring.format("Address line 2", 75),
             ),
             validate_length(
-                ("support_address", "town_city"),
-                50,
-                length_fstring.format("Town or City", 50),
-            ),
-            validate_length(
                 ("support_address", "county"), 50, length_fstring.format("County", 50)
             ),
             validate_mandatory_form_field(
                 "support_address",
                 "building_and_street_line_1",
                 "Enter a building and street",
-            ),
-            validate_mandatory_form_field(
-                "support_address", "town_city", "Enter a town or city"
             ),
             validate_postcode("support_address"),
         ]

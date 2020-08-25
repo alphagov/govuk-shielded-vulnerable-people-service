@@ -36,21 +36,6 @@ govukInput({
   "value": values.get("building_and_street_line_2")
   }) 
 }}
-{{ 
-govukInput({
-  "label": {
-    "text": "Town or city"
-  },
-  "id": "town_city",
-  "name": "town_city",
-  "autocomplete": "address-level2",
-  "errorMessage": error_messages.get("town_city"),
-  "attributes": {
-    "spellcheck": "false"
-  },
-  "value": values.get("town_city")
-  }) 
-}}
 {{
   govukInput({
     "label": {

@@ -58,9 +58,6 @@ def address_builder(lpi_info):
 
     return {
         "uprn": int(lpi_info.get("UPRN", "")),
-        "town_city": address_line_builder(
-            lpi_info, ["LOCALITY_NAME", "TOWN_NAME"]
-        ).title(),
         "county": address_line_builder(
             lpi_info, ["ADMINISTRATIVE_AREA", "AREA_NAME"]
         ).title(),
