@@ -151,7 +151,7 @@ def route_to_next_form_page():
         return return_redirect_if_postcode_valid(redirect("/live-in-england"))
     elif current_form == "nhs-login":
         if YesNoAnswers(answer) is YesNoAnswers.YES:
-            return redirect(current_app.nhs_oidc_client.get_authorization_url())
+            return redirect("/nhs-login-link")
         return redirect_to_next_form_page("/postcode-eligibility")
     elif current_form == "basic-care-needs":
         return get_redirect_to_terminal_page()

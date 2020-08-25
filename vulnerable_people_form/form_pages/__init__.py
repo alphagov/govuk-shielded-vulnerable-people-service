@@ -18,6 +18,7 @@ from . import (
     nhs_letter,
     nhs_login,
     nhs_login_callback,
+    nhs_login_link,
     nhs_number,
     nhs_registration,
     nhs_registration_callback,
