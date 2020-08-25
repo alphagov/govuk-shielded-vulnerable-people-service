@@ -29,7 +29,6 @@ from . import (
     privacy,
     support_address,
     view_answers,
-    view_or_setup,
 )
 
 __all__ = ["blueprint"]

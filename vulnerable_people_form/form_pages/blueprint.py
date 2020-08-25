@@ -17,7 +17,7 @@ def redirect_to_first_page():
     if not session.get("form_started"):
         session.clear()
         session["form_started"] = True
-        return redirect("/view-or-setup")
+        return redirect("/applying-on-own-behalf")
 
 
 @form.errorhandler(CSRFError)
