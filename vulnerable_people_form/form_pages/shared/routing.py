@@ -91,7 +91,7 @@ def get_next_form_url_after_eligibility_check():
     if is_nhs_login_user() and validate_name():
         return get_next_form_url_after_name()
     else:
-        return "/name"
+        return "/nhs-number"
 
 
 @clear_errors_after
