@@ -68,7 +68,7 @@ def validate_radio_button(EnumClass, value_key, error_message):
     value = form_answers().get(value_key)
     try:
         EnumClass(int(value))
-    except ValueError:
+    except (ValueError, TypeError):
         session["error_items"] = {
             **session.setdefault("error_items", {}),
             value_key: {value_key: error_message},
