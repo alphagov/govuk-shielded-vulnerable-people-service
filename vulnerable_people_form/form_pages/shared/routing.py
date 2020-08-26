@@ -17,6 +17,7 @@ from .session import (
 from .validation import (
     validate_contact_details,
     validate_date_of_birth,
+    validate_nhs_number,
     validate_name,
 )
 
@@ -87,9 +88,17 @@ def clear_errors_after(fn):
 
 
 @clear_errors_after
-def get_next_form_url_after_eligibility_check():
+def get_next_form_url_after_nhs_number():
     if is_nhs_login_user() and validate_name():
         return get_next_form_url_after_name()
+    else:
+        return "/name"
+
+
+@clear_errors_after
+def get_next_form_url_after_eligibility_check():
+    if is_nhs_login_user() and validate_nhs_number():
+        return get_next_form_url_after_nhs_number()
     else:
         return "/nhs-number"
 
@@ -195,7 +204,7 @@ def route_to_next_form_page():
             )
         return redirect_to_next_form_page("/medical-conditions")
     elif current_form == "nhs-number":
-        return redirect_to_next_form_page("/address-lookup")
+        return redirect_to_next_form_page(get_next_form_url_after_nhs_number())
     elif current_form == "postcode-lookup":
         return return_redirect_if_postcode_valid(redirect("/address-lookup"))
     elif current_form == "support-address":
