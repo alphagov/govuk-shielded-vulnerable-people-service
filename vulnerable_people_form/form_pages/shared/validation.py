@@ -1,4 +1,5 @@
 import datetime
+import email_validator
 import re
 
 import phonenumbers
@@ -280,17 +281,17 @@ def validate_phone_number_if_present(section_key, phone_number_key):
 
 def validate_email_if_present(section_key, email_key):
     email_address = form_answers()["contact_details"].get(email_key)
-    email_regex = r"([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})"
-    if email_address and re.match(email_regex, email_address) is None:
-        error_message = (
-            "Enter email address in the correct format, like name@example.com"
-        )
-        error_section = session.setdefault("error_items", {}).get(section_key, {})
-        session["error_items"] = {
-            **session.setdefault("error_items", {}),
-            section_key: {**error_section, email_key: error_message},
-        }
-        return False
+    if email_address:
+        try:
+            email_validator.validate_email(email_address)
+        except email_validator.EmailNotValidError as e:
+            error_message = f"The email address is invalid: {str(e)}"
+            error_section = session.setdefault("error_items", {}).get(section_key, {})
+            session["error_items"] = {
+                **session.setdefault("error_items", {}),
+                section_key: {**error_section, email_key: error_message},
+            }
+            return False
     return True
 
 

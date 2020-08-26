@@ -139,9 +139,9 @@ def get_summary_rows_from_form_answers():
         elif key == "contact_details":
             value["html"] = "<br>".join(
                 [
-                    f"Phone number: {answer['phone_number_calls']}",
-                    f"Text: {answer['phone_number_texts']}",
-                    f"Email: {answer['email']}",
+                    f"Phone number: {answer.get('phone_number_calls', '')}",
+                    f"Text: {answer.get('phone_number_texts', '')}",
+                    f"Email: {answer.get('email', '')}",
                 ]
             )
         elif key == "date_of_birth":
@@ -173,10 +173,10 @@ def persist_answers_from_session():
         form_answers()["support_address"].get("building_and_street_line_2"),
         form_answers()["support_address"]["county"],
         address_postcode,
-        form_answers()["support_address"]["uprn"],
-        form_answers()["contact_details"]["phone_number_calls"],
-        form_answers()["contact_details"]["phone_number_texts"],
-        form_answers()["contact_details"]["email"],
+        form_answers()["support_address"].get("uprn"),
+        form_answers()["contact_details"].get("phone_number_calls"),
+        form_answers()["contact_details"].get("phone_number_texts"),
+        form_answers()["contact_details"].get("email"),
         session.get("nhs_sub"),
         form_answers()["applying_on_own_behalf"],
         form_answers()["nhs_letter"],
@@ -189,6 +189,10 @@ def persist_answers_from_session():
     session["form_uid"] = submission_reference
 
     return submission_reference
+
+
+def _strip_keys_with_no_value(_dict):
+    return {key: value for key, value in _dict.items() if value is not None}
 
 
 def load_answers_into_session_if_available():
@@ -226,32 +230,34 @@ def load_answers_into_session_if_available():
 
         session["form_answers"] = {
             "nhs_number": nhs_number["stringValue"],
-            "name": {
-                k: v
-                for k, v in {
+            "name": _strip_keys_with_no_value(
+                {
                     "first_name": first_name["stringValue"],
                     "last_name": last_name["stringValue"],
                     "middle_name": middle_name.get("stringValue"),
-                }.items()
-                if v is not None
-            },
+                }
+            ),
             "date_of_birth": {
                 "day": date_of_birth.day,
                 "year": date_of_birth.year,
                 "month": date_of_birth.month,
             },
-            "support_address": {
-                "building_and_street_line_1": address_line1["stringValue"],
-                "building_and_street_line_2": address_line2["stringValue"],
-                "county": address_county["stringValue"],
-                "postcode": address_postcode["stringValue"],
-                "uprn": address_uprn["longValue"],
-            },
-            "contact_details": {
-                "phone_number_calls": contact_number_calls["stringValue"],
-                "phone_number_texts": contact_number_texts["stringValue"],
-                "email": contact_email["stringValue"],
-            },
+            "support_address": _strip_keys_with_no_value(
+                {
+                    "building_and_street_line_1": address_line1["stringValue"],
+                    "building_and_street_line_2": address_line2.get("stringValue"),
+                    "county": address_county["stringValue"],
+                    "postcode": address_postcode["stringValue"],
+                    "uprn": address_uprn.get("longValue"),
+                }
+            ),
+            "contact_details": _strip_keys_with_no_value(
+                {
+                    "phone_number_calls": contact_number_calls.get("stringValue"),
+                    "phone_number_texts": contact_number_texts.get("stringValue"),
+                    "email": contact_email.get("stringValue"),
+                }
+            ),
             "applying_on_own_behalf": are_you_applying_on_behalf_of_someone_else[
                 "longValue"
             ],

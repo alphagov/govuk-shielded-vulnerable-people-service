@@ -21,7 +21,7 @@ def get_do_you_have_someone_to_go_shopping_for_you():
             YesNoAnswers,
             form_answers().get("do_you_have_someone_to_go_shopping_for_you"),
         ),
-        previous_path="/nhs-number",
+        previous_path="/priority-supermarket-deliveries",
         **get_errors_from_session("do_you_have_someone_to_go_shopping_for_you"),
     )
 
