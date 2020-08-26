@@ -120,7 +120,7 @@ To set up the app for local development you need to follow these steps:
     flask run
     ```
 		
-### Production configuration
+### Production configuration & Deployment
 
 In production the app is intended to retrieve its configuration from
 environment variables. To do this it uses the file at
@@ -140,6 +140,31 @@ environment variables. To do this it uses the file at
     (`$GUNICORN_WORKERS_COUNT`) and `NHS_OIDC_LOGIN_PRIVATE_KEY`.
 
 4.  Run the app via the Procfile, using any procfile runner.
+
+The SVP is deployed to GOV.UK PaaS using Concourse.
+
+The pipeline can be found here:
+
+https://cd.gds-reliability.engineering/teams/covid19/pipelines/svp-form
+
+The deployment pipeline is configured as follows:
+
+- update: updates the pipeline
+- test: installs any python dependencies and runs the unit tests using pytest
+- deploy-to-staging: deploys the application to staging space in GOV.UK PaaS
+- smoke-test-staging: a simple curl command is run to check the website is up and running
+- e2e-test-staging: runs the python behave automation tests
+- deploy-to-prod: deploys the application to the production space in GOV.UK PaaS
+- smoke-test-prod: a simple curl command is run to check the website is up and running
+
+The following environment variables are all stored within Concourse and pulled into the pipeline when it is run.
+
+- AWS_ACCESS_KEY
+- AWS_SECRET_ACCESS_KEY
+- NHS_OIDC_LOGIN_PRIVATE_KEY
+- ORDNANCE_SURVEY_PLACES_API_KEY
+- NOTIFY_API_KEY
+- SECRET_KEY
 
 ### Environment variables guide
 
