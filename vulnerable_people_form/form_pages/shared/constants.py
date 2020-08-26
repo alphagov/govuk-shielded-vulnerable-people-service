@@ -32,7 +32,7 @@ PAGE_TITLES = {
     "essential-supplies": "Do you have a way of getting essential supplies delivered at the moment?",
     "medical-conditions": "Do you have one of the listed medical conditions?",
     "name": "What is your name?	",
-    "nhs-letter": "Have you had a letter from the NHS or been told by your doctor to ’shield’ because you’re clinically extremely vulnerable to coronavirus?",
+    "nhs-letter": "Are you 'shielding' because you’ve been told you're clinically extremely vulnerable to coronavirus?",
     "nhs-login": "Do you have an NHS login?",
     "nhs-number": "Do you know your NHS number?",
     "nhs-registration": "Would you like to create an NHS Login you can use to retrieve your answers in the future?",

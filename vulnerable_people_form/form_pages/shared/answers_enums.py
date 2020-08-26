@@ -50,7 +50,7 @@ class NHSLetterAnswers(EnumWithText):
 
     __text_values__ = {
         YES: "Yes, I’ve been told to shield",
-        NO: "No, I haven’t been told to shield",
+        NO: "No, I have not been told to shield",
         NOT_SURE: "Not sure",
     }
 
