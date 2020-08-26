@@ -29,7 +29,7 @@ PAGE_TITLES = {
     "contact-details": "What are your contact details?",
     "date-of-birth": "What is your date of birth?",
     "do-you-have-someone-to-go-shopping-for-you": "While you're shielding is there someone you can rely on to go shopping for you?",
-    "essential-supplies": "Do you have a way of getting essential supplies delivered at the moment?",
+    "priority-supermarket-deliveries": "Do you want access to priority supermarket deliveries?",
     "medical-conditions": "Do you have one of the listed medical conditions?",
     "name": "What is your name?	",
     "nhs-letter": "Are you 'shielding' because you’ve been told you're clinically extremely vulnerable to coronavirus?",

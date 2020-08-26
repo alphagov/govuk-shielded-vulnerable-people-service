@@ -11,6 +11,7 @@ from .answers_enums import (
     NHSLetterAnswers,
     ViewOrSetupAnswers,
     YesNoAnswers,
+    PrioritySuperMarketDeliveriesAnswers,
 )
 from .session import form_answers, get_answer_from_form, request_form
 
@@ -329,12 +330,12 @@ def validate_nhs_number():
     return error is None
 
 
-def validate_essential_supplies():
+def validate_priority_supermarket_deliveries():
 
     return validate_radio_button(
-        YesNoAnswers,
-        "essential_supplies",
-        "Select yes if you have a way of getting essential supplies delivered at the moment",
+        PrioritySuperMarketDeliveriesAnswers,
+        "priority_supermarket_deliveries",
+        "Select if you want priority supermarket deliveries",
     )
 
 

@@ -6,6 +6,7 @@ from .answers_enums import (
     NHSLetterAnswers,
     ApplyingOnOwnBehalfAnswers,
     MedicalConditionsAnswers,
+    PrioritySuperMarketDeliveriesAnswers,
     YesNoAnswers,
 )
 from .constants import PAGE_TITLES
@@ -83,7 +84,7 @@ def get_summary_rows_from_form_answers():
         "support_address",
         "contact_details",
         "nhs_number",
-        "essential_supplies",
+        "priority_supermarket_deliveries",
         "do_you_have_someone_to_go_shopping_for_you",
         "basic_care_needs",
     ]
@@ -92,7 +93,7 @@ def get_summary_rows_from_form_answers():
         "applying_on_own_behalf": ApplyingOnOwnBehalfAnswers,
         "nhs_letter": NHSLetterAnswers,
         "medical_conditions": MedicalConditionsAnswers,
-        "essential_supplies": YesNoAnswers,
+        "priority_supermarket_deliveries": PrioritySuperMarketDeliveriesAnswers,
         "do_you_have_someone_to_go_shopping_for_you": YesNoAnswers,
         "basic_care_needs": YesNoAnswers,
     }
@@ -179,7 +180,7 @@ def persist_answers_from_session():
         session.get("nhs_sub"),
         form_answers()["applying_on_own_behalf"],
         form_answers()["nhs_letter"],
-        form_answers()["essential_supplies"],
+        form_answers()["priority_supermarket_deliveries"],
         form_answers()["basic_care_needs"],
         form_answers().get("do_you_have_someone_to_go_shopping_for_you"),
         form_answers().get("medical_conditions"),
@@ -255,7 +256,9 @@ def load_answers_into_session_if_available():
                 "longValue"
             ],
             "nhs_letter": have_you_received_an_nhs_letter["longValue"],
-            "essential_supplies": do_you_want_supermarket_deliveries["longValue"],
+            "priority_supermarket_deliveries": do_you_want_supermarket_deliveries[
+                "longValue"
+            ],
             "basic_care_needs": do_you_need_help_meeting_your_basic_care_needs[
                 "longValue"
             ],

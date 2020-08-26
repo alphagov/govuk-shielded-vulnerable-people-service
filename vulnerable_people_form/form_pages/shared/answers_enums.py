@@ -32,6 +32,17 @@ class ApplyingOnOwnBehalfAnswers(EnumWithText):
 
 
 @enum.unique
+class PrioritySuperMarketDeliveriesAnswers(EnumWithText):
+    YES = 1
+    NO = 0
+
+    __text_values__ = {
+        YES: "Yes, I want access to priority supermarket deliveries",
+        NO: "No, I do not want access to priority supermarket deliveries",
+    }
+
+
+@enum.unique
 class YesNoAnswers(EnumWithText):
     YES = 1
     NO = 0
