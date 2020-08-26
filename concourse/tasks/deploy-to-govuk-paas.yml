@@ -18,8 +18,12 @@ params:
   CF_SPACE:
   HOSTNAME:
   INSTANCES:
-  GOVUK_NOTIFY_EMAIL_TEMPLATE_ID:
-  GOVUK_NOTIFY_SMS_TEMPLATE_ID:
+  GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID:
+  GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID:
+  GOVUK_NOTIFY_SPL_MATCH_LETTER_TEMPLATE_ID:
+  GOVUK_NOTIFY_NO_SPL_MATCH_EMAIL_TEMPLATE_ID:
+  GOVUK_NOTIFY_NO_SPL_MATCH_SMS_TEMPLATE_ID:
+  GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID:
   NOTIFY_API_KEY:
   ORDNANCE_SURVEY_PLACES_API_KEY: ((svp-form/ordnance-survey-places-api-key))
   PERMANENT_SESSION_LIFETIME: 1200
@@ -57,8 +61,12 @@ run:
 
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form GA_TRACKING_ID "$GA_VIEW_ID"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form GA_CROSS_DOMAIN_ID "$GA_CROSS_DOMAIN_ID"
-      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GOVUK_NOTIFY_EMAIL_TEMPLATE_ID "$GOVUK_NOTIFY_EMAIL_TEMPLATE_ID"
-      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GOVUK_NOTIFY_SMS_TEMPLATE_ID "$GOVUK_NOTIFY_SMS_TEMPLATE_ID"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID "$GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID "$GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GOVUK_NOTIFY_SPL_MATCH_LETTER_TEMPLATE_ID "$GOVUK_NOTIFY_SPL_MATCH_LETTER_TEMPLATE_ID"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GOVUK_NOTIFY_NO_SPL_MATCH_EMAIL_TEMPLATE_ID "$GOVUK_NOTIFY_NO_SPL_MATCH_EMAIL_TEMPLATE_ID"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GOVUK_NOTIFY_NO_SPL_MATCH_SMS_TEMPLATE_ID "$GOVUK_NOTIFY_NO_SPL_MATCH_SMS_TEMPLATE_ID"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID "$GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form NOTIFY_API_KEY "$NOTIFY_API_KEY"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form PAAS_ENV "$CF_SPACE"
 

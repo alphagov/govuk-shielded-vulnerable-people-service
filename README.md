@@ -243,6 +243,26 @@ variables.
     values from the database. If set as an environment variable this
     should be a comma-separated list of tags. If set in the `config.py`
     file, it should be a list of Python strings.
+  
+  - `NOTIFY_API_KEY` **\[required\]**: This key is required to be able to send notifications via the GOV.UK Notify API.
+    
+  - `GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID` **\[required\]**: This is the email template id for the GOV.UK 
+  Notify api for when a user is matched via the SPL call.
+   
+  - `GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID` **\[required\]**: This is the the SMS template id for the GOV.UK 
+  Notify api for when a user is matched via the SPL call.
+   
+  - `GOVUK_NOTIFY_SPL_MATCH_LETTER_TEMPLATE_ID` **\[required\]**: This is the letter template id for the GOV.UK 
+  Notify api for when a user is matched via the SPL call.
+  
+  - `GOVUK_NOTIFY_NO_SPL_MATCH_EMAIL_TEMPLATE_ID` **\[required\]**: This is the email template id for the GOV.UK 
+  Notify api for when a user is not matched via the SPL call.
+   
+  - `GOVUK_NOTIFY_NO_SPL_MATCH_SMS_TEMPLATE_ID` **\[required\]**: This is the the SMS template id for the GOV.UK 
+  Notify api for when a user is not matched via the SPL call.
+   
+  - `GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID` **\[required\]**: This is the letter template id for the GOV.UK 
+  Notify api for when a user is not matched via the SPL call.
 
 #### Useful config variables for development
 
