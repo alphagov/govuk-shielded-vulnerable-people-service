@@ -126,7 +126,7 @@ In production the app is intended to retrieve its configuration from
 environment variables. To do this it uses the file at
 `instance/env_to_config.shim` as its path.
 
-1.  Set the Flask environment to development, and let Flask know where
+1.  Set the Flask environment to production, and let Flask know where
     the app file is stored:
     ```sh
     export FLASK_CONFIG=`env_to_config_shim.py`
@@ -190,10 +190,10 @@ variables.
     `http(s)://<externally_reachable_app_url>/nhs-login-callback`.
     
   - `NHS_OIDC_LOGIN_PRIVATE_KEY_PATH`: This is used to specify the path 
-     to the private key pem file locally.
+     to the private key pem file when working within a local development environment.
      
   - `NHS_OIDC_LOGIN_PRIVATE_KEY`: This is used to specify the private key
-     contents in the GOV PAAS environment only. 
+     contents in the GOV.UK PaaS environment only. 
 
   - `AWS_RDS_DATABASE_NAME` **\[required\]**: This variable sets the
     database that the app will use to persist form answers.
