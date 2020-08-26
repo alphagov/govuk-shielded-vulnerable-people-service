@@ -30,7 +30,6 @@ FORM_PAGE_TO_DATA_CHECK_SECTION_NAME = {
     "date-of-birth": "date_of_birth",
     "do-you-have-someone-to-go-shopping-for-you": "do_you_have_someone_to_go_shopping_for_you",
     "essential-supplies": "essential_supplies",
-    "live-in-england": "live_in_england",
     "medical-conditions": "medical_conditions",
     "name": "name",
     "nhs-letter": "nhs_letter",
@@ -148,7 +147,7 @@ def route_to_next_form_page():
             return redirect_to_next_form_page("/nhs-login")
         return redirect_to_next_form_page("/postcode-eligibility")
     elif current_form == "postcode-eligibility":
-        return return_redirect_if_postcode_valid(redirect("/live-in-england"))
+        return return_redirect_if_postcode_valid(redirect("/nhs_letter"))
     elif current_form == "nhs-login":
         if YesNoAnswers(answer) is YesNoAnswers.YES:
             return redirect("/nhs-login-link")
@@ -180,10 +179,6 @@ def route_to_next_form_page():
         return redirect_to_next_form_page("/basic-care-needs")
     elif current_form == "essential-supplies":
         return redirect_to_next_form_page("/do-you-have-someone-to-go-shopping-for-you")
-    elif current_form == "live-in-england":
-        if YesNoAnswers(answer) is YesNoAnswers.YES:
-            return redirect_to_next_form_page("/nhs-letter")
-        return redirect("/not-eligible-england")
     elif current_form == "medical-conditions":
         if MedicalConditionsAnswers(answer) is MedicalConditionsAnswers.YES:
             return redirect_to_next_form_page(

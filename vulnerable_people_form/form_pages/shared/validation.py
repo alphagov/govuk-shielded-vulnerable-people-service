@@ -85,12 +85,6 @@ def validate_nhs_letter():
     )
 
 
-def validate_live_in_england():
-    return validate_radio_button(
-        YesNoAnswers, "live_in_england", "Select yes if you live in England"
-    )
-
-
 def validate_nhs_login():
     return validate_radio_button(
         YesNoAnswers, "nhs_login", "Select yes if you want log in with you NHS details",

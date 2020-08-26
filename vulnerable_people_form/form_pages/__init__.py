@@ -12,7 +12,6 @@ from . import (
     date_of_birth,
     do_you_have_someone_to_go_shopping_for_you,
     essential_supplies,
-    live_in_england,
     medical_conditions,
     name,
     nhs_letter,

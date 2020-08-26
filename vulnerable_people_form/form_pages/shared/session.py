@@ -76,7 +76,6 @@ def get_summary_rows_from_form_answers():
     answers = form_answers()
     order = [
         "applying_on_own_behalf",
-        "live_in_england",
         "nhs_letter",
         "medical_conditions",
         "name",
@@ -91,7 +90,6 @@ def get_summary_rows_from_form_answers():
 
     answers_to_key = {
         "applying_on_own_behalf": ApplyingOnOwnBehalfAnswers,
-        "live_in_england": YesNoAnswers,
         "nhs_letter": NHSLetterAnswers,
         "medical_conditions": MedicalConditionsAnswers,
         "essential_supplies": YesNoAnswers,
