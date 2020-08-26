@@ -29,12 +29,22 @@ def validate_mandatory_form_field(section_key, value_key, error_message):
 
 
 def validate_name():
+    length_fstring = "'{}' cannot be longer than {} characters"
     return all(
         [
             validate_mandatory_form_field(
                 "name", "first_name", "Enter your first name"
             ),
             validate_mandatory_form_field("name", "last_name", "Enter your last name"),
+            validate_length(
+                ("name", "first_name"), 50, length_fstring.format("First name", 50),
+            ),
+            validate_length(
+                ("name", "middle_name"), 50, length_fstring.format("Middle name", 50),
+            ),
+            validate_length(
+                ("name", "last_name"), 50, length_fstring.format("Last name", 50),
+            ),
         ]
     )
 
