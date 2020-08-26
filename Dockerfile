@@ -1,12 +1,12 @@
 from python:3.8-alpine
 
-RUN apk add --no-cache openssl-dev libffi-dev build-base bash
+RUN apk add --no-cache openssl-dev libffi-dev build-base bash unzip
 RUN mkdir app
 WORKDIR app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY . .
-RUN apk add --no-cache unzip
+
 RUN bash build.sh
 RUN cp instance/config.py.sample instance/config.py
 ENV FLASK_ENV=production
