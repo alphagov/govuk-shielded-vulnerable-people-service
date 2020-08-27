@@ -248,7 +248,7 @@ def validate_support_address():
                 length_fstring.format("Address line 2", 75),
             ),
             validate_length(
-                ("support_address", "county"), 50, length_fstring.format("County", 50)
+                ("support_address", "town_city"), 50, length_fstring.format("Town or city", 50)
             ),
             validate_mandatory_form_field(
                 "support_address",

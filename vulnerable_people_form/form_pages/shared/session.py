@@ -128,7 +128,7 @@ def get_summary_rows_from_form_answers():
                     [
                         "building_and_street_line_1",
                         "building_and_street_line_2",
-                        "county",
+                        "town_city",
                         "postcode",
                     ],
                     answer,
@@ -173,7 +173,7 @@ def persist_answers_from_session():
         form_answers()["date_of_birth"],
         form_answers()["support_address"]["building_and_street_line_1"],
         form_answers()["support_address"].get("building_and_street_line_2"),
-        form_answers()["support_address"]["county"],
+        form_answers()["support_address"]["town_city"],
         address_postcode,
         form_answers()["support_address"].get("uprn"),
         form_answers()["contact_details"].get("phone_number_calls"),
@@ -214,7 +214,7 @@ def load_answers_into_session_if_available():
             date_of_birth,
             address_line1,
             address_line2,
-            address_county,
+            address_town_city,
             address_postcode,
             address_uprn,
             contact_number_calls,
@@ -249,7 +249,7 @@ def load_answers_into_session_if_available():
                 {
                     "building_and_street_line_1": address_line1["stringValue"],
                     "building_and_street_line_2": address_line2.get("stringValue"),
-                    "county": address_county["stringValue"],
+                    "town_city": address_town_city["stringValue"],
                     "postcode": address_postcode["stringValue"],
                     "uprn": address_uprn.get("longValue"),
                 }
