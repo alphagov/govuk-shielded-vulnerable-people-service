@@ -43,7 +43,8 @@ def get_check_your_answers():
 
 @form.route("/check-your-answers", methods=["POST"])
 def post_check_your_answers():
-    reference_number = persist_answers_from_session()
-    send_sms_and_email_notifications_if_applicable(reference_number)
+    registration_number = persist_answers_from_session()
+    session["registration_number"] = registration_number
+    send_sms_and_email_notifications_if_applicable(registration_number)
 
     return route_to_next_form_page()
