@@ -23,7 +23,7 @@ PAGE_TITLES = {
     "applying-on-own-behalf": "Are you using this service for yourself or for someone else?",
     "cookies": "Cookies",
     "address-lookup": "Select your address",
-    "basic-care-needs": "Are your basic care needs being met at the moment?",
+    "basic-care-needs": "Do you need help meeting your basic care needs?",
     "check-contact-details": "Check this is correct",
     "check-your-answers": "Check your answers before submitting",
     "contact-details": "What are your contact details?",
