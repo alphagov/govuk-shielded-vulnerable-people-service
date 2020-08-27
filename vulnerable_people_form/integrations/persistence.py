@@ -104,15 +104,17 @@ def _rds_arns():
 def boto3transaction(client):
     transaction_id = client.begin_transaction(**_rds_arns(),)["transactionId"]
     try:
-        yield transaction_id
+        return_value = yield transaction_id
     except botocore.exceptions.BotoCoreError:
         client.rollback_transaction(
             transactionId=transaction_id, **_rds_arns(),
         )
+        raise
     else:
         client.commit_transaction(
             transactionId=transaction_id, **_rds_arns(),
         )
+        return return_value
 
 
 def _execute_sql(sql, parameters):
