@@ -21,6 +21,7 @@ from . import (
     nhs_number,
     nhs_registration,
     nhs_registration_callback,
+    nhs_registration_link,
     not_eligible_england,
     not_eligible_medical,
     not_eligible_postcode,
