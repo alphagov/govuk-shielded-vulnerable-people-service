@@ -1,0 +1,35 @@
+Hello {{first_name}} {{last_name}} - your registration for the shielding service is {{reference_number}}.
+
+{% if not has_someone_to_shop %}
+Contact your local authority if you need urgent help: www.gov.uk/coronavirus-local-help
+{% endif %}
+
+{% if wants_supermarket_deliveries and wants_social_care %}
+ You should be able to start booking priority supermarket deliveries in the next 1 to 7 days, depending on the supermarket. If you do not already have an account with a supermarket, set one up now. You can set up accounts with more than one supermarket.
+
+Someone from your local authority will contact you about your care needs within the next week.
+{% endif %}
+
+{% if wants_supermarket_deliveries and not wants_social_care %}
+ You should be able to start booking priority supermarket deliveries in the next 1 to 7 days, depending on the supermarket. If you do not already have an account with a supermarket, set one up now. You can set up accounts with more than one supermarket.
+{% endif %}
+
+{% if not wants_supermarket_deliveries and wants_social_care %}
+ Someone from your local authority will contact you about your care needs within the next week.
+{% endif %}
+
+{% if not wants_supermarket_deliveries and not wants_social_care %}
+ You said that you do not want priority supermarket deliveries or help with your care needs.
+{% endif %}
+
+{% if has_set_up_account %}
+ Use your NHS login to update your personal details or support needs: https://www.gov.uk/coronavirus-shielding-support.
+{% endif %}
+
+{% if not has_set_up_account %}
+ Go through the questions in the service again to update your personal details or support needs: www.gov.uk/coronavirus-extremely-vulnerable.
+{% endif %}
+
+{% if has_someone_to_shop %}
+ Contact your local authority if you need support urgently and cannot rely on family, friends or neighbours: www.gov.uk/coronavirus-local-help
+{% endif %}

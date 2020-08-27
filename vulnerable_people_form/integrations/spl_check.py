@@ -1,6 +1,4 @@
-import os
-
-from .persistence import get_rds_data_client, generate_string_parameter, generate_date_parameter, execute_sql
+from .persistence import generate_string_parameter, generate_date_parameter, execute_sql
 
 
 def check_spl(nhs_number, date_of_birth):

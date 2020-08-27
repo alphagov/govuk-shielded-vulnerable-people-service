@@ -249,7 +249,7 @@ variables.
   - `GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID` **\[required\]**: This is the email template id for the GOV.UK 
   Notify api for when a user is matched via the SPL call.
    
-  - `GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID` **\[required\]**: This is the the SMS template id for the GOV.UK 
+  - `GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID` **\[required\]**: This is the SMS template id for the GOV.UK 
   Notify api for when a user is matched via the SPL call.
    
   - `GOVUK_NOTIFY_SPL_MATCH_LETTER_TEMPLATE_ID` **\[required\]**: This is the letter template id for the GOV.UK 
@@ -258,7 +258,7 @@ variables.
   - `GOVUK_NOTIFY_NO_SPL_MATCH_EMAIL_TEMPLATE_ID` **\[required\]**: This is the email template id for the GOV.UK 
   Notify api for when a user is not matched via the SPL call.
    
-  - `GOVUK_NOTIFY_NO_SPL_MATCH_SMS_TEMPLATE_ID` **\[required\]**: This is the the SMS template id for the GOV.UK 
+  - `GOVUK_NOTIFY_NO_SPL_MATCH_SMS_TEMPLATE_ID` **\[required\]**: This is the SMS template id for the GOV.UK 
   Notify api for when a user is not matched via the SPL call.
    
   - `GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID` **\[required\]**: This is the letter template id for the GOV.UK 
