@@ -36,7 +36,7 @@ def get_check_your_answers():
     session["check_answers_page_seen"] = True
     return render_template_with_title(
         "check-your-answers.html",
-        previous_path="/basic-care-needs",
+        previous_path=dynamic_back_url(),
         summary_rows=get_summary_rows_from_form_answers(),
     )
 

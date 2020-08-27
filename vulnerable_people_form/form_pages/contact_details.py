@@ -22,7 +22,7 @@ def format_phone_number_if_valid(phone_number):
 def get_contact_details():
     return render_template_with_title(
         "contact-details.html",
-        previous_path="/name",
+        previous_path="/basic-care-needs",
         values=form_answers().get("contact_details", {}),
         **get_errors_from_session("contact_details"),
     )

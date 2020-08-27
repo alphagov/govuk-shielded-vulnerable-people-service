@@ -11,7 +11,7 @@ from .shared.validation import validate_postcode
 def get_postcode_eligibility():
     return render_template_with_title(
         "postcode-eligibility.html",
-        previous_path="/date-of-birth",
+        previous_path="/nhs-login",
         values={"postcode": session.get("postcode", "")},
         **get_errors_from_session("postcode"),
     )

@@ -42,7 +42,7 @@ def get_address_lookup():
 
     return render_template_with_title(
         "address-lookup.html",
-        previous_path="/postcode-lookup",
+        previous_path="/date-of-birth",
         postcode=postcode,
         addresses=addresses,
         **get_errors_from_session("postcode"),

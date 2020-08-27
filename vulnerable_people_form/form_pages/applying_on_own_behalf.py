@@ -6,7 +6,7 @@ from .shared.answers_enums import (
 )
 from .blueprint import form
 from .shared.render import render_template_with_title
-from .shared.routing import route_to_next_form_page
+from .shared.routing import route_to_next_form_page, dynamic_back_url
 from .shared.session import (
     form_answers,
     get_errors_from_session,
@@ -23,7 +23,7 @@ def get_apply_on_own_behalf():
         radio_items=get_radio_options_from_enum(
             ApplyingOnOwnBehalfAnswers, form_answers().get("applying_on_own_behalf")
         ),
-        previous_path=request.referrer if request.referrer else "#",
+        previous_path=dynamic_back_url(),
         **get_errors_from_session("applying_on_own_behalf"),
     )
 
