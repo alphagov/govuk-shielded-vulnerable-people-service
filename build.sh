@@ -7,8 +7,7 @@ hash wget  2>/dev/null || { echo >&2 "Please install wget to continue.";  exit 1
 hash unzip 2>/dev/null || { echo >&2 "Please install unzip to continue."; exit 1; }
 
 rm -f govuk_frontend.zip
-wget -q --show-progress \
-  https://github.com/alphagov/govuk-frontend/releases/download/v3.7.0/release-v3.7.0.zip \
+wget https://github.com/alphagov/govuk-frontend/releases/download/v3.7.0/release-v3.7.0.zip \
   -O govuk_frontend.zip
 
 if [ $? -ne 0 ]; then

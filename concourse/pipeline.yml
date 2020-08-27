@@ -1,0 +1,154 @@
+---
+resource_types:
+  - name: slack-alert
+    type: registry-image
+    source:
+      repository: arbourd/concourse-slack-alert-resource
+
+resources:
+  - name: git-master
+    type: git
+    icon: github-circle
+    source:
+      uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
+      branch: master
+
+  - name: slack
+    type: slack-alert
+    source:
+      url: ((slack_hook_automate))
+      channel: covid-engineering-team
+
+# Anchors for later
+slack_alert_on_failure: &slack_alert_on_failure
+  put: slack
+  params:
+    alert_type: failed
+
+slack_alert_on_success: &slack_alert_on_success
+  put: slack
+  params:
+    alert_type: success
+
+jobs:
+  - name: update-pipeline
+    serial: true
+    plan:
+      - get: git-master
+        trigger: true
+      - set_pipeline: svp-form
+        file: git-master/concourse/pipeline.yml
+    on_failure: *slack_alert_on_failure
+
+  - name: test
+    serial: true
+    plan:
+    - get: git-master
+      trigger: true
+      passed: [update-pipeline]
+    - task: test
+      file: git-master/concourse/tasks/test.yml
+    on_failure: *slack_alert_on_failure
+
+  - name: deploy-to-staging
+    serial: true
+    plan:
+      - get: git-master
+        trigger: true
+        passed: [test]
+      - task: deploy-to-paas
+        config:
+        file: git-master/concourse/tasks/deploy-to-govuk-paas.yml
+        params:
+          CF_SPACE: staging
+          INSTANCES: 5
+          CF_STARTUP_TIMEOUT: 5 # minutes
+          HOSTNAME: gds-shielded-vulnerable-people-service-staging
+          GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID: 80ea4bbd-66f1-455d-b1d2-608e2b8aa948
+          GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID: 17529024-96a3-42f1-945e-9ca50dc87617
+          GOVUK_NOTIFY_SPL_MATCH_LETTER_TEMPLATE_ID: 6a7a0e2c-5e04-47c5-b8ae-686e4a5cfbd2
+          GOVUK_NOTIFY_NO_SPL_MATCH_EMAIL_TEMPLATE_ID: ff27bf85-bddb-451d-9f49-bd862474f29d
+          GOVUK_NOTIFY_NO_SPL_MATCH_SMS_TEMPLATE_ID: b29626c4-7db2-4642-8104-dd01f1b9e663
+          GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID: a3a3f86a-b2e0-464b-a74d-ec2e7fd29ac5
+          NOTIFY_API_KEY: ((svp-form/notify-api-key-stg))
+          SECRET_KEY: ((svp-form/flask-secret-key-base-stg))
+          NHS_OIDC_AUTHORITY_URL: https://auth.aos.signin.nhs.uk
+          NHS_OIDC_LOGIN_CALLBACK_URL: https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital/nhs-login-callback
+          NHS_OIDC_REGISTRATION_CALLBACK_URL: https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital/nhs-registration-callback
+          AWS_ACCESS_KEY: ((svp-form/aws-access-key-id-stg))
+          AWS_SECRET_ACCESS_KEY: ((svp-form/aws-secret-access-key-stg))
+          NHS_OIDC_LOGIN_PRIVATE_KEY: ((svp-form/nhs-login-private-key-stg))
+        on_failure: *slack_alert_on_failure
+
+  - name: smoke-test-staging
+    serial: true
+    plan:
+      - get: git-master
+        trigger: true
+        passed: [deploy-to-staging]
+      - task: smoke-test
+        file: git-master/concourse/tasks/smoke-test.yml
+        params:
+          URL: 'https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital/live-in-england'
+          MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
+        on_failure: *slack_alert_on_failure
+
+  - name: e2e-test-staging
+    serial: true
+    plan:
+    - get: git-master
+      trigger: true
+      passed: [smoke-test-staging]
+    - task: e2e-test
+      file: git-master/concourse/tasks/e2e-test.yml
+      attempts: 2
+      params:
+        CF_SPACE: "staging"
+        ENVIRONMENT: "staging"
+        URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
+        MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
+      on_failure: *slack_alert_on_failure
+
+  - name: deploy-to-prod
+    serial: true
+    plan:
+      - get: git-master
+        trigger: false
+        passed: [e2e-test-staging]
+      - task: deploy-to-paas
+        config:
+        file: git-master/concourse/tasks/deploy-to-govuk-paas.yml
+        params:
+          CF_SPACE: prod
+          INSTANCES: 30
+          CF_STARTUP_TIMEOUT: 5 # minutes
+          HOSTNAME: gds-shielded-vulnerable-people-service-prod
+          GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID: a951e38f-1dbb-4732-9cdc-ea611785c607
+          GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID: 0d9ad0b8-5030-4676-9be9-20ec1dfebf5b
+          GOVUK_NOTIFY_SPL_MATCH_LETTER_TEMPLATE_ID: 646bb97a-593b-4c88-bee9-7907cadbf12f
+          GOVUK_NOTIFY_NO_SPL_MATCH_EMAIL_TEMPLATE_ID: c708e055-7783-4df6-8871-fb4b9b815ad2
+          GOVUK_NOTIFY_NO_SPL_MATCH_SMS_TEMPLATE_ID: 5e908e08-ee06-4baf-b37f-1001395ea51f
+          GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID: 41f5ff60-551f-4966-bda1-d268355eb0d9
+          NOTIFY_API_KEY: ((svp-form/notify-api-key-prod))
+          SECRET_KEY: ((svp-form/flask-secret-key-base-prod))
+          NHS_OIDC_AUTHORITY_URL: https://auth.login.nhs.uk/
+          NHS_OIDC_LOGIN_CALLBACK_URL: https://coronavirus-shielding-support.service.gov.uk/nhs-login-callback
+          NHS_OIDC_REGISTRATION_CALLBACK_URL: https://coronavirus-shielding-support.service.gov.uk/nhs-registration-callback
+          AWS_ACCESS_KEY: ((svp-form/aws-access-key-id-prod))
+          AWS_SECRET_ACCESS_KEY: ((svp-form/aws-secret-access-key-prod))
+          NHS_OIDC_LOGIN_PRIVATE_KEY: ((svp-form/nhs-login-private-key-prod))
+        on_failure: *slack_alert_on_failure
+
+  - name: smoke-test-prod
+    serial: true
+    plan:
+      - get: git-master
+        trigger: true
+        passed: [deploy-to-prod]
+      - task: smoke-test
+        file: git-master/concourse/tasks/smoke-test.yml
+        params:
+          URL: 'https://coronavirus-shielding-support.service.gov.uk/live-in-england'
+          MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
+        on_failure: *slack_alert_on_failure
+        on_success: *slack_alert_on_success

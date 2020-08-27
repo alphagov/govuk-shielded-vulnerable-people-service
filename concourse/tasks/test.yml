@@ -1,0 +1,25 @@
+---
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: ubuntu
+    tag: latest
+params:
+  DEBIAN_FRONTEND: "noninteractive"
+inputs:
+- name: git-master
+run:
+  path: /bin/bash
+  args:
+    - -euo
+    - pipefail
+    - -c
+    - |
+      echo "running linters and tests..."
+      apt-get update
+      apt-get install build-essential python3-pip python3 -y
+      root=$(pwd)
+      make install
+      make test
+  dir: git-master

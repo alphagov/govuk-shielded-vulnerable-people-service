@@ -1,4 +1,3 @@
-import sentry_sdk
 import requests
 from flask import current_app
 
@@ -29,11 +28,11 @@ def track_nhs_userinfo_and_form_answers_differs():
     try:
         track_event("NHS info retrieved via oidc and form differs", "registration")
     except Exception as e:
-        sentry_sdk.capture_exception(e)
+        print('method track_nhs_userinfo_and_form_answers_differs exception thrown:' + e)
 
 
 def track_nhs_number_and_form_value_differs():
     try:
         track_event("NHS number retrieved via oidc and that in form differs", "registration")
     except Exception as e:
-        sentry_sdk.capture_exception(e)
+        print('method track_nhs_number_and_form_value_differs exception thrown:' + e)

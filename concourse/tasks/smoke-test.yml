@@ -1,0 +1,19 @@
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: governmentpaas/curl-ssl
+params:
+  URL:
+  MESSAGE:
+run:
+  path: sh
+  args:
+    - '-c'
+    - |
+      set -eu
+
+      echo "$MESSAGE"
+
+      # TODO we can come up with a more thorough test than this
+      curl --fail --silent --verbose "$URL"

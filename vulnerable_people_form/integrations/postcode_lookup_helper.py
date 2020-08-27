@@ -80,7 +80,6 @@ def get_addresses_from_postcode(postcode):
     response = requests.get(url, params=params)
     if response.status_code == 200:
         response_json = response.json()
-
         if response_json["header"]["totalresults"] == 0:
             raise NoAddressesFoundAtPostcode()
         else:

@@ -1,0 +1,94 @@
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: governmentpaas/cf-cli
+    tag: latest
+inputs:
+  - name: git-master
+    path: src
+params:
+  CF_API: https://api.london.cloud.service.gov.uk
+  CF_USERNAME: ((svp-form/paas-username))
+  CF_PASSWORD: ((svp-form/paas-password))
+  CF_ORG: gds-shielded-vulnerable-people-service
+  GA_VIEW_ID: UA-43115970-1
+  GA_CROSS_DOMAIN_ID: UA-145652997-1
+  CF_STARTUP_TIMEOUT:
+  CF_SPACE:
+  HOSTNAME:
+  INSTANCES:
+  GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID:
+  GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID:
+  GOVUK_NOTIFY_SPL_MATCH_LETTER_TEMPLATE_ID:
+  GOVUK_NOTIFY_NO_SPL_MATCH_EMAIL_TEMPLATE_ID:
+  GOVUK_NOTIFY_NO_SPL_MATCH_SMS_TEMPLATE_ID:
+  GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID:
+  NOTIFY_API_KEY:
+  ORDNANCE_SURVEY_PLACES_API_KEY: ((svp-form/ordnance-survey-places-api-key))
+  PERMANENT_SESSION_LIFETIME: 1200
+  NHS_OIDC_AUTHORITY_URL:
+  NHS_OIDC_CLIENT_ID: gds-svp
+  NHS_OIDC_LOGIN_CALLBACK_URL:
+  AWS_ACCESS_KEY:
+  AWS_SECRET_ACCESS_KEY:
+  AWS_REGION: eu-west-2
+  GUNICORN_WORKER_COUNT: 5
+  FLASK_ENV: production
+  FLASK_CONFIG: env_to_config_shim.py
+  NHS_OIDC_REGISTRATION_CALLBACK_URL:
+  DATABASE_CLUSTER_PREFIX: coronavirus-
+  DATABASE_SECRET_TAGS: role,coronavirus-web-form
+  SECRET_KEY:
+  NHS_OIDC_LOGIN_PRIVATE_KEY:
+
+run:
+  dir: src
+  path: sh
+  args:
+    - '-c'
+    - |
+      set -eu
+
+      ./build.sh
+
+      cf api "$CF_API"
+      cf auth
+      cf t -o "$CF_ORG" -s "$CF_SPACE"
+      cf create-app govuk-coronavirus-shielded-vulnerable-people-form || true
+      cf apply-manifest -f manifest.yml
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form CF_STARTUP_TIMEOUT "$CF_STARTUP_TIMEOUT"
+
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GA_TRACKING_ID "$GA_VIEW_ID"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GA_CROSS_DOMAIN_ID "$GA_CROSS_DOMAIN_ID"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID "$GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID "$GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GOVUK_NOTIFY_SPL_MATCH_LETTER_TEMPLATE_ID "$GOVUK_NOTIFY_SPL_MATCH_LETTER_TEMPLATE_ID"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GOVUK_NOTIFY_NO_SPL_MATCH_EMAIL_TEMPLATE_ID "$GOVUK_NOTIFY_NO_SPL_MATCH_EMAIL_TEMPLATE_ID"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GOVUK_NOTIFY_NO_SPL_MATCH_SMS_TEMPLATE_ID "$GOVUK_NOTIFY_NO_SPL_MATCH_SMS_TEMPLATE_ID"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID "$GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form NOTIFY_API_KEY "$NOTIFY_API_KEY"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form PAAS_ENV "$CF_SPACE"
+
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form ORDNANCE_SURVEY_PLACES_API_KEY "$ORDNANCE_SURVEY_PLACES_API_KEY"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form PERMANENT_SESSION_LIFETIME "$PERMANENT_SESSION_LIFETIME"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form NHS_OIDC_AUTHORITY_URL "$NHS_OIDC_AUTHORITY_URL"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form NHS_OIDC_CLIENT_ID "$NHS_OIDC_CLIENT_ID"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form NHS_OIDC_LOGIN_CALLBACK_URL "$NHS_OIDC_LOGIN_CALLBACK_URL"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form NHS_OIDC_REGISTRATION_CALLBACK_URL "$NHS_OIDC_REGISTRATION_CALLBACK_URL"
+
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form AWS_ACCESS_KEY "$AWS_ACCESS_KEY"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form AWS_REGION "$AWS_REGION"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form AWS_SECRET_ACCESS_KEY "$AWS_SECRET_ACCESS_KEY"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form DATABASE_CLUSTER_PREFIX "$DATABASE_CLUSTER_PREFIX"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form DATABASE_SECRET_TAGS "$DATABASE_SECRET_TAGS"
+
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GUNICORN_WORKER_COUNT "$GUNICORN_WORKER_COUNT"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form FLASK_ENV "$FLASK_ENV"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form FLASK_CONFIG_FILE "$FLASK_CONFIG"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form SECRET_KEY "$SECRET_KEY"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form NHS_OIDC_LOGIN_PRIVATE_KEY "$NHS_OIDC_LOGIN_PRIVATE_KEY"
+
+      cf push govuk-coronavirus-shielded-vulnerable-people-form --strategy rolling --no-route -i "$INSTANCES"
+      cf map-route govuk-coronavirus-shielded-vulnerable-people-form london.cloudapps.digital --hostname "$HOSTNAME"
+

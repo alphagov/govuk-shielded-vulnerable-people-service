@@ -1,4 +1,3 @@
-import sentry_sdk
 from flask import current_app
 from notifications_python_client.notifications import NotificationsAPIClient
 
@@ -41,7 +40,7 @@ def send_confirmation_sms(phone_number, first_name, last_name, need_to_contact_g
     ).format(first_name=first_name, last_name=last_name)
     get_notifications_client().send_sms_notification(
         phone_number=phone_number,
-        template_id=current_app.config["GOVUK_NOTIFY_SMS_TEMPLATE_ID"],
+        template_id=current_app.config["GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID"],
         personalisation={"message": message},
     )
 
@@ -90,7 +89,7 @@ def send_confirmation_email(
     )
     get_notifications_client().send_email_notification(
         email_address=email_address,
-        template_id=current_app.config["GOVUK_NOTIFY_EMAIL_TEMPLATE_ID"],
+        template_id=current_app.config["GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID"],
         personalisation={"message": message},
     )
 
@@ -99,7 +98,7 @@ def _try_and_report_exception_to_sentry(fn, *args, **kwargs):
     try:
         fn(*args, **kwargs)
     except Exception as e:
-        sentry_sdk.capture_exception(e)
+        print('method _try_and_report_exception_to_sentry exception thrown:' +e)
 
 
 def try_send_confirmation_email(*args, **kwargs):
