@@ -22,7 +22,7 @@ def get_address_lookup():
                 "postcode": "Could not find postcode, please enter your address manually"
             },
         }
-        return redirect("/postcode-lookup")
+        return redirect("/support-address")
     except postcode_lookup_helper.NoAddressesFoundAtPostcode:
         session["error_items"] = {
             **session.setdefault("error_items", {}),
