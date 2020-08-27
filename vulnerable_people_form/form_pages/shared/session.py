@@ -76,12 +76,9 @@ def get_summary_rows_from_form_answers():
     summary_rows = []
     answers = form_answers()
     order = [
-        "applying_on_own_behalf",
-        "nhs_letter",
-        "medical_conditions",
+        "support_address",
         "name",
         "date_of_birth",
-        "support_address",
         "contact_details",
         "nhs_number",
         "priority_supermarket_deliveries",
@@ -90,9 +87,6 @@ def get_summary_rows_from_form_answers():
     ]
 
     answers_to_key = {
-        "applying_on_own_behalf": ApplyingOnOwnBehalfAnswers,
-        "nhs_letter": NHSLetterAnswers,
-        "medical_conditions": MedicalConditionsAnswers,
         "priority_supermarket_deliveries": PrioritySuperMarketDeliveriesAnswers,
         "do_you_have_someone_to_go_shopping_for_you": YesNoAnswers,
         "basic_care_needs": YesNoAnswers,
@@ -102,9 +96,17 @@ def get_summary_rows_from_form_answers():
         if key not in answers:
             continue
 
+        answer_labels = {
+            **PAGE_TITLES,
+            "support-address": "The address where support is needed",
+            "name": "Name",
+            "date-of-birth": "Date of birth",
+            "contact-details": "Contact details",
+        }
+
         answer = answers[key]
         dashed_key = key.replace("_", "-")
-        question = PAGE_TITLES[dashed_key]
+        question = answer_labels[dashed_key]
 
         value = {}
         row = {
@@ -196,6 +198,7 @@ def _strip_keys_with_no_value(_dict):
 
 
 def load_answers_into_session_if_available():
+    print("aaa" * 134)
     nhs_sub = session.get("nhs_sub")
     if nhs_sub is None:
         raise RuntimeError("Could not find nhs_sub in session")

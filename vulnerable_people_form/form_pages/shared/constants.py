@@ -25,7 +25,7 @@ PAGE_TITLES = {
     "address-lookup": "Select your address",
     "basic-care-needs": "Are your basic care needs being met at the moment?",
     "check-contact-details": "Check this is correct",
-    "check-your-answers": "Are you ready to send your application?",
+    "check-your-answers": "Check your answers before submitting",
     "contact-details": "What are your contact details?",
     "date-of-birth": "What is your date of birth?",
     "do-you-have-someone-to-go-shopping-for-you": "While you're shielding is there someone you can rely on to go shopping for you?",
