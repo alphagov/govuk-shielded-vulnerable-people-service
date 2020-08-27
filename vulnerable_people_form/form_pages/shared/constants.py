@@ -36,7 +36,7 @@ PAGE_TITLES = {
     "nhs-login": "Do you have an NHS login?",
     "nhs-number": "Do you know your NHS number?",
     "nhs-registration": "Would you like to create an NHS Login you can use to retrieve your answers in the future?",
-    "not-eligible-postcode": "Sorry, this service is not available for your postcode as it isn't in lockdown.",
+    "not-eligible-postcode": "Sorry, this service is not available in your area",
     "not-eligible-medical": "Sorry, you’re not eligible for help through this service",
     "postcode-lookup": "What is the postcode where you need support?",
     "postcode-eligibility": "What is the postcode where you need support?",
