@@ -81,8 +81,8 @@ def get_summary_rows_from_form_answers():
         "date_of_birth",
         "contact_details",
         "nhs_number",
-        "priority_supermarket_deliveries",
         "do_you_have_someone_to_go_shopping_for_you",
+        "priority_supermarket_deliveries",
         "basic_care_needs",
     ]
 
@@ -182,7 +182,7 @@ def persist_answers_from_session():
         session.get("nhs_sub"),
         form_answers()["applying_on_own_behalf"],
         form_answers()["nhs_letter"],
-        form_answers()["priority_supermarket_deliveries"],
+        form_answers().get("priority_supermarket_deliveries"),
         form_answers()["basic_care_needs"],
         form_answers().get("do_you_have_someone_to_go_shopping_for_you"),
         form_answers().get("medical_conditions"),

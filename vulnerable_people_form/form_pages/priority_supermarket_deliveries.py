@@ -24,7 +24,7 @@ def get_priority_supermarket_deliveries():
             PrioritySuperMarketDeliveriesAnswers,
             form_answers().get("priority_supermarket_deliveries"),
         ),
-        previous_path="/support-address",
+        previous_path="/do-you-have-someone-to-go-shopping-for-you",
         **get_errors_from_session("priority_supermarket_deliveries"),
     )
 

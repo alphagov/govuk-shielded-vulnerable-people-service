@@ -167,9 +167,12 @@ def route_to_next_form_page():
     elif current_form == "date-of-birth":
         return redirect_to_next_form_page("/address-lookup")
     elif current_form == "do-you-have-someone-to-go-shopping-for-you":
-        return redirect_to_next_form_page("/basic-care-needs")
+        if YesNoAnswers(answer) is YesNoAnswers.YES:
+            blank_form_sections("priority_supermarket_deliveries")
+            return redirect_to_next_form_page("/basic-care-needs")
+        return redirect_to_next_form_page("/priority-supermarket-deliveries")
     elif current_form == "priority-supermarket-deliveries":
-        return redirect_to_next_form_page("/do-you-have-someone-to-go-shopping-for-you")
+        return redirect_to_next_form_page("/basic-care-needs")
     elif current_form == "medical-conditions":
         if MedicalConditionsAnswers(answer) is MedicalConditionsAnswers.YES:
             return redirect_to_next_form_page(
@@ -191,7 +194,7 @@ def route_to_next_form_page():
         return return_redirect_if_postcode_valid(redirect("/address-lookup"))
     elif current_form == "support-address":
         return return_redirect_if_postcode_valid(
-            redirect_to_next_form_page("/priority-supermarket-deliveries")
+            redirect_to_next_form_page("/do-you-have-someone-to-go-shopping-for-you")
         )
     else:
         raise RuntimeError("An unexpected error occurred")
