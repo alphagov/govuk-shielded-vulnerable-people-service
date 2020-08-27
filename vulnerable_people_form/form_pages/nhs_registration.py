@@ -19,17 +19,7 @@ def get_nhs_registration():
         radio_items=get_radio_options_from_enum(
             YesNoAnswers, form_answers().get("nhs_registration")
         ),
+        nhs_registration_href=current_app.nhs_oidc_client.get_registration_url(),
         previous_path="/basic-care-needs",
         **get_errors_from_session("nhs_registration"),
     )
-
-
-@form.route("/nhs-registration", methods=["POST"])
-def post_nhs_registration():
-    if not validate_register_with_nhs():
-        return redirect("/nhs-registration")
-    answer = YesNoAnswers(int(request_form()["nhs_registration"]))
-    if answer is YesNoAnswers.YES:
-        return redirect(current_app.nhs_oidc_client.get_registration_url())
-    else:
-        return redirect("/confirmation")
