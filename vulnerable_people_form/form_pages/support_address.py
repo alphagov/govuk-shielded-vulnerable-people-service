@@ -12,6 +12,7 @@ def post_support_address():
     original_address = {
         k: v for k, v in form_answers()["support_address"].items() if k != "uprn"
     }
+    session["postcode"] = request_form().get("postcode")
     if original_address != request_form():
         session["form_answers"] = {
             **session.setdefault("form_answers", {}),
