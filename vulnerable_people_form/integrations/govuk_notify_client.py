@@ -1,109 +1,84 @@
-from flask import current_app
 from notifications_python_client.notifications import NotificationsAPIClient
+from ..integrations import govuk_notify_client
+from flask import current_app
+from vulnerable_people_form.integrations.notification_content import create_spl_no_match_email_content, \
+    create_spl_match_email_content, create_spl_match_sms_content, create_spl_no_match_sms_content, \
+    create_spl_match_letter_content, create_spl_no_match_letter_content
+from vulnerable_people_form.form_pages.shared.session import form_answers
+
+_COMMS_HEADING_SUBJECT = "Coronavirus shielding support: your registration"
 
 
 def get_notifications_client():
     return NotificationsAPIClient(current_app.config["NOTIFY_API_KEY"])
 
 
-SMS_GREETING_PARAGRAPHS = [
-    "Hello {first_name} {last_name} - we’ve received your registration as someone who’s extremely vulnerable to coronavirus.",
-]
-
-SMS_CLOSING_PARAGRAPHS = [
-    "This can take up to a week. Contact your local authority if you need urgent support and cannot rely on friends or neighbours: https://www.gov.uk/coronavirus-local-help",
-    "If you want priority supermarket deliveries and do not already have an account with a supermarket, set one up now. You can set up accounts with more than one supermarket.",
-    "If your support needs change, go to https://www.gov.uk/coronavirus-extremely-vulnerable and answer the questions again.",
-]
-
-SMS_CONTACT_GP_PARAGRAPHS = [
-    "Contact your doctor as soon as possible so they can confirm to us you’re classed as clinically extremely vulnerable. You may not get the support you need if you do not contact them.",
-    "After that we’ll check that you’re eligible, and you’ll start getting support if you asked for it.",
-]
-
-SMS_NO_CONTACT_GP_PARAGRAPHS = [
-    "Contact your doctor as soon as possible so they can confirm to us you’re classed as clinically extremely vulnerable. You may not get the support you need if you do not contact them.",
-    "After that we’ll check that you’re eligible, and you’ll start getting support if you asked for it.",
-]
-
-NO_GP_CONTACT_SMS_MESSAGE = "\n\n".join(
-    SMS_GREETING_PARAGRAPHS + SMS_NO_CONTACT_GP_PARAGRAPHS + SMS_CLOSING_PARAGRAPHS
-)
-GP_CONTACT_SMS_MESSAGE = "\n\n".join(
-    SMS_GREETING_PARAGRAPHS + SMS_CONTACT_GP_PARAGRAPHS + SMS_CLOSING_PARAGRAPHS
-)
-
-
-def send_confirmation_sms(phone_number, first_name, last_name, need_to_contact_gp):
-    message = (
-        GP_CONTACT_SMS_MESSAGE if need_to_contact_gp else NO_GP_CONTACT_SMS_MESSAGE
-    ).format(first_name=first_name, last_name=last_name)
-    get_notifications_client().send_sms_notification(
+def send_sms(phone_number, template_id, message):
+    return get_notifications_client().send_sms_notification(
         phone_number=phone_number,
-        template_id=current_app.config["GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID"],
+        template_id=template_id,
         personalisation={"message": message},
     )
 
 
-EMAIL_SUBJECT = "Coronavirus support service: your registration"
-
-GREETER = "Dear {first_name} {last_name}"
-
-EMAIL_CONTACT_GP_GREETER = "Contact your GP or hospital clinician as soon as possible so they can confirm to us you’re classed as clinically extremely vulnerable. You may not get the support you need if you do not contact them."
-EMAIL_NO_CONTACT_GP_GREETER = "Your registration number is %{reference_number}."
-
-EMAIL_BODY_PARAGRAPHS = [
-    # What happens next
-    "We’ll check your details to make sure you’re eligible for support. You’ll only get support if you asked for it.",
-    "If we need to confirm any details, you’ll get a call from the National Shielding Service. The number that will show on your phone is 0333 3050466.",
-    # Getting support
-    "If you’re eligible and you said that you do not have a way of getting basic supplies at the moment we will start sending you a weekly box of basic supplies.",
-    "If you do not already have an account with a supermarket delivery service, set one up now. If you’re concerned about not being able to get a delivery slot, you can set up accounts with more than one supermarket.",
-    "This can take up to a week. Contact your local authority if you need supplies urgently and cannot rely on family, friends or neighbours: https://www.gov.uk/coronavirus-local-help",
-    # If your support needs change
-    "You can tell the delivery driver if you want to stop getting the weekly box of supplies.",
-    "If your support needs change, go through the questions in the service again: https://www.gov.uk/coronavirus-extremely-vulnerable.",
-    "There’s guidance on things you should do if you’re extremely vulnerable to coronavirus: https://www.gov.uk/coronavirus-extremely-vulnerable-guidance.",
-    "Thanks,",
-    "Coronavirus support team",
-    "-----",
-    "Do not reply to this email - it’s an automatic message from an unmonitored account.",
-]
-
-
-NO_GP_CONTACT_EMAIL_MESSAGE = "\n\n".join(
-    (GREETER, EMAIL_NO_CONTACT_GP_GREETER, *EMAIL_BODY_PARAGRAPHS)
-)
-GP_CONTACT_EMAIL_MESSAGE = "\n\n".join(
-    (GREETER, EMAIL_CONTACT_GP_GREETER, *EMAIL_BODY_PARAGRAPHS)
-)
-
-
-def send_confirmation_email(
-    email_address, first_name, last_name, reference_number, need_to_contact_gp
-):
-    message = (
-        GP_CONTACT_SMS_MESSAGE if need_to_contact_gp else NO_GP_CONTACT_SMS_MESSAGE
-    ).format(
-        first_name=first_name, last_name=last_name, reference_number=reference_number
-    )
-    get_notifications_client().send_email_notification(
+def send_email(email_address, template_id, email_subject, email_content):
+    return get_notifications_client().send_email_notification(
         email_address=email_address,
-        template_id=current_app.config["GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID"],
-        personalisation={"message": message},
+        template_id=template_id,
+        personalisation={"body": email_content, "subject": email_subject}
     )
 
 
-def _try_and_report_exception_to_sentry(fn, *args, **kwargs):
-    try:
-        fn(*args, **kwargs)
-    except Exception as e:
-        print('method _try_and_report_exception_to_sentry exception thrown:' +e)
+def send_letter(postal_address, template_id, letter_heading, letter_content):
+    return get_notifications_client().send_letter_notification(template_id, {
+        "address_line_1": postal_address["address_line_1"],
+        "address_line_2": postal_address["address_line_2"],
+        "address_line_3": postal_address["town_city"],
+        "postcode": postal_address["postcode"],
+        "heading": letter_heading,
+        "body": letter_content
+    })
 
 
-def try_send_confirmation_email(*args, **kwargs):
-    _try_and_report_exception_to_sentry(send_confirmation_email, *args, **kwargs)
+def send_notification(reference_number, is_spl_match, app=current_app):
+    email_address = form_answers()["contact_details"].get("email")
+    mobile_number = form_answers()["contact_details"].get("phone_number_texts")
 
+    if email_address:
+        if is_spl_match:
+            email_content = create_spl_match_email_content(reference_number)
+            email_template_id = app.config.get('GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID')
+        else:
+            email_content = create_spl_no_match_email_content(reference_number)
+            email_template_id = app.config.get('GOVUK_NOTIFY_NO_SPL_MATCH_EMAIL_TEMPLATE_ID')
 
-def try_send_confirmation_sms(*args, **kwargs):
-    _try_and_report_exception_to_sentry(send_confirmation_sms, *args, **kwargs)
+        govuk_notify_client.send_email(email_address, email_template_id, _COMMS_HEADING_SUBJECT, email_content)
+    elif mobile_number:
+        if is_spl_match:
+            sms_content = create_spl_match_sms_content(reference_number)
+            sms_email_template_id = app.config.get("GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID")
+        else:
+            sms_content = create_spl_no_match_sms_content(reference_number)
+            sms_email_template_id = app.config.get("GOVUK_NOTIFY_NO_SPL_MATCH_SMS_TEMPLATE_ID")
+
+        govuk_notify_client.send_sms(mobile_number, sms_email_template_id, sms_content)
+    else:
+        if is_spl_match:
+            letter_content = create_spl_match_letter_content(reference_number)
+            letter_template_id = app.config.get("GOVUK_NOTIFY_SPL_MATCH_LETTER_TEMPLATE_ID")
+        else:
+            letter_content = create_spl_no_match_letter_content(reference_number)
+            letter_template_id = app.config.get("GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID")
+
+        address_line_2 = form_answers()["support_address"].get("building_and_street_line_2")
+        address_line_2 = address_line_2 if address_line_2 else " "
+        town_city = form_answers()["support_address"].get("town_city")
+        town_city = town_city if town_city else " "
+
+        govuk_notify_client.send_letter({"address_line_1": form_answers()["support_address"].get("building_and_street_line_1"),
+                                         "address_line_2": address_line_2,
+                                         "town_city": town_city,
+                                         "postcode": form_answers()["support_address"]["postcode"]},
+                                        letter_template_id,
+                                        _COMMS_HEADING_SUBJECT,
+                                        letter_content)
