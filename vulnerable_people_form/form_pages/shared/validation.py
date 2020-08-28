@@ -199,9 +199,7 @@ def validate_date_of_birth():
     return error is None
 
 
-def validate_postcode(section):
-    postcode = session.get("postcode")
-
+def validate_postcode(postcode, error_section_name):
     postcode.replace(" ", "")
     postcode_regex = "(([A-Z]{1,2}[0-9][A-Z0-9]?|ASCN|STHL|TDCU|BBND|[BFS]IQQ|PCRN|TKCA) ?[0-9][A-Z]{2}|BFPO ?[0-9]{1,4}|(KY[0-9]|MSR|VG|AI)[ -]?[0-9]{4}|[A-Z]{2} ?[0-9]{2}|GE ?CX|GIR ?0A{2}|SAN ?TA1)"
     error = None
@@ -211,10 +209,12 @@ def validate_postcode(section):
         error = "Enter a real postcode"
 
     if error:
-        error_section = session.setdefault("error_items", {}).get(section, {})
+        error_section = session.setdefault("error_items", {}).get(
+            error_section_name, {}
+        )
         session["error_items"] = {
             **session.setdefault("error_items", {}),
-            section: {**error_section, "postcode": error},
+            error_section_name: {**error_section, "postcode": error},
         }
 
     return error is None
@@ -255,7 +255,9 @@ def validate_support_address():
                 "building_and_street_line_1",
                 "Enter a building and street",
             ),
-            validate_postcode("support_address"),
+            validate_postcode(
+                get_answer_from_form(("support_address", "postcode")), "support_address"
+            ),
         ]
     )
     return value

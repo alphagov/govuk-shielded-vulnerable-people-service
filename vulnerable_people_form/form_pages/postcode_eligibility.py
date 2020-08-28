@@ -19,7 +19,7 @@ def get_postcode_eligibility():
 @form.route("/postcode-eligibility", methods=["POST"])
 def post_postcode_verification():
     session["postcode"] = request_form().get("postcode")
-    if not validate_postcode("postcode"):
+    if not validate_postcode(session["postcode"], "postcode"):
         return redirect("/postcode-eligibility")
 
     session["error_items"] = {}
