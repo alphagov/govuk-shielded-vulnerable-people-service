@@ -89,7 +89,7 @@ jobs:
       - task: smoke-test
         file: git-master/concourse/tasks/smoke-test.yml
         params:
-          URL: 'https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital/live-in-england'
+          URL: 'https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital/applying-on-own-behalf'
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
         on_failure: *slack_alert_on_failure
 
@@ -148,7 +148,7 @@ jobs:
       - task: smoke-test
         file: git-master/concourse/tasks/smoke-test.yml
         params:
-          URL: 'https://coronavirus-shielding-support.service.gov.uk/live-in-england'
+          URL: 'https://coronavirus-shielding-support.service.gov.uk/applying-on-own-behalf'
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
         on_failure: *slack_alert_on_failure
         on_success: *slack_alert_on_success
