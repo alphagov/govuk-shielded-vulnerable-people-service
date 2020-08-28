@@ -19,7 +19,7 @@ def get_nhs_letter():
         radio_items=get_radio_options_from_enum(
             NHSLetterAnswers, form_answers().get("nhs_letter")
         ),
-        previous_path="/live-in-england",
+        previous_path="/postcode-eligibility",
         **get_errors_from_session("nhs_letter"),
     )
 

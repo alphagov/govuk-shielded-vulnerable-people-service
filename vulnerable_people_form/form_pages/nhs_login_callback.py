@@ -53,4 +53,11 @@ def get_nhs_login_callback():
 
 @form.route("/start", methods=["GET"])
 def get_start():
-    return redirect("/view-or-setup")
+    session.clear()
+    return redirect("/applying-on-own-behalf")
+
+
+@form.route("/", methods=["GET"])
+def get_default_route():
+    session.clear()
+    return redirect("/applying-on-own-behalf")

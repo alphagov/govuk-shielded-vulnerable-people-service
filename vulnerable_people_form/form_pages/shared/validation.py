@@ -1,4 +1,5 @@
 import datetime
+import email_validator
 import re
 
 import phonenumbers
@@ -11,6 +12,7 @@ from .answers_enums import (
     NHSLetterAnswers,
     ViewOrSetupAnswers,
     YesNoAnswers,
+    PrioritySuperMarketDeliveriesAnswers,
 )
 from .session import form_answers, get_answer_from_form, request_form
 
@@ -29,12 +31,22 @@ def validate_mandatory_form_field(section_key, value_key, error_message):
 
 
 def validate_name():
+    length_fstring = "'{}' cannot be longer than {} characters"
     return all(
         [
             validate_mandatory_form_field(
                 "name", "first_name", "Enter your first name"
             ),
             validate_mandatory_form_field("name", "last_name", "Enter your last name"),
+            validate_length(
+                ("name", "first_name"), 50, length_fstring.format("First name", 50),
+            ),
+            validate_length(
+                ("name", "middle_name"), 50, length_fstring.format("Middle name", 50),
+            ),
+            validate_length(
+                ("name", "last_name"), 50, length_fstring.format("Last name", 50),
+            ),
         ]
     )
 
@@ -68,7 +80,7 @@ def validate_radio_button(EnumClass, value_key, error_message):
     value = form_answers().get(value_key)
     try:
         EnumClass(int(value))
-    except ValueError:
+    except (ValueError, TypeError):
         session["error_items"] = {
             **session.setdefault("error_items", {}),
             value_key: {value_key: error_message},
@@ -82,12 +94,6 @@ def validate_radio_button(EnumClass, value_key, error_message):
 def validate_nhs_letter():
     return validate_radio_button(
         NHSLetterAnswers, "nhs_letter", "Select if you received the letter from the NHS"
-    )
-
-
-def validate_live_in_england():
-    return validate_radio_button(
-        YesNoAnswers, "live_in_england", "Select yes if you live in England"
     )
 
 
@@ -242,20 +248,12 @@ def validate_support_address():
                 length_fstring.format("Address line 2", 75),
             ),
             validate_length(
-                ("support_address", "town_city"),
-                50,
-                length_fstring.format("Town or City", 50),
-            ),
-            validate_length(
-                ("support_address", "county"), 50, length_fstring.format("County", 50)
+                ("support_address", "town_city"), 50, length_fstring.format("Town or city", 50)
             ),
             validate_mandatory_form_field(
                 "support_address",
                 "building_and_street_line_1",
                 "Enter a building and street",
-            ),
-            validate_mandatory_form_field(
-                "support_address", "town_city", "Enter a town or city"
             ),
             validate_postcode("support_address"),
         ]
@@ -283,17 +281,17 @@ def validate_phone_number_if_present(section_key, phone_number_key):
 
 def validate_email_if_present(section_key, email_key):
     email_address = form_answers()["contact_details"].get(email_key)
-    email_regex = r"([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})"
-    if email_address and re.match(email_regex, email_address) is None:
-        error_message = (
-            "Enter email address in the correct format, like name@example.com"
-        )
-        error_section = session.setdefault("error_items", {}).get(section_key, {})
-        session["error_items"] = {
-            **session.setdefault("error_items", {}),
-            section_key: {**error_section, email_key: error_message},
-        }
-        return False
+    if email_address:
+        try:
+            email_validator.validate_email(email_address)
+        except email_validator.EmailNotValidError as e:
+            error_message = f"The email address is invalid: {str(e)}"
+            error_section = session.setdefault("error_items", {}).get(section_key, {})
+            session["error_items"] = {
+                **session.setdefault("error_items", {}),
+                section_key: {**error_section, email_key: error_message},
+            }
+            return False
     return True
 
 
@@ -333,12 +331,12 @@ def validate_nhs_number():
     return error is None
 
 
-def validate_essential_supplies():
+def validate_priority_supermarket_deliveries():
 
     return validate_radio_button(
-        YesNoAnswers,
-        "essential_supplies",
-        "Select yes if you have a way of getting essential supplies delivered at the moment",
+        PrioritySuperMarketDeliveriesAnswers,
+        "priority_supermarket_deliveries",
+        "Select if you want priority supermarket deliveries",
     )
 
 
@@ -350,17 +348,9 @@ def validate_basic_care_needs():
     )
 
 
-def validate_dietary_requirements():
+def validate_do_you_have_someone_to_go_shopping_for_you():
     return validate_radio_button(
         YesNoAnswers,
-        "dietary_requirements",
-        "Select yes if you have special dietary requirements",
-    )
-
-
-def validate_carry_supplies():
-    return validate_radio_button(
-        YesNoAnswers,
-        "carry_supplies",
-        "Select yes if there’s someone in the house who’s able to carry a delivery of supplies inside",
+        "do_you_have_someone_to_go_shopping_for_you",
+        "Select yes if you have someone who can go shopping for you",
     )

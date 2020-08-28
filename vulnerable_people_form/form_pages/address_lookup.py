@@ -18,31 +18,31 @@ def get_address_lookup():
     except postcode_lookup_helper.PostcodeNotFound:
         session["error_items"] = {
             **session.setdefault("error_items", {}),
-            "support_address": {"postcode", "Could not find postcode"},
+            "support_address": {
+                "postcode": "Could not find postcode, please enter your address manually"
+            },
         }
-        redirect("/postcode-lookup")
+        return redirect("/support-address")
     except postcode_lookup_helper.NoAddressesFoundAtPostcode:
         session["error_items"] = {
             **session.setdefault("error_items", {}),
             "support_address": {
-                "support_address",
-                f"No addresses found for {postcode}",
+                "support_address": f"No addresses found for {postcode}, please enter your address manually",
             },
         }
-        redirect("/support-address")
+        return redirect("/support-address")
     except postcode_lookup_helper.ErrorFindingAddress:
         session["error_items"] = {
             **session.setdefault("error_items", {}),
             "support_address": {
-                "support_address",
-                "An error has occurred, please enter your address manually",
+                "support_address": "An error has occurred, please enter your address manually",
             },
         }
-        redirect("/support-address")
+        return redirect("/support-address")
 
     return render_template_with_title(
         "address-lookup.html",
-        previous_path="/postcode-lookup",
+        previous_path="/date-of-birth",
         postcode=postcode,
         addresses=addresses,
         **get_errors_from_session("postcode"),

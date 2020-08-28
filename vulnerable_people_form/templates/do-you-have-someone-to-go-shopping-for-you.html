@@ -1,21 +1,14 @@
 {%- from "govuk_frontend_jinja/components/radios/macro.html" import govukRadios -%}
-{%- from 'govuk_frontend_jinja/components/inset-text/macro.html' import govukInsetText -%}
 
 {% extends "form-base.html" %}
 
-{% set hintHtml %}
-  {{ govukInsetText({
-      'text': "For now, we’ll need to leave deliveries on the doorstep."
-  }) }}
-{% endset -%}
-
 {% block form_fields %}
     {{ govukRadios({
-      "idPrefix": "carry_supplies",
-      "name": "carry_supplies",
-      "errorMessage": error_messages.get('carry_supplies'),
+      "idPrefix": "do_you_have_someone_to_go_shopping_for_you",
+      "name": "do_you_have_someone_to_go_shopping_for_you",
+      "errorMessage": error_messages.get('do_you_have_someone_to_go_shopping_for_you'),
       "hint": {
-        "html": hintHtml,
+        "text": "For example, a friend, neighbour or family member."
       },
       "fieldset": {
         "legend": {

@@ -3,15 +3,23 @@ from flask import redirect, session
 from .blueprint import form
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
-from .shared.session import form_answers, get_errors_from_session, request_form
+from .shared.session import (
+    form_answers,
+    get_errors_from_session,
+    request_form,
+    get_answer_from_form,
+)
 from .shared.validation import validate_nhs_number
 
 
 @form.route("/nhs-number", methods=["GET"])
 def get_nhs_number():
+    previous_path = "/nhs-letter"
+    if get_answer_from_form(("medical_conditions",)) is not None:
+        previous_path = "/medical-conditions"
     return render_template_with_title(
         "nhs-number.html",
-        previous_path="/contact-details",
+        previous_path=previous_path,
         values={"nhs_number": form_answers().get("nhs_number", "")},
         **get_errors_from_session("nhs_number"),
     )

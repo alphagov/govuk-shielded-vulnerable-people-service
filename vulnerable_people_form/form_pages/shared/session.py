@@ -6,6 +6,7 @@ from .answers_enums import (
     NHSLetterAnswers,
     ApplyingOnOwnBehalfAnswers,
     MedicalConditionsAnswers,
+    PrioritySuperMarketDeliveriesAnswers,
     YesNoAnswers,
 )
 from .constants import PAGE_TITLES
@@ -75,29 +76,19 @@ def get_summary_rows_from_form_answers():
     summary_rows = []
     answers = form_answers()
     order = [
-        "applying_on_own_behalf",
-        "live_in_england",
-        "nhs_letter",
-        "medical_conditions",
+        "support_address",
         "name",
         "date_of_birth",
-        "support_address",
         "contact_details",
         "nhs_number",
-        "essential_supplies",
-        "dietary_requirements",
-        "carry_supplies",
+        "do_you_have_someone_to_go_shopping_for_you",
+        "priority_supermarket_deliveries",
         "basic_care_needs",
     ]
 
     answers_to_key = {
-        "applying_on_own_behalf": ApplyingOnOwnBehalfAnswers,
-        "live_in_england": YesNoAnswers,
-        "nhs_letter": NHSLetterAnswers,
-        "medical_conditions": MedicalConditionsAnswers,
-        "essential_supplies": YesNoAnswers,
-        "dietary_requirements": YesNoAnswers,
-        "carry_supplies": YesNoAnswers,
+        "priority_supermarket_deliveries": PrioritySuperMarketDeliveriesAnswers,
+        "do_you_have_someone_to_go_shopping_for_you": YesNoAnswers,
         "basic_care_needs": YesNoAnswers,
     }
 
@@ -105,9 +96,17 @@ def get_summary_rows_from_form_answers():
         if key not in answers:
             continue
 
+        answer_labels = {
+            **PAGE_TITLES,
+            "support-address": "The address where support is needed",
+            "name": "Name",
+            "date-of-birth": "Date of birth",
+            "contact-details": "Contact details",
+        }
+
         answer = answers[key]
         dashed_key = key.replace("_", "-")
-        question = PAGE_TITLES[dashed_key]
+        question = answer_labels[dashed_key]
 
         value = {}
         row = {
@@ -130,7 +129,6 @@ def get_summary_rows_from_form_answers():
                         "building_and_street_line_1",
                         "building_and_street_line_2",
                         "town_city",
-                        "county",
                         "postcode",
                     ],
                     answer,
@@ -143,9 +141,9 @@ def get_summary_rows_from_form_answers():
         elif key == "contact_details":
             value["html"] = "<br>".join(
                 [
-                    f"Phone number: {answer['phone_number_calls']}",
-                    f"Text: {answer['phone_number_texts']}",
-                    f"Email: {answer['email']}",
+                    f"Phone number: {answer.get('phone_number_calls', '')}",
+                    f"Text: {answer.get('phone_number_texts', '')}",
+                    f"Email: {answer.get('email', '')}",
                 ]
             )
         elif key == "date_of_birth":
@@ -176,19 +174,17 @@ def persist_answers_from_session():
         form_answers()["support_address"]["building_and_street_line_1"],
         form_answers()["support_address"].get("building_and_street_line_2"),
         form_answers()["support_address"]["town_city"],
-        form_answers()["support_address"]["county"],
         address_postcode,
-        form_answers()["support_address"]["uprn"],
-        form_answers()["contact_details"]["phone_number_calls"],
-        form_answers()["contact_details"]["phone_number_texts"],
-        form_answers()["contact_details"]["email"],
+        form_answers()["support_address"].get("uprn"),
+        form_answers()["contact_details"].get("phone_number_calls"),
+        form_answers()["contact_details"].get("phone_number_texts"),
+        form_answers()["contact_details"].get("email"),
         session.get("nhs_sub"),
         form_answers()["applying_on_own_behalf"],
         form_answers()["nhs_letter"],
-        form_answers()["essential_supplies"],
+        form_answers().get("priority_supermarket_deliveries"),
         form_answers()["basic_care_needs"],
-        form_answers().get("dietary_requirements"),
-        form_answers().get("carry_supplies"),
+        form_answers().get("do_you_have_someone_to_go_shopping_for_you"),
         form_answers().get("medical_conditions"),
     )
 
@@ -197,7 +193,12 @@ def persist_answers_from_session():
     return submission_reference
 
 
+def _strip_keys_with_no_value(_dict):
+    return {key: value for key, value in _dict.items() if value is not None}
+
+
 def load_answers_into_session_if_available():
+    print("aaa" * 134)
     nhs_sub = session.get("nhs_sub")
     if nhs_sub is None:
         raise RuntimeError("Could not find nhs_sub in session")
@@ -214,7 +215,6 @@ def load_answers_into_session_if_available():
             address_line1,
             address_line2,
             address_town_city,
-            address_county,
             address_postcode,
             address_uprn,
             contact_number_calls,
@@ -225,8 +225,7 @@ def load_answers_into_session_if_available():
             have_you_received_an_nhs_letter,
             do_you_want_supermarket_deliveries,
             do_you_need_help_meeting_your_basic_care_needs,
-            do_you_have_any_special_dietary_requirements,
-            do_you_have_someone_in_the_house_to_carry_deliveries,
+            do_you_have_someone_to_go_shopping_for_you,
             do_you_have_one_of_the_listed_medical_conditions,
         ) = stored_answers
 
@@ -234,57 +233,54 @@ def load_answers_into_session_if_available():
 
         session["form_answers"] = {
             "nhs_number": nhs_number["stringValue"],
-            "name": {
-                k: v
-                for k, v in {
+            "name": _strip_keys_with_no_value(
+                {
                     "first_name": first_name["stringValue"],
                     "last_name": last_name["stringValue"],
                     "middle_name": middle_name.get("stringValue"),
-                }.items()
-                if v is not None
-            },
+                }
+            ),
             "date_of_birth": {
                 "day": date_of_birth.day,
                 "year": date_of_birth.year,
                 "month": date_of_birth.month,
             },
-            "support_address": {
-                "building_and_street_line_1": address_line1["stringValue"],
-                "building_and_street_line_2": address_line2["stringValue"],
-                "town_city": address_town_city["stringValue"],
-                "county": address_county["stringValue"],
-                "postcode": address_postcode["stringValue"],
-                "uprn": address_uprn["longValue"],
-            },
-            "contact_details": {
-                "phone_number_calls": contact_number_calls["stringValue"],
-                "phone_number_texts": contact_number_texts["stringValue"],
-                "email": contact_email["stringValue"],
-            },
+            "support_address": _strip_keys_with_no_value(
+                {
+                    "building_and_street_line_1": address_line1["stringValue"],
+                    "building_and_street_line_2": address_line2.get("stringValue"),
+                    "town_city": address_town_city["stringValue"],
+                    "postcode": address_postcode["stringValue"],
+                    "uprn": address_uprn.get("longValue"),
+                }
+            ),
+            "contact_details": _strip_keys_with_no_value(
+                {
+                    "phone_number_calls": contact_number_calls.get("stringValue"),
+                    "phone_number_texts": contact_number_texts.get("stringValue"),
+                    "email": contact_email.get("stringValue"),
+                }
+            ),
             "applying_on_own_behalf": are_you_applying_on_behalf_of_someone_else[
                 "longValue"
             ],
             "nhs_letter": have_you_received_an_nhs_letter["longValue"],
-            "essential_supplies": do_you_want_supermarket_deliveries["longValue"],
+            "priority_supermarket_deliveries": do_you_want_supermarket_deliveries[
+                "longValue"
+            ],
             "basic_care_needs": do_you_need_help_meeting_your_basic_care_needs[
                 "longValue"
             ],
-            **{
-                k: v
-                for k, v in {
-                    "dietary_requirements": do_you_have_any_special_dietary_requirements.get(
-                        "longValue"
-                    ),
-                    "carry_supplies": do_you_have_someone_in_the_house_to_carry_deliveries.get(
-                        "longValue"
-                    ),
-                    "medical_conditions": do_you_have_one_of_the_listed_medical_conditions.get(
-                        "longValue"
-                    ),
-                }.items()
-                if v is not None
-            },
+            "do_you_have_someone_to_go_shopping_for_you": do_you_have_someone_to_go_shopping_for_you[
+                "longValue"
+            ],
         }
+
+        medical_conditions = do_you_have_one_of_the_listed_medical_conditions.get(
+            "longValue"
+        )
+        if medical_conditions is not None:
+            session["medical_conditions"] = medical_conditions
         session["accessing_saved_answers"] = True
         return True
     return False

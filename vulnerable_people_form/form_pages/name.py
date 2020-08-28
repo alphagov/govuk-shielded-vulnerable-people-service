@@ -12,9 +12,7 @@ def get_name():
     return render_template_with_title(
         "name.html",
         values=form_answers().get("name", {}),
-        previous_path="/medical-conditions"
-        if session.get("medical_conditions")
-        else "/nhs-letter",
+        previous_path="/nhs-number",
         **get_errors_from_session("name"),
     )
 

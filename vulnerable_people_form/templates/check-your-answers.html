@@ -1,18 +1,17 @@
 {%- from "govuk_frontend_jinja/components/summary-list/macro.html" import govukSummaryList -%}
 {%- from 'govuk_frontend_jinja/components/button/macro.html' import govukButton -%}
 
-{% extends "base-with-home-breadcrumb.html" %}
+{% extends "base-with-back-link.html" %}
 
 {% block centered_content %}
-  <h1 class="govuk-heading-xl govuk-!-margin-top-0 govuk-!-margin-bottom-3">
+  <h1 class="govuk-heading-l govuk-!-margin-top-0 govuk-!-margin-bottom-3">
     {{ title_text }}
   </h1>
-  <p class="govuk-body"> Check your answers first.</p>
     {{ govukSummaryList({
       "rows": summary_rows,
     }) }}
     <h2 class="govuk-heading-m govuk-!-margin-bottom-3">Now send your application</h2>
-    <p class="govuk-body">By submitting this application you’re confirming that, as far as you know, the details you’re providing are correct.</p>
+    <p class="govuk-body govuk-!-margin-bottom-5">By submitting this application you’re confirming that, as far as you know, the details you’re providing are correct.</p>
     <form method="post">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
       {{ govukButton({

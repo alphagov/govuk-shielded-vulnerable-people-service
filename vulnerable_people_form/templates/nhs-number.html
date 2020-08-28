@@ -29,10 +29,10 @@
     "value": values.get("nhs_number")
     }) 
 }}
-{% set detail_html = '
-    <p class="govuk-body">If you cannot find your NHS number on a letter or prescription, ask your GP.</p>
-    <p class="govuk-body">You may have an old NHS number with less than 10 digits. If so, you can find your new NHS number on an NHS letter or prescription - or ask your GP.</p>
+{% set detail_html = ' 
+  <p class="govuk-body">If you don\'t know your NHS number, you can <a class="govuk-link" href="/nhs-registration-link">try using NHS login</a> instead.</p>
     <p class="govuk-body">If you do not have an NHS number <a class="govuk-link" href="https://www.nhs.uk/using-the-nhs/nhs-services/gps/how-to-register-with-a-gp-practice/">register with a GP</a>.</p>
+    <p class="govuk-body">You may have an old NHS number which is less than 10 digits. If so, you willo need to look on NHS letters or ask your GP for your new number</p>
 ' %}
 {{ govukDetails({
   "summaryText": "I cannot find my NHS number",

@@ -57,12 +57,9 @@ def address_builder(lpi_info):
         building_and_street_line_1 = pao + " " + street
 
     return {
-        "uprn": int(lpi_info.get("UPRN", "")),
+        "uprn": int(lpi_info.get("UPRN")),
         "town_city": address_line_builder(
             lpi_info, ["LOCALITY_NAME", "TOWN_NAME"]
-        ).title(),
-        "county": address_line_builder(
-            lpi_info, ["ADMINISTRATIVE_AREA", "AREA_NAME"]
         ).title(),
         "postcode": lpi_info.get("POSTCODE_LOCATOR"),
         "building_and_street_line_1": building_and_street_line_1.title(),

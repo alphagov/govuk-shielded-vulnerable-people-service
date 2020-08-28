@@ -15,15 +15,11 @@ from .shared.validation import validate_basic_care_needs
 
 @form.route("/basic-care-needs", methods=["GET"])
 def get_basic_care_needs():
-    did_supplies_questions = (
-        YesNoAnswers(form_answers().get("essential_supplies")) is YesNoAnswers.NO
-    )
-    previous_path = (
-        "/carry-supplies" if did_supplies_questions else "/essential-supplies"
-    )
     return render_template_with_title(
         "basic-care-needs.html",
-        previous_path=previous_path,
+        previous_path="/priority-supermarket-deliveries"
+        if form_answers().get("priority_supermarket_deliveries") is not None
+        else "/do-you-have-someone-to-go-shopping-for-you",
         radio_items=get_radio_options_from_enum(
             YesNoAnswers, form_answers().get("basic_care_needs")
         ),

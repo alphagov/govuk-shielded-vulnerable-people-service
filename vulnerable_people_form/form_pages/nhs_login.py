@@ -20,7 +20,7 @@ def get_nhs_login():
         radio_items=get_radio_options_from_enum(
             YesNoAnswers, form_answers().get("nhs_login")
         ),
-        previous_path="/",
+        previous_path="/applying-on-own-behalf",
         **get_errors_from_session("nhs_login"),
     )
 

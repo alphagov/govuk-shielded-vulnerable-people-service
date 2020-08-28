@@ -3,7 +3,7 @@ from flask import redirect, session
 from ..integrations import govuk_notify_client
 from .blueprint import form
 from .shared.render import render_template_with_title
-from .shared.routing import route_to_next_form_page
+from .shared.routing import route_to_next_form_page, dynamic_back_url
 from .shared.session import (
     form_answers,
     persist_answers_from_session,
@@ -36,14 +36,15 @@ def get_check_your_answers():
     session["check_answers_page_seen"] = True
     return render_template_with_title(
         "check-your-answers.html",
-        previous_path="/basic-care-needs",
+        previous_path=dynamic_back_url(),
         summary_rows=get_summary_rows_from_form_answers(),
     )
 
 
 @form.route("/check-your-answers", methods=["POST"])
 def post_check_your_answers():
-    reference_number = persist_answers_from_session()
-    send_sms_and_email_notifications_if_applicable(reference_number)
+    registration_number = persist_answers_from_session()
+    session["registration_number"] = registration_number
+    send_sms_and_email_notifications_if_applicable(registration_number)
 
     return route_to_next_form_page()

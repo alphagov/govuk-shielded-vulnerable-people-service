@@ -26,8 +26,19 @@ class ApplyingOnOwnBehalfAnswers(EnumWithText):
     NO = 0
 
     __text_values__ = {
-        YES: "Yes, I'm applying on my own behalf.",
-        NO: "No, I'm applying on behalf of someone else.",
+        YES: "Myself",
+        NO: "Someone else",
+    }
+
+
+@enum.unique
+class PrioritySuperMarketDeliveriesAnswers(EnumWithText):
+    YES = 1
+    NO = 0
+
+    __text_values__ = {
+        YES: "Yes, I want access to priority supermarket deliveries",
+        NO: "No, I do not want access to priority supermarket deliveries",
     }
 
 
@@ -50,7 +61,7 @@ class NHSLetterAnswers(EnumWithText):
 
     __text_values__ = {
         YES: "Yes, I’ve been told to shield",
-        NO: "No, I haven’t been told to shield",
+        NO: "No, I have not been told to shield",
         NOT_SURE: "Not sure",
     }
 

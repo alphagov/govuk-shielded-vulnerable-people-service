@@ -21,7 +21,7 @@ def post_postcode_lookup():
 def get_postcode_lookup():
     return render_template_with_title(
         "postcode-lookup.html",
-        previous_path="/date-of-birth",
+        previous_path="/address-lookup",
         values={"postcode": session.get("postcode", "")},
         **get_errors_from_session("postcode"),
     )

@@ -37,35 +37,20 @@ govukInput({
   }) 
 }}
 {{ 
-govukInput({
-  "label": {
-    "text": "Town or city"
-  },
-  "id": "town_city",
-  "name": "town_city",
-  "autocomplete": "address-level2",
-  "errorMessage": error_messages.get("town_city"),
-  "attributes": {
-    "spellcheck": "false"
-  },
-  "value": values.get("town_city")
-  }) 
-}}
-{{
   govukInput({
     "label": {
-      "text": "County"
+      "text": "Town or city"
     },
-    "id": "county",
-    "name": "county",
-    "autocomplete": "address-level1",
-    "errorMessage": error_messages.get("county"),
+    "id": "town_city",
+    "name": "town_city",
+    "autocomplete": "address-level2",
+    "errorMessage": error_messages.get("town_city"),
     "attributes": {
       "spellcheck": "false"
     },
-    "value": values.get("county")
+    "value": values.get("town_city")
     }) 
-}}
+  }}
 {{ 
 govukInput({
   "label": {

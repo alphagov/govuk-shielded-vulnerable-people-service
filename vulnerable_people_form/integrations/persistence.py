@@ -106,15 +106,17 @@ def _rds_arns():
 def boto3transaction(client):
     transaction_id = client.begin_transaction(**_rds_arns(),)["transactionId"]
     try:
-        yield transaction_id
+        return_value = yield transaction_id
     except botocore.exceptions.BotoCoreError:
         client.rollback_transaction(
             transactionId=transaction_id, **_rds_arns(),
         )
+        raise
     else:
         client.commit_transaction(
             transactionId=transaction_id, **_rds_arns(),
         )
+        return return_value
 
 
 def _execute_sql(sql, parameters):
@@ -155,7 +157,6 @@ def persist_answers(
     address_line1,
     address_line2,
     address_town_city,
-    address_county,
     address_postcode,
     address_uprn,
     contact_number_calls,
@@ -166,8 +167,7 @@ def persist_answers(
     have_you_received_an_nhs_letter,
     do_you_want_supermarket_deliveries,
     do_you_need_help_meeting_your_basic_care_needs,
-    do_you_have_any_special_dietary_requirements,
-    do_you_have_someone_in_the_house_to_carry_deliveries,
+    do_you_have_someone_to_go_shopping_for_you,
     do_you_have_one_of_the_listed_medical_conditions,
 ):
     result = execute_sql(
@@ -180,7 +180,6 @@ def persist_answers(
         ":address_line1,"
         ":address_line2,"
         ":address_town_city,"
-        ":address_county,"
         ":address_postcode,"
         ":address_uprn,"
         ":contact_number_calls,"
@@ -191,8 +190,7 @@ def persist_answers(
         ":have_you_received_an_nhs_letter,"
         ":do_you_want_supermarket_deliveries,"
         ":do_you_need_help_meeting_your_basic_care_needs,"
-        ":do_you_have_any_special_dietary_requirements,"
-        ":do_you_have_someone_in_the_house_to_carry_deliveries,"
+        ":do_you_have_someone_to_go_shopping_for_you,"
         ":do_you_have_one_of_the_listed_medical_conditions"
         ")",
         parameters=(
@@ -204,9 +202,8 @@ def persist_answers(
             generate_string_parameter("middle_name", middle_name),
             generate_string_parameter("last_name", last_name),
             generate_string_parameter("address_line1", address_line1),
-            generate_string_parameter("address_town_city", address_town_city),
             generate_string_parameter("address_postcode", address_postcode),
-            generate_string_parameter("address_county", address_county),
+            generate_string_parameter("address_town_city", address_town_city),
             generate_bigint_parameter("address_uprn", address_uprn),
             generate_string_parameter("contact_number_calls", contact_number_calls),
             generate_string_parameter("contact_number_texts", contact_number_texts),
@@ -224,15 +221,11 @@ def persist_answers(
             ),
             generate_date_parameter("date_of_birth", date_of_birth),
             generate_int_parameter(
-                "do_you_have_someone_in_the_house_to_carry_deliveries",
-                do_you_have_someone_in_the_house_to_carry_deliveries,
+                "do_you_have_someone_to_go_shopping_for_you",
+                do_you_have_someone_to_go_shopping_for_you,
             ),
             generate_string_parameter("uid_nhs_login", uid_nhs_login),
             generate_string_parameter("address_line2", address_line2),
-            generate_int_parameter(
-                "do_you_have_any_special_dietary_requirements",
-                do_you_have_any_special_dietary_requirements,
-            ),
             generate_int_parameter(
                 "do_you_need_help_meeting_your_basic_care_needs",
                 do_you_need_help_meeting_your_basic_care_needs,

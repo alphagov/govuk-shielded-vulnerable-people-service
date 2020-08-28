@@ -10,6 +10,7 @@ from .answers_enums import (
 from .session import (
     accessing_saved_answers,
     form_answers,
+    get_answer_from_form,
     is_nhs_login_user,
     request_form,
     persist_answers_from_session,
@@ -17,6 +18,7 @@ from .session import (
 from .validation import (
     validate_contact_details,
     validate_date_of_birth,
+    validate_nhs_number,
     validate_name,
 )
 
@@ -24,14 +26,12 @@ FORM_PAGE_TO_DATA_CHECK_SECTION_NAME = {
     "address-lookup": "support_address",
     "applying-on-own-behalf": "applying_on_own_behalf",
     "basic-care-needs": "basic_care_needs",
-    "carry-supplies": "carry_supplies",
     "check-contact-details": "check_contact_details",
     "check-your-answers": "basic_care_needs",
     "contact-details": "contact_details",
     "date-of-birth": "date_of_birth",
-    "dietary-requirements": "dietary_requirements",
-    "essential-supplies": "essential_supplies",
-    "live-in-england": "live_in_england",
+    "do-you-have-someone-to-go-shopping-for-you": "do_you_have_someone_to_go_shopping_for_you",
+    "priority-supermarket-deliveries": "priority_supermarket_deliveries",
     "medical-conditions": "medical_conditions",
     "name": "name",
     "nhs-letter": "nhs_letter",
@@ -89,7 +89,7 @@ def clear_errors_after(fn):
 
 
 @clear_errors_after
-def get_next_form_url_after_eligibility_check():
+def get_next_form_url_after_nhs_number():
     if is_nhs_login_user() and validate_name():
         return get_next_form_url_after_name()
     else:
@@ -97,30 +97,19 @@ def get_next_form_url_after_eligibility_check():
 
 
 @clear_errors_after
+def get_next_form_url_after_eligibility_check():
+    if is_nhs_login_user() and validate_nhs_number():
+        return get_next_form_url_after_nhs_number()
+    else:
+        return "/nhs-number"
+
+
+@clear_errors_after
 def get_next_form_url_after_name():
     if is_nhs_login_user() and validate_date_of_birth():
-        return get_next_form_url_after_date_of_birth()
+        return "/address-lookup"
     else:
         return "/date-of-birth"
-
-
-@clear_errors_after
-def get_next_form_url_after_date_of_birth():
-    if is_nhs_login_user() and validate_contact_details("contact_details"):
-        return get_next_form_url_after_contact_details()
-    else:
-        return "/contact-details"
-
-
-@clear_errors_after
-def get_next_form_url_after_contact_details():
-    if is_nhs_login_user():
-        if validate_contact_details("contact_details"):
-            return get_next_form_url_after_check_contact_details()
-        else:
-            return "/contact-details"
-    else:
-        return "/check-contact-details"
 
 
 @clear_errors_after
@@ -149,13 +138,13 @@ def route_to_next_form_page():
             return redirect_to_next_form_page("/nhs-login")
         return redirect_to_next_form_page("/postcode-eligibility")
     elif current_form == "postcode-eligibility":
-        return return_redirect_if_postcode_valid(redirect("/live-in-england"))
+        return return_redirect_if_postcode_valid(redirect("/nhs-letter"))
     elif current_form == "nhs-login":
         if YesNoAnswers(answer) is YesNoAnswers.YES:
-            return redirect(current_app.nhs_oidc_client.get_authorization_url())
+            return redirect("/nhs-login-link")
         return redirect_to_next_form_page("/postcode-eligibility")
     elif current_form == "basic-care-needs":
-        return get_redirect_to_terminal_page()
+        return redirect_to_next_form_page("/contact-details")
     elif current_form == "check-your-answers":
         contact_details = form_answers().get("contact_details", {})
         if (
@@ -169,27 +158,21 @@ def route_to_next_form_page():
         else:
             return redirect("/nhs-registration")
         return redirect_to_next_form_page("/basic-care-needs")
-    elif current_form == "carry-supplies":
-        return redirect_to_next_form_page("/basic-care-needs")
     elif current_form == "check-contact-details":
-        return redirect_to_next_form_page(
-            get_next_form_url_after_check_contact_details()
-        )
+        return get_redirect_to_terminal_page()
     elif current_form == "contact-details":
-        return redirect_to_next_form_page(get_next_form_url_after_contact_details())
+        if get_answer_from_form(("contact_details", "email")):
+            return redirect_to_next_form_page("/check-contact-details")
+        return get_redirect_to_terminal_page()
     elif current_form == "date-of-birth":
-        return redirect_to_next_form_page(get_next_form_url_after_date_of_birth())
-    elif current_form == "dietary-requirements":
-        return redirect_to_next_form_page("/carry-supplies")
-    elif current_form == "essential-supplies":
+        return redirect_to_next_form_page("/address-lookup")
+    elif current_form == "do-you-have-someone-to-go-shopping-for-you":
         if YesNoAnswers(answer) is YesNoAnswers.YES:
-            blank_form_sections("dietary_requirements", "carry_supplies")
+            blank_form_sections("priority_supermarket_deliveries")
             return redirect_to_next_form_page("/basic-care-needs")
-        return redirect_to_next_form_page("/dietary-requirements")
-    elif current_form == "live-in-england":
-        if YesNoAnswers(answer) is YesNoAnswers.YES:
-            return redirect_to_next_form_page("/nhs-letter")
-        return redirect("/not-eligible-england")
+        return redirect_to_next_form_page("/priority-supermarket-deliveries")
+    elif current_form == "priority-supermarket-deliveries":
+        return redirect_to_next_form_page("/basic-care-needs")
     elif current_form == "medical-conditions":
         if MedicalConditionsAnswers(answer) is MedicalConditionsAnswers.YES:
             return redirect_to_next_form_page(
@@ -206,12 +189,12 @@ def route_to_next_form_page():
             )
         return redirect_to_next_form_page("/medical-conditions")
     elif current_form == "nhs-number":
-        return redirect_to_next_form_page("/address-lookup")
+        return redirect_to_next_form_page(get_next_form_url_after_nhs_number())
     elif current_form == "postcode-lookup":
         return return_redirect_if_postcode_valid(redirect("/address-lookup"))
     elif current_form == "support-address":
         return return_redirect_if_postcode_valid(
-            redirect_to_next_form_page("/essential-supplies")
+            redirect_to_next_form_page("/do-you-have-someone-to-go-shopping-for-you")
         )
     else:
         raise RuntimeError("An unexpected error occurred")
