@@ -265,9 +265,6 @@ def load_answers_into_session_if_available():
                 "longValue"
             ],
             "nhs_letter": have_you_received_an_nhs_letter["longValue"],
-            "priority_supermarket_deliveries": do_you_want_supermarket_deliveries[
-                "longValue"
-            ],
             "basic_care_needs": do_you_need_help_meeting_your_basic_care_needs[
                 "longValue"
             ],
@@ -275,6 +272,13 @@ def load_answers_into_session_if_available():
                 "longValue"
             ],
         }
+        priority_supermarket_deliveries = do_you_want_supermarket_deliveries.get(
+            "longValue"
+        )
+        if priority_supermarket_deliveries is not None:
+            session["form_answers"][
+                "priority_supermarket_deliveries"
+            ] = priority_supermarket_deliveries
 
         medical_conditions = do_you_have_one_of_the_listed_medical_conditions.get(
             "longValue"
