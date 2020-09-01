@@ -5,6 +5,7 @@ __pycache__/
 
 /instance/config.py
 /vulnerable_people_form/static
+.coverage
 
 /venv
 .idea
