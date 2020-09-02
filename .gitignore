@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 
 /instance/config.py
+/vulnerable_people_form/static
 
 /venv
 .idea

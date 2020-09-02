@@ -5,8 +5,8 @@ clean:
 checks: clean
 	echo "⏳ running pipeline..."
 	set -e
-	black -q .
-	flake8 . --max-line-length=91
+	black -l 120 -q .
+	flake8 .
 	echo "✔️ Checks pipeline passed!"
 
 test:
