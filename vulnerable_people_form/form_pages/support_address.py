@@ -9,10 +9,7 @@ from .shared.validation import validate_support_address
 
 @form.route("/support-address", methods=["POST"])
 def post_support_address():
-    support_address = form_answers().get("support_address", {}).items()
-    original_address = {
-        k: v for k, v in support_address if k != "uprn"
-    }
+    original_address = {k: v for k, v in form_answers()["support_address"].items() if k != "uprn"}
     session["postcode"] = request_form().get("postcode")
     if original_address != request_form():
         session["form_answers"] = {

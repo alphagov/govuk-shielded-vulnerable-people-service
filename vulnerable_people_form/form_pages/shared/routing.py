@@ -65,8 +65,7 @@ def get_redirect_to_terminal_page_if_applicable():
 def redirect_to_next_form_page(redirect_target=True):
     next_page_name = redirect_target.strip("/")
     next_page_does_not_need_answer = (
-        form_answers().get(FORM_PAGE_TO_DATA_CHECK_SECTION_NAME[next_page_name])
-        is not None
+        form_answers().get(FORM_PAGE_TO_DATA_CHECK_SECTION_NAME[next_page_name]) is not None
     )
 
     if accessing_saved_answers():
@@ -151,8 +150,7 @@ def route_to_next_form_page():
             session.get("nhs_sub")
             or not contact_details.get("phone_number_texts")
             or not contact_details.get("email")
-            or ApplyingOnOwnBehalfAnswers(form_answers().get("applying_on_own_behalf"))
-            is ApplyingOnOwnBehalfAnswers.NO
+            or ApplyingOnOwnBehalfAnswers(form_answers().get("applying_on_own_behalf")) is ApplyingOnOwnBehalfAnswers.NO
         ):
             return redirect("/confirmation")
         else:
@@ -175,18 +173,14 @@ def route_to_next_form_page():
         return redirect_to_next_form_page("/basic-care-needs")
     elif current_form == "medical-conditions":
         if MedicalConditionsAnswers(answer) is MedicalConditionsAnswers.YES:
-            return redirect_to_next_form_page(
-                get_next_form_url_after_eligibility_check()
-            )
+            return redirect_to_next_form_page(get_next_form_url_after_eligibility_check())
         return redirect("/not-eligible-medical")
     elif current_form == "name":
         return redirect_to_next_form_page(get_next_form_url_after_name())
     elif current_form == "nhs-letter":
         if NHSLetterAnswers(answer) is NHSLetterAnswers.YES:
             blank_form_sections("medical_conditions")
-            return redirect_to_next_form_page(
-                get_next_form_url_after_eligibility_check()
-            )
+            return redirect_to_next_form_page(get_next_form_url_after_eligibility_check())
         return redirect_to_next_form_page("/medical-conditions")
     elif current_form == "nhs-number":
         return redirect_to_next_form_page(get_next_form_url_after_nhs_number())

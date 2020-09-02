@@ -14,31 +14,24 @@ class NHSOIDCDetails:
         try:
             self.client_id = app.config["NHS_OIDC_CLIENT_ID"]
             self.authorization_callback_url = app.config["NHS_OIDC_LOGIN_CALLBACK_URL"]
-            self.registration_callback_url = app.config[
-                "NHS_OIDC_REGISTRATION_CALLBACK_URL"
-            ]
+            self.registration_callback_url = app.config["NHS_OIDC_REGISTRATION_CALLBACK_URL"]
             self.scopes = ["openid", "profile", "email", "phone", "profile_extended"]
             self.vtr = '["P5.Cp.Cd", "P5.Cp.Ck", "P5.Cm"]'
             self.authority_url = app.config["NHS_OIDC_AUTHORITY_URL"]
         except ValueError as e:
             raise ValueError(f"Missing NHS OIDC configuration: {e!r}")
 
-        self.client = Client(
-            client_id=self.client_id, client_authn_method=CLIENT_AUTHN_METHOD
-        )
+        self.client = Client(client_id=self.client_id, client_authn_method=CLIENT_AUTHN_METHOD)
         self.client.provider_config(self.authority_url)
 
         self.private_key = app.config["NHS_OIDC_LOGIN_PRIVATE_KEY"]
         if not self.private_key:
             private_key_path = app.config["NHS_OIDC_LOGIN_PRIVATE_KEY_PATH"]
             if not os.stat(private_key_path):
-                raise ValueError(
-                    f"Missing private key file. Expected private key file at {self.private_key_path!r}"
-                )
+                raise ValueError(f"Missing private key file. Expected private key file at {self.private_key_path!r}")
 
             with open(private_key_path) as key_file:
                 self.private_key = key_file.read()
-
 
     def get_authorization_url(self):
         return self._get_authorization_url(self.authorization_callback_url, False)
@@ -71,9 +64,7 @@ class NHSOIDCDetails:
         return self._get_nhs_user_info(callback_args, self.registration_callback_url)
 
     def _get_nhs_user_info(self, callback_args, callback_url):
-        auth_response = self.client.parse_response(
-            AuthorizationResponse, info=callback_args, sformat="dict"
-        )
+        auth_response = self.client.parse_response(AuthorizationResponse, info=callback_args, sformat="dict")
         access_token_result = self.client.do_access_token_request(
             algorithm="RS512",
             authn_endpoint="token",

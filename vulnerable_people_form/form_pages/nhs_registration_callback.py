@@ -20,9 +20,7 @@ def log_form_and_nhs_answers_differences(nhs_user_info):
     for answers_key, nhs_user_info_key in NHS_USER_INFO_TO_FORM_ANSWERS.items():
         form_value = get_answer_from_form(answers_key)
         nhs_value = (
-            nhs_user_info_key(nhs_user_info)
-            if callable(nhs_user_info_key)
-            else nhs_user_info.get(nhs_user_info_key)
+            nhs_user_info_key(nhs_user_info) if callable(nhs_user_info_key) else nhs_user_info.get(nhs_user_info_key)
         )
         if form_value != nhs_value:
             if answers_key == ("nhs_number",):
@@ -43,9 +41,7 @@ def log_form_and_nhs_answers_differences(nhs_user_info):
 def get_nhs_registration_callback():
     if "error" in request.args:
         abort(500)
-    nhs_user_info = current_app.nhs_oidc_client.get_nhs_user_info_from_registration_callback(
-        request.args
-    )
+    nhs_user_info = current_app.nhs_oidc_client.get_nhs_user_info_from_registration_callback(request.args)
     log_form_and_nhs_answers_differences(nhs_user_info)
     session["nhs_sub"] = nhs_user_info["sub"]
     session["form_answers"]["nhs_number"] = nhs_user_info["nhs_number"]

@@ -6,6 +6,4 @@ from .shared.session import should_contact_gp
 
 @form.route("/confirmation", methods=["GET"])
 def get_confirmation():
-    return render_template_with_title(
-        "confirmation.html", registration_number=session["registration_number"]
-    )
+    return render_template_with_title("confirmation.html", registration_number=session["registration_number"])

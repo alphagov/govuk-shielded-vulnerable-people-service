@@ -19,9 +19,7 @@ from .session import form_answers, get_answer_from_form, request_form
 
 def validate_mandatory_form_field(section_key, value_key, error_message):
     if not form_answers().get(section_key, {}).get(value_key):
-        existing_section = session.setdefault("error_items", {}).setdefault(
-            section_key, {}
-        )
+        existing_section = session.setdefault("error_items", {}).setdefault(section_key, {})
         session["error_items"] = {
             **session.setdefault("error_items", {}),
             section_key: {**existing_section, value_key: error_message},
@@ -34,18 +32,22 @@ def validate_name():
     length_fstring = "'{}' cannot be longer than {} characters"
     return all(
         [
-            validate_mandatory_form_field(
-                "name", "first_name", "Enter your first name"
-            ),
+            validate_mandatory_form_field("name", "first_name", "Enter your first name"),
             validate_mandatory_form_field("name", "last_name", "Enter your last name"),
             validate_length(
-                ("name", "first_name"), 50, length_fstring.format("First name", 50),
+                ("name", "first_name"),
+                50,
+                length_fstring.format("First name", 50),
             ),
             validate_length(
-                ("name", "middle_name"), 50, length_fstring.format("Middle name", 50),
+                ("name", "middle_name"),
+                50,
+                length_fstring.format("Middle name", 50),
             ),
             validate_length(
-                ("name", "last_name"), 50, length_fstring.format("Last name", 50),
+                ("name", "last_name"),
+                50,
+                length_fstring.format("Last name", 50),
             ),
         ]
     )
@@ -92,14 +94,14 @@ def validate_radio_button(EnumClass, value_key, error_message):
 
 
 def validate_nhs_letter():
-    return validate_radio_button(
-        NHSLetterAnswers, "nhs_letter", "Select if you received the letter from the NHS"
-    )
+    return validate_radio_button(NHSLetterAnswers, "nhs_letter", "Select if you received the letter from the NHS")
 
 
 def validate_nhs_login():
     return validate_radio_button(
-        YesNoAnswers, "nhs_login", "Select yes if you want log in with you NHS details",
+        YesNoAnswers,
+        "nhs_login",
+        "Select yes if you want log in with you NHS details",
     )
 
 
@@ -132,7 +134,9 @@ def validate_address_lookup():
     if not request_form().get("address"):
         session["error_items"] = {
             **session.setdefault("error_items", {}),
-            "address_lookup": {"address": "You must select an address",},
+            "address_lookup": {
+                "address": "You must select an address",
+            },
         }
         return False
     return True
@@ -209,9 +213,7 @@ def validate_postcode(postcode, error_section_name):
         error = "Enter a real postcode"
 
     if error:
-        error_section = session.setdefault("error_items", {}).get(
-            error_section_name, {}
-        )
+        error_section = session.setdefault("error_items", {}).get(error_section_name, {})
         session["error_items"] = {
             **session.setdefault("error_items", {}),
             error_section_name: {**error_section, "postcode": error},
@@ -247,22 +249,18 @@ def validate_support_address():
                 75,
                 length_fstring.format("Address line 2", 75),
             ),
-            validate_mandatory_form_field(
+			validate_mandatory_form_field(
                 "support_address",
                 "town_city",
                 "Enter a town or city",
             ),
-            validate_length(
-                ("support_address", "town_city"), 50, length_fstring.format("Town or city", 50)
-            ),
+            validate_length(("support_address", "town_city"), 50, length_fstring.format("Town or city", 50)),
             validate_mandatory_form_field(
                 "support_address",
                 "building_and_street_line_1",
                 "Enter a building and street",
             ),
-            validate_postcode(
-                get_answer_from_form(("support_address", "postcode")), "support_address"
-            ),
+            validate_postcode(get_answer_from_form(("support_address", "postcode")), "support_address"),
         ]
     )
     return value
@@ -274,9 +272,7 @@ def validate_phone_number_if_present(section_key, phone_number_key):
         if phone_number:
             phonenumbers.parse(phone_number, region="GB")
     except phonenumbers.NumberParseException:
-        error_message = (
-            "Enter a telephone number, like 020 7946 0000, 07700900000 or +44 0808 157 0192",
-        )
+        error_message = ("Enter a telephone number, like 020 7946 0000, 07700900000 or +44 0808 157 0192",)
         error_section = session.setdefault("error_items", {}).get(section_key, {})
         session["error_items"] = {
             **session.setdefault("error_items", {}),

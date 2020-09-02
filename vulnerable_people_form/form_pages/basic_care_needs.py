@@ -20,9 +20,7 @@ def get_basic_care_needs():
         previous_path="/priority-supermarket-deliveries"
         if form_answers().get("priority_supermarket_deliveries") is not None
         else "/do-you-have-someone-to-go-shopping-for-you",
-        radio_items=get_radio_options_from_enum(
-            YesNoAnswers, form_answers().get("basic_care_needs")
-        ),
+        radio_items=get_radio_options_from_enum(YesNoAnswers, form_answers().get("basic_care_needs")),
         **get_errors_from_session("basic_care_needs"),
     )
 

@@ -16,9 +16,7 @@ from .shared.validation import validate_nhs_letter
 def get_nhs_letter():
     return render_template_with_title(
         "nhs-letter.html",
-        radio_items=get_radio_options_from_enum(
-            NHSLetterAnswers, form_answers().get("nhs_letter")
-        ),
+        radio_items=get_radio_options_from_enum(NHSLetterAnswers, form_answers().get("nhs_letter")),
         previous_path="/postcode-eligibility",
         **get_errors_from_session("nhs_letter"),
     )

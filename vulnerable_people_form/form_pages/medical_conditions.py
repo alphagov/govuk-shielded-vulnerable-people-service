@@ -25,9 +25,7 @@ def post_medical_conditions():
 def get_medical_conditions():
     return render_template_with_title(
         "medical-conditions.html",
-        radio_items=get_radio_options_from_enum(
-            MedicalConditionsAnswers, form_answers().get("medical_conditions")
-        ),
+        radio_items=get_radio_options_from_enum(MedicalConditionsAnswers, form_answers().get("medical_conditions")),
         previous_path="/nhs-letter",
         **get_errors_from_session("medical_conditions"),
     )
