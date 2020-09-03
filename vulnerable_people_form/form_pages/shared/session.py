@@ -4,8 +4,6 @@ from flask import request, session
 
 from .answers_enums import (
     NHSLetterAnswers,
-    ApplyingOnOwnBehalfAnswers,
-    MedicalConditionsAnswers,
     PrioritySuperMarketDeliveriesAnswers,
     YesNoAnswers,
 )

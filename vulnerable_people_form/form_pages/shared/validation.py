@@ -61,7 +61,7 @@ def validate_view_or_setup():
         session["error_items"] = {
             **session.setdefault("error_items", {}),
             "view_or_setup": {
-                "view_or_setup": "You must select if you would like to set up an account, or access an account via your NHS Login."
+                "view_or_setup": "You must select if you would like to set up an account, or access an account via your NHS Login."  # noqa: E501
             },
         }
         return False
@@ -113,7 +113,7 @@ def validate_register_with_nhs():
         session["error_items"] = {
             **session.setdefault("error_items", {}),
             "nhs_registration": {
-                "nhs_registration": "You need to select if you want to register an account with the NHS in order to retrieve your answers at a alater point."
+                "nhs_registration": "You need to select if you want to register an account with the NHS in order to retrieve your answers at a alater point."  # noqa: E501
             },
         }
         return False
@@ -205,7 +205,7 @@ def validate_date_of_birth():
 
 def validate_postcode(postcode, error_section_name):
     postcode.replace(" ", "")
-    postcode_regex = "(([A-Z]{1,2}[0-9][A-Z0-9]?|ASCN|STHL|TDCU|BBND|[BFS]IQQ|PCRN|TKCA) ?[0-9][A-Z]{2}|BFPO ?[0-9]{1,4}|(KY[0-9]|MSR|VG|AI)[ -]?[0-9]{4}|[A-Z]{2} ?[0-9]{2}|GE ?CX|GIR ?0A{2}|SAN ?TA1)"
+    postcode_regex = "(([A-Z]{1,2}[0-9][A-Z0-9]?|ASCN|STHL|TDCU|BBND|[BFS]IQQ|PCRN|TKCA) ?[0-9][A-Z]{2}|BFPO ?[0-9]{1,4}|(KY[0-9]|MSR|VG|AI)[ -]?[0-9]{4}|[A-Z]{2} ?[0-9]{2}|GE ?CX|GIR ?0A{2}|SAN ?TA1)"  # noqa: E501
     error = None
     if not postcode:
         error = "What is the postcode where you need support?"

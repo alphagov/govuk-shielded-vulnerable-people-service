@@ -6,7 +6,7 @@ from ..integrations import postcode_lookup_helper
 from .blueprint import form
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
-from .shared.session import form_answers, get_errors_from_session, request_form
+from .shared.session import get_errors_from_session, request_form
 from .shared.validation import validate_address_lookup
 
 

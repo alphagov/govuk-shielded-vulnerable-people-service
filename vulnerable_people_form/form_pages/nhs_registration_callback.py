@@ -1,18 +1,9 @@
-import json
-
 from flask import abort, current_app, redirect, request, session
 
 from ..integrations import google_analytics
 from .blueprint import form
 from .shared.constants import NHS_USER_INFO_TO_FORM_ANSWERS
-from .shared.session import (
-    form_answers,
-    get_answer_from_form,
-    get_summary_rows_from_form_answers,
-    request_form,
-    should_contact_gp,
-    persist_answers_from_session,
-)
+from .shared.session import get_answer_from_form, persist_answers_from_session
 
 
 def log_form_and_nhs_answers_differences(nhs_user_info):

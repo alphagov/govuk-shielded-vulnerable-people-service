@@ -3,14 +3,7 @@ from flask import abort, current_app, redirect, request, session
 from .blueprint import form
 from .shared.constants import NHS_USER_INFO_TO_FORM_ANSWERS
 from .shared.routing import get_redirect_to_terminal_page
-from .shared.session import (
-    form_answers,
-    get_answer_from_form,
-    get_summary_rows_from_form_answers,
-    load_answers_into_session_if_available,
-    request_form,
-    should_contact_gp,
-)
+from .shared.session import load_answers_into_session_if_available
 
 
 def set_form_answers_from_nhs_userinfo(nhs_user_info):
