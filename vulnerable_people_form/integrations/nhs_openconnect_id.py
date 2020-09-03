@@ -58,7 +58,10 @@ class NHSOIDCDetails:
                 "state": rndstr(),
                 "vtr": self.vtr,
                 "allow_registration": allow_registration,
-            }
+            },
+            http_args={
+                "timeout": 30,
+            },
         ).request(self.client.authorization_endpoint)
 
     def get_nhs_user_info_from_authorization_callback(self, callback_args):
@@ -81,6 +84,9 @@ class NHSOIDCDetails:
                 "client_id": self.client.client_id,
                 "redirect_uri": callback_url,
             },
+            http_args={
+                "timeout": 30,
+            },
             scope=self.scopes,
             state=auth_response.get("state", ""),
         )
@@ -90,7 +96,9 @@ class NHSOIDCDetails:
             )
 
         return self.client.do_user_info_request(
-            token=access_token_result["access_token"], method="GET"
+            token=access_token_result["access_token"], 
+            method="GET",
+            timeout=30,
         ).to_dict()
 
     def _get_client_assertion(self):
