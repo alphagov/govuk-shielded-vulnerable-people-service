@@ -6,7 +6,7 @@ from botocore.config import Config
 from flask import current_app
 
 boto3_config = Config(
-    retries = {
+    retries={
         'max_attempts': 5,
         'mode': 'standard',
     }
@@ -67,21 +67,21 @@ def init_app(app):
 def generate_string_parameter(name, value):
     return {
         "name": name,
-        "value": {"isNull": True} if value is None or value == '' else {"stringValue": value,},
+        "value": {"isNull": True} if value is None or value == '' else {"stringValue": value, },
     }
 
 
 def generate_int_parameter(name, value):
     return {
         "name": name,
-        "value": {"isNull": True} if value is None else {"doubleValue": value,},
+        "value": {"isNull": True} if value is None else {"doubleValue": value, },
     }
 
 
 def generate_bigint_parameter(name, value):
     return {
         "name": name,
-        "value": {"isNull": True} if value is None else {"longValue": value,},
+        "value": {"isNull": True} if value is None else {"longValue": value, },
     }
 
 
@@ -91,7 +91,7 @@ def generate_date_parameter(name, value):
         "typeHint": "DATE",
         "value": {"isNull": True}
         if value is None
-        else {"stringValue": "{year}-{month:0>2}-{day:0>2}".format(**value),},
+        else {"stringValue": "{year}-{month:0>2}-{day:0>2}".format(**value), },
     }
 
 
@@ -104,7 +104,7 @@ def _rds_arns():
 
 @contextlib.contextmanager
 def boto3transaction(client):
-    transaction_id = client.begin_transaction(**_rds_arns(),)["transactionId"]
+    transaction_id = client.begin_transaction(**_rds_arns(), )["transactionId"]
     try:
         return_value = yield transaction_id
     except botocore.exceptions.BotoCoreError:
@@ -149,50 +149,50 @@ def execute_sql(sql, parameters, retries=5):
 
 
 def persist_answers(
-    nhs_number,
-    first_name,
-    middle_name,
-    last_name,
-    date_of_birth,
-    address_line1,
-    address_line2,
-    address_town_city,
-    address_postcode,
-    address_uprn,
-    contact_number_calls,
-    contact_number_texts,
-    contact_email,
-    uid_nhs_login,
-    are_you_applying_on_behalf_of_someone_else,
-    have_you_received_an_nhs_letter,
-    do_you_want_supermarket_deliveries,
-    do_you_need_help_meeting_your_basic_care_needs,
-    do_you_have_someone_to_go_shopping_for_you,
-    do_you_have_one_of_the_listed_medical_conditions,
+        nhs_number,
+        first_name,
+        middle_name,
+        last_name,
+        date_of_birth,
+        address_line1,
+        address_line2,
+        address_town_city,
+        address_postcode,
+        address_uprn,
+        contact_number_calls,
+        contact_number_texts,
+        contact_email,
+        uid_nhs_login,
+        are_you_applying_on_behalf_of_someone_else,
+        have_you_received_an_nhs_letter,
+        do_you_want_supermarket_deliveries,
+        do_you_need_help_meeting_your_basic_care_needs,
+        do_you_have_someone_to_go_shopping_for_you,
+        do_you_have_one_of_the_listed_medical_conditions,
 ):
     result = execute_sql(
         sql="CALL cv_staging.create_web_submission("
-        ":nhs_number,"
-        ":first_name,"
-        ":middle_name,"
-        ":last_name,"
-        ":date_of_birth,"
-        ":address_line1,"
-        ":address_line2,"
-        ":address_town_city,"
-        ":address_postcode,"
-        ":address_uprn,"
-        ":contact_number_calls,"
-        ":contact_number_texts,"
-        ":contact_email,"
-        ":uid_nhs_login,"
-        ":are_you_applying_on_behalf_of_someone_else,"
-        ":have_you_received_an_nhs_letter,"
-        ":do_you_want_supermarket_deliveries,"
-        ":do_you_need_help_meeting_your_basic_care_needs,"
-        ":do_you_have_someone_to_go_shopping_for_you,"
-        ":do_you_have_one_of_the_listed_medical_conditions"
-        ")",
+            ":nhs_number,"
+            ":first_name,"
+            ":middle_name,"
+            ":last_name,"
+            ":date_of_birth,"
+            ":address_line1,"
+            ":address_line2,"
+            ":address_town_city,"
+            ":address_postcode,"
+            ":address_uprn,"
+            ":contact_number_calls,"
+            ":contact_number_texts,"
+            ":contact_email,"
+            ":uid_nhs_login,"
+            ":are_you_applying_on_behalf_of_someone_else,"
+            ":have_you_received_an_nhs_letter,"
+            ":do_you_want_supermarket_deliveries,"
+            ":do_you_need_help_meeting_your_basic_care_needs,"
+            ":do_you_have_someone_to_go_shopping_for_you,"
+            ":do_you_have_one_of_the_listed_medical_conditions"
+            ")",
         parameters=(
             generate_string_parameter("nhs_number", nhs_number),
             generate_int_parameter(

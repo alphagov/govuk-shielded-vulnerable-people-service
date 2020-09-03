@@ -39,7 +39,6 @@ class NHSOIDCDetails:
             with open(private_key_path) as key_file:
                 self.private_key = key_file.read()
 
-
     def get_authorization_url(self):
         return self._get_authorization_url(self.authorization_callback_url, False)
 

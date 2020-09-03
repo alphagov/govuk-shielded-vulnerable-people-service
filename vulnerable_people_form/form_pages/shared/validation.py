@@ -1,7 +1,7 @@
 import datetime
-import email_validator
 import re
 
+import email_validator
 import phonenumbers
 import stdnum.gb.nhs
 from flask import session
@@ -59,7 +59,8 @@ def validate_view_or_setup():
         session["error_items"] = {
             **session.setdefault("error_items", {}),
             "view_or_setup": {
-                "view_or_setup": "You must select if you would like to set up an account, or access an account via your NHS Login."
+                "view_or_setup": "You must select if you would like to set up an account, or access an account via "
+                                 "your NHS Login. "
             },
         }
         return False
@@ -111,7 +112,8 @@ def validate_register_with_nhs():
         session["error_items"] = {
             **session.setdefault("error_items", {}),
             "nhs_registration": {
-                "nhs_registration": "You need to select if you want to register an account with the NHS in order to retrieve your answers at a alater point."
+                "nhs_registration": "You need to select if you want to register an account with the NHS in order to "
+                                    "retrieve your answers at a alater point. "
             },
         }
         return False
@@ -132,7 +134,7 @@ def validate_address_lookup():
     if not request_form().get("address"):
         session["error_items"] = {
             **session.setdefault("error_items", {}),
-            "address_lookup": {"address": "You must select an address",},
+            "address_lookup": {"address": "You must select an address", },
         }
         return False
     return True
@@ -201,7 +203,8 @@ def validate_date_of_birth():
 
 def validate_postcode(postcode, error_section_name):
     postcode.replace(" ", "")
-    postcode_regex = "(([A-Z]{1,2}[0-9][A-Z0-9]?|ASCN|STHL|TDCU|BBND|[BFS]IQQ|PCRN|TKCA) ?[0-9][A-Z]{2}|BFPO ?[0-9]{1,4}|(KY[0-9]|MSR|VG|AI)[ -]?[0-9]{4}|[A-Z]{2} ?[0-9]{2}|GE ?CX|GIR ?0A{2}|SAN ?TA1)"
+    postcode_regex = "(([A-Z]{1,2}[0-9][A-Z0-9]?|ASCN|STHL|TDCU|BBND|[BFS]IQQ|PCRN|TKCA) ?[0-9][A-Z]{2}|BFPO ?[0-9]{" \
+                     "1,4}|(KY[0-9]|MSR|VG|AI)[ -]?[0-9]{4}|[A-Z]{2} ?[0-9]{2}|GE ?CX|GIR ?0A{2}|SAN ?TA1) "
     error = None
     if not postcode:
         error = "What is the postcode where you need support?"
@@ -322,9 +325,9 @@ def validate_nhs_number():
         except stdnum.exceptions.InvalidLength:
             error = "Enter your 10-digit NHS number"
         except (
-            stdnum.exceptions.InvalidChecksum,
-            stdnum.exceptions.InvalidComponent,
-            stdnum.exceptions.InvalidFormat,
+                stdnum.exceptions.InvalidChecksum,
+                stdnum.exceptions.InvalidComponent,
+                stdnum.exceptions.InvalidFormat,
         ):
             error = "Enter a real NHS number"
     else:
@@ -339,7 +342,6 @@ def validate_nhs_number():
 
 
 def validate_priority_supermarket_deliveries():
-
     return validate_radio_button(
         PrioritySuperMarketDeliveriesAnswers,
         "priority_supermarket_deliveries",

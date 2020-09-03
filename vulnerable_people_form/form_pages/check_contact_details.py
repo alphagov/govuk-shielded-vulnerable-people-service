@@ -23,7 +23,7 @@ def post_check_contact_details():
     existing_answers = form_answers().get("contact_details", {})
     session["form_answers"] = {
         **session.setdefault("form_answers", {}),
-        "contact_details": {**existing_answers, **request_form(),},
+        "contact_details": {**existing_answers, **request_form(), },
     }
     session["error_items"] = {}
     if not validate_contact_details("check_contact_details"):

@@ -5,8 +5,7 @@ clean:
 checks: clean
 	echo "⏳ running pipeline..."
 	set -e
-	black -q .
-	flake8 . --max-line-length=91
+	flake8 vulnerable_people_form
 	echo "✔️ Checks pipeline passed!"
 
 test:
@@ -16,7 +15,7 @@ test:
 install:
 	set -e
 	echo "⏳ installing..."
-	pip3 -q install black flake8 mypy watchdog pyyaml argh pytest isort requests_mock pytest-env
+	pip3 -q install flake8 mypy watchdog pyyaml argh pytest isort requests_mock pytest-env
 	pip3 -q install -r requirements.txt
 	echo "✔️ Pip dependencies installed!"
 

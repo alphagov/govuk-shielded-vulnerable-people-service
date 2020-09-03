@@ -1,10 +1,7 @@
 from flask import (
     Blueprint,
-    abort,
-    current_app,
     redirect,
     render_template,
-    request,
     session,
 )
 from flask_wtf.csrf import CSRFError

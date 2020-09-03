@@ -1,10 +1,11 @@
-from notifications_python_client.notifications import NotificationsAPIClient
-from ..integrations import govuk_notify_client
 from flask import current_app
+from notifications_python_client.notifications import NotificationsAPIClient
+
+from vulnerable_people_form.form_pages.shared.session import form_answers
 from vulnerable_people_form.integrations.notification_content import create_spl_no_match_email_content, \
     create_spl_match_email_content, create_spl_match_sms_content, create_spl_no_match_sms_content, \
     create_spl_match_letter_content, create_spl_no_match_letter_content
-from vulnerable_people_form.form_pages.shared.session import form_answers
+from ..integrations import govuk_notify_client
 
 _COMMS_HEADING_SUBJECT = "Coronavirus shielding support: your registration"
 
@@ -70,12 +71,13 @@ def send_notification(reference_number, is_spl_match, app=current_app):
             letter_content = create_spl_no_match_letter_content(reference_number)
             letter_template_id = app.config.get("GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID")
 
+        address_line_1 = form_answers()["support_address"].get("building_and_street_line_1")
         address_line_2 = form_answers()["support_address"].get("building_and_street_line_2")
         address_line_2 = address_line_2 if address_line_2 else " "
         town_city = form_answers()["support_address"].get("town_city")
         town_city = town_city if town_city else " "
 
-        govuk_notify_client.send_letter({"address_line_1": form_answers()["support_address"].get("building_and_street_line_1"),
+        govuk_notify_client.send_letter({"address_line_1": address_line_1,
                                          "address_line_2": address_line_2,
                                          "town_city": town_city,
                                          "postcode": form_answers()["support_address"]["postcode"]},

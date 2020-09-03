@@ -6,6 +6,7 @@ from prometheus_flask_exporter import PrometheusMetrics
 from . import form_pages
 from .integrations import nhs_openconnect_id, persistence
 
+
 def generate_error_handler(code):
     def handle_error(_):
         return render_template(f"{code}.html"), code
@@ -78,7 +79,7 @@ def create_app(scriptinfo):
         metrics.histogram(
             "requests_by_status_and_path",
             "Request latencies by status and path",
-            labels={"status": lambda r: r.status_code, "path": lambda: request.path,},
+            labels={"status": lambda r: r.status_code, "path": lambda: request.path, },
         ),
     )
 

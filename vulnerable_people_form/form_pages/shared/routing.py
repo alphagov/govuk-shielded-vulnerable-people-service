@@ -1,6 +1,5 @@
-from flask import current_app, redirect, request, session
+from flask import redirect, request, session
 
-from ...integrations import postcode_eligibility
 from .answers_enums import (
     ApplyingOnOwnBehalfAnswers,
     MedicalConditionsAnswers,
@@ -12,15 +11,14 @@ from .session import (
     form_answers,
     get_answer_from_form,
     is_nhs_login_user,
-    request_form,
     persist_answers_from_session,
 )
 from .validation import (
-    validate_contact_details,
     validate_date_of_birth,
     validate_nhs_number,
     validate_name,
 )
+from ...integrations import postcode_eligibility
 
 FORM_PAGE_TO_DATA_CHECK_SECTION_NAME = {
     "address-lookup": "support_address",

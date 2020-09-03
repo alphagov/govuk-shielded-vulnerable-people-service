@@ -1,6 +1,7 @@
 import requests
 from flask import current_app
 
+
 def track_event(category, action, label=None, value=0):
     data = {
         'v': '1',  # API Version.

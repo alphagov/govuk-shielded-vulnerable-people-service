@@ -4,13 +4,10 @@ from flask import request, session
 
 from .answers_enums import (
     NHSLetterAnswers,
-    ApplyingOnOwnBehalfAnswers,
-    MedicalConditionsAnswers,
     PrioritySuperMarketDeliveriesAnswers,
     YesNoAnswers,
 )
 from .constants import PAGE_TITLES
-
 from ...integrations import persistence
 
 
@@ -45,7 +42,7 @@ def accessing_saved_answers():
 
 def update_session_answers_from_form_for_enum():
     session["form_answers"] = {
-        **session.setdefault("form_answers",),
+        **session.setdefault("form_answers", ),
         **{k: int(v) for k, v in request_form().items()},
     }
     session["error_items"] = {}
@@ -110,7 +107,7 @@ def get_summary_rows_from_form_answers():
 
         value = {}
         row = {
-            "key": {"text": question, "classes": "govuk-!-width-two-thirds",},
+            "key": {"text": question, "classes": "govuk-!-width-two-thirds", },
             "value": {},
             "actions": {
                 "items": [
@@ -288,4 +285,3 @@ def load_answers_into_session_if_available():
         session["accessing_saved_answers"] = True
         return True
     return False
-
