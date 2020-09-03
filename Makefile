@@ -1,6 +1,6 @@
 test:
-	pytest -c pytest.ini -sqx --disable-warnings
-	echo "✔️ Tests passed!"
+	python3 -m pytest -sqx --disable-warnings
+	@echo "✔️ Unit tests passed!"
 
 install:
 	set -e
