@@ -195,7 +195,6 @@ def _strip_keys_with_no_value(_dict):
 
 
 def load_answers_into_session_if_available():
-    print("aaa" * 134)
     nhs_sub = session.get("nhs_sub")
     if nhs_sub is None:
         raise RuntimeError("Could not find nhs_sub in session")

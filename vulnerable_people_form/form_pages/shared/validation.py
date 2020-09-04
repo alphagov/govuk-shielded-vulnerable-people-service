@@ -249,7 +249,7 @@ def validate_support_address():
                 75,
                 length_fstring.format("Address line 2", 75),
             ),
-			validate_mandatory_form_field(
+            validate_mandatory_form_field(
                 "support_address",
                 "town_city",
                 "Enter a town or city",

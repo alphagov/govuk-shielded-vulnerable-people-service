@@ -87,7 +87,7 @@ class NHSOIDCDetails:
             )
 
         return self.client.do_user_info_request(
-            token=access_token_result["access_token"], 
+            token=access_token_result["access_token"],
             method="GET",
             timeout=30,
         ).to_dict()
