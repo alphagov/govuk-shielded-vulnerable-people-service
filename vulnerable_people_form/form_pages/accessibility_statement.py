@@ -5,4 +5,4 @@ from .shared.routing import dynamic_back_url
 
 @form.route("/accessibility-statement", methods=["GET"])
 def get_accessibility_statement():
-    return render_template_with_title("accessibility.html", back_url=dynamic_back_url)
+    return render_template_with_title("accessibility.html", previous_path=dynamic_back_url())
