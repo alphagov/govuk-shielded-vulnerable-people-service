@@ -10,7 +10,6 @@ from vulnerable_people_form.form_pages.shared.answers_enums import (
     ViewOrSetupAnswers,
     YesNoAnswers,
     PrioritySuperMarketDeliveriesAnswers)
-from vulnerable_people_form.form_pages.shared.validation import validate_priority_supermarket_deliveries
 
 _FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME = \
     "vulnerable_people_form.form_pages.shared.validation.form_answers"
@@ -34,7 +33,7 @@ def test_validate_name_should_return_true_when_first_name_and_surname_entered():
             _current_app.test_request_context() as test_request_ctx:
         test_request_ctx.session["form_answers"] = create_form_answers_with_first_name_and_surname()
         is_valid = validation.validate_name()
-        assert len(test_request_ctx.session) is 1
+        assert len(test_request_ctx.session) == 1
         assert is_valid is True
 
 
@@ -50,7 +49,7 @@ def test_validate_name_should_return_false_when_only_first_name_entered():
         is_valid = validation.validate_name()
 
         assert is_valid is False
-        assert len(test_request_ctx.session["error_items"]) is 1
+        assert len(test_request_ctx.session["error_items"]) == 1
         assert test_request_ctx.session["error_items"]["name"]["last_name"] == "Enter your last name"
 
 

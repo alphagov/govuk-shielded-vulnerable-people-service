@@ -54,7 +54,9 @@ _current_app.nhs_oidc_client.get_authorization_url = MagicMock(return_value=_NHS
                           ("/do-you-have-someone-to-go-shopping-for-you", "/priority-supermarket-deliveries",
                            {"do_you_have_someone_to_go_shopping_for_you": YesNoAnswers.NO.value}),
                           ("/priority-supermarket-deliveries", "/basic-care-needs", None),
-                          ("/medical-conditions", "/nhs-number", {"medical_conditions": MedicalConditionsAnswers.YES.value}),
+                          ("/medical-conditions",
+                           "/nhs-number",
+                           {"medical_conditions": MedicalConditionsAnswers.YES.value}),
                           ("/medical-conditions",
                            "/not-eligible-medical",
                            {"medical_conditions": MedicalConditionsAnswers.NO.value}),
@@ -121,8 +123,8 @@ def test_route_to_next_form_page_redirects_to_expected_page_with_postcode_eligib
     postcode = "LS1 1AB"
 
     with patch(_ROUTING_FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME, create_form_answers), \
-        patch(_POSTCODE_ELIGIBILITY_FUNCTION_FULLY_QUALIFIED_NAME) as postcode_eligibility, \
-        _current_app.test_request_context() as test_request_ctx:
+            patch(_POSTCODE_ELIGIBILITY_FUNCTION_FULLY_QUALIFIED_NAME) as postcode_eligibility, \
+            _current_app.test_request_context() as test_request_ctx:
         test_request_ctx.session["postcode"] = postcode
         test_request_ctx.request.url_rule = _create_mock_url_rule(current_form_url)
         postcode_eligibility.check_postcode = MagicMock(return_value=check_postcode_return_value)
@@ -149,10 +151,9 @@ def _execute_routing_test_and_assert_redirect_location_is_correct(current_form_u
         return form_answers
 
     with patch(_ROUTING_FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME, create_form_answers), \
-        patch(_VALIDATION_FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME, create_form_answers), \
-        patch("vulnerable_people_form.form_pages.shared.routing.persist_answers_from_session") \
-            as mock_persist_answers, \
-        _current_app.test_request_context() as test_request_ctx:
+            patch(_VALIDATION_FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME, create_form_answers), \
+            patch("vulnerable_people_form.form_pages.shared.routing.persist_answers_from_session"), \
+            _current_app.test_request_context() as test_request_ctx:
         test_request_ctx.request.url_rule = _create_mock_url_rule(current_form_url)
 
         if session_variables:
