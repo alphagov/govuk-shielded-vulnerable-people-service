@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
 {% block centered_content %}
-    <h1 class="govuk-heading-l">Session timed out</h1>
+    <h1 class="govuk-heading-l">Your session has timed out</h1>
     <p class="govuk-body">
-        Session timed out. In order to start a new session <a class="govuk-link" href="/start">click here</a>.
+        Your session timed out because you did not do anything for 60 minutes. We do this to keep your information secure.
     </p>
+    <p class="govuk-body">You can <a class="govuk-link" href="https://gov.uk/coronavirus-shielding-support">start your registration again</a>.</p>
 {% endblock %}

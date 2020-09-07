@@ -192,7 +192,7 @@ variables.
     the Ordnance Survey Places API. This is used to retrieve a list of
     candidate addresses from the UPRN.
 
-  - `PERMANENT_SESSION_LIFETIME` **\[defaults to 1800 seconds\]** : This
+  - `PERMANENT_SESSION_LIFETIME` **\[defaults to 3600 seconds\]** : This
     is the lifetime of a session, provided in seconds.
 
   - `GA_TRACKING_ID` **\[required\]**: The Google Analytics tracking id
