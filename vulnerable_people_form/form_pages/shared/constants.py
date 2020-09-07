@@ -28,7 +28,7 @@ PAGE_TITLES = {
     "check-your-answers": "Check your answers before submitting",
     "contact-details": "What are your contact details?",
     "date-of-birth": "What is your date of birth?",
-    "do-you-have-someone-to-go-shopping-for-you": "While you're shielding is there someone you can rely on to go shopping for you?",
+    "do-you-have-someone-to-go-shopping-for-you": "While you're shielding is there someone you can rely on to go shopping for you?",  # noqa: E501
     "priority-supermarket-deliveries": "Do you want access to priority supermarket deliveries?",
     "medical-conditions": "Do you have one of the listed medical conditions?",
     "name": "What is your name?	",

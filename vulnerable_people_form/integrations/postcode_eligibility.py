@@ -1,6 +1,4 @@
-import os
-
-from .persistence import get_rds_data_client, generate_string_parameter, execute_sql
+from .persistence import generate_string_parameter, execute_sql
 
 
 def check_postcode(postcode):

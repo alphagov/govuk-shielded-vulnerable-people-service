@@ -6,6 +6,7 @@ from prometheus_flask_exporter import PrometheusMetrics
 from . import form_pages
 from .integrations import nhs_openconnect_id, persistence
 
+
 def generate_error_handler(code):
     def handle_error(_):
         return render_template(f"{code}.html"), code
@@ -39,9 +40,7 @@ def verify_config(app):
     }
     present_keys = set(k for k in app.config.keys() if app.config[k] is not None)
     if not present_keys.issuperset(required_keys):
-        raise ValueError(
-            f"The following config keys are missing: {', '.join(required_keys - present_keys)}"
-        )
+        raise ValueError(f"The following config keys are missing: {', '.join(required_keys - present_keys)}")
 
 
 def create_app(scriptinfo):
@@ -51,9 +50,7 @@ def create_app(scriptinfo):
     app.jinja_loader = ChoiceLoader(
         [
             PackageLoader("vulnerable_people_form"),
-            PrefixLoader(
-                {"govuk_frontend_jinja": PackageLoader("govuk_frontend_jinja")}
-            ),
+            PrefixLoader({"govuk_frontend_jinja": PackageLoader("govuk_frontend_jinja")}),
         ]
     )
 
@@ -78,7 +75,10 @@ def create_app(scriptinfo):
         metrics.histogram(
             "requests_by_status_and_path",
             "Request latencies by status and path",
-            labels={"status": lambda r: r.status_code, "path": lambda: request.path,},
+            labels={
+                "status": lambda r: r.status_code,
+                "path": lambda: request.path,
+            },
         ),
     )
 

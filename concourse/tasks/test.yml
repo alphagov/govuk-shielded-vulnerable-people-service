@@ -16,7 +16,7 @@ run:
     - pipefail
     - -c
     - |
-      echo "running linters and tests..."
+      echo "running tests..."
       apt-get update
       apt-get install build-essential python3-pip python3 -y
       root=$(pwd)

@@ -4,8 +4,6 @@ from flask import request, session
 
 from .answers_enums import (
     NHSLetterAnswers,
-    ApplyingOnOwnBehalfAnswers,
-    MedicalConditionsAnswers,
     PrioritySuperMarketDeliveriesAnswers,
     YesNoAnswers,
 )
@@ -28,9 +26,7 @@ def get_errors_from_session(error_group_name):
     if session.get("error_items") and session["error_items"].get(error_group_name):
         errors = session["error_items"][error_group_name]
         error_messages = {k: {"text": v} for k, v in errors.items()}
-        error_list = [
-            {"text": text, "href": f"#{field}"} for field, text in errors.items()
-        ]
+        error_list = [{"text": text, "href": f"#{field}"} for field, text in errors.items()]
     answers = session.setdefault("form_answers", {})
     return {
         "error_list": error_list,
@@ -45,7 +41,9 @@ def accessing_saved_answers():
 
 def update_session_answers_from_form_for_enum():
     session["form_answers"] = {
-        **session.setdefault("form_answers",),
+        **session.setdefault(
+            "form_answers",
+        ),
         **{k: int(v) for k, v in request_form().items()},
     }
     session["error_items"] = {}
@@ -110,7 +108,10 @@ def get_summary_rows_from_form_answers():
 
         value = {}
         row = {
-            "key": {"text": question, "classes": "govuk-!-width-two-thirds",},
+            "key": {
+                "text": question,
+                "classes": "govuk-!-width-two-thirds",
+            },
             "value": {},
             "actions": {
                 "items": [
@@ -135,9 +136,7 @@ def get_summary_rows_from_form_answers():
                 )
             )
         elif key == "name":
-            value["text"] = " ".join(
-                _slice(["first_name", "middle_name", "last_name"], answer)
-            )
+            value["text"] = " ".join(_slice(["first_name", "middle_name", "last_name"], answer))
         elif key == "contact_details":
             value["html"] = "<br>".join(
                 [
@@ -147,9 +146,7 @@ def get_summary_rows_from_form_answers():
                 ]
             )
         elif key == "date_of_birth":
-            value["text"] = "{day:02}/{month:02}/{year}".format(
-                **{k: int(v) for k, v in answer.items()}
-            )
+            value["text"] = "{day:02}/{month:02}/{year}".format(**{k: int(v) for k, v in answer.items()})
         elif key in answers_to_key:
             value["text"] = answers_to_key[key](answer).value_as_text
         else:
@@ -198,7 +195,6 @@ def _strip_keys_with_no_value(_dict):
 
 
 def load_answers_into_session_if_available():
-    print("aaa" * 134)
     nhs_sub = session.get("nhs_sub")
     if nhs_sub is None:
         raise RuntimeError("Could not find nhs_sub in session")
@@ -261,31 +257,18 @@ def load_answers_into_session_if_available():
                     "email": contact_email.get("stringValue"),
                 }
             ),
-            "applying_on_own_behalf": are_you_applying_on_behalf_of_someone_else[
-                "longValue"
-            ],
+            "applying_on_own_behalf": are_you_applying_on_behalf_of_someone_else["longValue"],
             "nhs_letter": have_you_received_an_nhs_letter["longValue"],
-            "basic_care_needs": do_you_need_help_meeting_your_basic_care_needs[
-                "longValue"
-            ],
-            "do_you_have_someone_to_go_shopping_for_you": do_you_have_someone_to_go_shopping_for_you[
-                "longValue"
-            ],
+            "basic_care_needs": do_you_need_help_meeting_your_basic_care_needs["longValue"],
+            "do_you_have_someone_to_go_shopping_for_you": do_you_have_someone_to_go_shopping_for_you["longValue"],
         }
-        priority_supermarket_deliveries = do_you_want_supermarket_deliveries.get(
-            "longValue"
-        )
+        priority_supermarket_deliveries = do_you_want_supermarket_deliveries.get("longValue")
         if priority_supermarket_deliveries is not None:
-            session["form_answers"][
-                "priority_supermarket_deliveries"
-            ] = priority_supermarket_deliveries
+            session["form_answers"]["priority_supermarket_deliveries"] = priority_supermarket_deliveries
 
-        medical_conditions = do_you_have_one_of_the_listed_medical_conditions.get(
-            "longValue"
-        )
+        medical_conditions = do_you_have_one_of_the_listed_medical_conditions.get("longValue")
         if medical_conditions is not None:
             session["medical_conditions"] = medical_conditions
         session["accessing_saved_answers"] = True
         return True
     return False
-
