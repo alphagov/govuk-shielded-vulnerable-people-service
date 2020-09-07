@@ -283,3 +283,16 @@ variables.
     `DATABASE_SECRET_TAGS` required\]**: If this variable is present it
     will be used as the RDS secret ARN when communicating with AWS. 
 
+## Unit tests
+
+### Execution
+The unit tests can be executed from the root of the project by issuing the following command:
+``python -m pytest --disable-warnings``
+
+### Code coverage
+The code coverage can be viewed by executing the following commands from the root of the project:
+```
+coverage run --source vulnerable_people_form/ -m pytest --disable-warnings
+
+coverage report -m
+```
