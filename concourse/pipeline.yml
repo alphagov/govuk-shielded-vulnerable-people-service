@@ -78,6 +78,7 @@ jobs:
           AWS_ACCESS_KEY: ((svp-form/aws-access-key-id-stg))
           AWS_SECRET_ACCESS_KEY: ((svp-form/aws-secret-access-key-stg))
           NHS_OIDC_LOGIN_PRIVATE_KEY: ((svp-form/nhs-login-private-key-stg))
+          SENTRY_DSN: ((svp-form/sentry-dns-stg))
         on_failure: *slack_alert_on_failure
 
   - name: smoke-test-staging
@@ -137,6 +138,7 @@ jobs:
           AWS_ACCESS_KEY: ((svp-form/aws-access-key-id-prod))
           AWS_SECRET_ACCESS_KEY: ((svp-form/aws-secret-access-key-prod))
           NHS_OIDC_LOGIN_PRIVATE_KEY: ((svp-form/nhs-login-private-key-prod))
+          SENTRY_DSN: ((svp-form/sentry-dns-prod))
         on_failure: *slack_alert_on_failure
 
   - name: smoke-test-prod

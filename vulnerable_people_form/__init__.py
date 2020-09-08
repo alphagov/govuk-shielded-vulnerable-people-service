@@ -1,7 +1,9 @@
+import sentry_sdk
 from flask import Flask, render_template, request
 from flask_wtf.csrf import CSRFProtect
 from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
 from prometheus_flask_exporter import PrometheusMetrics
+from sentry_sdk.integrations.flask import FlaskIntegration
 
 from . import form_pages
 from .integrations import nhs_openconnect_id, persistence
@@ -21,6 +23,7 @@ def verify_config(app):
         "PERMANENT_SESSION_LIFETIME",
         "GA_TRACKING_ID",
         "NOTIFY_API_KEY",
+        "SENTRY_DSN",
         "GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID",
         "GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID",
         "GOVUK_NOTIFY_SPL_MATCH_LETTER_TEMPLATE_ID",
@@ -52,6 +55,10 @@ def create_app(scriptinfo):
             PackageLoader("vulnerable_people_form"),
             PrefixLoader({"govuk_frontend_jinja": PackageLoader("govuk_frontend_jinja")}),
         ]
+    )
+
+    sentry_sdk.init(
+        dsn=app.config["SENTRY_DSN"], integrations=[FlaskIntegration()],
     )
 
     app.register_blueprint(form_pages.blueprint.form)

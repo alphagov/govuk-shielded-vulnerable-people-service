@@ -6,6 +6,8 @@
   - Pip
   - Docker
   - Google Analytics API key
+  - Sentry DSN
+  - GOV.UK Notify API key
   - NHS oidc client id + private key
 
 #	Developers' guide
@@ -197,6 +199,9 @@ variables.
 
   - `GA_TRACKING_ID` **\[required\]**: The Google Analytics tracking id
     the app uses to record certain events.
+  
+  - `SENTRY_DSN` **\[required\]**: This is the DSN to which Sentry will
+    submit its stack traces.
 
   - `NHS_OIDC_AUTHORITY_URL` **\[required\]**: The authority URL at
     which OIDC logins will take place.

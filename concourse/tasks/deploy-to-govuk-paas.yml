@@ -41,6 +41,7 @@ params:
   DATABASE_SECRET_TAGS: role,coronavirus-web-form
   SECRET_KEY:
   NHS_OIDC_LOGIN_PRIVATE_KEY:
+  SENTRY_DSN:
 
 run:
   dir: src
@@ -88,6 +89,7 @@ run:
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form FLASK_CONFIG_FILE "$FLASK_CONFIG"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form SECRET_KEY "$SECRET_KEY"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form NHS_OIDC_LOGIN_PRIVATE_KEY "$NHS_OIDC_LOGIN_PRIVATE_KEY"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form SENTRY_DSN "$SENTRY_DSN"
 
       cf push govuk-coronavirus-shielded-vulnerable-people-form --strategy rolling --no-route -i "$INSTANCES"
       cf map-route govuk-coronavirus-shielded-vulnerable-people-form london.cloudapps.digital --hostname "$HOSTNAME"

@@ -1,6 +1,7 @@
 import json
 
 import requests
+import sentry_sdk
 from flask import current_app
 
 
@@ -87,10 +88,10 @@ def get_addresses_from_postcode(postcode):
             ]
             return values
     elif response.status_code == 401:
-        # TODO: Add notify here about invalid api key
+        sentry_sdk.capture_message("Invalid ORDNANCE_SURVEY_PLACES_API_KEY", "error")
         raise ErrorFindingAddress()
     elif response.status_code == 400:
-        # TODO: Add notify here about invalid api key
+        sentry_sdk.capture_message("Invalid OS postcode request:" + response.json(), "error")
         raise PostcodeNotFound()
     else:
         raise ErrorFindingAddress()
