@@ -10,7 +10,7 @@ install:
 
 concourse_e2e:
 	@echo "Executing e2e automated tests against the staging environment..."
-	behave behave/features/ --tags='@happy_path' --stop
+	behave behave/features/ --tags='@e2e_happy_path_no_nhs_login' --stop
 
 test_e2e_local:
 	@echo "Executing e2e automated tests against the local environment..."

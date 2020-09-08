@@ -1,6 +1,6 @@
-# COVID-19 - Happy-path Feature
-@happy_path
-Feature: COVID-19 Shielded vulnerable people service - basic user journey - happy path
+# COVID-19 -
+@e2e_happy_path_no_nhs_login
+Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - no NHS login
     Scenario: can load homepage
         When you navigate to "/"
         Then wait "2" seconds
