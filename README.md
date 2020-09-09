@@ -301,3 +301,13 @@ coverage run --source vulnerable_people_form/ -m pytest --disable-warnings
 
 coverage report -m
 ```
+
+## Automated tests
+
+### Running locally
+The flask web application should be running locally on port 5000 (http://localhost:5000) as per the above instructions.
+
+The tests can then be executed using the following command from the root of the project:
+```
+make test_e2e_local
+```

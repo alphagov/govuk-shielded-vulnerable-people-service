@@ -1,0 +1,12 @@
+version: '3'
+services:
+  chrome-driver:
+    image: gdscyber/concourse-chrome-driver:latest
+    network_mode: host
+    volumes:
+      - ./behave:/usr/src/app
+    command: bash
+    environment:
+      - WEB_APP_BASE_URL=http://localhost:5000
+    ports:
+      - "8081:8081"
