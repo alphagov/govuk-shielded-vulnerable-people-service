@@ -93,7 +93,7 @@ Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - 
 
     Scenario: Should be redirected to check contact details when email entered
         Given I am on the "contact-details" page
-        When I give the "#email" field the value "sandeep.nagra@digital.cabinet-office.gov.uk"
+        When I give the "#email" field the value "coronavirus-services-smoke-tests@digital.cabinet-office.gov.uk"
         And I submit the form
         Then wait "2" seconds
         Then I am redirected to the "check-contact-details" page
