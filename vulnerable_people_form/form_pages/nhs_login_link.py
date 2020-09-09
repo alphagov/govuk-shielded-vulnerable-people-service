@@ -1,11 +1,12 @@
-from flask import current_app, render_template
+from flask import current_app
 
+from vulnerable_people_form.form_pages.shared.render import render_template_with_title
 from .blueprint import form
 
 
 @form.route("/nhs-login-link", methods=["GET"])
 def get_nhs_login_link():
-    return render_template(
+    return render_template_with_title(
         "nhs-login-link.html",
         previous_path="/nhs-login",
         nhs_login_href=current_app.nhs_oidc_client.get_authorization_url(),

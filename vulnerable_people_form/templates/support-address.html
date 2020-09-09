@@ -11,7 +11,7 @@
 {{ 
 govukInput({
   "label": {
-    "text": "Building and Street"
+    "html": "Building and street<span class=\"govuk-visually-hidden\"> line 1 of 2</span>"
   },
   "id": "building_and_street_line_1",
   "name": "building_and_street_line_1",
@@ -25,7 +25,7 @@ govukInput({
 }}
 {{ 
 govukInput({
-  "label": { },
+  "label": { "html": "<span class=\"govuk-visually-hidden\">Building and street line 2 of 2</span>" },
   "id": "building_and_street_line_2",
   "name": "building_and_street_line_2",
   "autocomplete": "address-line2",

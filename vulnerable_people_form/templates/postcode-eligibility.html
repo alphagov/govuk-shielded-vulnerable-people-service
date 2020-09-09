@@ -4,7 +4,9 @@
 
 
 {% block form_fields %}
-  <h1 class="govuk-heading-xl govuk-!-margin-top-0 govuk-!-margin-bottom-3">{{ title_text }}</h1>
+    <h1 class="govuk-heading-xl govuk-!-margin-top-0 govuk-!-margin-bottom-3">
+        <label class="govuk-label govuk-label--l" for="postcode">{{ title_text }}</label>
+    </h1>
   {% if not nhs_user %}
     <p class="govuk-body govuk-!-margin-top-0 govuk-!-margin-bottom-9">Answer for the person who needs support</p>
   {% endif %}

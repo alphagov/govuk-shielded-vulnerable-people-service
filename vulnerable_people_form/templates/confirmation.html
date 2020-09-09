@@ -6,8 +6,8 @@
 {% block centered_content %}
   {{ govukPanel({
     "titleText": title_text,
+    "html": "Your registration number is<br><strong>" + registration_number + "</strong>"
   }) }}
-  <h2 class="govuk-heading-m">Your registration number is {{ registration_number }}</h2>
   <h2 class="govuk-heading-m">If you need urgent help</h2>
   <p class="govuk-body">If you need urgent help <a class="govuk-link" href="https://www.gov.uk/coronavirus-local-help">Contact your local authority</a> if you need supplies urgently and cannot rely on family, friends or neighbours.</p>
 
