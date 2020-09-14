@@ -7,7 +7,7 @@ from .answers_enums import (
     PrioritySuperMarketDeliveriesAnswers,
     YesNoAnswers,
 )
-from .constants import PAGE_TITLES
+from .constants import PAGE_TITLES, NHS_USER_INFO_TO_FORM_ANSWERS
 
 from ...integrations import persistence
 
@@ -272,3 +272,18 @@ def load_answers_into_session_if_available():
         session["accessing_saved_answers"] = True
         return True
     return False
+
+
+def set_form_answers_from_nhs_user_info(nhs_user_info):
+    for answers_key, maybe_key in NHS_USER_INFO_TO_FORM_ANSWERS.items():
+        nhs_answer = maybe_key(nhs_user_info) if callable(maybe_key) else nhs_user_info.get(maybe_key)
+        if nhs_answer is None:
+            continue
+        _set_form_answer(answers_key, nhs_answer)
+
+
+def _set_form_answer(answers_key_list, answer):
+    answers = session["form_answers"]
+    for key in answers_key_list[:-1]:
+        answers = answers.setdefault(key, {})
+    answers[answers_key_list[-1]] = answer

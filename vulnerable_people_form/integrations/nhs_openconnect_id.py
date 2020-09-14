@@ -36,10 +36,10 @@ class NHSOIDCDetails:
     def get_authorization_url(self):
         return self._get_authorization_url(self.authorization_callback_url, False)
 
-    def get_registration_url(self):
-        return self._get_authorization_url(self.registration_callback_url, True)
+    def get_registration_url(self, journey_progress):
+        return self._get_authorization_url(self.registration_callback_url, True, journey_progress)
 
-    def _get_authorization_url(self, callback_url, allow_registration):
+    def _get_authorization_url(self, callback_url, allow_registration, journey_progress=None):
         self.client.provider_config(self.authority_url)  # update
         return self.client.construct_AuthorizationRequest(
             request_args={
@@ -48,7 +48,7 @@ class NHSOIDCDetails:
                 "scope": self.scopes,
                 "nonce": rndstr(),
                 "redirect_uri": callback_url,
-                "state": rndstr(),
+                "state": rndstr() + (str(journey_progress.value) if journey_progress else ""),
                 "vtr": self.vtr,
                 "allow_registration": allow_registration,
             },
@@ -83,7 +83,7 @@ class NHSOIDCDetails:
         )
         if "access_token" not in access_token_result:
             raise RuntimeError(
-                f"Could not retrieve access token from NHS oidc endpoint. Recieved {access_token_result}"
+                f"Could not retrieve access token from NHS oidc endpoint. Received {access_token_result}"
             )
 
         return self.client.do_user_info_request(

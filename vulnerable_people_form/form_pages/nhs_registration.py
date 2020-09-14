@@ -1,5 +1,6 @@
 from flask import current_app
 
+from vulnerable_people_form.form_pages.shared.constants import JourneyProgress
 from .shared.answers_enums import YesNoAnswers, get_radio_options_from_enum
 from .blueprint import form
 from .shared.render import render_template_with_title
@@ -11,7 +12,7 @@ def get_nhs_registration():
     return render_template_with_title(
         "nhs-registration.html",
         radio_items=get_radio_options_from_enum(YesNoAnswers, form_answers().get("nhs_registration")),
-        nhs_registration_href=current_app.nhs_oidc_client.get_registration_url(),
+        nhs_registration_href=current_app.nhs_oidc_client.get_registration_url(JourneyProgress.NHS_REGISTRATION),
         previous_path="/basic-care-needs",
         **get_errors_from_session("nhs_registration"),
     )
