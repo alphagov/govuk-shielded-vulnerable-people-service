@@ -4,6 +4,7 @@ from flask import redirect, session
 
 from ..integrations import postcode_lookup_helper
 from .blueprint import form
+from .shared.constants import SESSION_KEY_ADDRESS_SELECTED
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
 from .shared.session import get_errors_from_session, request_form
@@ -56,4 +57,5 @@ def post_address_lookup():
     session["error_items"] = {}
     if not validate_address_lookup():
         return redirect("/address-lookup")
+    session[SESSION_KEY_ADDRESS_SELECTED] = True
     return route_to_next_form_page()

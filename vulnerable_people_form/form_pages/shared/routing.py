@@ -7,6 +7,7 @@ from .answers_enums import (
     NHSLetterAnswers,
     YesNoAnswers,
 )
+from .constants import SESSION_KEY_ADDRESS_SELECTED
 from .session import (
     accessing_saved_answers,
     form_answers,
@@ -129,7 +130,7 @@ def route_to_next_form_page():
     answer = form_answers().get(current_form.replace("-", "_"))
 
     if current_form == "address-lookup":
-        return redirect("/support-address")
+        return redirect("/do-you-have-someone-to-go-shopping-for-you")
     elif current_form == "applying-on-own-behalf":
         if ApplyingOnOwnBehalfAnswers(answer) is ApplyingOnOwnBehalfAnswers.YES:
             return redirect_to_next_form_page("/nhs-login")
@@ -194,3 +195,7 @@ def route_to_next_form_page():
 
 def dynamic_back_url(default="/"):
     return request.args.get("next") or request.referrer or default
+
+
+def get_back_url_for_shopping_assistance():
+    return "/address-lookup" if session[SESSION_KEY_ADDRESS_SELECTED] else "/support-address"
