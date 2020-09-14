@@ -24,6 +24,7 @@ def post_support_address():
 
 @form.route("/support-address", methods=["GET"])
 def get_support_address():
+    session["auto_populated_address_selected"] = False
     return render_template_with_title(
         "support-address.html",
         previous_path="/address-lookup",

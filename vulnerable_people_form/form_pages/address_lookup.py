@@ -56,4 +56,5 @@ def post_address_lookup():
     session["error_items"] = {}
     if not validate_address_lookup():
         return redirect("/address-lookup")
+    session["auto_populated_address_selected"] = True
     return route_to_next_form_page()

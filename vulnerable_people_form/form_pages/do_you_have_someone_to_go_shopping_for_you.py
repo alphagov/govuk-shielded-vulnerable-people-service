@@ -1,4 +1,4 @@
-from flask import redirect
+from flask import redirect, session
 
 from .shared.answers_enums import YesNoAnswers, get_radio_options_from_enum
 from .blueprint import form
@@ -14,13 +14,14 @@ from .shared.validation import validate_do_you_have_someone_to_go_shopping_for_y
 
 @form.route("/do-you-have-someone-to-go-shopping-for-you", methods=["GET"])
 def get_do_you_have_someone_to_go_shopping_for_you():
+    prev_path = "/address-lookup" if session["auto_populated_address_selected"] else "/support-address"
     return render_template_with_title(
         "do-you-have-someone-to-go-shopping-for-you.html",
         radio_items=get_radio_options_from_enum(
             YesNoAnswers,
             form_answers().get("do_you_have_someone_to_go_shopping_for_you"),
         ),
-        previous_path="/support-address",
+        previous_path=prev_path,
         **get_errors_from_session("do_you_have_someone_to_go_shopping_for_you"),
     )
 
