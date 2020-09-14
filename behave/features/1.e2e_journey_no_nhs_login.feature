@@ -58,14 +58,8 @@ Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - 
         Then wait "2" seconds
         Then I am redirected to the "address-lookup" page
 
-    Scenario: Should be redirected to support address when an address is selected
+    Scenario: Should be redirected to shopping assistance when an address is selected
         Given I am on the "address-lookup" page
-        When I submit the form
-        Then wait "2" seconds
-        Then I am redirected to the "support-address" page
-
-    Scenario: Should be redirected to shopping assistance when a valid address is entered
-        Given I am on the "support-address" page
         When I submit the form
         Then wait "2" seconds
         Then I am redirected to the "do-you-have-someone-to-go-shopping-for-you" page

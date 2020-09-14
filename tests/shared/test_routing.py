@@ -22,7 +22,7 @@ _current_app.nhs_oidc_client.get_authorization_url = MagicMock(return_value=_NHS
 
 
 @pytest.mark.parametrize("current_form_url, expected_redirect_location, form_answers",
-                         [("/address-lookup", "/support-address", None),
+                         [("/address-lookup", "do-you-have-someone-to-go-shopping-for-you", None),
                           ("/applying-on-own-behalf", "/nhs-login",
                            {"applying_on_own_behalf": ApplyingOnOwnBehalfAnswers.YES.value}),
                           ("/applying-on-own-behalf", "/postcode-eligibility",

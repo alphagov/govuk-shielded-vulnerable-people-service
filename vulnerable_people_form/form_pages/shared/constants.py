@@ -58,3 +58,5 @@ NHS_USER_INFO_TO_FORM_ANSWERS = {
     ("date_of_birth", "month"): partial(get_partial_date_from_userinfo, "month"),
     ("date_of_birth", "year"): partial(get_partial_date_from_userinfo, "year"),
 }
+
+SESSION_KEY_ADDRESS_SELECTED = "auto_populated_address_selected"

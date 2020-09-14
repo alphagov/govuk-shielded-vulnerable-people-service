@@ -1,6 +1,7 @@
 from flask import redirect, session
 
 from .blueprint import form
+from .shared.constants import SESSION_KEY_ADDRESS_SELECTED
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
 from .shared.session import form_answers, get_errors_from_session, request_form
@@ -19,12 +20,13 @@ def post_support_address():
     session["error_items"] = {}
     if not validate_support_address():
         return redirect("/support-address")
+    session[SESSION_KEY_ADDRESS_SELECTED] = False
     return route_to_next_form_page()
 
 
 @form.route("/support-address", methods=["GET"])
 def get_support_address():
-    session["auto_populated_address_selected"] = False
+
     return render_template_with_title(
         "support-address.html",
         previous_path="/address-lookup",
