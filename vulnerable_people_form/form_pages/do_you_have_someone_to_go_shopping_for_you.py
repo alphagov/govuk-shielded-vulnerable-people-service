@@ -1,4 +1,4 @@
-from flask import redirect, session
+from flask import redirect
 
 from .shared.answers_enums import YesNoAnswers, get_radio_options_from_enum
 from .blueprint import form
