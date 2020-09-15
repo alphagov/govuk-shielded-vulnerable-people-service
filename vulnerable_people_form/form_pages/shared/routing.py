@@ -154,7 +154,6 @@ def route_to_next_form_page():
             return redirect("/confirmation")
         else:
             return redirect("/nhs-registration")
-        return redirect_to_next_form_page("/basic-care-needs")
     elif current_form == "check-contact-details":
         return get_redirect_to_terminal_page()
     elif current_form == "contact-details":

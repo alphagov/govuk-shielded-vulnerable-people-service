@@ -1,3 +1,4 @@
+import enum
 from functools import partial
 
 
@@ -60,3 +61,9 @@ NHS_USER_INFO_TO_FORM_ANSWERS = {
 }
 
 SESSION_KEY_ADDRESS_SELECTED = "auto_populated_address_selected"
+
+
+@enum.unique
+class JourneyProgress(enum.Enum):
+    NHS_NUMBER = 0
+    NHS_REGISTRATION = 1
