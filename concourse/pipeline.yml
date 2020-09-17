@@ -79,6 +79,8 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ((svp-form/aws-secret-access-key-stg))
           NHS_OIDC_LOGIN_PRIVATE_KEY: ((svp-form/nhs-login-private-key-stg))
           SENTRY_DSN: ((svp-form/sentry-dns-stg))
+          GA_TRACKING_ID: 145652997-7
+#          GA_CROSS_DOMAIN_TRACKING_ID: TODO: confirm if this is necessary in staging
         on_failure: *slack_alert_on_failure
 
   - name: smoke-test-staging

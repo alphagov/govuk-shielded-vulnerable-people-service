@@ -8,6 +8,8 @@ from vulnerable_people_form.form_pages.shared.render import render_template_with
 
 _current_app = Flask(__name__)
 _current_app.secret_key = 'test_secret'
+_current_app.config["GA_TRACKING_ID"] = "ga-id"
+_current_app.config["GA_CROSS_DOMAIN_TRACKING_ID"] = "cd-ga-id"
 
 
 @pytest.mark.parametrize("session_variables, expected_nhs_user_value, expected_button_text",
@@ -27,6 +29,9 @@ def test_render_template_with_title_invokes_render_template_with_correct_argumen
 
         mock_render_template.assert_called_with("postcode-lookup.html",
                                                 title_text="What is the postcode where you need support?",
+                                                ga_tracking_id="ga-id",
+                                                ga_cross_domain_tracking_id="cd-ga-id",
+                                                cookie_preferences_set=False,
                                                 **{
                                                     "nhs_user": expected_nhs_user_value,
                                                     "button_text": expected_button_text,
