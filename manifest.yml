@@ -3,6 +3,8 @@ applications:
 - name: govuk-coronavirus-shielded-vulnerable-people-form
   buildpack: python_buildpack
   memory: 1G
+  services:
+    - svp-form-splunk-service
   env:
-    GOVUK_APP_DOMAIN: cloudapps.digital
+    GOVUK_APP_DOMAIN: london.cloudapps.digital
     GOVUK_WEBSITE_ROOT: www.gov.uk
