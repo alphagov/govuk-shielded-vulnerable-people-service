@@ -19,6 +19,11 @@ resources:
       url: ((slack_hook_automate))
       channel: covid-engineering-team
 
+  - name: every-1m
+    type: time
+    source:
+      interval: 1m
+
 # Anchors for later
 slack_alert_on_failure: &slack_alert_on_failure
   put: slack
@@ -151,6 +156,40 @@ jobs:
         file: git-master/concourse/tasks/smoke-test.yml
         params:
           URL: 'https://coronavirus-shielding-support.service.gov.uk/applying-on-own-behalf'
-          MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
+          MESSAGE: "Checks that the application deployed to production is not serving HTTP error codes"
         on_failure: *slack_alert_on_failure
         on_success: *slack_alert_on_success
+
+  - name: continuous-smoke-test-staging
+    plan:
+      - get: every-1m
+        trigger: true
+      - get: git-master
+      - task: smoke-test
+        file: git-master/concourse/tasks/smoke-test.yml
+        params:
+          URL: 'https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital/applying-on-own-behalf'
+          MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
+        on_failure: *slack_alert_on_failure
+      - task: cronitor-heartbeat
+        timeout: 1m
+        params:
+          CRONITOR_URL: ((svp-form/cronitor-heartbeat-stg))
+        file: git-master/concourse/tasks/cronitor.yml
+
+  - name: continuous-smoke-test-prod
+    plan:
+      - get: every-1m
+        trigger: true
+      - get: git-master
+      - task: smoke-test
+        file: git-master/concourse/tasks/smoke-test.yml
+        params:
+          URL: 'https://coronavirus-shielding-support.service.gov.uk/applying-on-own-behalf'
+          MESSAGE: "Checks that the application deployed to production is not serving HTTP error codes"
+        on_failure: *slack_alert_on_failure
+      - task: cronitor-heartbeat
+        timeout: 1m
+        params:
+          CRONITOR_URL: ((svp-form/cronitor-heartbeat-prod))
+        file: git-master/concourse/tasks/cronitor.yml
