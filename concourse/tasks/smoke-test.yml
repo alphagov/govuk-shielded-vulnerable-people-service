@@ -20,5 +20,5 @@ run:
     - -c
     - |
       echo "running smoke tests against \"${WEB_APP_BASE_URL}\""
-      behave behave/features/ --tags='@e2e_happy_path_no_nhs_login' --stop
+      make smoke_test
   dir: git-master
