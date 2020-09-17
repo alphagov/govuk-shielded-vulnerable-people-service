@@ -36,6 +36,7 @@ Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - 
 
     Scenario: Should be re-directed to name entry when valid nhs number entered
         Given I am on the "nhs-number" page
+        # This is passes the NHS number checksum but will never be assigned to a real person
         When I give the "#nhs_number" field the value "1116432455"
         And I submit the form
         Then wait "2" seconds
