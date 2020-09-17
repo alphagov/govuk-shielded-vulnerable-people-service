@@ -2,18 +2,23 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: governmentpaas/curl-ssl
+    repository: gdscyber/concourse-chrome-driver
+    tag: latest
 params:
-  URL:
-  MESSAGE:
+  CGO_ENABLE: "0"
+  DEBIAN_FRONTEND: "noninteractive"
+  PYTHONIOENCODING: "UTF-8"
+inputs:
+- name: git-master
+outputs:
+- name: builds
 run:
-  path: sh
+  path: /bin/bash
   args:
-    - '-c'
+    - -euo
+    - pipefail
+    - -c
     - |
-      set -eu
-
-      echo "$MESSAGE"
-
-      # TODO we can come up with a more thorough test than this
-      curl --fail --silent --verbose "$URL"
+      echo "running smoke tests against \"${WEB_APP_BASE_URL}\""
+      make smoke_test
+  dir: git-master
