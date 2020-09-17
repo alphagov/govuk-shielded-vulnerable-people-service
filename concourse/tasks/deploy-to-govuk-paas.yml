@@ -12,8 +12,8 @@ params:
   CF_USERNAME: ((svp-form/paas-username))
   CF_PASSWORD: ((svp-form/paas-password))
   CF_ORG: gds-shielded-vulnerable-people-service
-  GA_VIEW_ID: UA-43115970-1
-  GA_CROSS_DOMAIN_ID: UA-145652997-1
+  GA_TRACKING_ID:
+  GA_CROSS_DOMAIN_ID:
   CF_STARTUP_TIMEOUT:
   CF_SPACE:
   HOSTNAME:
@@ -60,7 +60,7 @@ run:
       cf apply-manifest -f manifest.yml
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form CF_STARTUP_TIMEOUT "$CF_STARTUP_TIMEOUT"
 
-      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GA_TRACKING_ID "$GA_VIEW_ID"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GA_TRACKING_ID "$GA_TRACKING_ID"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form GA_CROSS_DOMAIN_ID "$GA_CROSS_DOMAIN_ID"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID "$GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID "$GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID"

@@ -10,13 +10,13 @@ def render_template_with_title(template_name, *args, **kwargs):
 
     cookie_prefs_value = request.cookies.get("cookies_preferences_set")
     cookies_preferences_set = cookie_prefs_value is not None and cookie_prefs_value.lower() == "true"
-
+    cross_domain_tracking_id = current_app.config.get("GA_CROSS_DOMAIN_TRACKING_ID")
     return render_template(
         template_name,
         *args,
         title_text=PAGE_TITLES[template_name[:-5]],
         ga_tracking_id=current_app.config.get("GA_TRACKING_ID"),
-        ga_cross_domain_tracking_id=current_app.config.get("GA_CROSS_DOMAIN_TRACKING_ID"),
+        ga_cross_domain_tracking_id=cross_domain_tracking_id if cross_domain_tracking_id is not None else "",
         cookie_preferences_set=cookies_preferences_set,
         **{
             "nhs_user": session.get("nhs_sub") is not None,
