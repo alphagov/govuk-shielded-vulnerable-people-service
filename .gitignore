@@ -4,10 +4,6 @@ __pycache__/
 *$py.class
 
 /instance/config.py
-/vulnerable_people_form/static/fonts
-/vulnerable_people_form/static/govuk-frontend-*
-/vulnerable_people_form/static/images
-/vulnerable_people_form/static/VERSION.txt
 .coverage
 
 /venv
