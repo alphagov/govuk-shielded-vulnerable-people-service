@@ -38,6 +38,7 @@ def post_contact_details():
                 phone_key: format_phone_number_if_valid(request_form().get(phone_key))
                 for phone_key in ("phone_number_calls", "phone_number_texts")
             },
+            "email": request_form().get("email").strip() if request_form().get("email") else ""
         },
     }
     session["error_items"] = {}
