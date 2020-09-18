@@ -29,9 +29,10 @@ def get_nhs_number():
 def post_nhs_number():
     session["form_answers"] = {
         **session.setdefault("form_answers", {}),
-        **request_form(),
+        "nhs_number": request_form().get("nhs_number").replace(" ", ""),
         "know_nhs_number": "Yes, I know my NHS number",
     }
+
     session["error_items"] = {}
     if not validate_nhs_number():
         return redirect("/nhs-number")
