@@ -22,8 +22,8 @@ class ViewOrSetupAnswers(EnumWithText):
 
 @enum.unique
 class ApplyingOnOwnBehalfAnswers(EnumWithText):
-    YES = 1
-    NO = 0
+    YES = 0
+    NO = 1
 
     __text_values__ = {
         YES: "Myself",

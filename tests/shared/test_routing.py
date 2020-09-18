@@ -31,19 +31,19 @@ _current_app.nhs_oidc_client.get_authorization_url = MagicMock(return_value=_NHS
                           ("/nhs-login", "/postcode-eligibility", {"nhs_login": YesNoAnswers.NO.value}),
                           ("/basic-care-needs", "/contact-details", None),
                           ("/check-your-answers", "/confirmation",
-                           {"applying_on_own_behalf": 1,
+                           {"applying_on_own_behalf": 0,
                             "contact_details": {
                                "phone_number_texts": "",
                                "email": "e@mail.com"}
                             }),
                           ("/check-your-answers", "/confirmation",
-                           {"applying_on_own_behalf": 1,
+                           {"applying_on_own_behalf": 0,
                             "contact_details": {
                                 "email": "",
                                 "phone_number_texts": "07976123456"}
                             }),
                           ("/check-your-answers", "/nhs-registration",
-                           {"applying_on_own_behalf": 1,
+                           {"applying_on_own_behalf": 0,
                             "contact_details": {
                                 "email": "test@email.com",
                                 "phone_number_texts": "07976123456"}
