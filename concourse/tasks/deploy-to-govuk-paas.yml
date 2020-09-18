@@ -51,8 +51,6 @@ run:
     - |
       set -eu
 
-      ./build.sh
-
       cf api "$CF_API"
       cf auth
       cf t -o "$CF_ORG" -s "$CF_SPACE"
