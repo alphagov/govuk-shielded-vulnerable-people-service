@@ -1,0 +1,76 @@
+{%- from 'govuk_frontend_jinja/components/button/macro.html' import govukButton -%}
+
+{% macro obtain_cookie_consent() -%}
+<style type="text/css">
+    .cookie-banner__buttons { display: flex; flex-wrap: wrap; align-items: baseline; }
+    .cookie-banner__buttons > * { flex-grow: 1; }
+    .cookie-banner__buttons button { flex-basis: 10rem; }
+
+    .cookie-banner__confirmation { display: none; position: relative;}
+    .cookie-banner__confirmation:focus { outline: none; }
+    .cookie-banner__confirmation-message, .cookie-banner__hide-button { display: block; }
+    .cookie-banner__confirmation .cookie-banner__hide-button {
+        outline: 0;
+        border: 0;
+        background: none;
+        text-decoration: underline;
+        padding: 0;
+        color: #1d70b8;
+        pointer: cursor;
+    }
+    .cookie-banner__confirmation .cookie-banner__hide-button:hover { color: #003078; cursor: pointer; }
+    .cookie-banner__confirmation .cookie-banner__hide-button:focus {
+        outline: 3px solid transparent;
+        color: #0b0c0c;
+        background-color: #fd0;
+        box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+        text-decoration: none
+    }
+
+    @media (min-width: 48.0625em) {
+        .cookie-banner__confirmation-message, .cookie-banner__hide-button {
+            display: inline-block;
+        }
+
+        .cookie-banner__confirmation-message {
+            max-width: 90%;
+            margin-bottom: 0;
+        }
+        .cookie-banner__hide-button {
+            margin-top: 0;
+            position: absolute;
+            right: 5px;
+        }
+    }
+</style>
+<div id="global-cookie-message" class="cookie-banner govuk-clearfix govuk-!-padding-bottom-4 govuk-!-padding-top-4" data-module="cookie-banner" role="region" aria-label="cookie banner" data-nosnippet>
+  <div class="cookie-banner__wrapper govuk-width-container">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds cookie-banner">
+        <h2 class="govuk-heading-m">Can we store analytics cookies on your device?</h2>
+        <p class="govuk-body">Analytics cookies help us understand how this service is being used.</p>
+
+        <div class="cookie-banner__buttons">
+            {{ govukButton({
+              "attributes": { "id": "accept-cookies", "data-module": "track-click", "data-accept-cookies": "true" },
+              "classes": "govuk-!-margin-right-3 govuk-!-margin-bottom-2",
+              "text": "Yes"
+            }) }}
+            {{ govukButton({
+              "text": "No",
+              "attributes": { "id": "refuse-cookies", "data-module": "track-click", "data-hide-cookie-banner": "true" },
+              "classes": "govuk-!-margin-right-3 govuk-!-margin-bottom-2",
+              "text": "No"
+            }) }}
+          <a class="cookie-banner__link govuk-link govuk-body-m govuk-!-margin-bottom-0" href="/cookies">How this service uses cookies</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+   <div class="cookie-banner__confirmation govuk-width-container govuk-!-padding-top-1" tabindex="-1">
+    <p class="cookie-banner__confirmation-message govuk-!-margin-top-0 govuk-!-margin-right-4 govuk-body" role="alert">You’ve accepted analytics cookies. You can <a class='govuk-link' href='/cookies'>change your cookie settings</a> at any time.</p>
+    <button class="cookie-banner__hide-button govuk-body-m govuk-!-margin-bottom-0" data-hide-cookie-banner="true" data-module="track-click" data-track-category="cookieBanner" data-track-action="Hide cookie banner">Hide</button>
+  </div>
+</div>
+{%- endmacro %}

@@ -1,5 +1,6 @@
 {% extends 'govuk_frontend_jinja/template.html' %}
 
+{%- from 'analytics_cookie_banner.html' import obtain_cookie_consent %}
 {%- from 'govuk_frontend_jinja/components/footer/macro.html' import govukFooter -%}
 
 {% set assetPath = url_for('static', filename='').rstrip('/') %}
@@ -12,6 +13,12 @@
   <!--[if IE 8]><link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='govuk-frontend-ie8-3.7.0.min.css') }}" /><![endif]-->
   {% block meta_tags %}
   {% endblock %}
+{% endblock %}
+
+{% block bodyStart %}
+{% if not cookie_preferences_set %}
+    {{ obtain_cookie_consent() }}
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -45,8 +52,13 @@
 {% endblock %}
 
 {% block bodyEnd %}
+  <script src="{{ url_for('static', filename='js/stripPII.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/cookie-settings.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/govuk-cookie-banner.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/application.js') }}"></script>
   <!--[if gt IE 8]><!-->
-  <script src="{{ url_for('static', filename='govuk-frontend-3.7.0.min.js') }}"> </script>
-  <script>window.GOVUKFrontend.initAll()</script>
+  <script src="{{ url_for('static', filename='govuk-frontend-3.7.0.min.js') }}"></script>
   <!--<![endif]-->
+  <script>appInit("{{ga_tracking_id}}","{{ga_cross_domain_tracking_id}}");</script>
 {% endblock %}
