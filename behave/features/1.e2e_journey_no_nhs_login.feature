@@ -3,12 +3,12 @@
 Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - no NHS login
     Scenario: can load homepage
         When you navigate to "/"
-        Then wait "2" seconds
+        Then wait "5" seconds
         Then the content of element with selector ".govuk-fieldset__heading" equals "Are you using this service for yourself or for someone else?"
 
     Scenario: Should be re-directed to nhs-login when yes answered to applying on own behalf
         Given I am on the "applying-on-own-behalf" page
-        When I click the ".govuk-radios__item input[value='1']" element
+        When I click the ".govuk-radios__item input[value='0']" element
         And I submit the form
         Then wait "2" seconds
         Then I am redirected to the "nhs-login" page
