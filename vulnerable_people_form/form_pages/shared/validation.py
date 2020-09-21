@@ -287,8 +287,8 @@ def validate_email_if_present(section_key, email_key):
     if email_address:
         try:
             email_validator.validate_email(email_address)
-        except email_validator.EmailNotValidError as e:
-            error_message = f"The email address is invalid: {str(e)}"
+        except email_validator.EmailNotValidError:
+            error_message = "Enter an email address in the correct format, like name@example.com"
             error_section = session.setdefault("error_items", {}).get(section_key, {})
             session["error_items"] = {
                 **session.setdefault("error_items", {}),

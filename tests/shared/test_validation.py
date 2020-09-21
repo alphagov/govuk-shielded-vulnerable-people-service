@@ -318,13 +318,9 @@ def test_validate_nhs_number_should_return_true_when_valid_nhs_number_entered():
     )
 
 
-# The email address is invalid: The domain name email is not valid. It should have a period.
-# The email address is invalid: The email address is not valid. It must have exactly one @-sign.
-
-
 @pytest.mark.parametrize("form_field_value, expected_error_msg", [
-    ("sfsdf-sfdsfsd", "The email address is invalid: The email address is not valid. It must have exactly one @-sign."),
-    ("invalid@email", "The email address is invalid: The domain name email is not valid. It should have a period.")])
+    ("sfsdf-sfdsfsd", "Enter an email address in the correct format, like name@example.com"),
+    ("invalid@email", "Enter an email address in the correct format, like name@example.com")])
 def test_validate_email_if_present_should_return_false_when_invalid_email_entered(form_field_value, expected_error_msg):
     def create_form_answers():
         return {"contact_details": {"email": form_field_value}}
