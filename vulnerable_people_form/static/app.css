@@ -1,0 +1,106 @@
+.cookie-settings__form-wrapper {
+    display: None;
+}
+
+.js-enabled .cookie-settings__form-wrapper {
+    display: block;
+    padding-top: 30px;
+}
+
+.js-enabled .cookie-settings__no-js {
+    display: none;
+}
+
+.cookie-settings__list {
+    list-style-type: initial;
+    margin: 4px;
+    padding-left: 6px;
+}
+
+.cookie-settings__confirmation {
+    display: none;
+    border: 3px solid #00703c;
+}
+
+.cookie-settings__confirmation h2 {
+    color: #00703c;
+}
+
+.cookies-content {
+@include govuk-font(19);
+}
+
+.cookie-settings__table-wrapper {
+    padding-top: 30px;
+}
+
+.cookie-banner__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+}
+
+.cookie-banner__buttons > * {
+    flex-grow: 1;
+}
+
+.cookie-banner__buttons button {
+    flex-basis: 10rem;
+}
+
+.cookie-banner__confirmation {
+    display: none;
+    position: relative;
+}
+
+.cookie-banner__confirmation:focus {
+    outline: none;
+}
+
+.cookie-banner__confirmation-message, .cookie-banner__hide-button {
+    display: block;
+}
+
+.cookie-banner__confirmation .cookie-banner__hide-button {
+    outline: 0;
+    border: 0;
+    background: none;
+    text-decoration: underline;
+    padding: 0;
+    color: #1d70b8;
+    cursor: pointer;
+}
+
+.cookie-banner__confirmation .cookie-banner__hide-button:hover {
+    color: #003078;
+    cursor: pointer;
+}
+
+.cookie-banner__confirmation .cookie-banner__hide-button:focus {
+    outline: 3px solid transparent;
+    color: #0b0c0c;
+    background-color: #fd0;
+    box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+    text-decoration: none
+}
+
+svg .cls-1 { fill: #003087; }
+svg .cls-2 { fill: #005eb8; }
+svg .cls-3 { fill: #fff; }
+
+@media (min-width: 48.0625em) {
+    .cookie-banner__confirmation-message, .cookie-banner__hide-button {
+        display: inline-block;
+    }
+
+    .cookie-banner__confirmation-message {
+        max-width: 90%;
+        margin-bottom: 0;
+    }
+
+    .cookie-banner__hide-button {
+        margin-top: 0;
+        position: absolute;
+        right: 5px;
+    }
+}

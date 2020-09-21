@@ -1,5 +1,8 @@
+from http import HTTPStatus
+
 import sentry_sdk
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session
+from flask_talisman import Talisman
 from flask_wtf.csrf import CSRFProtect
 from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
 from prometheus_flask_exporter import PrometheusMetrics
@@ -8,12 +11,13 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 from . import form_pages
 from .integrations import nhs_openconnect_id, persistence
 
+_ENV_DEVELOPMENT = "DEVELOPMENT"
 
-def generate_error_handler(code):
-    def handle_error(_):
-        return render_template(f"{code}.html"), code
 
-    return handle_error
+def _handle_error(e):
+    if e.code == HTTPStatus.INTERNAL_SERVER_ERROR.value:
+        session.clear()
+    return render_template(f"{e.code}.html"), e.code
 
 
 def verify_config(app):
@@ -58,6 +62,8 @@ def create_app(scriptinfo):
         ]
     )
 
+    _setup_talisman(app)
+
     sentry_sdk.init(
         dsn=app.config["SENTRY_DSN"], integrations=[FlaskIntegration()],
     )
@@ -70,8 +76,8 @@ def create_app(scriptinfo):
 
     persistence.init_app(app)
 
-    app.register_error_handler(404, generate_error_handler(404))
-    app.register_error_handler(500, generate_error_handler(500))
+    app.register_error_handler(HTTPStatus.NOT_FOUND.value, _handle_error)
+    app.register_error_handler(HTTPStatus.INTERNAL_SERVER_ERROR.value, _handle_error)
 
     metrics = PrometheusMetrics(app)
     metrics.register_default(
@@ -91,3 +97,29 @@ def create_app(scriptinfo):
     )
 
     return app
+
+
+def _setup_talisman(app):
+    google_analytics_base_url = "https://www.google-analytics.com"
+    csp = {
+        "default-src": "'self'",
+        "img-src": [
+            "'self'",
+            google_analytics_base_url
+        ],
+        "script-src": [
+            "'self'",
+            google_analytics_base_url
+        ],
+        "style-src": "'self'",
+    }
+    secure_system = app.config['ENVIRONMENT'] != _ENV_DEVELOPMENT
+
+    return Talisman(
+        app,
+        force_https=secure_system,
+        strict_transport_security=secure_system,
+        session_cookie_secure=secure_system,
+        content_security_policy=csp,
+        content_security_policy_nonce_in=['script-src']
+    )

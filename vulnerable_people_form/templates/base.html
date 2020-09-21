@@ -9,6 +9,7 @@
 {% endblock %}
 
 {% block head %}
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='app.css') }}" />
   <!--[if gt IE 8]><!--><link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='govuk-frontend-3.7.0.min.css') }}" /><!--<![endif]-->
   <!--[if IE 8]><link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='govuk-frontend-ie8-3.7.0.min.css') }}" /><![endif]-->
   {% block meta_tags %}
@@ -16,6 +17,10 @@
 {% endblock %}
 
 {% block bodyStart %}
+  <!-- govuk-frontend 'js-enabled' css class initialisation -->
+  <script nonce="{{ csp_nonce() }}">
+    document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
+  </script>
 {% if not cookie_preferences_set %}
     {{ obtain_cookie_consent() }}
 {% endif %}
@@ -60,5 +65,5 @@
   <!--[if gt IE 8]><!-->
   <script src="{{ url_for('static', filename='govuk-frontend-3.7.0.min.js') }}"></script>
   <!--<![endif]-->
-  <script>appInit("{{ga_tracking_id}}","{{ga_cross_domain_tracking_id}}");</script>
+  <script nonce="{{ csp_nonce() }}">appInit("{{ga_tracking_id}}","{{ga_cross_domain_tracking_id}}");</script>
 {% endblock %}
