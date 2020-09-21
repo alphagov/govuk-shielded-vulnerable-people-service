@@ -62,14 +62,13 @@ def create_app(scriptinfo):
         ]
     )
 
-    _setup_talisman(app)
-
     sentry_sdk.init(
         dsn=app.config["SENTRY_DSN"], integrations=[FlaskIntegration()],
     )
 
     app.register_blueprint(form_pages.blueprint.form)
-    CSRFProtect(app)
+
+    _init_security(app)
 
     app.nhs_oidc_client = nhs_openconnect_id.NHSOIDCDetails()
     app.nhs_oidc_client.init_app(app)
@@ -99,7 +98,11 @@ def create_app(scriptinfo):
     return app
 
 
-def _setup_talisman(app):
+def _init_security(app):
+    CSRFProtect(app)
+    
+    app.config.update(SESSION_COOKIE_SAMESITE='Lax')
+
     google_analytics_base_url = "https://www.google-analytics.com"
     csp = {
         "default-src": "'self'",
