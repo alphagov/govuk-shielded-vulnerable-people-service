@@ -100,7 +100,7 @@ def create_app(scriptinfo):
 
 def _init_security(app):
     CSRFProtect(app)
-    
+
     app.config.update(SESSION_COOKIE_SAMESITE='Lax')
 
     google_analytics_base_url = "https://www.google-analytics.com"
