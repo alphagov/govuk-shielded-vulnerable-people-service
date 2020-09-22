@@ -22,6 +22,7 @@ def verify_config(app):
         "ORDNANCE_SURVEY_PLACES_API_KEY",
         "PERMANENT_SESSION_LIFETIME",
         "GA_TRACKING_ID",
+        "GA_CROSS_DOMAIN_TRACKING_ID",
         "NOTIFY_API_KEY",
         "SENTRY_DSN",
         "GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID",
