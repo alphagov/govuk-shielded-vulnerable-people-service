@@ -59,7 +59,7 @@ run:
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form CF_STARTUP_TIMEOUT "$CF_STARTUP_TIMEOUT"
 
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form GA_TRACKING_ID "$GA_TRACKING_ID"
-      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GA_CROSS_DOMAIN_ID "$GA_CROSS_DOMAIN_ID"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form GA_CROSS_DOMAIN_TRACKING_ID "$GA_CROSS_DOMAIN_ID"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID "$GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID "$GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form GOVUK_NOTIFY_SPL_MATCH_LETTER_TEMPLATE_ID "$GOVUK_NOTIFY_SPL_MATCH_LETTER_TEMPLATE_ID"
