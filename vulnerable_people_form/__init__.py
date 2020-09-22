@@ -45,6 +45,7 @@ def verify_config(app):
         "AWS_REGION",
         "AWS_ACCESS_KEY",
         "AWS_SECRET_ACCESS_KEY",
+        "ENVIRONMENT"
     }
     present_keys = set(k for k in app.config.keys() if app.config[k] is not None)
     if not present_keys.issuperset(required_keys):
