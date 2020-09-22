@@ -239,7 +239,9 @@ def test_validate_address_lookup_should_return_false_when_no_address_present(for
 def test_validate_address_lookup_should_return_true_when_address_present():
     _populate_request_form_and_execute_input_validation_test_and_assert_validation_passed(
         validation.validate_address_lookup,
-        {"street": "10 test avenue"},
+        "{&quot;uprn&quot;: 72277644, &quot;town_city&quot;: &quot;Pudsey&quot;, " +
+        "&quot;postcode&quot;: &quot;LS28 8JR&quot;, &quot;building_and_street_line_1&quot;: " +
+        "&quot;2 Galloway Lane&quot;, &quot;building_and_street_line_2&quot;: &quot;&quot;}",
         "address"
     )
 

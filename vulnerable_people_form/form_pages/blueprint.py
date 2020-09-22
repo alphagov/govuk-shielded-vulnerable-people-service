@@ -17,6 +17,13 @@ def redirect_to_first_page():
         return redirect("/applying-on-own-behalf")
 
 
+@form.after_request
+def add_caching_headers(response):
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["Pragma"] = "no-cache"
+    return response
+
+
 @form.errorhandler(CSRFError)
 def handle_csrf_error(e):
     if "form_started" not in session:

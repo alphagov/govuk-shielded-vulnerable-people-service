@@ -8,6 +8,7 @@ from .answers_enums import (
     YesNoAnswers,
 )
 from .constants import PAGE_TITLES, NHS_USER_INFO_TO_FORM_ANSWERS
+from .security import sanitise_input
 
 from ...integrations import persistence
 
@@ -17,7 +18,7 @@ def form_answers():
 
 
 def request_form():
-    return {k: v for k, v in request.form.items() if k != "csrf_token"}
+    return {k: sanitise_input(v) for k, v in request.form.items() if k != "csrf_token"}
 
 
 def get_errors_from_session(error_group_name):
