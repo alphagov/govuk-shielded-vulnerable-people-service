@@ -284,6 +284,9 @@ variables.
     `DATABASE_SECRET_TAGS` required\]**: If this variable is present it
     will be used as the RDS secret ARN when communicating with AWS. 
 
+  - `DEBUG_METRICS` **\[not required\]**: If this variable is set then
+    Prometheus metrics will be available in development mode.
+
 ## Unit tests
 
 ### Execution
