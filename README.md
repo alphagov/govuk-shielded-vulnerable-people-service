@@ -311,3 +311,7 @@ The tests can then be executed using the following command from the root of the 
 ```
 make test_e2e_local
 ```
+
+## Licence
+
+[MIT License](LICENCE)
