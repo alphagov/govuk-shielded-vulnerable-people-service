@@ -129,7 +129,7 @@ environment variables. To do this it uses the file at
     ```sh
     export FLASK_CONFIG=`env_to_config_shim.py`
     export FLASK_ENV=`production`
-    export FLASK_APP=`run,py`
+    export FLASK_APP=`run.py`
     ```
 2.  Set environment variables as per the **Configuration Variables
     Guide** section.
@@ -283,6 +283,9 @@ variables.
   - `AWS_RDS_SECRET_ARN_OVERRIDE` **\[either this or
     `DATABASE_SECRET_TAGS` required\]**: If this variable is present it
     will be used as the RDS secret ARN when communicating with AWS. 
+
+  - `DEBUG_METRICS` **\[not required\]**: If this variable is set then
+    Prometheus metrics will be available in development mode.
 
 ## Unit tests
 
