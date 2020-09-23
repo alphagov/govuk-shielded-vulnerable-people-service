@@ -50,10 +50,6 @@ structured like this:
     but is best run as described in the **Development Configuration**
     section to get auto-reloading.
 
-  - `build.sh`: This file retrieves static dependencies (only the
-    government design system js files currently) and places them in
-    `vulnerable_people_form/static`.
-
   - `Procfile`: This file contains a gunicorn command, intended for use in
     production by CloudFoundry. It is also possible to run it using a 
     Procfile runner.
