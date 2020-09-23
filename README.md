@@ -129,7 +129,7 @@ environment variables. To do this it uses the file at
     ```sh
     export FLASK_CONFIG=`env_to_config_shim.py`
     export FLASK_ENV=`production`
-    export FLASK_APP=`run,py`
+    export FLASK_APP=`run.py`
     ```
 2.  Set environment variables as per the **Configuration Variables
     Guide** section.
