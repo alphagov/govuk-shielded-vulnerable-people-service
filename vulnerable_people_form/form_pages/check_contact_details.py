@@ -13,7 +13,7 @@ def get_check_contact_details():
         "check-contact-details.html",
         previous_path="/contact-details",
         values=form_answers().get("contact_details", {}),
-        button_text="These details are correct",
+        button_text="This is correct",
         **get_errors_from_session("check_contact_details"),
     )
 

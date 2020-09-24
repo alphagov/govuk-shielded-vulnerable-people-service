@@ -75,7 +75,7 @@ def test_validate_applying_on_own_behalf_should_return_false_when_invalid_answer
         validation.validate_applying_on_own_behalf,
         form_field_value,
         "applying_on_own_behalf",
-        "Select yes if you are applying on your own behalf"
+        "Select if you are using this service for yourself or someone else"
     )
 
 
