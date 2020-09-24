@@ -11,4 +11,9 @@
     {{ govukSummaryList({
       "rows": summary_rows,
     }) }}
+
+      {{ govukButton({
+        "text": "Save and sign out",
+        "href": "/nhs-login-landing"
+      }) }}
 {% endblock %}
