@@ -94,3 +94,4 @@ run:
       cf push govuk-coronavirus-shielded-vulnerable-people-form --strategy rolling -i "$INSTANCES"
       cf map-route govuk-coronavirus-shielded-vulnerable-people-form london.cloudapps.digital --hostname "$HOSTNAME"
 
+      cf bind-service govuk-coronavirus-shielded-vulnerable-people-form prometheus
