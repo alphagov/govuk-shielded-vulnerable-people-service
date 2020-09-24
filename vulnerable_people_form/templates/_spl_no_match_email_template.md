@@ -2,15 +2,13 @@ Dear {{first_name}} {{last_name}},
 
 Your registration number is {{reference_number}}.
 
-{% if not has_someone_to_shop %}
-
-#If you need urgent help
-
-Contact your local authority if you need urgent help: https://www.gov.uk/coronavirus-local-help.
-
-{% endif %}
-
 {% if told_to_shield == 1 %}
+
+#Make sure you've given us the correct personal details
+
+You'll only be able to get the support you need if you've given us the correct personal details. If you think you might have made a mistake, go through the questions again: https://www.gov.uk/coronavirus-shielding-support
+
+Contact your local authority if you need help using the service: https://www.gov.uk/coronavirus-local-help
 
 #What happens next
 
@@ -26,19 +24,23 @@ We’ll check your details, then contact you to confirm whether you’re eligibl
 
 Contact your GP or hospital clinician as soon as possible so they can put you on the NHS list of people who should be shielding. You may not get the support you need if you do not contact them.
 
+#Make sure you've given us the correct personal details
+
+You'll only be able to get the support you need if you've given us the correct personal details. If you think you might have made a mistake, go through the questions again: https://www.gov.uk/coronavirus-shielding-support
+
+Contact your local authority if you need help using the service: https://www.gov.uk/coronavirus-local-help
+
 #What happens next
 
 We’ll check your details, then contact you to confirm whether you’re eligible for support. This can take up to 2 weeks from when your GP or hospital clinician puts you on the NHS list of people who should be shielding.
 
 {% endif %}
 
-{% if has_someone_to_shop %}
+#If you need urgent help
 
-Contact your local authority if you need support urgently and cannot rely on family, friends or neighbours: https://www.gov.uk/coronavirus-local-help.
+Contact your local authority if you need support urgently and cannot rely on family, friends or neighbours: https://www.gov.uk/coronavirus-local-help
 
-{% endif %}
-
-There’s guidance on what you should do if you’re extremely vulnerable to coronavirus: https://www.gov.uk/coronavirus-extremely-vulnerable-guidance.
+There’s guidance on what you should do if you’re extremely vulnerable to coronavirus: https://www.gov.uk/coronavirus-extremely-vulnerable-guidance
 
 Thanks,
 

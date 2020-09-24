@@ -38,21 +38,21 @@ Someone from your local authority will contact you about your care needs within 
 
 {% if not wants_supermarket_deliveries and not wants_social_care %}
 
-You said that you do not want priority supermarket deliveries or help with your care needs.
+Based on what you told us, at the moment you do not help getting supplies or meeting your basic care needs.
 
 {% endif %}
 
 #If your personal details or support needs change
 
-Use the service again to update your personal details or support needs: www.gov.uk/coronavirus-extremely-vulnerable
+Use the service again to update your personal details or support needs: www.gov.uk/coronavirus-shielding-support.
 
 {% if has_someone_to_shop %}
 
-Contact your local authority if you need support urgently and cannot rely on family, friends or neighbours: www.gov.uk/coronavirus-local-help
+Contact your local authority if you need support urgently and cannot rely on family, friends or neighbours: www.gov.uk/coronavirus-local-help.
 
 {% endif %}
 
-There’s guidance on what you should do if you’re extremely vulnerable to coronavirus: www.gov.uk/coronavirus-extremely-vulnerable-guidance
+There’s guidance on what you should do if you’re extremely vulnerable to coronavirus: www.gov.uk/coronavirus-extremely-vulnerable-guidance.
 
 Regards,
 
