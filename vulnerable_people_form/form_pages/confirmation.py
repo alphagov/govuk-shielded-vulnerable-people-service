@@ -5,4 +5,8 @@ from .shared.render import render_template_with_title
 
 @form.route("/confirmation", methods=["GET"])
 def get_confirmation():
-    return render_template_with_title("confirmation.html", registration_number=session["registration_number"])
+    rendered_template = render_template_with_title(
+        "confirmation.html",
+        registration_number=session["registration_number"])
+    session.clear()
+    return rendered_template
