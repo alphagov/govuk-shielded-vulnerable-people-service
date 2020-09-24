@@ -1,0 +1,38 @@
+---
+resource_types:
+  - name: cron-resource
+    type: docker-image
+    source:
+      repository: cftoolsmiths/cron-resource
+
+resources:
+  - name: git-dev
+    type: git
+    icon: github-circle
+    source:
+      uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
+      branch: feature/794/gatling-in-concourse
+
+  - name: trigger-at-1am
+    type: cron-resource
+    source:
+      expression: "0 1 *  * *"
+      location: "Local"
+      fire_immediately: true
+
+jobs:
+  - name: update-pipeline
+    serial: true
+    plan:
+      - get: git-dev
+        trigger: true
+      - set_pipeline: wip-svp-with-gatling
+        file: git-dev/concourse_dev/pipeline.yml
+
+  - name: gatling-workflow-load-test
+    plan:
+      - get: git-dev
+      - get: trigger-at-1am
+        trigger: true
+      - task: gatling
+        file: git-dev/concourse_dev/tasks/gatling-workflow-load-test.yml
