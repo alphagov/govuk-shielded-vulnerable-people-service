@@ -46,6 +46,7 @@ PAGE_TITLES = {
     "support-address": "What is the address where you need support?",
     "view-or-setup": "Do you want to set up this service, or access an existing account?",
     "view-answers": "Your saved details",
+    "nhs-login-landing": "If you've previously registered with NHS login for this service you can sign in",
 }
 
 NHS_USER_INFO_TO_FORM_ANSWERS = {
