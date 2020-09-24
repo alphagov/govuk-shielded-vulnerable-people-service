@@ -9,18 +9,18 @@
       "name": "nhs_login",
       "errorMessage": error_messages.get('nhs_login'),
       "hint": {
-        "text": "You might have one if you've used the NHS app."},
+        "text": "You might have one if you've used the NHS App."},
       "fieldset": {
         "legend": {
           "text": title_text, 
           "isPageHeading": true,
-          "classes": "govuk-fieldset__legend--xl"
+          "classes": "govuk-fieldset__legend--l"
         }
       },
       "items": radio_items,
     }) }}
     {{ govukDetails({
       "summaryText": "What is NHS login?",
-      "html": "<p class='govuk-body'>NHS login allows you to sign into different NHS services, for example the NHS app.</p><p class='govuk-body'>If you do not have one, you'll have the option to create an account at the end of the service.</p>"
+      "html": "<p class='govuk-body'>NHS login allows you to sign in to different NHS services - for example, the NHS App.</p><p class='govuk-body'>If you do not have an NHS login, you’ll have the option to set one up at the end of the service.</p>"
     }) }}
 {% endblock %}

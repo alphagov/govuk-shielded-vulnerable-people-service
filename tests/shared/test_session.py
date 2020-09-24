@@ -8,7 +8,8 @@ from vulnerable_people_form.form_pages.shared import session
 from vulnerable_people_form.form_pages.shared.answers_enums import \
     NHSLetterAnswers, \
     YesNoAnswers, \
-    ApplyingOnOwnBehalfAnswers, MedicalConditionsAnswers, PrioritySuperMarketDeliveriesAnswers
+    ApplyingOnOwnBehalfAnswers, MedicalConditionsAnswers, PrioritySuperMarketDeliveriesAnswers, BasicCareNeedsAnswers, \
+    ShoppingAssistanceAnswers
 from vulnerable_people_form.form_pages.shared.constants import PAGE_TITLES
 
 _current_app = Flask(__name__)
@@ -149,8 +150,8 @@ def test_get_errors_from_session_should_return_empty_error_object_when_no_error_
 def test_get_summary_rows_from_form_answers_should_return_ordered_summary_rows_for_form_answers_present_in_session():
     with _current_app.test_request_context() as test_request_ctx:
         test_request_ctx.session["form_answers"] = {
-            "basic_care_needs": YesNoAnswers.YES.value,
-            "do_you_have_someone_to_go_shopping_for_you": YesNoAnswers.NO.value,
+            "basic_care_needs": BasicCareNeedsAnswers.YES.value,
+            "do_you_have_someone_to_go_shopping_for_you": ShoppingAssistanceAnswers.NO.value,
             "priority_supermarket_deliveries": PrioritySuperMarketDeliveriesAnswers.YES.value,
             "applying_on_own_behalf": ApplyingOnOwnBehalfAnswers.YES.value,
             "nhs_number": "1234567891",
@@ -172,10 +173,8 @@ def test_get_summary_rows_from_form_answers_should_return_ordered_summary_rows_f
         assert len(summary_rows) > 0
 
         _make_summary_row_assertions(summary_rows[0],
-                                     "support-address",
-                                     "1 Test Street<br>address line 2<br>Leeds<br>LS1 1BA",
-                                     True,
-                                     "The address where support is needed")
+                                     "nhs-number",
+                                     "1234567891")
 
         _make_summary_row_assertions(summary_rows[1],
                                      "name",
@@ -190,26 +189,28 @@ def test_get_summary_rows_from_form_answers_should_return_ordered_summary_rows_f
                                      "Date of birth")
 
         _make_summary_row_assertions(summary_rows[3],
+                                     "support-address",
+                                     "1 Test Street<br>address line 2<br>Leeds<br>LS1 1BA",
+                                     True,
+                                     "Address where support is needed")
+
+        _make_summary_row_assertions(summary_rows[4],
+                                     "do-you-have-someone-to-go-shopping-for-you",
+                                     ShoppingAssistanceAnswers.NO.value_as_text)
+
+        _make_summary_row_assertions(summary_rows[5],
+                                     "priority-supermarket-deliveries",
+                                     PrioritySuperMarketDeliveriesAnswers.YES.value_as_text)
+
+        _make_summary_row_assertions(summary_rows[6],
+                                     "basic-care-needs",
+                                     BasicCareNeedsAnswers.YES.value_as_text)
+
+        _make_summary_row_assertions(summary_rows[7],
                                      "contact-details",
                                      "Phone number: 0113 123 4567<br>Text: 07976 152456<br>Email: tst_email@gmail.com",
                                      True,
                                      "Contact details")
-
-        _make_summary_row_assertions(summary_rows[4],
-                                     "nhs-number",
-                                     "1234567891")
-
-        _make_summary_row_assertions(summary_rows[5],
-                                     "do-you-have-someone-to-go-shopping-for-you",
-                                     YesNoAnswers.NO.value_as_text)
-
-        _make_summary_row_assertions(summary_rows[6],
-                                     "priority-supermarket-deliveries",
-                                     PrioritySuperMarketDeliveriesAnswers.YES.value_as_text)
-
-        _make_summary_row_assertions(summary_rows[7],
-                                     "basic-care-needs",
-                                     YesNoAnswers.YES.value_as_text)
 
 
 def test_persist_answers_from_session():

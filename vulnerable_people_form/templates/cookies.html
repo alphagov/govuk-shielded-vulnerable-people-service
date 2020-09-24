@@ -2,7 +2,7 @@
 {%- from "govuk_frontend_jinja/components/radios/macro.html" import govukRadios -%}
 {%- from 'govuk_frontend_jinja/components/button/macro.html' import govukButton -%}
 
-{% extends "base-with-home-breadcrumb.html" %}
+{% extends "base-with-back-link.html" %}
 
 {% block centered_content %}
   <div class="cookie-settings__confirmation govuk-!-padding-4 govuk-!-margin-bottom-8" data-cookie-confirmation="true">
@@ -13,7 +13,7 @@
           </a>
       </section>
   </div>
-  <h1 class="govuk-heading-xl govuk-!-margin-top-0 govuk-!-margin-bottom-8">
+  <h1 class="govuk-heading-l govuk-!-margin-top-0 govuk-!-margin-bottom-8">
     {{ title_text }}
   </h1>
   <p class="govuk-body">This service puts small files (known as ‘cookies’) onto your computer.</p>

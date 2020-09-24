@@ -4,7 +4,7 @@
 
 
 {% block form_fields %}
-  <h1 class="govuk-heading-xl govuk-!-margin-top-0 govuk-!-margin-bottom-3">{{title_text}}</h1>
+  <h1 class="govuk-heading-l govuk-!-margin-top-0 govuk-!-margin-bottom-3">{{title_text}}</h1>
   {% if not nhs_user %}
     <p class="govuk-body">If you’re applying for someone else, enter the address of the person who needs support.</p>
   {% endif %}
@@ -29,4 +29,7 @@ govukSelect({
   <p class="govuk-body">
     <a class="govuk-link" href="/support-address">My address isn't listed or is wrong</a>
   </p>
+{% endblock %}
+{% block form_end %}
+    <p class="govuk-body">Contains Royal Mail data &copy; Royal Mail copyright and database rights 2020</p>
 {% endblock %}

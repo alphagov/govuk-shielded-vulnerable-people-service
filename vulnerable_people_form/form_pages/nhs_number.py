@@ -20,7 +20,10 @@ def get_nhs_number():
     return render_template_with_title(
         "nhs-number.html",
         previous_path=previous_path,
-        values={"nhs_number": form_answers().get("nhs_number", "")},
+        values={
+            "nhs_number": form_answers().get("nhs_number", ""),
+            "applying_on_own_behalf": form_answers().get("applying_on_own_behalf")
+        },
         **get_errors_from_session("nhs_number"),
     )
 

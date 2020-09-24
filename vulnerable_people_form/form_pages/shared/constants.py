@@ -23,13 +23,13 @@ PAGE_TITLES = {
     "accessibility": "Accessibility statement",
     "applying-on-own-behalf": "Are you using this service for yourself or for someone else?",
     "cookies": "Cookies",
-    "address-lookup": "Select your address",
+    "address-lookup": "What is the address where you need support?",
     "basic-care-needs": "Do you need help meeting your basic care needs?",
     "check-contact-details": "Check this is correct",
     "check-your-answers": "Check your answers before submitting",
     "contact-details": "What are your contact details?",
     "date-of-birth": "What is your date of birth?",
-    "do-you-have-someone-to-go-shopping-for-you": "While you're shielding is there someone you can rely on to go shopping for you?",  # noqa: E501
+    "do-you-have-someone-to-go-shopping-for-you": "While you’re shielding, is there someone you can rely on to go shopping for you if you need them to?",  # noqa: E501
     "priority-supermarket-deliveries": "Do you want access to priority supermarket deliveries?",
     "medical-conditions": "Do you have one of the listed medical conditions?",
     "name": "What is your name?	",
@@ -38,6 +38,7 @@ PAGE_TITLES = {
     "nhs-login-link": "If you've previously registered with NHS login for this service you can sign in",
     "nhs-number": "What is your NHS number?",
     "nhs-registration": "Would you like to create an NHS Login you can use to retrieve your answers in the future?",
+    "nhs-registration-link": "Sign in to update your details or change the support you need",
     "not-eligible-postcode": "Sorry, this service is not available in your area",
     "not-eligible-medical": "Sorry, you’re not eligible for help through this service",
     "postcode-lookup": "What is the postcode where you need support?",

@@ -6,11 +6,11 @@
 {% block form_fields %}
     <fieldset class="govuk-fieldset">
   <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-    <h1 class="govuk-heading-xl govuk-!-margin-top-0 govuk-!-margin-bottom-0">{{ title_text }}</h1>
+    <h1 class="govuk-heading-l govuk-!-margin-top-0 govuk-!-margin-bottom-0">{{ title_text }}</h1>
   </legend>
 
   {% if not nhs_user %}
-    <p class="govuk-body">If you’re applying for someone else, enter the name of the person who needs support.</p>
+    <p class="govuk-hint">Answer for the person who is shielding.</p>
   {% endif %}
 {{ 
 govukInput({

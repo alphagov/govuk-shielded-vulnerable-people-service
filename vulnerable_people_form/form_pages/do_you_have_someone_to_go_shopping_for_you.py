@@ -1,6 +1,6 @@
 from flask import redirect
 
-from .shared.answers_enums import YesNoAnswers, get_radio_options_from_enum
+from .shared.answers_enums import get_radio_options_from_enum, ShoppingAssistanceAnswers
 from .blueprint import form
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page, get_back_url_for_shopping_assistance
@@ -18,7 +18,7 @@ def get_do_you_have_someone_to_go_shopping_for_you():
     return render_template_with_title(
         "do-you-have-someone-to-go-shopping-for-you.html",
         radio_items=get_radio_options_from_enum(
-            YesNoAnswers,
+            ShoppingAssistanceAnswers,
             form_answers().get("do_you_have_someone_to_go_shopping_for_you"),
         ),
         previous_path=back_url,

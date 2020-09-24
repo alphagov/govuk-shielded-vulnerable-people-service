@@ -5,7 +5,8 @@ from flask import request, session
 from .answers_enums import (
     NHSLetterAnswers,
     PrioritySuperMarketDeliveriesAnswers,
-    YesNoAnswers,
+    ShoppingAssistanceAnswers,
+    BasicCareNeedsAnswers
 )
 from .constants import PAGE_TITLES, NHS_USER_INFO_TO_FORM_ANSWERS
 from .security import sanitise_input
@@ -71,24 +72,28 @@ def _slice(keys, _dict):
     return (_dict[key] for key in keys if key in _dict)
 
 
-def get_summary_rows_from_form_answers():
+def get_summary_rows_from_form_answers(exclude_answers=None):
     summary_rows = []
     answers = form_answers()
     order = [
-        "support_address",
+        "nhs_number",
         "name",
         "date_of_birth",
-        "contact_details",
-        "nhs_number",
+        "support_address",
         "do_you_have_someone_to_go_shopping_for_you",
         "priority_supermarket_deliveries",
         "basic_care_needs",
+        "contact_details"
     ]
+
+    if exclude_answers:
+        for answer_to_exclude in exclude_answers:
+            order.remove(answer_to_exclude)
 
     answers_to_key = {
         "priority_supermarket_deliveries": PrioritySuperMarketDeliveriesAnswers,
-        "do_you_have_someone_to_go_shopping_for_you": YesNoAnswers,
-        "basic_care_needs": YesNoAnswers,
+        "do_you_have_someone_to_go_shopping_for_you": ShoppingAssistanceAnswers,
+        "basic_care_needs": BasicCareNeedsAnswers,
     }
 
     for key in order:
@@ -97,7 +102,7 @@ def get_summary_rows_from_form_answers():
 
         answer_labels = {
             **PAGE_TITLES,
-            "support-address": "The address where support is needed",
+            "support-address": "Address where support is needed",
             "name": "Name",
             "date-of-birth": "Date of birth",
             "contact-details": "Contact details",
