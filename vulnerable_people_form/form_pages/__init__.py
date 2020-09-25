@@ -31,7 +31,8 @@ from . import (
     privacy,
     support_address,
     view_answers,
-    nhs_login_landing
+    nhs_login_landing,
+    nhs_login_no_consent
 )
 
 __all__ = ["blueprint"]

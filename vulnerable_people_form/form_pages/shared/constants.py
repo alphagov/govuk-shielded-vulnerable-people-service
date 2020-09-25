@@ -48,6 +48,7 @@ PAGE_TITLES = {
     "view-or-setup": "Do you want to set up this service, or access an existing account?",
     "view-answers": "Your saved details",
     "nhs-login-landing": "Sign in to update your details or change the support you need",
+    "nhs-login-no-consent": "You have decided not to share your NHS login information",
 }
 
 NHS_USER_INFO_TO_FORM_ANSWERS = {
