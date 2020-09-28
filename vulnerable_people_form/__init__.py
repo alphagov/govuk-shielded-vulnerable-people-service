@@ -64,7 +64,10 @@ def create_app(scriptinfo):
     )
 
     sentry_sdk.init(
-        dsn=app.config["SENTRY_DSN"], integrations=[FlaskIntegration()],
+        dsn=app.config["SENTRY_DSN"],
+        integrations=[FlaskIntegration()],
+        with_locals=False,
+        request_bodies='never',
     )
 
     app.register_blueprint(form_pages.blueprint.form)
