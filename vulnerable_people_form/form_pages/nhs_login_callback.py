@@ -8,8 +8,14 @@ from .shared.session import load_answers_into_session_if_available, set_form_ans
 @form.route("/nhs-login-callback", methods=["GET"])
 def get_nhs_login_callback():
     session.permanent = True
+
     if "error" in request.args:
-        abort(500)
+        error_description = request.args.get('error_description')
+        if error_description == "ConsentNotGiven":
+            return redirect("/no-consent")
+        else:
+            abort(500)
+
     nhs_user_info = current_app.nhs_oidc_client.get_nhs_user_info_from_authorization_callback(request.args)
 
     session["nhs_sub"] = nhs_user_info["sub"]

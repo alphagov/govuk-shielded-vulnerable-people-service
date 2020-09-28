@@ -32,7 +32,14 @@ def log_form_and_nhs_answers_differences(nhs_user_info):
 @form.route("/nhs-registration-callback", methods=["GET"])
 def get_nhs_registration_callback():
     if "error" in request.args:
-        abort(500)
+        error_description = request.args.get('error_description')
+        if error_description == "ConsentNotGiven" and session.get('registration_number'):
+            return redirect("/confirmation")
+        elif error_description == "ConsentNotGiven":
+            return redirect("/no-consent-registration")
+        else:
+            abort(500)
+
     state_from_query_string = request.args.get('state')
     if state_from_query_string:
         last_char_of_state = state_from_query_string[len(state_from_query_string)-1]

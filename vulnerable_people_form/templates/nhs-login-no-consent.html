@@ -1,0 +1,12 @@
+{%- from 'govuk_frontend_jinja/components/button/macro.html' import govukButton -%}
+
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="govuk-heading-l govuk-!-margin-top-0 govuk-!-margin-bottom-6">{{ title_text }}</h1>
+    <p id="nhs_login-no-consent-hint" class="govuk-hint">{{ hint_text }}</p>
+    {{ govukButton({
+        "text": "Continue",
+        "href": continue_url
+    }) }}
+{% endblock %}
