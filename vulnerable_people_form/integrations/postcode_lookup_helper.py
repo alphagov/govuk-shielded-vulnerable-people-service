@@ -1,8 +1,15 @@
 import json
+import logging
+from http import HTTPStatus
 
 import requests
 import sentry_sdk
 from flask import current_app
+
+from vulnerable_people_form.form_pages.shared.logger_utils import init_logger, create_log_message, log_event_names
+
+logger = logging.getLogger(__name__)
+init_logger(logger)
 
 
 class NoAddressesFoundAtPostcode(RuntimeError):
@@ -84,11 +91,12 @@ def get_addresses_from_postcode(postcode):
         "dataset": "LPI",
     }
     response = requests.get(url, params=params)
-    if response.status_code == 200:
+    if response.status_code == HTTPStatus.OK.value:
         response_json = response.json()
         if response_json["header"]["totalresults"] == 0:
             raise NoAddressesFoundAtPostcode()
         else:
+            logger.info(create_log_message(log_event_names["ORDNANCE_SURVEY_LOOKUP_SUCCESS"], f"Postcode: {postcode}"))
             values = []
             for result in response_json["results"]:
                 if entry_is_a_postal_address(result):
@@ -99,11 +107,19 @@ def get_addresses_from_postcode(postcode):
                         }
                     )
             return values
-    elif response.status_code == 401:
+    elif response.status_code == HTTPStatus.UNAUTHORIZED.value:
+        _log_postcode_lookup_failure("Unauthorised request submitted to API", postcode)
         sentry_sdk.capture_message("Invalid ORDNANCE_SURVEY_PLACES_API_KEY", "error")
         raise ErrorFindingAddress()
-    elif response.status_code == 400:
-        sentry_sdk.capture_message("Invalid OS postcode request:" + response.json(), "error")
+    elif response.status_code == HTTPStatus.BAD_REQUEST.value:
+        _log_postcode_lookup_failure("Invalid request submitted to API", postcode)
+        sentry_sdk.capture_message("Invalid OS postcode request:" + response.text, "error")
         raise PostcodeNotFound()
     else:
+        _log_postcode_lookup_failure("Error finding address", postcode)
         raise ErrorFindingAddress()
+
+
+def _log_postcode_lookup_failure(failure_reason, postcode):
+    logger.error(create_log_message(log_event_names["ORDNANCE_SURVEY_LOOKUP_FAILURE"],
+                                    f"Failure reason: {failure_reason}, Postcode: {postcode}"))

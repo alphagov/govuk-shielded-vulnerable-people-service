@@ -1,10 +1,16 @@
+import logging
+
 from flask import abort, current_app, redirect, request, session
 
+from vulnerable_people_form.form_pages.shared.logger_utils import create_log_message, log_event_names, init_logger
 from vulnerable_people_form.form_pages.shared.routing import get_next_form_url_after_nhs_number
 from ..integrations import google_analytics
 from .blueprint import form
 from .shared.constants import NHS_USER_INFO_TO_FORM_ANSWERS, JourneyProgress
 from .shared.session import get_answer_from_form, persist_answers_from_session, set_form_answers_from_nhs_user_info
+
+logger = logging.getLogger(__name__)
+init_logger(logger)
 
 
 def log_form_and_nhs_answers_differences(nhs_user_info):
@@ -33,6 +39,11 @@ def log_form_and_nhs_answers_differences(nhs_user_info):
 def get_nhs_registration_callback():
     if "error" in request.args:
         error_description = request.args.get('error_description')
+
+        logger.error(create_log_message(
+            log_event_names["NHS_LOGIN_FAIL"],
+            f"NHS login error: {request.args['error']} , error description: {error_description}"))
+
         if error_description == "ConsentNotGiven" and session.get('registration_number'):
             return redirect("/confirmation")
         elif error_description == "ConsentNotGiven":
