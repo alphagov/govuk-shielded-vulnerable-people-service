@@ -1,3 +1,4 @@
+import logging
 import os
 import uuid
 
@@ -7,6 +8,11 @@ from oic.oauth2 import AuthorizationResponse
 from oic.oic import Client
 from oic.utils.authn.client import CLIENT_AUTHN_METHOD
 from oic.utils.time_util import utc_time_sans_frac
+
+from vulnerable_people_form.form_pages.shared.logger_utils import init_logger, log_event_names, create_log_message
+
+logger = logging.getLogger(__name__)
+init_logger(logger)
 
 
 class NHSOIDCDetails:
@@ -86,11 +92,19 @@ class NHSOIDCDetails:
                 f"Could not retrieve access token from NHS oidc endpoint. Received {access_token_result}"
             )
 
-        return self.client.do_user_info_request(
+        user_info_resp = self.client.do_user_info_request(
             token=access_token_result["access_token"],
             method="GET",
             timeout=30,
         ).to_dict()
+
+        if "error" in user_info_resp:
+            logger.error(
+                create_log_message(
+                    log_event_names["NHS_LOGIN_USER_INFO_REQUEST_FAIL"],
+                    f"Error description: {user_info_resp.get('error_description')}"))
+
+        return user_info_resp
 
     def _get_client_assertion(self):
         return jwt.encode(
