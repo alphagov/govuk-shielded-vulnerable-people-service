@@ -66,6 +66,16 @@ def address_builder(lpi_info):
     }
 
 
+def entry_is_a_postal_address(result):
+    """
+    The LPI dataset includes entries for address assets that cannot receive post
+    such as car parks and streets. These should not appear in the address
+    picker. Such entries have a POSTAL_ADDRESS_CODE of 'N'. Return boolean true
+    if an entry is a "real" postable address.
+    """
+    return result['LPI']['POSTAL_ADDRESS_CODE'] != 'N'
+
+
 def get_addresses_from_postcode(postcode):
     url = "https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode"
     params = {
@@ -79,13 +89,15 @@ def get_addresses_from_postcode(postcode):
         if response_json["header"]["totalresults"] == 0:
             raise NoAddressesFoundAtPostcode()
         else:
-            values = [
-                {
-                    "text": result["LPI"]["ADDRESS"],
-                    "value": json.dumps(address_builder(result["LPI"])),
-                }
-                for result in response_json["results"]
-            ]
+            values = []
+            for result in response_json["results"]:
+                if entry_is_a_postal_address(result):
+                    values.append(
+                        {
+                            "text": result["LPI"]["ADDRESS"],
+                            "value": json.dumps(address_builder(result["LPI"])),
+                        }
+                    )
             return values
     elif response.status_code == 401:
         sentry_sdk.capture_message("Invalid ORDNANCE_SURVEY_PLACES_API_KEY", "error")
