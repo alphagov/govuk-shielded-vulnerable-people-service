@@ -13,6 +13,14 @@ resources:
       uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
       branch: feature/794/gatling-in-concourse
 
+  - name: covid-engineering
+    icon: github
+    type: git
+    source:
+      branch: master
+      uri: git@github.com:alphagov/covid-engineering.git
+      private_key: ((git_deploy_key_covid_engineering))
+
   - name: trigger-at-1am
     type: cron-resource
     source:
@@ -29,10 +37,45 @@ jobs:
       - set_pipeline: wip-svp-with-gatling
         file: git-dev/concourse_dev/pipeline.yml
 
-  - name: gatling-workflow-load-test
-    plan:
-      - get: git-dev
-      - get: trigger-at-1am
-        trigger: true
-      - task: gatling
-        file: git-dev/concourse_dev/tasks/gatling-workflow-load-test.yml
+  # - name: gatling-workflow-load-test
+  #   plan:
+  #     - get: git-dev
+  #     - get: trigger-at-1am
+  #       trigger: true
+  #     - task: gatling
+  #       file: git-dev/concourse_dev/tasks/gatling-workflow-load-test.yml
+
+  # - name: run-daily-and-MI-workflows
+  #   plan:
+  #     - get: covid-engineering
+  #     - get: trigger-at-1am
+  #       trigger: true
+  #     - task: get-aws-credentials
+  #       file: covid-engineering/concourse/shared/get-aws-credentials.yml
+  #       params:
+  #         ACCOUNT_ID: 375282846305
+  #         ENVIRONMENT: staging
+  #         REGION: eu-west-2
+  #         DURATION: 21600
+  #     - task: run-pipelines
+  #       config:
+  #         platform: linux
+  #         image_resource:
+  #         type: registry-image
+  #         source:
+  #           repository: governmentpaas/awscli
+  #           tag: latest
+  #         inputs:
+  #           - name: aws-credentials
+  #         run:
+  #           dir: covid-engineering/end-to-end-tests
+  #           path: ash
+  #           args:
+  #             - -c
+  #             - |
+  #               set -euo pipefail
+  #               source aws-credentials/.env
+  #               aws glue start-workflow-run \
+  #                 --name "cv-vulnerable-people-daily-wave-two-pipeline-staging"
+  #               aws glue start-workflow-run \
+  #                 --name "wave2-mvp-reporting-data-daily-pipeline-staging"
