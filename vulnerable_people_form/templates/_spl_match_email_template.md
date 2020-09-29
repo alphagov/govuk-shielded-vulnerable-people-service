@@ -38,7 +38,7 @@ Someone from your local authority will contact you about your care needs within 
 
 {% if not wants_supermarket_deliveries and not wants_social_care %}
 
-Based on what you told us, at the moment you do not help getting supplies or meeting your basic care needs.
+Based on what you told us, at the moment you do not need help getting supplies or meeting your basic care needs.
 
 {% endif %}
 
