@@ -24,7 +24,7 @@ resources:
   - name: trigger-at-1am
     type: cron-resource
     source:
-      expression: "0 1 *  * *"
+      expression: "26 16 * * *"
       location: "Local"
       fire_immediately: true
 
@@ -45,37 +45,35 @@ jobs:
   #     - task: gatling
   #       file: git-dev/concourse_dev/tasks/gatling-workflow-load-test.yml
 
-  # - name: run-daily-and-MI-workflows
-  #   plan:
-  #     - get: covid-engineering
-  #     - get: trigger-at-1am
-  #       trigger: true
-  #     - task: get-aws-credentials
-  #       file: covid-engineering/concourse/shared/get-aws-credentials.yml
-  #       params:
-  #         ACCOUNT_ID: 375282846305
-  #         ENVIRONMENT: staging
-  #         REGION: eu-west-2
-  #         DURATION: 21600
-  #     - task: run-pipelines
-  #       config:
-  #         platform: linux
-  #         image_resource:
-  #         type: registry-image
-  #         source:
-  #           repository: governmentpaas/awscli
-  #           tag: latest
-  #         inputs:
-  #           - name: aws-credentials
-  #         run:
-  #           dir: covid-engineering/end-to-end-tests
-  #           path: ash
-  #           args:
-  #             - -c
-  #             - |
-  #               set -euo pipefail
-  #               source aws-credentials/.env
-  #               aws glue start-workflow-run \
-  #                 --name "cv-vulnerable-people-daily-wave-two-pipeline-staging"
-  #               aws glue start-workflow-run \
-  #                 --name "wave2-mvp-reporting-data-daily-pipeline-staging"
+  - name: run-daily-and-mi-workflows
+    plan:
+      - get: covid-engineering
+      - get: trigger-at-1am
+        trigger: true
+      - task: get-aws-credentials
+        file: covid-engineering/concourse/shared/get-aws-credentials.yml
+        params:
+          ACCOUNT_ID: 375282846305
+          ENVIRONMENT: staging
+          REGION: eu-west-2
+          DURATION: 21600
+      - task: run-pipelines
+        config:
+          platform: linux
+          image_resource:
+          type: registry-image
+          source:
+            repository: governmentpaas/awscli
+            tag: latest
+          inputs:
+            - name: aws-credentials
+          run:
+            dir: covid-engineering/end-to-end-tests
+            path: ash
+            args:
+              - -c
+              - |
+                set -euo pipefail
+                source aws-credentials/.env
+                aws glue start-workflow-run \
+                  --name "cv-vulnerable-people-daily-wave-two-pipeline-staging"
