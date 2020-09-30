@@ -37,13 +37,13 @@ jobs:
       - set_pipeline: wip-svp-with-gatling
         file: git-dev/concourse_dev/pipeline.yml
 
-  # - name: gatling-workflow-load-test
-  #   plan:
-  #     - get: git-dev
-  #     - get: trigger-at-1am
-  #       trigger: true
-  #     - task: gatling
-  #       file: git-dev/concourse_dev/tasks/gatling-workflow-load-test.yml
+  - name: gatling-workflow-load-test
+    plan:
+      - get: git-dev
+      - get: trigger-at-1am
+        trigger: true
+      - task: gatling
+        file: git-dev/concourse_dev/tasks/gatling-workflow-load-test.yml
 
   - name: run-daily-and-mi-workflows
     plan:

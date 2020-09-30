@@ -13,16 +13,16 @@ run:
     - -euo
     - pipefail
     - -c
-    # User journey is 16 requests long, and we want close to 1000 req/s, so inject 1000/16 users/s here, with a pause of
-    # 1 second between requests.
-    # Run simulation for 30 mins to ensure workflow execution time is covered.
+    # User journey is 16 requests long, and we want close to 1000 req/s, so inject 1000/16 users/s here (63),
+    # with a pause of 1 second between requests.
+    # Run simulation for 30 mins (1800s) to ensure workflow execution time is covered.
     # Suppress html file output (doesn't seem possible to completely remove file output...)
     # Suppress console log to final report only (done by turning off console writer)
     - |
       cd loadtests
       mvn clean gatling:test \
-        -DinjectUsersPerSecond=63 \
-        -DinjectDurationSeconds=1800 \
+        -DinjectUsersPerSecond=1 \
+        -DinjectDurationSeconds=1 \
         -DpauseBetweenRequestsInSeconds=1 \
         -DnumberOfRepetitions=1 \
         -Dgatling.simulationClass=svp.SvpSimulationConstantUsersPerSec \
