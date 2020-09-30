@@ -13,14 +13,6 @@ resources:
       uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
       branch: feature/794/gatling-in-concourse
 
-  - name: covid-engineering
-    icon: github
-    type: git
-    source:
-      branch: master
-      uri: git@github.com:alphagov/covid-engineering.git
-      private_key: ((git_deploy_key_covid_engineering))
-
   - name: trigger-at-1am
     type: cron-resource
     source:
@@ -45,13 +37,13 @@ jobs:
       - task: gatling
         file: git-dev/concourse_dev/tasks/gatling-workflow-load-test.yml
 
-  - name: run-daily-and-mi-workflows
+  - name: run-daily-and-mi-workflows-in-staging
     plan:
-      - get: covid-engineering
+      - get: git-dev
       - get: trigger-at-1am
         trigger: true
       - task: get-aws-credentials
-        file: covid-engineering/concourse/shared/get-aws-credentials.yml
+        file: git-dev/concourse_dev/tasks/get-gatling-tester-aws-creds.yml
         params:
           ACCOUNT_ID: 375282846305
           ENVIRONMENT: staging
@@ -68,7 +60,6 @@ jobs:
           inputs:
             - name: aws-credentials
           run:
-            dir: covid-engineering/end-to-end-tests
             path: ash
             args:
               - -c
@@ -77,3 +68,5 @@ jobs:
                 source aws-credentials/.env
                 aws glue start-workflow-run \
                   --name "cv-vulnerable-people-daily-wave-two-pipeline-staging"
+                aws glue start-workflow-run \
+                  --name "wave2-mvp-reporting-data-daily-pipeline-staging"

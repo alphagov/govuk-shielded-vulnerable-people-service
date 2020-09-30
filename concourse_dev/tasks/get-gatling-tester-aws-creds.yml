@@ -1,0 +1,38 @@
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: governmentpaas/awscli
+    tag: latest
+inputs:
+  - name: git-dev
+params:
+  ACCOUNT_ID:
+  ENVIRONMENT:
+  REGION:
+  DURATION: 1800
+outputs:
+  - name: aws-credentials
+run:
+  path: ash
+  args:
+    - -c
+    - |
+      set -euo pipefail
+
+      echo "Assuming concourse gatling tester role"
+      target_arn="arn:aws:iam::${ACCOUNT_ID}:role/concourse-gatling-tester-${ENVIRONMENT}"
+
+      temp_role=$(aws sts assume-role \
+                  --role-arn "${target_arn}" \
+                  --role-session-name "concourse-task" \
+                  --duration-seconds $DURATION)
+
+      # Store the lambda exec role AWS credentials to be restored
+      echo "Writing .env file to aws-credentials"
+      cat > aws-credentials/.env <<EOF
+      export AWS_ACCESS_KEY_ID=$(echo $temp_role | jq -r '.Credentials.AccessKeyId')
+      export AWS_SECRET_ACCESS_KEY=$(echo $temp_role | jq -r '.Credentials.SecretAccessKey')
+      export AWS_SESSION_TOKEN=$(echo $temp_role | jq -r '.Credentials.SessionToken')
+      export AWS_DEFAULT_REGION=${REGION:-eu-west-2}
+      EOF
