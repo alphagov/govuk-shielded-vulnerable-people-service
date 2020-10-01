@@ -279,4 +279,4 @@ def test_persist_answers_from_session():
 def _make_summary_row_assertions(summary_row, key, expected_value, is_html=False, expected_text=None):
     assert summary_row["key"]["text"] == (PAGE_TITLES[key] if expected_text is None else expected_text)
     assert summary_row["value"]["html" if is_html else "text"] == expected_value
-    assert summary_row["actions"]["items"][0]["href"] == "/" + key
+    assert summary_row["actions"]["items"][0]["href"] == f"/{key}?ca=1"

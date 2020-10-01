@@ -32,11 +32,38 @@ def test_render_template_with_title_invokes_render_template_with_correct_argumen
                                                 ga_tracking_id="ga-id",
                                                 ga_cross_domain_tracking_id="cd-ga-id",
                                                 cookie_preferences_set=False,
+                                                form_base_template="base-with-back-link.html",
                                                 **{
                                                     "nhs_user": expected_nhs_user_value,
                                                     "button_text": expected_button_text,
                                                     "previous_path": "/date-of-birth",
                                                     "values": {"postcode": "LS1 1BA"}
+                                                })
+
+
+@pytest.mark.parametrize("session_variables, expected_nhs_user_value, expected_button_text",
+                         [({"nhs_sub": "value"}, True, "Continue"),
+                          ({"accessing_saved_answers": True}, False, "Save and continue")])
+def test_render_template_with_title_invokes_render_template_with_correct_form_base_template(
+        session_variables, expected_nhs_user_value, expected_button_text):
+    with patch("vulnerable_people_form.form_pages.shared.render.render_template") as mock_render_template, \
+         _current_app.test_request_context('/?ca=1'):
+        render_template_with_title(
+            "date-of-birth.html",
+            previous_path="/name",
+            values={"day": "10", "month": "12", "year": "1987"})
+
+        mock_render_template.assert_called_with("date-of-birth.html",
+                                                title_text="What is your date of birth?",
+                                                ga_tracking_id="ga-id",
+                                                ga_cross_domain_tracking_id="cd-ga-id",
+                                                cookie_preferences_set=False,
+                                                form_base_template="base.html",
+                                                **{
+                                                    "nhs_user": False,
+                                                    "button_text": "Continue",
+                                                    "previous_path": "/name",
+                                                    "values": {"day": "10", "month": "12", "year": "1987"}
                                                 })
 
 

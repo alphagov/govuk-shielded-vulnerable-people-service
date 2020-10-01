@@ -1,7 +1,7 @@
 {%- from "govuk_frontend_jinja/components/error-summary/macro.html" import govukErrorSummary -%}
 {%- from 'govuk_frontend_jinja/components/button/macro.html' import govukButton -%}
 
-{% extends "base-with-back-link.html" %}
+{% extends form_base_template %}
 
 {% block centered_content %}
     <form method="post" novalidate>
