@@ -38,7 +38,7 @@ PAGE_TITLES = {
     "nhs-login-link": "If you've previously registered with NHS login for this service you can sign in",
     "nhs-number": "What is your NHS number?",
     "nhs-registration": "Would you like to create an NHS Login you can use to retrieve your answers in the future?",
-    "nhs-registration-link": "Sign in to update your details or change the support you need",
+    "nhs-registration-link": "Set up an NHS login account to confirm who you are",
     "not-eligible-postcode": "Sorry, this service is not available in your area",
     "not-eligible-medical": "Sorry, you’re not eligible for help through this service",
     "postcode-lookup": "What is the postcode where you need support?",
