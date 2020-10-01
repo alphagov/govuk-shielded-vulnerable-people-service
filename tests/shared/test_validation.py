@@ -263,7 +263,7 @@ def test_validate_postcode_should_return_false_when_no_postcode_present(postcode
             == "What is the postcode where you need support?"
 
 
-@pytest.mark.parametrize("postcode", [" ", "invalid_post_code", "ssss 12345"])
+@pytest.mark.parametrize("postcode", [" ", "invalid_post_code", "ssss 12345", "LS1 1AB ABC"])
 def test_validate_postcode_should_return_false_when_invalid_postcode_present(postcode):
     with _current_app.test_request_context() as test_request_ctx:
         is_valid = validation.validate_postcode(postcode, "postcode")
