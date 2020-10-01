@@ -197,4 +197,4 @@ def dynamic_back_url(default="/"):
 
 
 def get_back_url_for_shopping_assistance():
-    return "/address-lookup" if session[SESSION_KEY_ADDRESS_SELECTED] else "/support-address"
+    return "/address-lookup" if session.get(SESSION_KEY_ADDRESS_SELECTED) else "/support-address"
