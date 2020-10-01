@@ -122,7 +122,7 @@ def get_summary_rows_from_form_answers(exclude_answers=None):
             "actions": {
                 "items": [
                     {
-                        "href": f"/{dashed_key}",
+                        "href": f"/{dashed_key}?ca=1",
                         "text": "Change",
                         "visuallyHiddenText": question,
                     }
