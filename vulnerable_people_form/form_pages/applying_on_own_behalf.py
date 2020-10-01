@@ -1,12 +1,12 @@
 from flask import redirect
 
+from .blueprint import form
 from .shared.answers_enums import (
     ApplyingOnOwnBehalfAnswers,
     get_radio_options_from_enum,
 )
-from .blueprint import form
 from .shared.render import render_template_with_title
-from .shared.routing import route_to_next_form_page, dynamic_back_url
+from .shared.routing import route_to_next_form_page
 from .shared.session import (
     form_answers,
     get_errors_from_session,
@@ -22,7 +22,7 @@ def get_apply_on_own_behalf():
         radio_items=get_radio_options_from_enum(
             ApplyingOnOwnBehalfAnswers, form_answers().get("applying_on_own_behalf")
         ),
-        previous_path=dynamic_back_url(),
+        previous_path="https://www.gov.uk/coronavirus-shielding-support",
         **get_errors_from_session("applying_on_own_behalf"),
     )
 
