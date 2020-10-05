@@ -72,7 +72,7 @@ def _slice(keys, _dict):
     return (_dict[key] for key in keys if key in _dict)
 
 
-def get_summary_rows_from_form_answers(exclude_answers=None):
+def get_summary_rows_from_form_answers(excluded_answers=None):
     summary_rows = []
     answers = form_answers()
     order = [
@@ -86,8 +86,8 @@ def get_summary_rows_from_form_answers(exclude_answers=None):
         "contact_details"
     ]
 
-    if exclude_answers:
-        for answer_to_exclude in exclude_answers:
+    if excluded_answers:
+        for answer_to_exclude in excluded_answers:
             order.remove(answer_to_exclude)
 
     answers_to_key = {
@@ -108,9 +108,15 @@ def get_summary_rows_from_form_answers(exclude_answers=None):
             "contact-details": "Contact details",
         }
 
+        change_answer_urls = {
+            "support_address": "address-lookup"
+        }
+
         answer = answers[key]
         dashed_key = key.replace("_", "-")
         question = answer_labels[dashed_key]
+
+        change_answer_url = (f"/{change_answer_urls[key]}" if key in change_answer_urls else f"/{dashed_key}") + "?ca=1"
 
         value = {}
         row = {
@@ -122,7 +128,7 @@ def get_summary_rows_from_form_answers(exclude_answers=None):
             "actions": {
                 "items": [
                     {
-                        "href": f"/{dashed_key}?ca=1",
+                        "href": change_answer_url,
                         "text": "Change",
                         "visuallyHiddenText": question,
                     }

@@ -130,7 +130,7 @@ def route_to_next_form_page():
     answer = form_answers().get(current_form.replace("-", "_"))
 
     if current_form == "address-lookup":
-        return redirect("/do-you-have-someone-to-go-shopping-for-you")
+        return redirect_to_next_form_page("/do-you-have-someone-to-go-shopping-for-you")
     elif current_form == "applying-on-own-behalf":
         if ApplyingOnOwnBehalfAnswers(answer) is ApplyingOnOwnBehalfAnswers.YES:
             return redirect_to_next_form_page("/nhs-login")

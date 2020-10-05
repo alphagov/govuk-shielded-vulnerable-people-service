@@ -134,7 +134,7 @@ def test_get_errors_from_session_should_return_errors_when_error_items_present_i
         assert len(error_detail["error_list"]) > 0
         assert error_detail["answers"] == {}
         assert error_detail["error_messages"]["view_or_setup"]["text"] \
-            == "You must select if you would like to set up an account, or access an account via your NHS Login."
+               == "You must select if you would like to set up an account, or access an account via your NHS Login."
 
 
 def test_get_errors_from_session_should_return_empty_error_object_when_no_error_items_present_in_session():
@@ -192,7 +192,8 @@ def test_get_summary_rows_from_form_answers_should_return_ordered_summary_rows_f
                                      "support-address",
                                      "1 Test Street<br>address line 2<br>Leeds<br>LS1 1BA",
                                      True,
-                                     "Address where support is needed")
+                                     "Address where support is needed",
+                                     expected_change_url="/address-lookup")
 
         _make_summary_row_assertions(summary_rows[4],
                                      "do-you-have-someone-to-go-shopping-for-you",
@@ -215,7 +216,7 @@ def test_get_summary_rows_from_form_answers_should_return_ordered_summary_rows_f
 
 def test_persist_answers_from_session():
     with patch("vulnerable_people_form.form_pages.shared.session.persistence") as mock_persistence, \
-         _current_app.test_request_context() as test_request_ctx:
+            _current_app.test_request_context() as test_request_ctx:
         submission_ref = "submission-reference"
         nhs_sub_value = "nhs-sub-value"
         data_to_persist = {
@@ -276,7 +277,13 @@ def test_persist_answers_from_session():
         assert returned_submission_ref == submission_ref
 
 
-def _make_summary_row_assertions(summary_row, key, expected_value, is_html=False, expected_text=None):
+def _make_summary_row_assertions(summary_row,
+                                 key,
+                                 expected_value,
+                                 is_html=False,
+                                 expected_text=None,
+                                 expected_change_url=None):
     assert summary_row["key"]["text"] == (PAGE_TITLES[key] if expected_text is None else expected_text)
     assert summary_row["value"]["html" if is_html else "text"] == expected_value
-    assert summary_row["actions"]["items"][0]["href"] == f"/{key}?ca=1"
+    assert summary_row["actions"]["items"][0]["href"] == f"{expected_change_url}?ca=1" if expected_change_url \
+        else f"/{key}?ca=1"
