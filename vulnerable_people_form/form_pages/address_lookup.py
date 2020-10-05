@@ -7,13 +7,15 @@ from .blueprint import form
 from .shared.constants import SESSION_KEY_ADDRESS_SELECTED
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
-from .shared.session import get_errors_from_session, request_form
+from .shared.session import get_errors_from_session, request_form, form_answers
 from .shared.validation import validate_address_lookup
 
 
 @form.route("/address-lookup", methods=["GET"])
 def get_address_lookup():
-    postcode = session["postcode"]
+    postcode = session.get("postcode")
+    if not postcode:
+        postcode = form_answers()["support_address"]["postcode"]
     try:
         addresses = postcode_lookup_helper.get_addresses_from_postcode(postcode)
     except postcode_lookup_helper.PostcodeNotFound:
