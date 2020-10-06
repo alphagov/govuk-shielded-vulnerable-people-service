@@ -2,6 +2,9 @@ import time
 import os
 
 from behave import then, when, given
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.wait import WebDriverWait
 
 _BASE_URL = os.environ["WEB_APP_BASE_URL"]
 
@@ -9,6 +12,12 @@ _BASE_URL = os.environ["WEB_APP_BASE_URL"]
 @then('wait "{seconds}" seconds')
 def wait_step(context, seconds):
     time.sleep(int(seconds))
+
+
+@then('wait up to "{timeout_seconds}" seconds until element with selector "{element_css_selector}" is present')
+def wait_until_element_present(context, timeout_seconds, element_css_selector):
+    WebDriverWait(context.browser, int(timeout_seconds)).until(
+        expected_conditions.presence_of_element_located((By.CSS_SELECTOR, element_css_selector)))
 
 
 @when('you navigate to "{path}"')
