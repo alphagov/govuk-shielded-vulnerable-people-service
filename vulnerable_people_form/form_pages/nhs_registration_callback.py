@@ -3,12 +3,17 @@ import logging
 from flask import abort, current_app, redirect, request, session
 
 from vulnerable_people_form.form_pages.shared.logger_utils import create_log_message, log_event_names, init_logger
-from vulnerable_people_form.form_pages.shared.routing import get_next_form_url_after_nhs_number
+from vulnerable_people_form.form_pages.shared.routing import get_next_form_url_after_nhs_number, \
+    get_redirect_to_terminal_page
 from ..integrations import google_analytics
 from .blueprint import form
 from .shared.constants import NHS_USER_INFO_TO_FORM_ANSWERS, JourneyProgress
-from .shared.session import get_answer_from_form, persist_answers_from_session, set_form_answers_from_nhs_user_info
-
+from .shared.session import (
+    get_answer_from_form,
+    persist_answers_from_session,
+    set_form_answers_from_nhs_user_info,
+    load_answers_into_session_if_available
+)
 logger = logging.getLogger(__name__)
 init_logger(logger)
 
@@ -62,6 +67,9 @@ def get_nhs_registration_callback():
     log_form_and_nhs_answers_differences(nhs_user_info)
     session["nhs_sub"] = nhs_user_info["sub"]
     session["form_answers"]["nhs_number"] = nhs_user_info["nhs_number"]
+
+    if load_answers_into_session_if_available():
+        return get_redirect_to_terminal_page()
 
     if journey_progress is JourneyProgress.NHS_NUMBER:
         set_form_answers_from_nhs_user_info(nhs_user_info)
