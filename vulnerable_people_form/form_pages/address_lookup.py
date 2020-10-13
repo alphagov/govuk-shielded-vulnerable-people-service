@@ -5,6 +5,7 @@ from flask import redirect, session
 from ..integrations import postcode_lookup_helper
 from .blueprint import form
 from .shared.constants import SESSION_KEY_ADDRESS_SELECTED
+from .shared.querystring_utils import append_querystring_params
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
 from .shared.session import get_errors_from_session, request_form, form_answers
@@ -43,7 +44,7 @@ def get_address_lookup():
 
     return render_template_with_title(
         "address-lookup.html",
-        previous_path="/date-of-birth",
+        previous_path=append_querystring_params("/date-of-birth"),
         postcode=postcode,
         addresses=addresses,
         **get_errors_from_session("postcode"),

@@ -9,6 +9,7 @@ from .answers_enums import (
     BasicCareNeedsAnswers
 )
 from .constants import PAGE_TITLES, NHS_USER_INFO_TO_FORM_ANSWERS
+from .querystring_utils import append_querystring_params
 from .security import sanitise_input
 
 from ...integrations import persistence
@@ -117,6 +118,7 @@ def get_summary_rows_from_form_answers(excluded_answers=None):
         question = answer_labels[dashed_key]
 
         change_answer_url = (f"/{change_answer_urls[key]}" if key in change_answer_urls else f"/{dashed_key}") + "?ca=1"
+        change_answer_url = append_querystring_params(change_answer_url)
 
         value = {}
         row = {

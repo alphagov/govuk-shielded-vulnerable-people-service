@@ -20,14 +20,14 @@
               "classes": "govuk-!-margin-right-3 govuk-!-margin-bottom-2",
               "text": "No"
             }) }}
-          <a class="cookie-banner__link govuk-link govuk-body-m govuk-!-margin-bottom-0" href="/cookies">How this service uses cookies</a>
+          <a class="cookie-banner__link govuk-link govuk-body-m govuk-!-margin-bottom-0" href="{{ append_querystring_params("/cookies") }}">How this service uses cookies</a>
         </div>
 
       </div>
     </div>
   </div>
    <div class="cookie-banner__confirmation govuk-width-container govuk-!-padding-top-1" tabindex="-1">
-    <p class="cookie-banner__confirmation-message govuk-!-margin-top-0 govuk-!-margin-right-4 govuk-body" role="alert">You’ve accepted analytics cookies. You can <a class='govuk-link' href='/cookies'>change your cookie settings</a> at any time.</p>
+    <p class="cookie-banner__confirmation-message govuk-!-margin-top-0 govuk-!-margin-right-4 govuk-body" role="alert">You’ve accepted analytics cookies. You can <a class='govuk-link' href="{{ append_querystring_params("/cookies") }}">change your cookie settings</a> at any time.</p>
     <button class="cookie-banner__hide-button govuk-body-m govuk-!-margin-bottom-0" data-hide-cookie-banner="true" data-module="track-click" data-track-category="cookieBanner" data-track-action="Hide cookie banner">Hide</button>
   </div>
 </div>

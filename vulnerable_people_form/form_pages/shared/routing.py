@@ -8,6 +8,7 @@ from .answers_enums import (
     YesNoAnswers,
 )
 from .constants import SESSION_KEY_ADDRESS_SELECTED
+from .querystring_utils import append_querystring_params
 from .session import (
     accessing_saved_answers,
     form_answers,
@@ -197,4 +198,5 @@ def dynamic_back_url(default="/"):
 
 
 def get_back_url_for_shopping_assistance():
-    return "/address-lookup" if session.get(SESSION_KEY_ADDRESS_SELECTED) else "/support-address"
+    back_url = "/address-lookup" if session.get(SESSION_KEY_ADDRESS_SELECTED) else "/support-address"
+    return append_querystring_params(back_url)

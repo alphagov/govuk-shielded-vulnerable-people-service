@@ -9,6 +9,7 @@ from prometheus_flask_exporter import PrometheusMetrics
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 from . import form_pages
+from vulnerable_people_form.form_pages.shared.querystring_utils import append_querystring_params
 from .integrations import nhs_openconnect_id, persistence
 
 _ENV_DEVELOPMENT = "DEVELOPMENT"
@@ -99,6 +100,8 @@ def create_app(scriptinfo):
         ),
     )
 
+    app.context_processor(utility_processor)
+
     return app
 
 
@@ -130,3 +133,7 @@ def _init_security(app):
         content_security_policy=csp,
         content_security_policy_nonce_in=['script-src']
     )
+
+
+def utility_processor():
+    return dict(append_querystring_params=append_querystring_params)

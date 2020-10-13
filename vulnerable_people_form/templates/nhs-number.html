@@ -31,7 +31,7 @@
 }}
 
 {% set applying_on_own_behalf_detail_html %}
-<p class="govuk-body">If you do not know your NHS number, you can <a class="govuk-link" href="/nhs-registration-link">try using NHS login</a> instead.</p>
+<p class="govuk-body">If you do not know your NHS number, you can <a class="govuk-link" href="{{ append_querystring_params("/nhs-registration-link") }}">try using NHS login</a> instead.</p>
 <p class="govuk-body">If you do not have an NHS number <a class="govuk-link" href="https://www.nhs.uk/using-the-nhs/nhs-services/gps/how-to-register-with-a-gp-practice/">register with a GP</a>  to get one.</p>
 <p class="govuk-body">You cannot use an old NHS number with fewer than 10 digits. Look on NHS letters or ask your GP to find your new NHS number.</p>
 {% endset %}

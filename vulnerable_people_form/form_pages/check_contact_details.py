@@ -1,6 +1,7 @@
 from flask import redirect, session
 
 from .blueprint import form
+from .shared.querystring_utils import append_querystring_params
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
 from .shared.session import form_answers, get_errors_from_session, request_form
@@ -11,7 +12,7 @@ from .shared.validation import validate_contact_details
 def get_check_contact_details():
     return render_template_with_title(
         "check-contact-details.html",
-        previous_path="/contact-details",
+        previous_path=append_querystring_params("/contact-details"),
         values=form_answers().get("contact_details", {}),
         button_text="This is correct",
         **get_errors_from_session("check_contact_details"),

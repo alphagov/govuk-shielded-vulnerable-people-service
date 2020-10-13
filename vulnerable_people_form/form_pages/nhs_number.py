@@ -1,6 +1,7 @@
 from flask import redirect, session
 
 from .blueprint import form
+from .shared.querystring_utils import append_querystring_params
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
 from .shared.session import (
@@ -17,6 +18,8 @@ def get_nhs_number():
     previous_path = "/nhs-letter"
     if get_answer_from_form(("medical_conditions",)) is not None:
         previous_path = "/medical-conditions"
+
+    previous_path = append_querystring_params(previous_path)
     return render_template_with_title(
         "nhs-number.html",
         previous_path=previous_path,

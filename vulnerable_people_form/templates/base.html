@@ -1,6 +1,6 @@
 {% extends 'govuk_frontend_jinja/template.html' %}
 
-{%- from 'analytics_cookie_banner.html' import obtain_cookie_consent %}
+{%- from 'analytics_cookie_banner.html' import obtain_cookie_consent with context %}
 {%- from 'govuk_frontend_jinja/components/footer/macro.html' import govukFooter -%}
 
 {% set assetPath = url_for('static', filename='').rstrip('/') %}
@@ -40,15 +40,15 @@
     'meta': {
       'items': [
         {
-          'href': "/privacy",
+          'href': append_querystring_params("/privacy"),
           'text': "Privacy"
         },
         {
-          'href': "/cookies",
+          'href': append_querystring_params("/cookies"),
           'text': "Cookies"
         },
         {
-          'href': "/accessibility-statement",
+          'href': append_querystring_params("/accessibility-statement"),
           'text': "Accessibility statement"
         },
         {

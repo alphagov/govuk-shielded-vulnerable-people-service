@@ -1,10 +1,11 @@
 from flask import redirect
 
+from .blueprint import form
 from .shared.answers_enums import (
     PrioritySuperMarketDeliveriesAnswers,
     get_radio_options_from_enum,
 )
-from .blueprint import form
+from .shared.querystring_utils import append_querystring_params
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
 from .shared.session import (
@@ -23,7 +24,7 @@ def get_priority_supermarket_deliveries():
             PrioritySuperMarketDeliveriesAnswers,
             form_answers().get("priority_supermarket_deliveries"),
         ),
-        previous_path="/do-you-have-someone-to-go-shopping-for-you",
+        previous_path=append_querystring_params("/do-you-have-someone-to-go-shopping-for-you"),
         **get_errors_from_session("priority_supermarket_deliveries"),
     )
 

@@ -1,7 +1,8 @@
 from flask import redirect, session
 
-from vulnerable_people_form.form_pages.shared.answers_enums import ApplyingOnOwnBehalfAnswers
 from .blueprint import form
+from .shared.answers_enums import ApplyingOnOwnBehalfAnswers
+from .shared.querystring_utils import append_querystring_params
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
 from .shared.session import get_errors_from_session, request_form, get_answer_from_form
@@ -17,7 +18,7 @@ def get_postcode_eligibility():
         prev_path = "/applying-on-own-behalf"
     else:
         raise ValueError("Unexpected ApplyingOnOwnBehalfAnswers value encountered: " + applying_on_own_behalf_answer)
-
+    prev_path = append_querystring_params(prev_path)
     return render_template_with_title(
         "postcode-eligibility.html",
         previous_path=prev_path,
