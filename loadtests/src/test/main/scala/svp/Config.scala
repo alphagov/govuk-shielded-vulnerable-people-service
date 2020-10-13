@@ -9,6 +9,8 @@ object Config {
   val responseTimeMs:  Int = getProperty("responseTimeMs", "800").toInt
   val repeatTimes: Int = getProperty("numberOfRepetitions", "10").toInt
   val duration: FiniteDuration = getProperty("durationMinutes", "120").toInt.minutes
+  val injectUsersPerSecond: Int = System.getProperty("injectUsersPerSecond", "10").toInt
+  val injectDurationSeconds: Int = System.getProperty("injectDurationSeconds", "10").toInt
   val pauseMin: FiniteDuration = getProperty("pauseBetweenRequestsInSecondsMin", "3").toInt.seconds
   val pauseMax: FiniteDuration = getProperty("pauseBetweenRequestsInSecondsMax", "6").toInt.seconds
   val responseSuccessPercentage = 99

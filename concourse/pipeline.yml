@@ -5,6 +5,11 @@ resource_types:
     source:
       repository: arbourd/concourse-slack-alert-resource
 
+  - name: cron-resource
+    type: docker-image
+    source:
+      repository: cftoolsmiths/cron-resource
+
 resources:
   - name: git-master
     type: git
@@ -23,6 +28,12 @@ resources:
     type: time
     source:
       interval: 10m
+
+  - name: trigger-at-1am
+    type: cron-resource
+    source:
+      expression: "0 1 * * *"
+      location: "Local"
 
 # Anchors for later
 slack_alert_on_failure: &slack_alert_on_failure
@@ -48,11 +59,11 @@ jobs:
   - name: test
     serial: true
     plan:
-    - get: git-master
-      trigger: true
-      passed: [update-pipeline]
-    - task: test
-      file: git-master/concourse/tasks/test.yml
+      - get: git-master
+        trigger: true
+        passed: [update-pipeline]
+      - task: test
+        file: git-master/concourse/tasks/test.yml
     on_failure: *slack_alert_on_failure
 
   - name: deploy-to-staging
@@ -98,25 +109,25 @@ jobs:
       - task: smoke-test
         file: git-master/concourse/tasks/smoke-test.yml
         params:
-          WEB_APP_BASE_URL: 'https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital'
+          WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
         on_failure: *slack_alert_on_failure
 
   - name: e2e-test-staging
     serial: true
     plan:
-    - get: git-master
-      trigger: true
-      passed: [smoke-test-staging]
-    - task: e2e-test
-      file: git-master/concourse/tasks/e2e-test.yml
-      attempts: 2
-      params:
-        CF_SPACE: "staging"
-        ENVIRONMENT: "staging"
-        URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
-        MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
-      on_failure: *slack_alert_on_failure
+      - get: git-master
+        trigger: true
+        passed: [smoke-test-staging]
+      - task: e2e-test
+        file: git-master/concourse/tasks/e2e-test.yml
+        attempts: 2
+        params:
+          CF_SPACE: "staging"
+          ENVIRONMENT: "staging"
+          URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
+          MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
+        on_failure: *slack_alert_on_failure
 
   - name: deploy-to-prod
     serial: true
@@ -161,7 +172,7 @@ jobs:
       - task: smoke-test
         file: git-master/concourse/tasks/smoke-test.yml
         params:
-          WEB_APP_BASE_URL: 'https://coronavirus-shielding-support.service.gov.uk'
+          WEB_APP_BASE_URL: "https://coronavirus-shielding-support.service.gov.uk"
           MESSAGE: "Checks that the application deployed to production is not serving HTTP error codes"
         on_failure: *slack_alert_on_failure
         on_success: *slack_alert_on_success
@@ -174,7 +185,7 @@ jobs:
       - task: smoke-test
         file: git-master/concourse/tasks/smoke-test.yml
         params:
-          WEB_APP_BASE_URL: 'https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital'
+          WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
         on_failure: *slack_alert_on_failure
       - task: cronitor-heartbeat
@@ -191,7 +202,7 @@ jobs:
       - task: smoke-test
         file: git-master/concourse/tasks/smoke-test.yml
         params:
-          WEB_APP_BASE_URL: 'https://coronavirus-shielding-support.service.gov.uk'
+          WEB_APP_BASE_URL: "https://coronavirus-shielding-support.service.gov.uk"
           MESSAGE: "Checks that the application deployed to production is not serving HTTP error codes"
         on_failure: *slack_alert_on_failure
       - task: cronitor-heartbeat
@@ -199,3 +210,95 @@ jobs:
         params:
           CRONITOR_URL: ((svp-form/cronitor-heartbeat-prod))
         file: git-master/concourse/tasks/cronitor.yml
+
+  - name: gatling-workflow-load-test-in-staging
+    plan:
+      - get: git-master
+      - get: trigger-at-1am
+        trigger: true
+      - task: gatling
+        file: git-master/concourse/tasks/gatling-workflow-load-test.yml
+        ensure:
+          do:
+            - task: get-aws-credentials
+              file: git-master/concourse/tasks/get-gatling-tester-aws-creds.yml
+              params:
+                ACCOUNT_ID: 375282846305
+                ENVIRONMENT: staging
+                REGION: eu-west-2
+                DURATION: 21600
+            - task: upload-gatling-results-to-s3
+              config:
+                platform: linux
+                image_resource:
+                  type: registry-image
+                  source:
+                    repository: governmentpaas/awscli
+                    tag: latest
+                inputs:
+                  - name: aws-credentials
+                  - name: gatling-results
+                run:
+                  path: ash
+                  args:
+                    - -c
+                    - |
+                      set -euo pipefail
+                      source aws-credentials/.env
+                      aws s3 cp \
+                        gatling-results \
+                        s3://gds-ons-covid-19-system-test-results-staging/gatling/workflow-load-tests/$(date +%FT%T)/ \
+                        --recursive
+            - task: clean-out-gatling-test-submissions-from-rds
+              config:
+                platform: linux
+                image_resource:
+                  type: registry-image
+                  source:
+                    repository: governmentpaas/awscli
+                    tag: latest
+                inputs:
+                  - name: aws-credentials
+                run:
+                  path: ash
+                  args:
+                    - -c
+                    - |
+                      set -euo pipefail
+                      source aws-credentials/.env
+                      aws glue start-job-run \
+                        --job-name "rds-clean-gatling-test-data"
+
+  - name: run-daily-and-mi-workflows-in-staging
+    plan:
+      - get: git-master
+      - get: trigger-at-1am
+        trigger: true
+      - task: get-aws-credentials
+        file: git-master/concourse/tasks/get-gatling-tester-aws-creds.yml
+        params:
+          ACCOUNT_ID: 375282846305
+          ENVIRONMENT: staging
+          REGION: eu-west-2
+          DURATION: 21600
+      - task: run-pipelines
+        config:
+          platform: linux
+          image_resource:
+            type: registry-image
+            source:
+              repository: governmentpaas/awscli
+              tag: latest
+          inputs:
+            - name: aws-credentials
+          run:
+            path: ash
+            args:
+              - -c
+              - |
+                set -euo pipefail
+                source aws-credentials/.env
+                aws glue start-workflow-run \
+                  --name "cv-vulnerable-people-daily-wave-two-pipeline-staging"
+                aws glue start-workflow-run \
+                  --name "wave2-mvp-reporting-data-daily-pipeline-staging"
