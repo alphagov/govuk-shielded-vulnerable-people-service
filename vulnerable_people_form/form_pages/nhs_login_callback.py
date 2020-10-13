@@ -36,15 +36,3 @@ def get_nhs_login_callback():
     set_form_answers_from_nhs_user_info(nhs_user_info)
 
     return redirect("postcode-eligibility")
-
-
-@form.route("/start", methods=["GET"])
-def get_start():
-    session.clear()
-    return redirect("/applying-on-own-behalf")
-
-
-@form.route("/", methods=["GET"])
-def get_default_route():
-    session.clear()
-    return redirect("/applying-on-own-behalf")

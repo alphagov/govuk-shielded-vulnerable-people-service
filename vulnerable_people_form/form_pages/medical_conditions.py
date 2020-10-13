@@ -2,6 +2,7 @@ from flask import redirect
 
 from .shared.answers_enums import MedicalConditionsAnswers, get_radio_options_from_enum
 from .blueprint import form
+from .shared.querystring_utils import append_querystring_params
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
 from .shared.session import (
@@ -25,6 +26,6 @@ def get_medical_conditions():
     return render_template_with_title(
         "medical-conditions.html",
         radio_items=get_radio_options_from_enum(MedicalConditionsAnswers, form_answers().get("medical_conditions")),
-        previous_path="/nhs-letter",
+        previous_path=append_querystring_params("/nhs-letter"),
         **get_errors_from_session("medical_conditions"),
     )

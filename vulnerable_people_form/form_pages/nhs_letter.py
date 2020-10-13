@@ -1,7 +1,8 @@
 from flask import redirect
 
-from .shared.answers_enums import NHSLetterAnswers, get_radio_options_from_enum
 from .blueprint import form
+from .shared.answers_enums import NHSLetterAnswers, get_radio_options_from_enum
+from .shared.querystring_utils import append_querystring_params
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
 from .shared.session import (
@@ -17,7 +18,7 @@ def get_nhs_letter():
     return render_template_with_title(
         "nhs-letter.html",
         radio_items=get_radio_options_from_enum(NHSLetterAnswers, form_answers().get("nhs_letter")),
-        previous_path="/postcode-eligibility",
+        previous_path=append_querystring_params("/postcode-eligibility"),
         **get_errors_from_session("nhs_letter"),
     )
 

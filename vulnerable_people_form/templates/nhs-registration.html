@@ -22,7 +22,7 @@
   </div>
   {{ govukButton({
     "text": "Continue without an account",
-    "href": "/confirmation",
+    "href": append_querystring_params("/confirmation"),
     "classes": "govuk-!-width-one-third"
   }) }}
 {% endblock %}

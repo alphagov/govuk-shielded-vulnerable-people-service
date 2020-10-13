@@ -1,6 +1,7 @@
 from flask import redirect, session
 
 from .blueprint import form
+from .shared.querystring_utils import append_querystring_params
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
 from .shared.session import get_errors_from_session, request_form
@@ -21,7 +22,7 @@ def post_postcode_lookup():
 def get_postcode_lookup():
     return render_template_with_title(
         "postcode-lookup.html",
-        previous_path="/address-lookup",
+        previous_path=append_querystring_params("/address-lookup"),
         values={"postcode": session.get("postcode", "")},
         **get_errors_from_session("postcode"),
     )
