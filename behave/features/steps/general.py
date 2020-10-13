@@ -9,6 +9,12 @@ from selenium.webdriver.support.wait import WebDriverWait
 _BASE_URL = os.environ["WEB_APP_BASE_URL"]
 
 
+@then('I am redirected to the "{next_page_url}" page')
+def wait_until_url_present(context, next_page_url):
+    WebDriverWait(context.browser, 30).until(
+        expected_conditions.url_to_be(f"{_BASE_URL}/{next_page_url}"))
+
+
 @then('wait "{seconds}" seconds')
 def wait_step(context, seconds):
     time.sleep(int(seconds))
@@ -53,11 +59,6 @@ def set_element_value(context, css_selector, element_value):
 @when('I submit the form')
 def submit_the_form(context):
     click_element(context, "button[type='Submit']")
-
-
-@then('I am redirected to the "{expected_page}" page')
-def verify_the_current_url_matches_the_expected_url(context, expected_page):
-    assert context.browser.current_url == f"{_BASE_URL}/{expected_page}"
 
 
 @when('I enter the value "{value}" in the field with name "{field_name}"')
