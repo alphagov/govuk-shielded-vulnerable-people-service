@@ -1,7 +1,7 @@
-from flask import render_template, session, current_app, request
+from flask import render_template, current_app, request
 
 from .constants import PAGE_TITLES
-from .session import accessing_saved_answers
+from .session import accessing_saved_answers, is_nhs_login_user
 
 
 def render_template_with_title(template_name, *args, **kwargs):
@@ -21,7 +21,7 @@ def render_template_with_title(template_name, *args, **kwargs):
         cookie_preferences_set=cookies_preferences_set,
         form_base_template="base.html" if is_changing_form_answer else "base-with-back-link.html",
         **{
-            "nhs_user": session.get("nhs_sub") is not None,
+            "nhs_user": is_nhs_login_user(),
             "button_text": "Save and continue" if accessing_saved_answers() else "Continue",
             **kwargs,
         },
