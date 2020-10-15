@@ -25,7 +25,7 @@ run:
       cd loadtests
       mvn gatling:test \
         -DinjectUsersPerSecond=36 \
-        -DinjectDurationSeconds=1200 \
+        -DinjectDurationSeconds=1800 \
         -DpauseBetweenRequestsInSeconds=1 \
         -DnumberOfRepetitions=1 \
         -Dgatling.simulationClass=svp.SvpSimulationConstantUsersPerSec \
