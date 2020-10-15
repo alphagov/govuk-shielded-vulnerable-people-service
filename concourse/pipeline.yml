@@ -300,5 +300,3 @@ jobs:
                 source aws-credentials/.env
                 aws glue start-workflow-run \
                   --name "cv-vulnerable-people-daily-wave-two-pipeline-staging"
-                aws glue start-workflow-run \
-                  --name "wave2-mvp-reporting-data-daily-pipeline-staging"
