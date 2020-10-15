@@ -10,15 +10,15 @@ install:
 
 concourse_e2e:
 	@echo "Executing e2e automated tests against the staging environment..."
-	behave behave/features/ --tags='@e2e_happy_path_no_nhs_login' --stop
+	behave behave/features/1.e2e_journey_no_nhs_login.feature --stop
 
 smoke_test:
 ifeq ($(ENV),PRODUCTION)
 	@echo "Executing smoke test without submission..."
-	behave behave/features/ --tags='@e2e_happy_path_no_nhs_login_no_submission' --stop
+	behave behave/features/2.e2e_journey_no_nhs_login_and_no_submission.feature --stop
 else
 	@echo "Executing smoke tests..."
-	behave behave/features/ --tags='@e2e_happy_path_no_nhs_login' --stop
+	behave behave/features/1.e2e_journey_no_nhs_login.feature --stop
 endif
 
 test_e2e_local:
