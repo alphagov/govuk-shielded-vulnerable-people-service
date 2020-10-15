@@ -1,5 +1,5 @@
 # COVID-19 -
-@e2e_happy_path_no_nhs_login
+@e2e_happy_path_no_nhs_login_no_submission
 Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - no NHS login
     Scenario: can load homepage
         When you navigate to "/start"
@@ -84,11 +84,3 @@ Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - 
         Given I am on the "check-contact-details" page
         When I submit the form
         Then I am redirected to the "check-your-answers" page
-
-    Scenario: Should be redirected to confirmation when no answered to basic care needs help
-        Given I am on the "check-your-answers" page
-        When I submit the form
-        Then I am redirected to the "confirmation" page
-
-
-

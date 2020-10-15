@@ -8,13 +8,15 @@ from selenium.webdriver.chrome.options import Options
 def before_all(context):
     chrome_options = Options()
     chrome_options.binary = "bin/headless-chromium"
-    chrome_options.add_argument("-headless")
-    chrome_options.add_argument("--no-sandbox")
+    chrome_options.headless = True
+    chrome_options.add_argument("--no-sandbox")  # Bypass OS security model
     chrome_options.add_argument("--single-process")
     chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("window-size=1200,800")
 
     context.browser = webdriver.Chrome(options=chrome_options)
-    context.browser.set_page_load_timeout(time_to_wait=200)
+    context.browser.set_page_load_timeout(time_to_wait=30)
+    context.browser.delete_all_cookies()
 
     context.config.setup_logging(os.environ.get("LOG_LEVEL", "ERROR"))
     context.logger = logging.getLogger("behave")

@@ -13,8 +13,13 @@ concourse_e2e:
 	behave behave/features/ --tags='@e2e_happy_path_no_nhs_login' --stop
 
 smoke_test:
+ifeq ($(ENV),PRODUCTION)
+	@echo "Executing smoke test without submission..."
+	behave behave/features/ --tags='@e2e_happy_path_no_nhs_login_no_submission' --stop
+else
 	@echo "Executing smoke tests..."
 	behave behave/features/ --tags='@e2e_happy_path_no_nhs_login' --stop
+endif
 
 test_e2e_local:
 	@echo "Executing e2e automated tests against the local environment..."

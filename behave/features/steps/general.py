@@ -1,4 +1,3 @@
-import time
 import os
 
 from behave import then, when, given
@@ -7,17 +6,13 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
 _BASE_URL = os.environ["WEB_APP_BASE_URL"]
+_DEFAULT_TIMEOUT = 30  # in seconds
 
 
 @then('I am redirected to the "{next_page_url}" page')
 def wait_until_url_present(context, next_page_url):
-    WebDriverWait(context.browser, 30).until(
+    WebDriverWait(context.browser, _DEFAULT_TIMEOUT).until(
         expected_conditions.url_to_be(f"{_BASE_URL}/{next_page_url}"))
-
-
-@then('wait "{seconds}" seconds')
-def wait_step(context, seconds):
-    time.sleep(int(seconds))
 
 
 @then('wait up to "{timeout_seconds}" seconds until element with selector "{element_css_selector}" is present')
@@ -31,17 +26,16 @@ def user_path_step(context, path):
     context.browser.get(_BASE_URL + path)
 
 
-@then('the content of element with selector "{selector}" equals "{title}"')
-def content_equals_step(context, selector, title):
-    element_content = context.browser.find_element_by_css_selector(selector).text
-    assert element_content == title
+@then('the content of element with selector "{element_css_selector}" equals "{expected_element_content}"')
+def assert_element_content_matches(context, element_css_selector, expected_element_content):
+    element = WebDriverWait(context.browser, _DEFAULT_TIMEOUT).until(
+        expected_conditions.presence_of_element_located((By.CSS_SELECTOR, element_css_selector)))
+    assert element.text == expected_element_content
 
 
-@given('I am on the "{current_page}" page')
-def navigate_to_specified_page_if_necessary(context, current_page):
-    current_page_full_url = f"{_BASE_URL}/{current_page}"
-    if context.browser.current_url != current_page_full_url:
-        context.browser.get(current_page_full_url)
+@given('I am on the "{expected_page}" page')
+def assert_on_specified_page(context, expected_page):
+    assert context.browser.current_url.startswith(f"{_BASE_URL}/{expected_page}")
 
 
 @when('I click the "{css_selector}" element')
@@ -66,8 +60,3 @@ def set_field_value_step(context, field_name, value):
     elem = context.browser.find_element_by_name(field_name)
     elem.send_keys(value)
     elem.submit()
-    time.sleep(5)
-
-
-def _get_element_by_css_selector(context, css_selector):
-    return context.browser.find_element_by_css_selector(css_selector)
