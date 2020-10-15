@@ -111,6 +111,7 @@ jobs:
         params:
           WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
+          ENVIRONMENT: STAGING
         on_failure: *slack_alert_on_failure
 
   - name: e2e-test-staging
@@ -174,6 +175,7 @@ jobs:
         params:
           WEB_APP_BASE_URL: "https://coronavirus-shielding-support.service.gov.uk"
           MESSAGE: "Checks that the application deployed to production is not serving HTTP error codes"
+          ENVIRONMENT: PRODUCTION
         on_failure: *slack_alert_on_failure
         on_success: *slack_alert_on_success
 
@@ -192,6 +194,7 @@ jobs:
         timeout: 1m
         params:
           CRONITOR_URL: ((svp-form/cronitor-heartbeat-stg))
+          ENVIRONMENT: STAGING
         file: git-master/concourse/tasks/cronitor.yml
 
   - name: continuous-smoke-test-prod
@@ -209,6 +212,7 @@ jobs:
         timeout: 1m
         params:
           CRONITOR_URL: ((svp-form/cronitor-heartbeat-prod))
+          ENVIRONMENT: PRODUCTION
         file: git-master/concourse/tasks/cronitor.yml
 
   - name: gatling-workflow-load-test-in-staging
