@@ -13,13 +13,8 @@ concourse_e2e:
 	behave behave/features/1.e2e_journey_no_nhs_login.feature --stop
 
 smoke_test:
-ifeq ($(ENV),PRODUCTION)
 	@echo "Executing smoke test without submission..."
 	behave behave/features/2.e2e_journey_no_nhs_login_and_no_submission.feature --stop
-else
-	@echo "Executing smoke tests..."
-	behave behave/features/1.e2e_journey_no_nhs_login.feature --stop
-endif
 
 test_e2e_local:
 	@echo "Executing e2e automated tests against the local environment..."

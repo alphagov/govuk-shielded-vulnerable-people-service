@@ -20,5 +20,5 @@ run:
     - -c
     - |
       echo "running smoke tests against \"${WEB_APP_BASE_URL}\""
-      make smoke_test ENV="${ENVIRONMENT}"
+      make smoke_test
   dir: git-master
