@@ -179,7 +179,7 @@ jobs:
 
   - name: continuous-smoke-test-staging
     plan:
-      - get: every-10m
+      - get: every-5m
         trigger: true
       - get: git-master
       - task: smoke-test
