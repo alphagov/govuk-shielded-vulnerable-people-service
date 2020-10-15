@@ -13,6 +13,7 @@ concourse_e2e:
 	behave behave/features/1.e2e_journey_no_nhs_login.feature --stop
 
 smoke_test:
+	sleep 10
 	@echo "Executing smoke test without submission..."
 	behave behave/features/2.e2e_journey_no_nhs_login_and_no_submission.feature --stop
 
