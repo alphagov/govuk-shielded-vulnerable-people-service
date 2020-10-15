@@ -13,6 +13,8 @@ object Config {
   val injectDurationSeconds: Int = System.getProperty("injectDurationSeconds", "10").toInt
   val pauseMin: FiniteDuration = getProperty("pauseBetweenRequestsInSecondsMin", "3").toInt.seconds
   val pauseMax: FiniteDuration = getProperty("pauseBetweenRequestsInSecondsMax", "6").toInt.seconds
+  val responseTimeMaxMs = 1000
+  val percentageOfResponsesUnderMaxResponseTime = 99
   val responseSuccessPercentage = 99
   private val url: String = getProperty("url", "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital")
 
