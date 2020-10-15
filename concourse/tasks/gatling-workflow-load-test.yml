@@ -33,4 +33,4 @@ run:
         -Dgatling.data.charting.indicators.lowerBound=1000 \
         -Dgatling.data.charting.indicators.higherBound=1500 \
 
-  dir: git-dev
+  dir: git-master
