@@ -20,5 +20,6 @@ run:
     - -c
     - |
       echo "running smoke tests against \"${WEB_APP_BASE_URL}\""
+      sleep 10
       make smoke_test
   dir: git-master

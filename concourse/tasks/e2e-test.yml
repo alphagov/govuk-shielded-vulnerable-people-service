@@ -23,5 +23,6 @@ run:
     - |
       echo "running e2e tests against staging..."
       root=$(pwd)
+      sleep 10
       make concourse_e2e
   dir: git-master
