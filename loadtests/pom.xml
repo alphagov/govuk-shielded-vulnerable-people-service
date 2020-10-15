@@ -3,8 +3,8 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>gds.main.svp.load.tests</groupId>
-  <artifactId>main.svp-load-tests</artifactId>
+  <groupId>gds.svp.load.tests</groupId>
+  <artifactId>svp-load-tests</artifactId>
   <version>1.0</version>
 
   <properties>
@@ -27,7 +27,7 @@
   </dependencies>
 
   <build>
-    <testSourceDirectory>src/test/main/scala</testSourceDirectory>
+    <testSourceDirectory>src/test/scala</testSourceDirectory>
     <plugins>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
