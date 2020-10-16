@@ -140,7 +140,7 @@ jobs:
         file: git-master/concourse/tasks/deploy-to-govuk-paas.yml
         params:
           CF_SPACE: prod
-          INSTANCES: 30
+          INSTANCES: 20
           CF_STARTUP_TIMEOUT: 15 # minutes
           HOSTNAME: gds-shielded-vulnerable-people-service-prod
           GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID: a951e38f-1dbb-4732-9cdc-ea611785c607
