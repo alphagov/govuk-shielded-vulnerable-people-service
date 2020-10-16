@@ -1,9 +1,8 @@
 ---
 applications:
 - name: govuk-coronavirus-shielded-vulnerable-people-form
-  instances: 4
   buildpack: python_buildpack
-  memory: 2G
+  memory: 1G
   services:
     - svp-form-splunk-service
   env:
