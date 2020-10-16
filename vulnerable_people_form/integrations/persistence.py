@@ -4,6 +4,7 @@ import boto3
 import botocore.exceptions
 from botocore.config import Config
 from flask import current_app
+from flask import g
 
 boto3_config = Config(
     retries={
@@ -22,8 +23,16 @@ def get_client_kwargs(app=current_app):
     }
 
 
+def set_connection_header(request, operation_name, **kwargs):
+    request.headers['Connection'] = 'keep-alive'
+
+
 def get_rds_data_client(app=current_app):
-    return boto3.client("rds-data", **get_client_kwargs(app))
+    if 'boto_rds_client' not in g:
+        g.boto_rds_client = boto3.client("rds-data", **get_client_kwargs(app))
+        g.boto_rds_client.meta.events.register('request-created.rds-data', set_connection_header)
+
+    return g.boto_rds_client
 
 
 def get_rds_client(app=current_app):
