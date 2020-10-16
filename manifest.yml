@@ -1,7 +1,7 @@
 ---
 applications:
 - name: govuk-coronavirus-shielded-vulnerable-people-form
-    instances: 4
+  instances: 4
   buildpack: python_buildpack
   memory: 2G
   services:
