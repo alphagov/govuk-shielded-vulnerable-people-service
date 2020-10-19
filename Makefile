@@ -14,7 +14,7 @@ concourse_e2e:
 
 smoke_test:
 	@echo "Executing smoke test without submission..."
-	behave behave/features/2.e2e_journey_no_nhs_login_and_no_submission.feature --stop
+	behave behave/features/5.not_eligible_postcode.feature --stop
 
 test_e2e_local:
 	@echo "Executing e2e automated tests against the local environment..."
