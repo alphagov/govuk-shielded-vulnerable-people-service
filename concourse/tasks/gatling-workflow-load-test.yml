@@ -20,11 +20,10 @@ run:
     # Run simulation for 30 mins (1800s) to ensure workflow + mi workflow execution time is covered.
     # Suppress html file output (doesn't seem possible to completely remove file output...)
     # Suppress console log to final report only (done by turning off console writer)
-    # Temporarily increase to 7 to test 200-ish users.
     - |
       cd loadtests
       mvn gatling:test \
-        -DinjectUsersPerSecond=7 \
+        -DinjectUsersPerSecond=4 \
         -DinjectDurationSeconds=1800 \
         -DpauseBetweenRequestsInSecondsMax=1 \
         -DpauseBetweenRequestsInSecondsMin=1 \
