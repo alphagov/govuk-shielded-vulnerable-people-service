@@ -1,16 +1,16 @@
-Dear {{first_name}} {{last_name}}
+Dear {{first_name}} {{last_name}},
 
-Your registration number is {{reference_number}}
+Your registration number is {{reference_number}}.
 
 {% if told_to_shield == 1 %}
 
 #Make sure you've given us the correct personal details
 
-You'll only be able to get the support you need if you've given us the correct personal details. If you think you might have made a mistake, go through the questions again: www.gov.uk/coronavirus-shielding-support. Contact your local authority if you need help using the service: www.gov.uk/coronavirus-local-help.
+You'll only be able to get the support you need if you've given us the correct personal details. If you think you might have made a mistake, go through the questions again: https://www.gov.uk/coronavirus-shielding-support
 
 #What happens next
 
-You do not need to do anything else if you've been told to shield by the NHS or your doctor and they've put you on the NHS list of people who should be shielding.
+You do not need to do anything else if the NHS or your doctor has contacted you to confirm that you’re classed as clinically extremely vulnerable to coronavirus.
 
 We’ll check your details, then contact you to confirm whether you’re eligible for support. You will not start getting support until we’ve confirmed that you’re eligible. This can take up to 2 weeks.
 
@@ -20,28 +20,24 @@ We’ll check your details, then contact you to confirm whether you’re eligibl
 
 #Contact your GP
 
-Contact your GP or hospital clinician as soon as possible so they can put you on the NHS list of people who should be shielding. You may not get the support you need if you do not contact them.
+Contact your GP or hospital clinician as soon as possible so they can put you on the NHS list of people who are classed as clinically extremely vulnerable to coronavirus. You won’t get the support you need if you do not contact them.
 
 #Make sure you've given us the correct personal details
 
-You'll only be able to get the support you need if you've given us the correct personal details. If you think you might have made a mistake, go through the questions again: www.gov.uk/coronavirus-shielding-support. Contact your local authority if you need help using the service: www.gov.uk/coronavirus-local-help.
+You'll only be able to get the support you need if you've given us the correct personal details. If you think you might have made a mistake, go through the questions again: https://www.gov.uk/coronavirus-shielding-support
 
 #What happens next
 
-We’ll check your details, then contact you to confirm whether you’re eligible for support. This can take up to 2 weeks from when your GP or hospital clinician puts you on the NHS list of people who should be shielding.
-
-#If your personal details or support needs change
+We’ll check your details, then contact you to confirm whether you’re eligible for support. This can take up to 2 weeks from when your GP or hospital clinician puts you on the NHS list of people who are classed as clinically extremely vulnerable to coronavirus.
 
 {% endif %}
 
-Use the service again to update your personal details or support needs: www.gov.uk/coronavirus-shielding-support.
-
 #If you need urgent help
 
-Contact your local authority if you need support urgently and cannot rely on family, friends or neighbours: www.gov.uk/coronavirus-local-help.
+Contact your local authority if you need support urgently and cannot rely on family, friends or neighbours: https://www.gov.uk/coronavirus-local-help
 
-There’s guidance on what you should do if you’re extremely vulnerable to coronavirus: www.gov.uk/coronavirus-extremely-vulnerable-guidance.
+Make sure you’re up to date with the guidance on what you can and cannot do if you’re clinically extremely vulnerable to coronavirus: https://www.gov.uk/coronavirus-extremely-vulnerable-guidance
 
 Regards,
 
-National Shielding Service
+Coronavirus support team

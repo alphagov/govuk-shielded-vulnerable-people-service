@@ -2,27 +2,19 @@ Dear {{first_name}} {{last_name}},
 
 Your registration number is {{reference_number}}.
 
-{% if not has_someone_to_shop %}
-
-#If you need urgent help
-
-Contact your local authority if you need urgent help: https://www.gov.uk/coronavirus-local-help
-
-{% endif %}
-
 #What happens next
 
-{% if wants_supermarket_deliveries and wants_social_care %}
+{% if not has_someone_to_shop and wants_supermarket_deliveries and wants_social_care %}
 
 You should be able to start booking priority supermarket deliveries in the next 1 to 7 days, depending on the supermarket.
 
 If you do not already have an account with a supermarket delivery service, set one up now. You can set up accounts with more than one supermarket if you're worried about not getting a delivery slot.
 
-Someone from your local authority will contact you about your care needs within the next week.
+If people in your area are told to start shielding, your local authority will contact you to talk about any additional needs you have.
 
 {% endif %}
 
-{% if wants_supermarket_deliveries and not wants_social_care %}
+{% if not has_someone_to_shop and wants_supermarket_deliveries and not wants_social_care %}
 
 You should be able to start booking priority supermarket deliveries in the next 1 to 7 days, depending on the supermarket.
 
@@ -30,15 +22,35 @@ If you do not already have an account with a supermarket delivery service, set o
 
 {% endif %}
 
-{% if not wants_supermarket_deliveries and wants_social_care %}
+{% if not has_someone_to_shop and not wants_supermarket_deliveries and wants_social_care %}
 
-Someone from your local authority will contact you about your care needs within the next week.
+If people in your area are told to start shielding, your local authority will contact you to talk about what support you need in order to shield.
+
+In the meantime, contact your local authority if you need urgent help and cannot rely on friends, family or neighbours: https://www.gov.uk/coronavirus-local-help
+
+You won’t get the help you need if you do not contact them.
 
 {% endif %}
 
-{% if not wants_supermarket_deliveries and not wants_social_care %}
+{% if not has_someone_to_shop and not wants_supermarket_deliveries and not wants_social_care %}
 
-Based on what you told us, at the moment you do not need help getting supplies or meeting your basic care needs.
+Based on what you told us, you do not need support at the moment.
+
+{% endif %}
+
+{% if has_someone_to_shop and wants_social_care %}
+
+If people in your area are told to start shielding, your local authority will contact you to talk about what support you need in order to shield.
+
+In the meantime, contact your local authority if you need urgent help and cannot rely on friends, family or neighbours: https://www.gov.uk/coronavirus-local-help
+
+You won’t get the help you need if you do not contact them.
+
+{% endif %}
+
+{% if has_someone_to_shop and not wants_social_care %}
+
+Based on what you told us, you do not need support at the moment.
 
 {% endif %}
 
@@ -56,17 +68,17 @@ Go through the questions in the service again to update your personal details or
 
 {% endif %}
 
-{% if has_someone_to_shop %}
+{% if ((not has_someone_to_shop and not wants_supermarket_deliveries and wants_social_care) or (has_someone_to_shop and wants_social_care)) %}
 
-Contact your local authority if you need support urgently and cannot rely on family, friends or neighbours: https://www.gov.uk/coronavirus-local-help
+Contact your local authority right away if you need urgent help and cannot rely on family, friends or neighbours: https://www.gov.uk/coronavirus-local-help
 
 {% endif %}
 
-There’s guidance on what you should do if you’re extremely vulnerable to coronavirus: https://www.gov.uk/coronavirus-extremely-vulnerable-guidance
+Make sure you’re up to date with the guidance on what you can and cannot do if you’re clinically extremely vulnerable to coronavirus: https://www.gov.uk/coronavirus-extremely-vulnerable-guidance
 
 Thanks,
 
-National Shielding Service
+Coronavirus support team
 
 -----
 
