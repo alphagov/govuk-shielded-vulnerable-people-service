@@ -48,8 +48,8 @@ class ShoppingAssistanceAnswers(EnumWithText):
     NO = 0
 
     __text_values__ = {
-        YES: "Yes, there is someone I can rely on to go shopping for me",
-        NO: "No, there is not someone I can can rely on to go shopping for me"
+        YES: "Yes, there’s someone I can rely on to go shopping for me",
+        NO: "No, I cannot rely on someone to go shopping for me"
     }
 
 
@@ -59,8 +59,8 @@ class BasicCareNeedsAnswers(EnumWithText):
     NO = 0
 
     __text_values__ = {
-        YES: "Yes, I need help meeting my basic care needs",
-        NO: "No, I do not need help meeting my basic care needs"
+        YES: "Yes, I would need additional support if I had to start shielding",
+        NO: "No, I would not need additional support if I had to start shielding"
     }
 
 
@@ -82,8 +82,8 @@ class NHSLetterAnswers(EnumWithText):
     NOT_SURE = 3
 
     __text_values__ = {
-        YES: "Yes, I’ve been told to shield",
-        NO: "No, I have not been told to shield",
+        YES: "Yes, I have been told that I’m clinically extremely vulnerable to coronavirus",
+        NO: "No, I have not been told that I’m clinically extremely vulnerable to coronavirus",
         NOT_SURE: "Not sure",
     }
 
