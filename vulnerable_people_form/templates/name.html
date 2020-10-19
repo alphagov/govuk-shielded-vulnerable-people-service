@@ -10,7 +10,7 @@
   </legend>
 
   {% if not nhs_user %}
-    <p class="govuk-hint">Answer for the person who is shielding.</p>
+    <p class="govuk-hint">If you’re registering for someone else, enter the name of the person who is clinically extremely vulnerable.</p>
   {% endif %}
 {{ 
 govukInput({
@@ -30,7 +30,7 @@ govukInput({
 {{
 govukInput({
   "label": {
-    "text": "Middle names (optional)"
+    "text": "Middle name (optional)"
   },
   "id": "middle_name",
   "name": "middle_name",

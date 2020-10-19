@@ -24,16 +24,16 @@ PAGE_TITLES = {
     "applying-on-own-behalf": "Are you using this service for yourself or for someone else?",
     "cookies": "Cookies",
     "address-lookup": "What is the address where you need support?",
-    "basic-care-needs": "Do you need help meeting your basic care needs?",
+    "basic-care-needs": "Would you need additional support if you were told to start ‘shielding’?",
     "check-contact-details": "Check this is correct",
     "check-your-answers": "Check your answers before submitting",
     "contact-details": "What are your contact details?",
     "date-of-birth": "What is your date of birth?",
-    "do-you-have-someone-to-go-shopping-for-you": "While you’re shielding, is there someone you can rely on to go shopping for you if you need them to?",  # noqa: E501
+    "do-you-have-someone-to-go-shopping-for-you": "Is there someone you can rely on to go shopping for you if you need them to?",  # noqa: E501
     "priority-supermarket-deliveries": "Do you want access to priority supermarket deliveries?",
     "medical-conditions": "Do you have one of the listed medical conditions?",
     "name": "What is your name?	",
-    "nhs-letter": "Are you 'shielding' because you’ve been told you're clinically extremely vulnerable to coronavirus?",
+    "nhs-letter": "Has the NHS or your doctor told you that you’re classed as clinically extremely vulnerable to coronavirus?",  # noqa: E501
     "nhs-login": "Do you have an NHS login?",
     "nhs-login-link": "If you've previously registered with NHS login for this service you can sign in",
     "nhs-number": "What is your NHS number?",

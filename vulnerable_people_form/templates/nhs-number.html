@@ -12,13 +12,14 @@
   <h1 class="govuk-heading-l govuk-!-margin-top-0 govuk-!-margin-bottom-3">
       <label class="govuk-label govuk-label--l" for="nhs_number">{{ title_text }}</label>
 </h1>
-          <p class="govuk-body">An NHS Number is a 10 digit number, like 485 777 3456.</p>
-          <p class="govuk-body">You can find it on any letter from the NHS, on a prescription or by logging into your GP’s online service.</p>
+<p class="govuk-body">An NHS Number is a 10 digit number, like 485 777 3456.</p>
+<p class="govuk-body">You can find it on any letter from the NHS, on a prescription or by logging into your GP’s online service.</p>
+<p class="govuk-body">If you’re registering for someone else, enter the NHS number for the person who is clinically extremely vulnerable.</p>
 
 {{
   govukInput({
     "label": {
-      "text": "Shielding person’s NHS number"
+      "text": "NHS number"
     },
     "id": "nhs_number",
     "name": "nhs_number",
@@ -33,7 +34,7 @@
 {% set applying_on_own_behalf_detail_html %}
 <p class="govuk-body">If you do not know your NHS number, you can <a class="govuk-link" href="{{ append_querystring_params("/nhs-registration-link") }}">try using NHS login</a> instead.</p>
 <p class="govuk-body">If you do not have an NHS number <a class="govuk-link" href="https://www.nhs.uk/using-the-nhs/nhs-services/gps/how-to-register-with-a-gp-practice/">register with a GP</a>  to get one.</p>
-<p class="govuk-body">You cannot use an old NHS number with fewer than 10 digits. Look on NHS letters or ask your GP to find your new NHS number.</p>
+<p class="govuk-body">You cannot use one of the old NHS numbers with fewer than 10 digits. Look on NHS letters or ask your GP to find your new NHS number.</p>
 {% endset %}
 {% set applying_on_others_behalf_detail_html %}
   <p class="govuk-body">If you do not have an NHS number <a class="govuk-link" href="https://www.nhs.uk/using-the-nhs/nhs-services/gps/how-to-register-with-a-gp-practice/">register with a GP</a> to get one.</p>
