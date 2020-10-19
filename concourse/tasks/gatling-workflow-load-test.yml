@@ -25,7 +25,8 @@ run:
       mvn gatling:test \
         -DinjectUsersPerSecond=4 \
         -DinjectDurationSeconds=1800 \
-        -DpauseBetweenRequestsInSeconds=1 \
+        -DpauseBetweenRequestsInSecondsMax=1 \
+        -DpauseBetweenRequestsInSecondsMin=1 \
         -DnumberOfRepetitions=1 \
         -Dgatling.simulationClass=svp.SvpSimulationConstantUsersPerSec \
         -Dgatling.data.writers.0=file \
