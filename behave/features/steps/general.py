@@ -35,7 +35,7 @@ def assert_element_content_matches(context, element_css_selector, expected_eleme
 
 @given('I am on the "{expected_page}" page')
 def assert_on_specified_page(context, expected_page):
-    assert context.browser.current_url.startswith(f"{_BASE_URL}/{expected_page}")
+    assert context.browser.current_url == f"{_BASE_URL}/{expected_page}"
 
 
 @when('I click the "{css_selector}" element')
