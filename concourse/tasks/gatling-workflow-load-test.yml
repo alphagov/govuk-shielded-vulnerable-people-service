@@ -16,17 +16,17 @@ run:
     - -euo
     - pipefail
     - -c
-    # User journey is 16 requests long, and we want close to 1000 req/s, so inject 1000/16 users/s here (63),
-    # with a pause of 1 second between requests.
-    # Run simulation for 30 mins (1800s) to ensure workflow execution time is covered.
+    # 4 users per second causes around 100 page requests/s which is our current non-functional requirement. 
+    # Run simulation for 30 mins (1800s) to ensure workflow + mi workflow execution time is covered.
     # Suppress html file output (doesn't seem possible to completely remove file output...)
     # Suppress console log to final report only (done by turning off console writer)
     - |
       cd loadtests
       mvn gatling:test \
-        -DinjectUsersPerSecond=36 \
+        -DinjectUsersPerSecond=4 \
         -DinjectDurationSeconds=1800 \
-        -DpauseBetweenRequestsInSeconds=1 \
+        -DpauseBetweenRequestsInSecondsMax=1 \
+        -DpauseBetweenRequestsInSecondsMin=1 \
         -DnumberOfRepetitions=1 \
         -Dgatling.simulationClass=svp.SvpSimulationConstantUsersPerSec \
         -Dgatling.data.writers.0=file \
