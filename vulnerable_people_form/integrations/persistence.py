@@ -267,3 +267,9 @@ def load_answers(nhs_uid):
     if len(records) > 1:
         raise ValueError("Answers returned more than one result")
     return None if not records else records[0]
+
+
+@current_app.teardown_appcontext
+def teardown_rds_client(exception):
+    # Boto has no explicit close, so we there is not much we can do here.
+    g.pop('boto_rds_client', None)
