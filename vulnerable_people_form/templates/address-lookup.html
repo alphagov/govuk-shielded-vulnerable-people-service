@@ -5,9 +5,6 @@
 
 {% block form_fields %}
   <h1 class="govuk-heading-l govuk-!-margin-top-0 govuk-!-margin-bottom-3">{{title_text}}</h1>
-  {% if not nhs_user %}
-    <p class="govuk-body">If you’re applying for someone else, enter the address of the person who needs support.</p>
-  {% endif %}
   <h2 class="govuk-heading-m govuk-!-margin-top-0 govuk-!-margin-bottom-3">Postcode</h2>
 <p class="govuk-body">
 <span class="govuk-!-font-weight-bold govuk-!-padding-right-3">{{postcode}}</span>
