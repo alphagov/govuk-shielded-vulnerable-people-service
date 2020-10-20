@@ -68,11 +68,7 @@ Go through the questions in the service again to update your personal details or
 
 {% endif %}
 
-{% if ((not has_someone_to_shop and not wants_supermarket_deliveries and wants_social_care) or (has_someone_to_shop and wants_social_care)) %}
-
 Contact your local authority right away if you need urgent help and cannot rely on family, friends or neighbours: https://www.gov.uk/coronavirus-local-help
-
-{% endif %}
 
 Make sure you’re up to date with the guidance on what you can and cannot do if you’re clinically extremely vulnerable to coronavirus: https://www.gov.uk/coronavirus-extremely-vulnerable-guidance
 
