@@ -41,7 +41,7 @@ Your registration number is {{reference_number}}.
  Go through the questions in the service again to update your personal details or support needs: https://www.gov.uk/coronavirus-shielding-support.
 {% endif %}
 
-{% if not ((has_someone_to_shop and not wants_supermarket_deliveries and wants_social_care) or (has_someone_to_shop and wants_social_care)) %}
+{% if ((not has_someone_to_shop and not wants_supermarket_deliveries and wants_social_care) or (has_someone_to_shop and wants_social_care)) %}
  Contact your local authority right away if you need urgent help and cannot rely on family, friends or neighbours: https://www.gov.uk/coronavirus-local-help.
 {% endif %}
  Thanks, coronavirus support team
