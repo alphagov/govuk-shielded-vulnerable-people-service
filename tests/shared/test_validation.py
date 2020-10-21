@@ -10,6 +10,7 @@ from vulnerable_people_form.form_pages.shared.answers_enums import (
     ViewOrSetupAnswers,
     YesNoAnswers,
     PrioritySuperMarketDeliveriesAnswers)
+from vulnerable_people_form.integrations.postcode_lookup_helper import format_postcode
 
 _FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME = \
     "vulnerable_people_form.form_pages.shared.validation.form_answers"
@@ -246,27 +247,28 @@ def test_validate_address_lookup_should_return_true_when_address_present():
     )
 
 
-def test_validate_postcode_should_return_true_when_valid_postcode_present():
+@pytest.mark.parametrize("postcode", ["LS1 6AE", "EC4A 1EN", "L3 5AB", "NW1W 8XG"])
+def test_validate_postcode_should_return_true_when_valid_postcode_present(postcode):
     with _current_app.test_request_context() as test_request_ctx:
-        is_valid = validation.validate_postcode("LS1 6AE", "postcode")
+        is_valid = validation.validate_postcode(format_postcode(postcode), "postcode")
         assert is_valid is True
         assert len(test_request_ctx.session) == 0
 
 
-@pytest.mark.parametrize("postcode", [""])
+@pytest.mark.parametrize("postcode", ["", " "])
 def test_validate_postcode_should_return_false_when_no_postcode_present(postcode):
     with _current_app.test_request_context() as test_request_ctx:
-        is_valid = validation.validate_postcode(postcode, "postcode")
+        is_valid = validation.validate_postcode(format_postcode(postcode), "postcode")
         assert is_valid is False
         assert len(test_request_ctx.session) == 1
         assert test_request_ctx.session["error_items"]["postcode"]["postcode"] \
             == "What is the postcode where you need support?"
 
 
-@pytest.mark.parametrize("postcode", [" ", "invalid_post_code", "ssss 12345", "LS1 1AB ABC"])
+@pytest.mark.parametrize("postcode", ["invalid_post_code", "ssss 12345", "LS1 1AB ABC", "NE11", "NE11 1LBC"])
 def test_validate_postcode_should_return_false_when_invalid_postcode_present(postcode):
     with _current_app.test_request_context() as test_request_ctx:
-        is_valid = validation.validate_postcode(postcode, "postcode")
+        is_valid = validation.validate_postcode(format_postcode(postcode), "postcode")
         assert is_valid is False
         assert len(test_request_ctx.session) == 1
         assert test_request_ctx.session["error_items"]["postcode"]["postcode"] == "Enter a real postcode"

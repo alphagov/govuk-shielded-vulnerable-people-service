@@ -204,14 +204,14 @@ def validate_date_of_birth():
 
 
 def validate_postcode(postcode, error_section_name):
-    postcode.replace(" ", "")
-    postcode_regex = "^(([A-Z]{1,2}[0-9][A-Z0-9]?|ASCN|STHL|TDCU|BBND|[BFS]IQQ|PCRN|TKCA) ?[0-9][A-Z]{2}|BFPO ?[0-9]{1,4}|(KY[0-9]|MSR|VG|AI)[ -]?[0-9]{4}|[A-Z]{2} ?[0-9]{2}|GE ?CX|GIR ?0A{2}|SAN ?TA1)$"  # noqa: E501
+    character_limiting_regex = "^[A-Z0-9]{5,7}$"
+    postcode_regex = r"^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})$"  # noqa: E501
     error = None
     if not postcode:
         error = "What is the postcode where you need support?"
-    elif re.match(postcode_regex, postcode.upper()) is None:
+    elif re.match(character_limiting_regex, postcode) is None or \
+            re.match(postcode_regex, postcode.upper()) is None:
         error = "Enter a real postcode"
-
     if error:
         error_section = session.setdefault("error_items", {}).get(error_section_name, {})
         session["error_items"] = {
