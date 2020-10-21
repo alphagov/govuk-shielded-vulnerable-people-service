@@ -1,6 +1,7 @@
 from flask import redirect, session
 
 from .blueprint import form
+from .shared.form_utils import clean_nhs_number
 from .shared.querystring_utils import append_querystring_params
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
@@ -35,7 +36,7 @@ def get_nhs_number():
 def post_nhs_number():
     session["form_answers"] = {
         **session.setdefault("form_answers", {}),
-        "nhs_number": request_form().get("nhs_number").replace(" ", ""),
+        "nhs_number": clean_nhs_number(request_form().get("nhs_number")),
         "know_nhs_number": "Yes, I know my NHS number",
     }
 
