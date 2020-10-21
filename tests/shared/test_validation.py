@@ -291,7 +291,7 @@ def test_validate_basic_care_needs_should_return_true_when_valid_answer_selected
     )
 
 
-@pytest.mark.parametrize("form_field_value", ["", None, "123"])
+@pytest.mark.parametrize("form_field_value", ["", None, "123", "11164324557"])
 def test_validate_nhs_number_should_return_false_when_empty_or_invalid_length_nhs_number_entered(
         form_field_value):
     _execute_input_validation_test_and_assert_validation_failed(
@@ -302,7 +302,7 @@ def test_validate_nhs_number_should_return_false_when_empty_or_invalid_length_nh
     )
 
 
-@pytest.mark.parametrize("form_field_value", ["1234567891", "abcd123456"])
+@pytest.mark.parametrize("form_field_value", ["1234567891", "abcd123456", "111~643245#5", "123 643245-5"])
 def test_validate_nhs_number_should_return_false_when_invalid_nhs_number_entered(form_field_value):
     _execute_input_validation_test_and_assert_validation_failed(
         validation.validate_nhs_number,
