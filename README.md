@@ -91,22 +91,33 @@ To set up the app for local development you need to follow these steps:
     ```sh
     cp instance/config.py.sample.dev instance/config.py
     ```
+2. Start rds-client-api and mysql 
+    ```docker-compose up -d```
 
-2.  Fill in the missing configuration values as per the **Configuration
+
+3. Make sure the database is up to date (following the guide in 
+   covid-engineering/database/README.md).
+   ```
+   cd $PATH_TO_COVID_ENGINEERING\covid-engineering\database
+   alembic --config=alembic.local.ini upgrade head
+
+   ```
+
+4.  Fill in the missing configuration values as per the **Configuration
     Variables Guide** section, and set the AWS environment variables as
     per the ***Environment Variables Guide***.
 
-3.  Place the private key file for your NHS oidc client id into the
+5.  Place the private key file for your NHS oidc client id into the
     path `instance/private_key.pem`.
 
-4.  Set the `FLASK_CONFIG_FILE` environment variable so that it points at
+6.  Set the `FLASK_CONFIG_FILE` environment variable so that it points at
     the new file. (Note: the root path for Flask config is the `instance`
     folder.) I.e.:
     ```sh
     export FLASK_CONFIG_FILE='config.py'
     ```
     
-5.  Set the Flask environment to development, and let Flask know where
+7.  Set the Flask environment to development, and let Flask know where
     the app file is stored:
     ```sh
     export FLASK_ENV='development'
@@ -131,8 +142,7 @@ environment variables. To do this it uses the file at
     export FLASK_ENV=`production`
     export FLASK_APP=`run.py`
     ```
-2.  Set environment variables as per the **Configuration Variables
-    Guide** section.
+2.  Set environment variables as per the **Configuration Variables Guide** section.
 
 3.  Set the additional environment variable for gunicorn
     (`$GUNICORN_WORKERS_COUNT`) and `NHS_OIDC_LOGIN_PRIVATE_KEY`.
@@ -157,12 +167,14 @@ The deployment pipeline is configured as follows:
 
 The following environment variables are all stored within Concourse and pulled into the pipeline when it is run.
 
+
 - AWS_ACCESS_KEY
 - AWS_SECRET_ACCESS_KEY
 - NHS_OIDC_LOGIN_PRIVATE_KEY
 - ORDNANCE_SURVEY_PLACES_API_KEY
 - NOTIFY_API_KEY
 - SECRET_KEY
+
 
 ### Environment variables guide
 

@@ -14,4 +14,3 @@ flask-talisman == 0.7.0
 bleach == 3.2.1
 prometheus-client==0.8.0
 gds-metrics==0.2.4
-
