@@ -7,6 +7,7 @@ from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
 from .shared.session import get_errors_from_session, request_form, get_answer_from_form
 from .shared.validation import validate_postcode
+from vulnerable_people_form.integrations.postcode_lookup_helper import format_postcode
 
 
 @form.route("/postcode-eligibility", methods=["GET"])
@@ -29,7 +30,7 @@ def get_postcode_eligibility():
 
 @form.route("/postcode-eligibility", methods=["POST"])
 def post_postcode_verification():
-    session["postcode"] = request_form().get("postcode")
+    session["postcode"] = format_postcode(request_form().get("postcode"))
     if not validate_postcode(session["postcode"], "postcode"):
         return redirect("/postcode-eligibility")
 

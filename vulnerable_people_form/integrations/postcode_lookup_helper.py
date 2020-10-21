@@ -120,6 +120,13 @@ def get_addresses_from_postcode(postcode):
         raise ErrorFindingAddress()
 
 
+def format_postcode(postcode):
+    if postcode:
+        return postcode.replace(" ", "").upper()
+
+    return None
+
+
 def _log_postcode_lookup_failure(failure_reason, postcode):
     logger.error(create_log_message(log_event_names["ORDNANCE_SURVEY_LOOKUP_FAILURE"],
                                     f"Failure reason: {failure_reason}, Postcode: {postcode}"))
