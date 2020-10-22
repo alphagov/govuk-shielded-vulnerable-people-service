@@ -1,4 +1,3 @@
-# COVID-19 -
 @e2e_happy_path_no_nhs_login
 Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - no NHS login
     Scenario: can load homepage

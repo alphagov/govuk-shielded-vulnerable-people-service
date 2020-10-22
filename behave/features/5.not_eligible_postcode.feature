@@ -1,4 +1,3 @@
-# COVID-19 -
 @e2e_partial_journey
 Feature: COVID-19 Shielded vulnerable people service - partial user journey - ineligible postcode
     Scenario: can load homepage
