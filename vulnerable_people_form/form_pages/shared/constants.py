@@ -66,6 +66,8 @@ NHS_USER_INFO_TO_FORM_ANSWERS = {
 SESSION_KEY_ADDRESS_SELECTED = "auto_populated_address_selected"
 SESSION_KEY_QUERYSTRING_PARAMS = "querystring_params_to_retain"
 
+GOVUK_JOURNEY_START_PAGE_URL = "https://gov.uk/coronavirus-shielding-support"
+
 
 @enum.unique
 class JourneyProgress(enum.Enum):

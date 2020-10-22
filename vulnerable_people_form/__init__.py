@@ -71,6 +71,7 @@ def create_app(scriptinfo):
         request_bodies='never',
     )
 
+    app.register_blueprint(form_pages.default.app_default)
     app.register_blueprint(form_pages.blueprint.form)
 
     _init_security(app)

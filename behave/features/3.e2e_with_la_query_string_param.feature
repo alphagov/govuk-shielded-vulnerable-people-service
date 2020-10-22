@@ -2,7 +2,7 @@
 @e2e_happy_path_no_nhs_login_with_la_param
 Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - no NHS login
     Scenario: can load homepage
-        When you navigate to "/start?la=1"
+        When I navigate to "/start?la=1"
         Then the content of element with selector ".govuk-fieldset__heading" equals "Are you using this service for yourself or for someone else?"
 
     Scenario: Should be re-directed to nhs-login when yes answered to applying on own behalf

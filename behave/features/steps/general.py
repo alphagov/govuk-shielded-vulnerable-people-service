@@ -15,13 +15,19 @@ def wait_until_url_present(context, next_page_url):
         expected_conditions.url_to_be(f"{_BASE_URL}/{next_page_url}"))
 
 
+@then('I am redirected to the external page with URL "{next_page_url}"')
+def wait_until_external_url_present(context, next_page_url):
+    WebDriverWait(context.browser, _DEFAULT_TIMEOUT).until(
+        expected_conditions.url_to_be(next_page_url))
+
+
 @then('wait up to "{timeout_seconds}" seconds until element with selector "{element_css_selector}" is present')
 def wait_until_element_present(context, timeout_seconds, element_css_selector):
     WebDriverWait(context.browser, int(timeout_seconds)).until(
         expected_conditions.presence_of_element_located((By.CSS_SELECTOR, element_css_selector)))
 
 
-@when('you navigate to "{path}"')
+@when('I navigate to "{path}"')
 def user_path_step(context, path):
     context.browser.get(_BASE_URL + path)
 
