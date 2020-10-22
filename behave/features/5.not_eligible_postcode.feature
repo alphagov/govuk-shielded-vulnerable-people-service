@@ -2,7 +2,7 @@
 @e2e_partial_journey
 Feature: COVID-19 Shielded vulnerable people service - partial user journey - ineligible postcode
     Scenario: can load homepage
-        When you navigate to "/start"
+        When I navigate to "/start"
         Then the content of element with selector ".govuk-fieldset__heading" equals "Are you using this service for yourself or for someone else?"
 
     Scenario: Should be re-directed to nhs-login when yes answered to applying on own behalf

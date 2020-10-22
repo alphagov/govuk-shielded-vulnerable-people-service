@@ -65,6 +65,10 @@ def is_nhs_login_user():
     return session.get("nhs_sub") is not None
 
 
+def has_started_form():
+    return "form_started" in session
+
+
 def should_contact_gp():
     return NHSLetterAnswers(form_answers()["nhs_letter"]) is NHSLetterAnswers.YES
 
