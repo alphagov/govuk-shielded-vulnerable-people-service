@@ -1,4 +1,3 @@
-# COVID-19 -
 @e2e_partial_journey
 Feature: COVID-19 Shielded vulnerable people service - partial user journey - no medical conditions
     Scenario: can load homepage

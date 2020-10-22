@@ -10,7 +10,8 @@ install:
 
 concourse_e2e:
 	@echo "Executing e2e automated tests against the staging environment..."
-	behave behave/features/1.e2e_journey_no_nhs_login.feature --stop
+	# execute all scenarios except no submission ( the '-' character prefix means skip)
+	behave behave/features --stop --tags=-e2e_happy_path_no_nhs_login_no_submission
 
 smoke_test:
 	@echo "Executing smoke test without submission..."
