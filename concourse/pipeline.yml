@@ -245,11 +245,11 @@ jobs:
                     - |
                       set -euo pipefail
                       source aws-credentials/.env
-                      tar zcvf $(date +%FT%T).tar.gz gatling-results 
+                      DATE=$(date +%FT%T)
+                      tar zvcf $DATE.tar.gz gatling-results 
                       aws s3 cp \
-                        $(date +%FT%T).tar.gz \
+                        $DATE.tar.gz \
                         s3://gds-ons-covid-19-system-test-results-staging/gatling/workflow-load-tests/ \
-                        --recursive
             - task: clean-out-gatling-test-submissions-from-rds
               config:
                 platform: linux
