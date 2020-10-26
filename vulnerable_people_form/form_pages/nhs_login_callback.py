@@ -17,13 +17,16 @@ def get_nhs_login_callback():
 
     if "error" in request.args:
         error_description = request.args.get("error_description", "")
-        logger.error(create_log_message(
-            log_event_names["NHS_LOGIN_FAIL"],
-            f"NHS login error: {request.args['error']}, error description: {error_description}"))
+        error = request.args['error']
 
         if error_description == "ConsentNotGiven":
+            logger.warning(create_log_message(log_event_names["NHS_LOGIN_USER_CONSENT_NOT_GIVEN"],
+                                              f"NHS login warning: {error}, error description: {error_description}"))
             return redirect("/no-consent")
         else:
+            logger.error(create_log_message(
+                log_event_names["NHS_LOGIN_FAIL"],
+                f"NHS login error: {error}, error description: {error_description}"))
             abort(500)
 
     nhs_user_info = current_app.nhs_oidc_client.get_nhs_user_info_from_authorization_callback(request.args)
