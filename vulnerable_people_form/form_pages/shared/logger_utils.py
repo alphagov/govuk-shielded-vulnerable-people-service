@@ -13,6 +13,7 @@ log_event_names = {
     "NHS_LOGIN_FAIL": "NhsLoginFailed",
     "NHS_LOGIN_SUCCESS": "NhsLoginSucceeded",
     "NHS_LOGIN_USER_INFO_REQUEST_FAIL": "NhsLoginUserInfoRequestFailed",
+    "NHS_LOGIN_USER_CONSENT_NOT_GIVEN": "NhsLoginUserConsentNotGiven",
     "POSTCODE_INELIGIBLE": "IneligiblePostcodeEntered",
     "POSTCODE_ELIGIBLE": "EligiblePostcodeEntered",
     "ORDNANCE_SURVEY_LOOKUP_SUCCESS": "OrdnanceSurveyPlacesApiPostcodeLookupSucceeded",
