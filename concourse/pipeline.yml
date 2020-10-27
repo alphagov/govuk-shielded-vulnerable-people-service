@@ -24,10 +24,10 @@ resources:
       url: ((slack_hook_automate))
       channel: covid-engineering-team
 
-  - name: every-5m
+  - name: every-2m
     type: time
     source:
-      interval: 5m
+      interval: 2m
 
   - name: trigger-at-1am
     type: cron-resource
@@ -179,7 +179,7 @@ jobs:
 
   - name: continuous-smoke-test-staging
     plan:
-      - get: every-5m
+      - get: every-2m
         trigger: true
       - get: git-master
       - task: smoke-test
@@ -196,7 +196,7 @@ jobs:
 
   - name: continuous-smoke-test-prod
     plan:
-      - get: every-5m
+      - get: every-2m
         trigger: true
       - get: git-master
       - task: smoke-test
