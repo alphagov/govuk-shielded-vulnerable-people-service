@@ -10,5 +10,5 @@ run:
     - |
       set -ue
       echo 'Curling cronitor'
-      curl --fail "$CRONITOR_URL"
+      curl --fail "$CRONITOR_URL/complete"
       echo 'Curled cronitor successfully'
