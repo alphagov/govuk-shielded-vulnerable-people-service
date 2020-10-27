@@ -24,3 +24,11 @@ smoke_test:
 test_e2e_local:
 	@echo "Executing e2e automated tests against the local environment..."
 	docker-compose run --service-ports --rm chrome-driver bash -c "behave features/ --stop"
+
+concourse_e2e_with_pipeline_validation_webform_entry:
+	@echo "Executing web form entry for End to End with Pipeline Validation..."
+	behave behave/features/e2e_test_features/01.simple_web_submission_entry.feature --stop
+
+concourse_e2e_with_pipeline_validation_s3_check:
+	@echo "Executing s3 check for End to End with Pipeline Validation..."
+	behave --stage=pipeline_validation behave/features/e2e_test_features/09.s3_outputs_check.feature --stop

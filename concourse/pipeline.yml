@@ -35,6 +35,12 @@ resources:
       expression: "0 1 * * *"
       location: "Local"
 
+  - name: trigger-at-6am
+    type: cron-resource
+    source:
+      expression: "0 6 * * *"
+      location: "Local"
+
 # Anchors for later
 slack_alert_on_failure: &slack_alert_on_failure
   put: slack
@@ -310,3 +316,33 @@ jobs:
                 source aws-credentials/.env
                 aws glue start-workflow-run \
                   --name "cv-vulnerable-people-daily-wave-two-pipeline-staging"
+
+  - name: run-e2e-test-with-pipeline-validation-in-staging
+    serial: true
+    plan:
+      - get: git-master
+      - get: trigger-at-6am
+        trigger: true
+      - task: webform-entry
+        file: git-master/concourse/tasks/e2e-test-with-pipeline-validation-webform-entry.yml
+        attempts: 1
+        params:
+          CF_SPACE: "staging"
+          ENVIRONMENT: "staging"
+          URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
+          MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
+        on_failure: *slack_alert_on_failure
+      - task: get-aws-credentials
+        file: git-master/concourse/tasks/get-gatling-tester-aws-creds.yml
+        params:
+          ACCOUNT_ID: 375282846305
+          ENVIRONMENT: staging
+          REGION: eu-west-2
+          DURATION: 21600
+      - task: s3-validation
+        file: git-master/concourse/tasks/e2e-test-with-pipeline-validation-s3-check.yml
+        params:
+          ENVIRONMENT: "staging"
+          REGION: "eu-west-2"
+          SALT: "1rjoBuOtDYaid83fYRJBFU5ouUi0nSueev2BhyoEhnw"
+        on_failure: *slack_alert_on_failure

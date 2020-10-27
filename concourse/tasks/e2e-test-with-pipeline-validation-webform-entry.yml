@@ -1,0 +1,26 @@
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: gdscyber/concourse-chrome-driver
+    tag: latest
+params:
+  CGO_ENABLE: "0"
+  DEBIAN_FRONTEND: "noninteractive"
+  PYTHONIOENCODING: "UTF-8"
+  WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
+inputs:
+- name: git-master
+outputs:
+- name: builds
+run:
+  path: /bin/bash
+  args:
+    - -euo
+    - pipefail
+    - -c
+    - |
+      echo "running Webform Entry for E2E Test against \"${WEB_APP_BASE_URL}\""
+      sleep 10
+      make concourse_e2e_with_pipeline_validation_webform_entry
+  dir: git-master
