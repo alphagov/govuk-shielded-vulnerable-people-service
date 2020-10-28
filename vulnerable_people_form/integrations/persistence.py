@@ -255,6 +255,10 @@ def load_answers(nhs_uid):
         (generate_string_parameter("uid_nhs_login", nhs_uid),),
     )["records"]
 
+    if not records:
+        return None
+
     if len(records) > 1:
         raise ValueError("Answers returned more than one result")
-    return None if not records else records[0]
+
+    return records[0]
