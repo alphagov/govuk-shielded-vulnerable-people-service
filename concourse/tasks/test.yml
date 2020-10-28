@@ -17,7 +17,10 @@ run:
     - -c
     - |
       root=$(pwd)
-      make install
+      echo "Installing dependencies..."
+      pip3 install -r requirements-dev.txt
       echo "Executing unit tests..."
-      make test_with_coverage
+      coverage run --source vulnerable_people_form/ -m pytest -x --disable-warnings
+      echo "Reporting on unit test coverage..."
+      coverage report
   dir: git-master
