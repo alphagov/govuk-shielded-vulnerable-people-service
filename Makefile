@@ -1,14 +1,9 @@
-define execute_unit_tests
-	python3 -m pytest -sqx --disable-warnings
-	@echo "✔️ Unit tests passed!"
-endef
-
 test:
-	$(call execute_unit_tests)
+	python3 -m pytest -x --disable-warnings
+	@echo "✔️ Unit tests passed!"
 
 test_with_coverage:
-	$(call execute_unit_tests)
-	coverage run --source vulnerable_people_form/ -m pytest --disable-warnings
+	coverage run --source vulnerable_people_form/ -m pytest -qx --disable-warnings
 	coverage report -m
 
 install:

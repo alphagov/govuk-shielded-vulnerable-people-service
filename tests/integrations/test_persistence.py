@@ -1,6 +1,6 @@
 import pytest
 from flask import Flask
-from mock import patch
+from unittest.mock import patch
 
 from vulnerable_people_form.integrations.persistence import (
     get_client_kwargs,
