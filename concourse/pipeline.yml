@@ -213,7 +213,6 @@ jobs:
             CRONITOR_URL: ((svp-form/cronitor-heartbeat-prod))
             CRONITOR_ENDPOINT: "/fail"
           ensure: *slack_alert_on_failure
-        file: git-master/concourse/tasks/cronitor.yml
       - task: cronitor-heartbeat
         timeout: 1m
         params:
