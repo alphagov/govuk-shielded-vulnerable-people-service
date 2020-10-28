@@ -192,6 +192,7 @@ jobs:
         timeout: 1m
         params:
           CRONITOR_URL: ((svp-form/cronitor-heartbeat-stg))
+          CRONITOR_ENDPOINT: "/complete"
         file: git-master/concourse/tasks/cronitor.yml
 
   - name: continuous-smoke-test-prod
@@ -204,11 +205,20 @@ jobs:
         params:
           WEB_APP_BASE_URL: "https://coronavirus-shielding-support.service.gov.uk"
           MESSAGE: "Checks that the application deployed to production is not serving HTTP error codes"
-        on_failure: *slack_alert_on_failure
+        on_failure:
+          task: cronitor-fail
+          file: git-master/concourse/tasks/cronitor.yml
+          timeout: 1m
+          params:
+            CRONITOR_URL: ((svp-form/cronitor-heartbeat-prod))
+            CRONITOR_ENDPOINT: "/fail"
+          ensure: *slack_alert_on_failure
+        file: git-master/concourse/tasks/cronitor.yml
       - task: cronitor-heartbeat
         timeout: 1m
         params:
           CRONITOR_URL: ((svp-form/cronitor-heartbeat-prod))
+          CRONITOR_ENDPOINT: "/complete"
         file: git-master/concourse/tasks/cronitor.yml
 
   - name: gatling-workflow-load-test-in-staging
