@@ -24,6 +24,7 @@ params:
   GOVUK_NOTIFY_NO_SPL_MATCH_EMAIL_TEMPLATE_ID:
   GOVUK_NOTIFY_NO_SPL_MATCH_SMS_TEMPLATE_ID:
   GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID:
+  METRICS_BASIC_AUTH: false
   NOTIFY_API_KEY:
   ORDNANCE_SURVEY_PLACES_API_KEY: ((svp-form/ordnance-survey-places-api-key))
   PERMANENT_SESSION_LIFETIME: 3600
@@ -86,6 +87,7 @@ run:
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form GUNICORN_WORKER_COUNT "$GUNICORN_WORKER_COUNT"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form FLASK_ENV "$FLASK_ENV"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form FLASK_CONFIG_FILE "$FLASK_CONFIG"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form METRICS_BASIC_AUTH "$METRICS_BASIC_AUTH"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form SECRET_KEY "$SECRET_KEY"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form NHS_OIDC_LOGIN_PRIVATE_KEY "$NHS_OIDC_LOGIN_PRIVATE_KEY"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form SENTRY_DSN "$SENTRY_DSN"
