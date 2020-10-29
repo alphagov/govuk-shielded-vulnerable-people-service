@@ -1,13 +1,16 @@
-from python:3.8-alpine
+from python:3.8-slim-buster
 
-RUN apk add --no-cache openssl-dev libffi-dev build-base bash unzip
+RUN apt update
+RUN apt install -y libssl-dev libffi-dev  bash unzip
 RUN mkdir app
 WORKDIR app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY . .
 
-RUN bash build.sh
-RUN cp instance/config.py.sample instance/config.py
 ENV FLASK_ENV=production
-CMD gunicorn -b 127.0.0.1:5000 -w $GUNICORN_WORKER_COUNT "vulnerable_people_form:create_app(None)"
+ENV FLASK_CONFIG_FILE='config.py'
+ENV FLASK_APP='run.py'
+ENV GUNICORN_WORKER_COUNT=4
+
+CMD gunicorn -b 0.0.0.0:5000 -w $GUNICORN_WORKER_COUNT "vulnerable_people_form:create_app(None)" -c gunicorn_config.py

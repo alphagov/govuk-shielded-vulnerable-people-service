@@ -1,11 +1,11 @@
 from http import HTTPStatus
 
 import sentry_sdk
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template,  session
 from flask_talisman import Talisman
 from flask_wtf.csrf import CSRFProtect
 from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
-from prometheus_flask_exporter import PrometheusMetrics
+from gds_metrics import GDSMetrics
 from sentry_sdk.integrations.flask import FlaskIntegration
 
 from . import form_pages
@@ -57,6 +57,8 @@ def create_app(scriptinfo):
     app = Flask(__name__, static_url_path="/assets", instance_relative_config=True)
     app.config.from_envvar("FLASK_CONFIG_FILE")
     verify_config(app)
+    metrics = GDSMetrics()
+    metrics.init_app(app)
     app.jinja_loader = ChoiceLoader(
         [
             PackageLoader("vulnerable_people_form"),
@@ -83,24 +85,6 @@ def create_app(scriptinfo):
 
     app.register_error_handler(HTTPStatus.NOT_FOUND.value, _handle_error)
     app.register_error_handler(HTTPStatus.INTERNAL_SERVER_ERROR.value, _handle_error)
-
-    metrics = PrometheusMetrics(app)
-    metrics.register_default(
-        metrics.counter(
-            "by_path_counter",
-            "Request count by request paths",
-            labels={"path": lambda: request.path},
-        ),
-        metrics.histogram(
-            "requests_by_status_and_path",
-            "Request latencies by status and path",
-            labels={
-                "status": lambda r: r.status_code,
-                "path": lambda: request.path,
-            },
-        ),
-    )
-
     app.context_processor(utility_processor)
 
     return app
