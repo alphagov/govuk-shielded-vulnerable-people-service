@@ -1,5 +1,6 @@
 from flask import redirect, session
 
+from vulnerable_people_form.integrations.postcode_lookup_helper import format_postcode
 from .blueprint import form
 from .shared.constants import SESSION_KEY_ADDRESS_SELECTED
 from .shared.querystring_utils import append_querystring_params
@@ -11,13 +12,15 @@ from .shared.validation import validate_support_address
 
 @form.route("/support-address", methods=["POST"])
 def post_support_address():
+    support_address_from_form = request_form()
+    support_address_from_form["postcode"] = format_postcode(support_address_from_form["postcode"])
     original_address = {k: v for k, v in form_answers().get("support_address", {}).items() if k != "uprn"}
-    session["postcode"] = request_form().get("postcode")
+    session["postcode"] = support_address_from_form["postcode"]
 
-    if original_address != request_form():
+    if original_address != support_address_from_form:
         session["form_answers"] = {
             **session.setdefault("form_answers", {}),
-            "support_address": {**request_form(), "uprn": None},
+            "support_address": {**support_address_from_form, "uprn": None},
         }
     session["error_items"] = {}
     if not validate_support_address():
