@@ -18,6 +18,6 @@ Feature: COVID-19 Shielded vulnerable people service - partial user journey - in
 
     Scenario: Should be re-directed to not eligible postcode when unsupported postcode entered
         Given I am on the "postcode-eligibility" page
-        When I give the "#postcode" field the value "LS1 1BA"
+        When I give the "#postcode" field the value "QI1 2ZZ"
         And I submit the form
         Then I am redirected to the "not-eligible-postcode" page
