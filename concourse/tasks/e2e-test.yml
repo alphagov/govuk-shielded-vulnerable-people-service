@@ -5,6 +5,8 @@ image_resource:
   source:
     repository: gdscyber/concourse-chrome-driver
     tag: latest
+    username: ((docker_hub_username))
+    password: ((docker_hub_password))
 params:
   CGO_ENABLE: "0"
   DEBIAN_FRONTEND: "noninteractive"
