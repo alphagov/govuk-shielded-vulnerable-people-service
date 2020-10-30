@@ -5,6 +5,8 @@ image_resource:
   source:
     repository: maven
     tag: 3.6.3-ibmjava-8-alpine
+    username: ((docker_hub_username))
+    password: ((docker_hub_password))
 inputs:
   - name: git-master
 outputs:

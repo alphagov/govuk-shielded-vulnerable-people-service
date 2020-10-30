@@ -4,6 +4,8 @@ image_resource:
   source:
     repository: governmentpaas/cf-cli
     tag: latest
+    username: ((docker_hub_username))
+    password: ((docker_hub_password))
 inputs:
   - name: git-master
     path: src

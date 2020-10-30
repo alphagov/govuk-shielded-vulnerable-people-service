@@ -4,11 +4,15 @@ resource_types:
     type: registry-image
     source:
       repository: arbourd/concourse-slack-alert-resource
+      username: ((docker_hub_username))
+      password: ((docker_hub_password))
 
   - name: cron-resource
     type: docker-image
     source:
       repository: cftoolsmiths/cron-resource
+      username: ((docker_hub_username))
+      password: ((docker_hub_password))
 
 resources:
   - name: git-master
@@ -244,6 +248,8 @@ jobs:
                   source:
                     repository: governmentpaas/awscli
                     tag: latest
+                    username: ((docker_hub_username))
+                    password: ((docker_hub_password))
                 inputs:
                   - name: aws-credentials
                   - name: gatling-results
@@ -267,6 +273,8 @@ jobs:
                   source:
                     repository: governmentpaas/awscli
                     tag: latest
+                    username: ((docker_hub_username))
+                    password: ((docker_hub_password))
                 inputs:
                   - name: aws-credentials
                 run:
@@ -299,6 +307,8 @@ jobs:
             source:
               repository: governmentpaas/awscli
               tag: latest
+              username: ((docker_hub_username))
+              password: ((docker_hub_password))
           inputs:
             - name: aws-credentials
           run:

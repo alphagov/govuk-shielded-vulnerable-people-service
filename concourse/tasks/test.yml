@@ -5,6 +5,8 @@ image_resource:
   source:
     repository: python
     tag: 3.8.5-slim-buster
+    username: ((docker_hub_username))
+    password: ((docker_hub_password))
 params:
   DEBIAN_FRONTEND: "noninteractive"
 inputs:
