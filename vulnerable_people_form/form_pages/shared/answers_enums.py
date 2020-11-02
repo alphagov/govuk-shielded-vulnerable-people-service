@@ -59,8 +59,8 @@ class BasicCareNeedsAnswers(EnumWithText):
     NO = 0
 
     __text_values__ = {
-        YES: "Yes, I would need additional support if I had to start shielding",
-        NO: "No, I would not need additional support if I had to start shielding"
+        YES: "Yes, I need someone to contact me",
+        NO: "No, I already have the support I need"
     }
 
 

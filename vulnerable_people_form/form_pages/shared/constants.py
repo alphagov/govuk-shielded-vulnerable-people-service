@@ -24,7 +24,7 @@ PAGE_TITLES = {
     "applying-on-own-behalf": "Are you using this service for yourself or for someone else?",
     "cookies": "Cookies",
     "address-lookup": "What is the address where you need support?",
-    "basic-care-needs": "Would you need additional support if you were told to start ‘shielding’?",
+    "basic-care-needs": "Do you need someone to contact you about local support that might be available?",
     "check-contact-details": "Check this is correct",
     "check-your-answers": "Check your answers before submitting",
     "contact-details": "What are your contact details?",
