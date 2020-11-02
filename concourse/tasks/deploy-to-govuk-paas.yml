@@ -41,7 +41,7 @@ params:
   FLASK_CONFIG: env_to_config_shim.py
   NHS_OIDC_REGISTRATION_CALLBACK_URL:
   DATABASE_CLUSTER_PREFIX: coronavirus-
-  DATABASE_SECRET_TAGS: role,coronavirus-web-form-v2
+  DATABASE_SECRET_TAGS: role,coronavirus-web-form
   SECRET_KEY:
   NHS_OIDC_LOGIN_PRIVATE_KEY:
   SENTRY_DSN:
