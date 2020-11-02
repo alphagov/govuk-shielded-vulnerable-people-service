@@ -18,14 +18,14 @@ run:
     - -euo
     - pipefail
     - -c
-    # 4 users per second causes around 100 page requests/s which is our current non-functional requirement. 
+    # 8 users per second causes around 240 page requests/s which is over our current non-functional requirement. 
     # Run simulation for 30 mins (1800s) to ensure workflow + mi workflow execution time is covered.
     # Suppress html file output (doesn't seem possible to completely remove file output...)
     # Suppress console log to final report only (done by turning off console writer)
     - |
       cd loadtests
       mvn gatling:test \
-        -DinjectUsersPerSecond=4 \
+        -DinjectUsersPerSecond=8 \
         -DinjectDurationSeconds=1800 \
         -DpauseBetweenRequestsInSecondsMax=1 \
         -DpauseBetweenRequestsInSecondsMin=1 \
