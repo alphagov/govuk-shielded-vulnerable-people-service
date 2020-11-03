@@ -1,9 +1,19 @@
 import contextlib
+import logging
 
 import boto3
 import botocore.exceptions
 from botocore.config import Config
 from flask import current_app
+
+from vulnerable_people_form.form_pages.shared.logger_utils import (
+    init_logger,
+    create_log_message,
+    log_event_names
+)
+
+logger = logging.getLogger(__name__)
+init_logger(logger)
 
 boto3_config = Config(
     retries={
@@ -54,12 +64,14 @@ def init_app(app):
     if app.config.get("AWS_RDS_DATABASE_ARN_OVERRIDE"):
         app.config["AWS_RDS_DATABASE_ARN"] = app.config["AWS_RDS_DATABASE_ARN_OVERRIDE"]
     else:
-        app.config["AWS_RDS_DATABASE_ARN"] = _find_database_arn(app)
+        _set_aws_rds_db_arn(app)
 
     if app.config.get("AWS_RDS_SECRET_ARN_OVERRIDE"):
         app.config["AWS_RDS_SECRET_ARN"] = app.config["AWS_RDS_SECRET_ARN_OVERRIDE"]
     else:
-        app.config["AWS_RDS_SECRET_ARN"] = _find_database_secret_arn(app)
+        _set_aws_rds_secret_arn(app)
+
+    logger.info(create_log_message(log_event_names["AWS_ARN_INIT"], "App initialisation"))
 
 
 def generate_string_parameter(name, value):
@@ -157,11 +169,16 @@ def execute_sql(sql, parameters, retries=5):
     # Here we see if the client exception can be remedied via refreshing our
     # ARN values (n.b) - retries for other, transient, exceptions are handled
     # by the boto3 client itself.
-    except botocore.exceptions.ClientError:
+    except botocore.exceptions.ClientError as client_error:
+        logger.error(create_log_message(log_event_names["BOTO_CLIENT_ERROR"], f"Error details: {client_error}"))
+
         if current_app.config.get("AWS_RDS_DATABASE_ARN_OVERRIDE") is None:
-            current_app.config["AWS_DATABASE_ARN"] = _find_database_arn(current_app)
-        if current_app.config.get("AWS_RDS_SECRET_ARN") is None:
-            current_app.config["AWS_DATABASE_SECRET_ARN"] = _find_database_secret_arn(current_app)
+            _set_aws_rds_db_arn(current_app)
+        if current_app.config.get("AWS_RDS_SECRET_ARN_OVERRIDE") is None:
+            _set_aws_rds_secret_arn(current_app)
+
+        logger.info(create_log_message(log_event_names["AWS_ARN_INIT"], "Attempted refresh after boto client error"))
+
         return _execute_sql(sql, parameters)
 
 
@@ -262,3 +279,11 @@ def load_answers(nhs_uid):
         raise ValueError("Answers returned more than one result")
 
     return records[0]
+
+
+def _set_aws_rds_db_arn(app):
+    app.config["AWS_RDS_DATABASE_ARN"] = _find_database_arn(app)
+
+
+def _set_aws_rds_secret_arn(app):
+    app.config["AWS_RDS_SECRET_ARN"] = _find_database_secret_arn(app)
