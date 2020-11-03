@@ -17,7 +17,9 @@ log_event_names = {
     "POSTCODE_INELIGIBLE": "IneligiblePostcodeEntered",
     "POSTCODE_ELIGIBLE": "EligiblePostcodeEntered",
     "ORDNANCE_SURVEY_LOOKUP_SUCCESS": "OrdnanceSurveyPlacesApiPostcodeLookupSucceeded",
-    "ORDNANCE_SURVEY_LOOKUP_FAILURE": "OrdnanceSurveyPlacesApiPostcodeLookupFailed"
+    "ORDNANCE_SURVEY_LOOKUP_FAILURE": "OrdnanceSurveyPlacesApiPostcodeLookupFailed",
+    "BOTO_CLIENT_ERROR": "BotoClientErrorOccurred",
+    "AWS_ARN_INIT": "AwsRdsDatabaseAndSecretArnInitialised"
 }
 
 
