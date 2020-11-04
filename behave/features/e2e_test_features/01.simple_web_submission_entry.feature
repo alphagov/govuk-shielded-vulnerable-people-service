@@ -1,4 +1,3 @@
-# COVID-19 -
 @simple_web_submission_entry
 Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - no NHS login- Enter data for tomorrows pipeline run
 Scenario: can load homepage

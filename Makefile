@@ -14,8 +14,9 @@ install:
 
 concourse_e2e:
 	@echo "Executing e2e automated tests against the staging environment..."
-	# execute all scenarios except no submission ( the '-' character prefix means skip)
-	behave behave/features --stop --tags=-e2e_happy_path_no_nhs_login_no_submission
+	# execute all scenarios except no submission and backend submissions test ( the '-' character prefix means skip)
+	behave behave/features --stop --tags=-e2e_happy_path_no_nhs_login_no_submission \
+	                              --tags=-simple_web_submission_entry --tags=-s3_outputs_check
 
 smoke_test:
 	@echo "Executing smoke test without submission..."
