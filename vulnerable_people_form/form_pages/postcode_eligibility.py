@@ -1,5 +1,6 @@
 from flask import redirect, session
 
+from .postcode_tier_blueprint import postcode_tier_form
 from .blueprint import form
 from .shared.answers_enums import ApplyingOnOwnBehalfAnswers
 from .shared.querystring_utils import append_querystring_params
@@ -28,7 +29,7 @@ def get_postcode_eligibility():
     )
 
 
-@form.route("/postcode-eligibility", methods=["POST"])
+@postcode_tier_form.route("/postcode-eligibility", methods=["POST"])
 def post_postcode_verification():
     session["postcode"] = format_postcode(request_form().get("postcode"))
     if not validate_postcode(session["postcode"], "postcode"):

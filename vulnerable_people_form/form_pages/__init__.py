@@ -7,6 +7,7 @@ from . import (
     applying_on_own_behalf,
     basic_care_needs,
     blueprint,
+    postcode_tier_blueprint,
     check_contact_details,
     check_your_answers,
     confirmation,

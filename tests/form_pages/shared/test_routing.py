@@ -136,6 +136,24 @@ def test_route_to_next_form_page_redirects_to_expected_page_with_postcode_eligib
         postcode_eligibility.check_postcode.assert_called_once_with(postcode)
 
 
+@pytest.mark.parametrize("current_form_url, expected_redirect_location, get_postcode_tier_return_value",
+                         [("/postcode-eligibility", "/nhs-letter", "VERY_HIGH_PLUS_SHIELDING"),
+                          ("/postcode-eligibility", "/nhs-letter", "VERY_HIGH"),
+                          ("/postcode-eligibility", "/do-you-live-in-england", "MEDIUM")])
+def test_get_postcode_with_tiering_logic(current_form_url, expected_redirect_location, get_postcode_tier_return_value):
+
+    with patch(_POSTCODE_ELIGIBILITY_FUNCTION_FULLY_QUALIFIED_NAME) as postcode_eligibility, \
+            _current_app.test_request_context() as test_request_ctx:
+        test_request_ctx.g.postcode_tier = get_postcode_tier_return_value
+        test_request_ctx.request.url_rule = _create_mock_url_rule(current_form_url)
+        _current_app.config["TIERING_LOGIC"] = True
+        postcode_eligibility.get_postcode_tier = MagicMock(return_value=get_postcode_tier_return_value)
+        routing_result = route_to_next_form_page()
+
+        assert routing_result is not None
+        assert routing_result.headers["location"] == expected_redirect_location
+
+
 def _create_mock_url_rule(current_form_url):
     url_rule = MagicMock()
     url_rule.rule = current_form_url

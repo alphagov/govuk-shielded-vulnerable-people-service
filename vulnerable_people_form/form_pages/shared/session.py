@@ -1,6 +1,6 @@
 import datetime
 
-from flask import request, session
+from flask import request, session, current_app
 
 from .answers_enums import (
     NHSLetterAnswers,
@@ -213,9 +213,8 @@ def persist_answers_from_session():
         form_answers().get("do_you_have_someone_to_go_shopping_for_you"),
         form_answers().get("medical_conditions"),
         lives_in_england,
-        None,
+        session["postcode_tier"],
     )
-
     session["form_uid"] = submission_reference
 
     return submission_reference

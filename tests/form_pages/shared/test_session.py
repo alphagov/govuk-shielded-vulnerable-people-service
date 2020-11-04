@@ -215,6 +215,76 @@ def test_get_summary_rows_from_form_answers_should_return_ordered_summary_rows_f
                                      "Contact details")
 
 
+def test_persist_answers_with_tiering_from_session():
+    with patch("vulnerable_people_form.form_pages.shared.session.persistence") as mock_persistence, \
+            _current_app.test_request_context() as test_request_ctx:
+        _current_app.config["TIERING_LOGIC"] = True
+
+        submission_ref = "submission-reference"
+        nhs_sub_value = "nhs-sub-value"
+        data_to_persist = {
+            "nhs_number": "1234567891",
+            "name": {"first_name": "Jon", "middle_name": "", "last_name": "Smith"},
+            "date_of_birth": {"day": "10", "month": "11", "year": "1981"},
+            "support_address": {
+                "building_and_street_line_1": "address line 1",
+                "building_and_street_line_2": "address line 2",
+                "town_city": "town city",
+                "county": "county",
+                "postcode": "LS1 1BA",
+                "uprn": "uprn"
+            },
+            "contact_details": {
+                "phone_number_calls": "01131234567",
+                "phone_number_texts": "07976123456",
+                "email": "test-email@gov.uk"
+            },
+            "applying_on_own_behalf": ApplyingOnOwnBehalfAnswers.YES.value,
+            "priority_supermarket_deliveries": PrioritySuperMarketDeliveriesAnswers.NO.value,
+            "do_you_have_someone_to_go_shopping_for_you": YesNoAnswers.NO.value,
+            "nhs_letter": NHSLetterAnswers.YES.value,
+            "basic_care_needs": YesNoAnswers.NO.value,
+            "medical_conditions": MedicalConditionsAnswers.YES.value,
+            "do_you_live_in_england": LiveInEnglandAnswers.YES.value
+        }
+
+        test_request_ctx.session["nhs_sub"] = nhs_sub_value
+        test_request_ctx.session["form_answers"] = data_to_persist
+        test_request_ctx.session["postcode_tier"] = "VERY_HIGH"
+        mock_persistence.persist_answers_with_tier = MagicMock(return_value=submission_ref)
+
+        returned_submission_ref = session.persist_answers_from_session()
+
+        mock_persistence.persist_answers_with_tier.assert_called_with(
+            data_to_persist["nhs_number"],
+            data_to_persist["name"]["first_name"],
+            data_to_persist["name"]["middle_name"],
+            data_to_persist["name"]["last_name"],
+            data_to_persist["date_of_birth"],
+            data_to_persist["support_address"]["building_and_street_line_1"],
+            data_to_persist["support_address"]["building_and_street_line_2"],
+            data_to_persist["support_address"]["town_city"],
+            data_to_persist["support_address"]["postcode"],
+            data_to_persist["support_address"]["uprn"],
+            data_to_persist["contact_details"]["phone_number_calls"],
+            data_to_persist["contact_details"]["phone_number_texts"],
+            data_to_persist["contact_details"]["email"],
+            nhs_sub_value,
+            data_to_persist["applying_on_own_behalf"],
+            data_to_persist["nhs_letter"],
+            data_to_persist["priority_supermarket_deliveries"],
+            data_to_persist["basic_care_needs"],
+            data_to_persist["do_you_have_someone_to_go_shopping_for_you"],
+            data_to_persist["medical_conditions"],
+            data_to_persist["do_you_live_in_england"],
+            "VERY_HIGH")
+
+        assert test_request_ctx.session["form_uid"] == submission_ref
+        assert returned_submission_ref == submission_ref
+
+        del _current_app.config["TIERING_LOGIC"]
+
+
 def test_persist_answers_from_session():
     with patch("vulnerable_people_form.form_pages.shared.session.persistence") as mock_persistence, \
             _current_app.test_request_context() as test_request_ctx:

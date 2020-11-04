@@ -79,6 +79,8 @@ def create_app(scriptinfo):
     app.register_blueprint(form_pages.default.app_default)
     app.register_blueprint(form_pages.blueprint.form)
 
+    app.register_blueprint(form_pages.postcode_tier_blueprint.postcode_tier_form)
+
     _init_security(app)
 
     app.nhs_oidc_client = nhs_openconnect_id.NHSOIDCDetails()

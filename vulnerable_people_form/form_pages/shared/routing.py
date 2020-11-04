@@ -1,4 +1,4 @@
-from flask import redirect, request, session
+from flask import redirect, request, session, current_app, g
 
 from ...integrations import postcode_eligibility
 from .answers_enums import (
@@ -145,6 +145,14 @@ def update_lives_in_england_referrer(referrer):
         session[SESSION_KEY_LIVES_IN_ENGLAND_REFERRER] = referrer
 
 
+def return_redirect_if_postcode_above_very_high(_redirect):
+    session["postcode_tier"] = g.postcode_tier
+    if g.postcode_tier in ["VERY_HIGH", "VERY_HIGH_PLUS_SHIELDING"]:
+        return _redirect
+    else:
+        return redirect("/do-you-live-in-england")
+
+
 def route_to_next_form_page():
     current_form = request.url_rule.rule.strip("/")
     answer = form_answers().get(current_form.replace("-", "_"))
@@ -156,7 +164,10 @@ def route_to_next_form_page():
             return redirect_to_next_form_page("/nhs-login")
         return redirect_to_next_form_page("/postcode-eligibility")
     elif current_form == "postcode-eligibility":
-        return return_redirect_if_postcode_valid(redirect("/nhs-letter"))
+        if "TIERING_LOGIC" in current_app.config and current_app.config["TIERING_LOGIC"]:
+            return return_redirect_if_postcode_above_very_high(redirect("/nhs-letter"))
+        else:
+            return return_redirect_if_postcode_valid(redirect("/nhs-letter"))
     elif current_form == "nhs-login":
         if YesNoAnswers(answer) is YesNoAnswers.YES:
             return redirect("/nhs-login-link")
@@ -203,11 +214,19 @@ def route_to_next_form_page():
     elif current_form == "nhs-number":
         return redirect_to_next_form_page(get_next_form_url_after_nhs_number())
     elif current_form == "postcode-lookup":
-        return return_redirect_if_postcode_valid(redirect("/address-lookup"))
+        if "TIERING_LOGIC" in current_app.config and current_app.config["TIERING_LOGIC"]:
+            return return_redirect_if_postcode_above_very_high(redirect("/address-lookup"))
+        else:
+            return return_redirect_if_postcode_valid(redirect("/address-lookup"))
     elif current_form == "support-address":
-        return return_redirect_if_postcode_valid(
-            redirect_to_next_form_page("/do-you-have-someone-to-go-shopping-for-you")
-        )
+        if "TIERING_LOGIC" in current_app.config and current_app.config["TIERING_LOGIC"]:
+            return return_redirect_if_postcode_above_very_high(
+                redirect_to_next_form_page("/do-you-have-someone-to-go-shopping-for-you")
+            )
+        else:
+            return return_redirect_if_postcode_valid(
+                redirect_to_next_form_page("/do-you-have-someone-to-go-shopping-for-you")
+            )
     elif current_form == "do-you-live-in-england":
         if LiveInEnglandAnswers(answer) is LiveInEnglandAnswers.NO:
             return redirect("/not-eligible-postcode")

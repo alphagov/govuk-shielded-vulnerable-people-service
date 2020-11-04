@@ -2,6 +2,7 @@ from flask import redirect, session
 
 from vulnerable_people_form.integrations.postcode_lookup_helper import format_postcode
 from .blueprint import form
+from .postcode_tier_blueprint import postcode_tier_form
 from .shared.constants import SESSION_KEY_ADDRESS_SELECTED
 from .shared.form_utils import sanitise_support_address
 from .shared.querystring_utils import append_querystring_params
@@ -11,7 +12,7 @@ from .shared.session import form_answers, get_errors_from_session, request_form
 from .shared.validation import validate_support_address
 
 
-@form.route("/support-address", methods=["POST"])
+@postcode_tier_form.route("/support-address", methods=["POST"])
 def post_support_address():
     support_address_from_form = sanitise_support_address(request_form())
     support_address_from_form["postcode"] = format_postcode(support_address_from_form["postcode"])

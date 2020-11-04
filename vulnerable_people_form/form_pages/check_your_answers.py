@@ -1,4 +1,4 @@
-from flask import session
+from flask import session, current_app
 
 from .blueprint import form
 from .shared.render import render_template_with_title
@@ -23,7 +23,7 @@ def post_check_your_answers():
     session["registration_number"] = registration_number
 
     is_spl_match = spl_check.check_spl(form_answers()["nhs_number"], form_answers()["date_of_birth"])
-
-    govuk_notify_client.send_notification(registration_number, is_spl_match)
+    if "NOTIFY_DISABLED" not in current_app.config:
+        govuk_notify_client.send_notification(registration_number, is_spl_match)
 
     return route_to_next_form_page()

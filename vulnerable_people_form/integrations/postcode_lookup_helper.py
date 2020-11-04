@@ -84,6 +84,9 @@ def entry_is_a_postal_address(result):
 
 def get_addresses_from_postcode(postcode):
     url = "https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode"
+    if "OVERRIDE_ONS_URL" in current_app.config :
+        url = current_app.config["OVERRIDE_ONS_URL"] + "/places/v1/address/postcode"
+
     params = {
         "postcode": postcode,
         "key": current_app.config.get("ORDNANCE_SURVEY_PLACES_API_KEY"),
