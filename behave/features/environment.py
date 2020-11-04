@@ -13,6 +13,7 @@ def before_all(context):
     chrome_options.add_argument("--single-process")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("window-size=1200,800")
+    chrome_options.add_argument("--disable-gpu")
 
     context.browser = webdriver.Chrome(options=chrome_options)
     context.browser.set_page_load_timeout(time_to_wait=30)
