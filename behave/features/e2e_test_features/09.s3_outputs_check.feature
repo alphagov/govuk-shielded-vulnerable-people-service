@@ -1,4 +1,3 @@
-# COVID-19 -
 @s3_outputs_check
 Feature: COVID-19 Shielded vulnerable people service - validate data from previous day
     Scenario: Pipeline should be executed and data validated for previous day run
