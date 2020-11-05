@@ -23,6 +23,12 @@ def request_form():
     return {k: sanitise_input(v) for k, v in request.form.items() if k != "csrf_token"}
 
 
+def clear_answer_in_form(answer_key):
+    answers = session["form_answers"]
+    if answer_key in answers:
+        answers[answer_key] = None
+
+
 def get_errors_from_session(error_group_name):
     error_list = []
     error_messages = {}
