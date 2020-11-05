@@ -64,4 +64,4 @@ Feature: COVID-19 Shielded vulnerable people service - partial user journey - po
         Given I am on the "do-you-live-in-england" page
         When I click the ".govuk-radios__item input[value='1']" element
         And I submit the form
-        Then I am redirected to the "address-lookup" page
+        Then I am redirected to the "support-address" page
