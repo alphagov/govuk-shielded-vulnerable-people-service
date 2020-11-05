@@ -5,9 +5,10 @@ from .answers_enums import (
     ApplyingOnOwnBehalfAnswers,
     MedicalConditionsAnswers,
     NHSLetterAnswers,
+    LiveInEnglandAnswers,
     YesNoAnswers,
 )
-from .constants import SESSION_KEY_ADDRESS_SELECTED
+from .constants import SESSION_KEY_ADDRESS_SELECTED, SESSION_KEY_LIVES_IN_ENGLAND_REFERRER
 from .querystring_utils import append_querystring_params
 from .session import (
     accessing_saved_answers,
@@ -40,6 +41,15 @@ FORM_PAGE_TO_DATA_CHECK_SECTION_NAME = {
     "postcode-eligibility": "postcode",
     "postcode-lookup": "support_address",
     "support-address": "support_address",
+}
+
+# mapping to indicate where the user should be
+# directed to when navigating forward from the
+# /do-you-live-england page
+_LIVES_IN_ENGLAND_REFERRER_TO_NEXT_FORM_URL = {
+    "/postcode-eligibility": "/nhs-letter",
+    "/postcode-lookup": "/address-lookup",
+    "/support-address": "/do-you-have-someone-to-go-shopping-for-you"
 }
 
 
@@ -123,7 +133,16 @@ def return_redirect_if_postcode_valid(_redirect):
     if postcode_eligibility.check_postcode(session["postcode"]):
         return _redirect
     else:
-        return redirect("/not-eligible-postcode")
+        return redirect("/do-you-live-in-england")
+
+
+def get_next_form_url_after_lives_in_england(referrer):
+    return _LIVES_IN_ENGLAND_REFERRER_TO_NEXT_FORM_URL.get(referrer, referrer)
+
+
+def update_lives_in_england_referrer(referrer):
+    if referrer in _LIVES_IN_ENGLAND_REFERRER_TO_NEXT_FORM_URL.keys():
+        session[SESSION_KEY_LIVES_IN_ENGLAND_REFERRER] = referrer
 
 
 def route_to_next_form_page():
@@ -189,6 +208,13 @@ def route_to_next_form_page():
         return return_redirect_if_postcode_valid(
             redirect_to_next_form_page("/do-you-have-someone-to-go-shopping-for-you")
         )
+    elif current_form == "do-you-live-in-england":
+        if LiveInEnglandAnswers(answer) is LiveInEnglandAnswers.NO:
+            return redirect("/not-eligible-postcode")
+
+        lives_in_england_referrer = session.get(SESSION_KEY_LIVES_IN_ENGLAND_REFERRER)
+        next_form_url = get_next_form_url_after_lives_in_england(lives_in_england_referrer)
+        return redirect_to_next_form_page(next_form_url)
     else:
         raise RuntimeError("An unexpected error occurred")
 

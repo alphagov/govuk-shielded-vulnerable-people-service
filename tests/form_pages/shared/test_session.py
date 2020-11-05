@@ -9,7 +9,8 @@ from vulnerable_people_form.form_pages.shared.answers_enums import \
     NHSLetterAnswers, \
     YesNoAnswers, \
     ApplyingOnOwnBehalfAnswers, MedicalConditionsAnswers, PrioritySuperMarketDeliveriesAnswers, BasicCareNeedsAnswers, \
-    ShoppingAssistanceAnswers
+    ShoppingAssistanceAnswers, \
+    LiveInEnglandAnswers
 from vulnerable_people_form.form_pages.shared.constants import PAGE_TITLES
 
 _current_app = Flask(__name__)
@@ -241,7 +242,8 @@ def test_persist_answers_from_session():
             "do_you_have_someone_to_go_shopping_for_you": YesNoAnswers.NO.value,
             "nhs_letter": NHSLetterAnswers.YES.value,
             "basic_care_needs": YesNoAnswers.NO.value,
-            "medical_conditions": MedicalConditionsAnswers.YES.value
+            "medical_conditions": MedicalConditionsAnswers.YES.value,
+            "do_you_live_in_england": LiveInEnglandAnswers.YES.value
         }
 
         test_request_ctx.session["nhs_sub"] = nhs_sub_value
@@ -271,7 +273,8 @@ def test_persist_answers_from_session():
             data_to_persist["priority_supermarket_deliveries"],
             data_to_persist["basic_care_needs"],
             data_to_persist["do_you_have_someone_to_go_shopping_for_you"],
-            data_to_persist["medical_conditions"])
+            data_to_persist["medical_conditions"],
+            data_to_persist["do_you_live_in_england"])
 
         assert test_request_ctx.session["form_uid"] == submission_ref
         assert returned_submission_ref == submission_ref

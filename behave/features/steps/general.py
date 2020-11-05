@@ -53,6 +53,7 @@ def click_element(context, css_selector):
 @when('I give the "{css_selector}" field the value "{element_value}"')
 def set_element_value(context, css_selector, element_value):
     html_element = context.browser.find_element_by_css_selector(css_selector)
+    html_element.clear()
     html_element.send_keys(element_value)
 
 

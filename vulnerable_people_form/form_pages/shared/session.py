@@ -180,6 +180,11 @@ def persist_answers_from_session():
     address_postcode = form_answers()["support_address"]["postcode"]
     if len(address_postcode) == 6 and " " not in address_postcode:
         address_postcode = f"{address_postcode[:3]} {address_postcode[3:]}"
+
+    lives_in_england = form_answers().get("do_you_live_in_england")
+    if lives_in_england is not None and lives_in_england == 0:
+        lives_in_england = None
+
     submission_reference = persistence.persist_answers(
         form_answers()["nhs_number"],
         form_answers()["name"]["first_name"],
@@ -201,6 +206,7 @@ def persist_answers_from_session():
         form_answers()["basic_care_needs"],
         form_answers().get("do_you_have_someone_to_go_shopping_for_you"),
         form_answers().get("medical_conditions"),
+        lives_in_england,
     )
 
     session["form_uid"] = submission_reference
@@ -241,6 +247,7 @@ def load_answers_into_session_if_available():
             do_you_need_help_meeting_your_basic_care_needs,
             do_you_have_someone_to_go_shopping_for_you,
             do_you_have_one_of_the_listed_medical_conditions,
+            do_you_live_in_england
         ) = stored_answers
 
         date_of_birth = datetime.date.fromisoformat(date_of_birth["stringValue"])
@@ -279,6 +286,7 @@ def load_answers_into_session_if_available():
             "nhs_letter": have_you_received_an_nhs_letter["longValue"],
             "basic_care_needs": do_you_need_help_meeting_your_basic_care_needs["longValue"],
             "do_you_have_someone_to_go_shopping_for_you": do_you_have_someone_to_go_shopping_for_you["longValue"],
+            "do_you_live_in_england": do_you_live_in_england.get("longValue"),
         }
         priority_supermarket_deliveries = do_you_want_supermarket_deliveries.get("longValue")
         if priority_supermarket_deliveries is not None:

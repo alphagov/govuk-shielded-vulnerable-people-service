@@ -8,7 +8,7 @@
   <h2 class="govuk-heading-m govuk-!-margin-top-0 govuk-!-margin-bottom-3">Postcode</h2>
 <p class="govuk-body">
 <span class="govuk-!-font-weight-bold govuk-!-padding-right-3">{{postcode}}</span>
-<a href="{{ append_querystring_params("/postcode-lookup") }}" class="govuk-link govuk-link--no-visited-state">change<span class="govuk-visually-hidden"> postcode</span></a>
+<a href="{{ append_querystring_params("/postcode-lookup") }}" class="govuk-link govuk-link--no-visited-state" id="change-postcode">change<span class="govuk-visually-hidden"> postcode</span></a>
 </p>
 {{ 
 govukSelect({
@@ -24,7 +24,7 @@ govukSelect({
   }) 
   }}
   <p class="govuk-body">
-    <a class="govuk-link" href="{{ append_querystring_params("/support-address") }}">My address isn't listed or is wrong</a>
+    <a class="govuk-link" href="{{ append_querystring_params("/support-address") }}" id="my-address-is-not-listed-or-wrong">My address isn't listed or is wrong</a>
   </p>
 {% endblock %}
 {% block form_end %}

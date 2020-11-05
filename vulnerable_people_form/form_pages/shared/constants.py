@@ -30,6 +30,7 @@ PAGE_TITLES = {
     "contact-details": "What are your contact details?",
     "date-of-birth": "What is your date of birth?",
     "do-you-have-someone-to-go-shopping-for-you": "Is there someone you can rely on to go shopping for you if you need them to?",  # noqa: E501
+    "do-you-live-in-england": "Do you live in England?",  # noqa: E501
     "priority-supermarket-deliveries": "Do you want access to priority supermarket deliveries?",
     "medical-conditions": "Do you have one of the listed medical conditions?",
     "name": "What is your name?	",
@@ -39,7 +40,7 @@ PAGE_TITLES = {
     "nhs-number": "What is your NHS number?",
     "nhs-registration": "Would you like to create an NHS Login you can use to retrieve your answers in the future?",
     "nhs-registration-link": "Set up an NHS login account to confirm who you are",
-    "not-eligible-postcode": "Sorry, we could not find your postcode in our system",
+    "not-eligible-postcode": "Sorry, this service is only available in England",
     "not-eligible-medical": "Sorry, you’re not eligible for help through this service",
     "postcode-lookup": "What is the postcode where you need support?",
     "postcode-eligibility": "What is the postcode where you need support?",
@@ -65,6 +66,7 @@ NHS_USER_INFO_TO_FORM_ANSWERS = {
 
 SESSION_KEY_ADDRESS_SELECTED = "auto_populated_address_selected"
 SESSION_KEY_QUERYSTRING_PARAMS = "querystring_params_to_retain"
+SESSION_KEY_LIVES_IN_ENGLAND_REFERRER = "lives_in_england_referrer"
 
 GOVUK_JOURNEY_START_PAGE_URL = "https://gov.uk/coronavirus-shielding-support"
 
