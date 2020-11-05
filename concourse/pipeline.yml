@@ -22,6 +22,15 @@ resources:
       uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
       branch: master
 
+  - name: git-pre-do-you-live-in-england
+    type: git
+    icon: github-circle
+    source:
+      uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
+      branch: master
+    version:
+      ref: b3c7a49d0d1432a0958514730ea145af6a8b8933
+
   - name: slack
     type: slack-alert
     source:
@@ -209,7 +218,7 @@ jobs:
     plan:
       - get: every-2m
         trigger: true
-      - get: git-master
+      - get: git-pre-do-you-live-in-england
       - task: smoke-test
         file: git-master/concourse/tasks/smoke-test.yml
         params:
