@@ -110,11 +110,11 @@ def test_route_to_next_form_page_redirects_to_expected_page_with_session_variabl
 
 @pytest.mark.parametrize("current_form_url, expected_redirect_location, check_postcode_return_value",
                          [("/postcode-eligibility", "/nhs-letter", True),
-                          ("/postcode-eligibility", "/not-eligible-postcode", False),
+                          ("/postcode-eligibility", "/do-you-live-in-england", False),
                           ("/postcode-lookup", "/address-lookup", True),
-                          ("/postcode-lookup", "/not-eligible-postcode", False),
+                          ("/postcode-lookup", "/do-you-live-in-england", False),
                           ("/support-address", "/do-you-have-someone-to-go-shopping-for-you", True),
-                          ("/support-address", "/not-eligible-postcode", False)])
+                          ("/support-address", "/do-you-live-in-england", False)])
 def test_route_to_next_form_page_redirects_to_expected_page_with_postcode_eligibility_check(
         current_form_url, expected_redirect_location, check_postcode_return_value):
     def create_form_answers():

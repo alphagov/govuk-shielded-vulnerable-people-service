@@ -386,6 +386,27 @@ def test_validate_phone_number_if_present_should_return_true_when_no_email_enter
         assert len(test_request_ctx.session) == 0
 
 
+@pytest.mark.parametrize("form_field_value", _yes_no_radio_button_positive_test_data)
+def test_validate_do_you_live_in_england_return_true_when_valid_answer_selected(
+        form_field_value):
+    _execute_input_validation_test_and_assert_validation_passed(
+        validation.validate_do_you_live_in_england,
+        form_field_value,
+        "do_you_live_in_england"
+    )
+
+
+@pytest.mark.parametrize("form_field_value", _radio_button_negative_test_data)
+def test_validate_do_you_live_in_england_should_return_false_when_invalid_answer_selected(
+        form_field_value):
+    _execute_input_validation_test_and_assert_validation_failed(
+        validation.validate_do_you_live_in_england,
+        form_field_value,
+        "do_you_live_in_england",
+        "Select yes if you live in England"
+    )
+
+
 def _populate_request_form_and_execute_input_validation_test_and_assert_validation_failed(
         validation_function, form_field_value, form_field, validation_error_msg, session_error_items_key=None):
     with _current_app.test_request_context(

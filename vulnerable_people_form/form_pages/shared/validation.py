@@ -13,7 +13,9 @@ from .answers_enums import (
     ViewOrSetupAnswers,
     YesNoAnswers,
     PrioritySuperMarketDeliveriesAnswers,
-    ShoppingAssistanceAnswers, BasicCareNeedsAnswers)
+    ShoppingAssistanceAnswers,
+    BasicCareNeedsAnswers,
+    LiveInEnglandAnswers)
 from .session import form_answers, get_answer_from_form, request_form
 
 
@@ -356,4 +358,12 @@ def validate_do_you_have_someone_to_go_shopping_for_you():
         ShoppingAssistanceAnswers,
         "do_you_have_someone_to_go_shopping_for_you",
         "Select yes if you have someone who can go shopping for you",
+    )
+
+
+def validate_do_you_live_in_england():
+    return validate_radio_button(
+        LiveInEnglandAnswers,
+        "do_you_live_in_england",
+        "Select yes if you live in England",
     )

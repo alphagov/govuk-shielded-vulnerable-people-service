@@ -1,0 +1,22 @@
+{%- from "govuk_frontend_jinja/components/radios/macro.html" import govukRadios -%}
+
+{% extends "form-base.html" %}
+
+{% block form_fields %}
+    {{ govukRadios({
+      "idPrefix": "do_you_live_in_england",
+      "name": "do_you_live_in_england",
+      "errorMessage": error_messages.get('do_you_live_in_england'),
+      "hint": {
+        "html": "<p>If you’re using this service for someone else, answer for the person who is clinically extremely vulnerable.</p>"
+      },
+      "fieldset": {
+        "legend": {
+          "text": title_text,
+          "isPageHeading": true,
+          "classes": "govuk-fieldset__legend--l"
+        }
+      },
+      "items": radio_items,
+    }) }}
+{% endblock %}
