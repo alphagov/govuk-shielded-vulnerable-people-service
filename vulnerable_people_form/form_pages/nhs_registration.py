@@ -3,7 +3,6 @@ from flask import current_app
 from .blueprint import form
 from .shared.constants import JourneyProgress
 from .shared.render import render_template_with_title
-from .shared.session import get_errors_from_session
 
 
 @form.route("/nhs-registration", methods=["GET"])
