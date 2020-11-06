@@ -206,7 +206,7 @@ def persist_answers(
     do_you_live_in_england,
 ):
     result = execute_sql(
-        sql="CALL cv_staging.create_web_submission_new("
+        sql="CALL cv_staging.create_web_submission("
         ":nhs_number,"
         ":first_name,"
         ":middle_name,"
@@ -274,7 +274,7 @@ def persist_answers(
 
 def load_answers(nhs_uid):
     records = execute_sql(
-        "CALL cv_base.retrieve_latest_web_submission_for_nhs_login_new(" "    :uid_nhs_login" ")",
+        "CALL cv_base.retrieve_latest_web_submission_for_nhs_login(" "    :uid_nhs_login" ")",
         (generate_string_parameter("uid_nhs_login", nhs_uid),),
     )["records"]
 
