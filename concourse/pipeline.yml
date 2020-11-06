@@ -22,15 +22,6 @@ resources:
       uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
       branch: master
 
-  - name: git-pre-do-you-live-in-england
-    type: git
-    icon: github-circle
-    source:
-      uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
-      branch: master
-    version:
-      ref: b3c7a49d0d1432a0958514730ea145af6a8b8933
-
   - name: slack
     type: slack-alert
     source:
@@ -218,52 +209,26 @@ jobs:
     plan:
       - get: every-2m
         trigger: true
-      - get: git-pre-do-you-live-in-england
+      - get: git-master
       - task: smoke-test
-        config:
-          platform: linux
-          image_resource:
-            type: registry-image
-            source:
-              repository: gdscyber/concourse-chrome-driver
-              tag: latest
-              username: ((docker_hub_username))
-              password: ((docker_hub_password))
+        file: git-master/concourse/tasks/smoke-test.yml
+        params:
+          WEB_APP_BASE_URL: "https://coronavirus-shielding-support.service.gov.uk"
+          MESSAGE: "Checks that the application deployed to production is not serving HTTP error codes"
+        on_failure:
+          task: cronitor-fail
+          file: git-master/concourse/tasks/cronitor.yml
+          timeout: 1m
           params:
-            CGO_ENABLE: "0"
-            DEBIAN_FRONTEND: "noninteractive"
-            PYTHONIOENCODING: "UTF-8"
-            WEB_APP_BASE_URL: "https://coronavirus-shielding-support.service.gov.uk"
-            MESSAGE: "Checks that the application deployed to production is not serving HTTP error codes"
-          inputs:
-          - name: git-pre-do-you-live-in-england
-          outputs:
-          - name: builds
-          run:
-            path: /bin/bash
-            args:
-              - -euo
-              - pipefail
-              - -c
-              - |
-                echo "running smoke tests against \"${WEB_APP_BASE_URL}\""
-                sleep 10
-                make smoke_test
-            dir: git-pre-do-you-live-in-england
-          on_failure:
-            task: cronitor-fail
-            file: git-pre-do-you-live-in-england/concourse/tasks/cronitor.yml
-            timeout: 1m
-            params:
-              CRONITOR_URL: ((svp-form/cronitor-heartbeat-prod))
-              CRONITOR_ENDPOINT: "/fail"
-            ensure: *slack_alert_on_failure
+            CRONITOR_URL: ((svp-form/cronitor-heartbeat-prod))
+            CRONITOR_ENDPOINT: "/fail"
+          ensure: *slack_alert_on_failure
       - task: cronitor-heartbeat
         timeout: 1m
         params:
           CRONITOR_URL: ((svp-form/cronitor-heartbeat-prod))
           CRONITOR_ENDPOINT: "/complete"
-        file: git-pre-do-you-live-in-england/concourse/tasks/cronitor.yml
+        file: git-master/concourse/tasks/cronitor.yml
 
   - name: gatling-workflow-load-test-in-staging
     plan:
