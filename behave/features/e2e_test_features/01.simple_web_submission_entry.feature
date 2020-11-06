@@ -75,7 +75,7 @@ Scenario: Should be redirected to contact details when no answered to basic care
 
 Scenario: Should be redirected to check contact details when email entered
     Given I am on the "contact-details" page
-    When I give the "#email" field the value "coronavirus-services-smoke-tests@digital.cabinet-office.gov.uk"
+    When I give the "#email" field the value "coronavirus-services-smoke-tests+E2E@digital.cabinet-office.gov.uk"
     And I submit the form
     Then I am redirected to the "check-contact-details" page
 
