@@ -56,7 +56,6 @@ NHS_USER_INFO_TO_FORM_ANSWERS = {
     ("name", "first_name"): "given_name",
     ("name", "last_name"): "family_name",
     ("contact_details", "phone_number_calls"): "phone_number",
-    ("contact_details", "phone_number_texts"): "phone_number",
     ("contact_details", "email"): "email",
     ("nhs_number",): "nhs_number",
     ("date_of_birth", "day"): partial(get_partial_date_from_userinfo, "day"),

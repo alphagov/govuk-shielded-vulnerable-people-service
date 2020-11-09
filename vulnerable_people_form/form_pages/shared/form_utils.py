@@ -25,3 +25,14 @@ def sanitise_date(date_value):
         date_value["day"] = strip_non_digits(date_value["day"])
         date_value["month"] = strip_non_digits(date_value["month"])
         date_value["year"] = strip_non_digits(date_value["year"])
+
+
+def sanitise_name(name_value):
+    if name_value:
+        if len(name_value.keys()) != 3 or \
+          not all(k in name_value for k in ["first_name", "middle_name", "last_name"]):
+            raise ValueError("Unexpected name value encountered: " + str(name_value))
+
+        name_value["first_name"] = name_value["first_name"].strip()
+        name_value["middle_name"] = name_value["middle_name"].strip()
+        name_value["last_name"] = name_value["last_name"].strip()

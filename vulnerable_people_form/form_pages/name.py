@@ -1,6 +1,7 @@
 from flask import redirect, session
 
 from .blueprint import form
+from .shared.form_utils import sanitise_name
 from .shared.querystring_utils import append_querystring_params
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
@@ -20,9 +21,12 @@ def get_name():
 
 @form.route("/name", methods=["POST"])
 def post_name():
+    posted_name = request_form()
+    sanitise_name(posted_name)
+
     session["form_answers"] = {
         **session.setdefault("form_answers", {}),
-        "name": {**request_form()},
+        "name": {**posted_name},
     }
     if not validate_name():
         return redirect("/name")

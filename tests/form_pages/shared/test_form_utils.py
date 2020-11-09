@@ -3,8 +3,8 @@ import pytest
 from vulnerable_people_form.form_pages.shared.form_utils import (
     clean_nhs_number,
     sanitise_date,
-    strip_non_digits
-)
+    strip_non_digits,
+    sanitise_name)
 
 
 @pytest.mark.parametrize("nhs_num", ["", None])
@@ -70,3 +70,25 @@ def test_sanitise_date_of_birth_should_raise_error_when_invalid_dict_supplied():
     with pytest.raises(ValueError) as exception_info:
         sanitise_date(test_date)
         assert "Unexpected date_of_birth encountered" in str(exception_info.value)
+
+
+def test_sanitise_name_should_strip_leading_and_trailing_whitespace():
+    test_name = {"first_name": "    ", "middle_name": " middle name  ", "last_name": "    Smith"}
+    sanitise_name(test_name)
+    assert test_name["first_name"] == ""
+    assert test_name["middle_name"] == "middle name"
+    assert test_name["last_name"] == "Smith"
+
+
+def test_sanitise_name_should_raise_error_when_invalid_length_dict_supplied():
+    test_name = {"first_name": "Tom", "middle_name": "", "last_name": "Smith", "invalid_field": "test"}
+    with pytest.raises(ValueError) as exception_info:
+        sanitise_name(test_name)
+        assert "Unexpected name value encountered" in str(exception_info.value)
+
+
+def test_sanitise_name_should_raise_error_when_invalid_dict_supplied():
+    test_name = {"first_name": "Tom", "middle_name": "", "invalid_field": "test"}
+    with pytest.raises(ValueError) as exception_info:
+        sanitise_name(test_name)
+        assert "Unexpected name value encountered" in str(exception_info.value)
