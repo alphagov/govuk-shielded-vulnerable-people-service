@@ -106,6 +106,10 @@ def _init_security(app):
             "'self'",
             google_analytics_base_url
         ],
+        "connect-src": [
+            "'self'",
+            google_analytics_base_url
+        ],
         "style-src": "'self'",
     }
     secure_system = app.config['ENVIRONMENT'] != _ENV_DEVELOPMENT
