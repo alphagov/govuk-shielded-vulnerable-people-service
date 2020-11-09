@@ -10,6 +10,7 @@ from vulnerable_people_form.form_pages.shared.answers_enums import (
     ViewOrSetupAnswers,
     YesNoAnswers,
     PrioritySuperMarketDeliveriesAnswers)
+from vulnerable_people_form.form_pages.shared.form_utils import sanitise_name
 from vulnerable_people_form.integrations.postcode_lookup_helper import format_postcode
 
 _FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME = \
@@ -38,15 +39,17 @@ def test_validate_name_should_return_true_when_first_name_and_surname_entered():
         assert is_valid is True
 
 
-def test_validate_name_should_return_false_when_only_first_name_entered():
+@pytest.mark.parametrize("first_name", ["", " ", "    "])
+def test_validate_name_should_return_false_when_only_first_name_entered(first_name):
     def create_form_answers_with_first_name_only():
-        return {'name': {'first_name': 'jon', 'middle_name': '', 'last_name': ''}}
+        return {'name': {'first_name': first_name, 'middle_name': '', 'last_name': ''}}
 
     with patch(
             _FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME,
             create_form_answers_with_first_name_only), \
             _current_app.test_request_context() as test_request_ctx:
         test_request_ctx.session["form_answers"] = create_form_answers_with_first_name_only()
+        sanitise_name(test_request_ctx.session["form_answers"]["name"])
         is_valid = validation.validate_name()
 
         assert is_valid is False
@@ -404,6 +407,27 @@ def test_validate_do_you_live_in_england_should_return_false_when_invalid_answer
         form_field_value,
         "do_you_live_in_england",
         "Select yes if you live in England"
+    )
+
+
+@pytest.mark.parametrize("form_field_value, expected_error_msg", [
+    ({"day": "12", "month": "12", "year": "12"}, "Enter a real date of birth"),
+    ({"day": "", "month": "", "year": ""}, "Enter your date of birth"),
+    ({"day": "", "month": "", "year": "1978"}, "Enter your date of birth and include a day, month and a year"),
+    ({"day": "df", "month": "sb", "year": "1971"}, "Enter month as a number"),
+    ({"day": "df", "month": "10", "year": "1971"}, "Enter day as a number"),
+    ({"day": "-1", "month": "09", "year": "1974"}, "Enter a real day"),
+    ({"day": "15", "month": "0", "year": "1981"}, "Enter a real month"),
+    ({"day": "156", "month": "03", "year": "1981"}, "Enter a day with the correct amount of digits"),
+    ({"day": "12", "month": "010", "year": "1982"}, "Enter a month with the correct amount of digits"),
+])
+def test_validate_date_of_birth_should_return_false_when_an_invalid_date_of_birth_is_entered(
+        form_field_value, expected_error_msg):
+    _execute_input_validation_test_and_assert_validation_failed(
+        validation.validate_date_of_birth,
+        form_field_value,
+        "date_of_birth",
+        expected_error_msg
     )
 
 
