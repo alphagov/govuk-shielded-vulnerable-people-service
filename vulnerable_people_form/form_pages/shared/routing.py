@@ -72,7 +72,7 @@ def get_redirect_to_terminal_page_if_applicable():
         return get_redirect_to_terminal_page()
 
 
-def redirect_to_next_form_page(redirect_target=True):
+def redirect_to_next_form_page(redirect_target):
     next_page_name = redirect_target.strip("/")
     next_page_does_not_need_answer = (
         form_answers().get(FORM_PAGE_TO_DATA_CHECK_SECTION_NAME[next_page_name]) is not None
@@ -214,6 +214,10 @@ def route_to_next_form_page():
 
         lives_in_england_referrer = session.get(SESSION_KEY_LIVES_IN_ENGLAND_REFERRER)
         next_form_url = get_next_form_url_after_lives_in_england(lives_in_england_referrer)
+
+        if accessing_saved_answers() and lives_in_england_referrer == "/postcode-lookup":
+            return redirect(next_form_url)
+
         return redirect_to_next_form_page(next_form_url)
     else:
         raise RuntimeError("An unexpected error occurred")
