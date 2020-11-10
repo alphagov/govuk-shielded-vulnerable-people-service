@@ -20,7 +20,7 @@ resources:
     icon: github-circle
     source:
       uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
-      branch: emergency-stop-sending-notifcations
+      branch: master
 
   - name: slack
     type: slack-alert
