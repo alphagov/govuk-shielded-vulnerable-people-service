@@ -4,6 +4,7 @@ from behave import then, when, given
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
+from datetime import date
 
 _BASE_URL = os.environ["WEB_APP_BASE_URL"]
 _DEFAULT_TIMEOUT = 30  # in seconds
@@ -54,6 +55,9 @@ def click_element(context, css_selector):
 def set_element_value(context, css_selector, element_value):
     html_element = context.browser.find_element_by_css_selector(css_selector)
     html_element.clear()
+    if css_selector == '#first_name':
+        date_stamp = date.today().strftime('%Y-%m-%d')
+        element_value = element_value+'_'+date_stamp
     html_element.send_keys(element_value)
 
 
