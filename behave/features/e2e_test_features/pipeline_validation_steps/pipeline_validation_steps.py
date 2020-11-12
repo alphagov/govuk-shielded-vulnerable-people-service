@@ -31,42 +31,40 @@ def run_daily_pipeline(context):
     pass
 
 
-@then('nhs_number "{nhs_number}" is available in LA feed for "{hub}" for yesterday')
-def assert_nhs_number_is_available_in_hub(context, nhs_number, hub):
+@then('nhs_number "{nhs_number}" is available in LA feed for "{hub}" with yesterday date in field "{check_field}"')
+def assert_nhs_number_is_available_in_hub(context, nhs_number, hub, check_field):
     bucket = 'gds-ons-covid-19-query-results-{}'.format(env)
     prefix = 'web-app-{}-data/local_authority/{}/'.format(env, hub)
     filename_prefix = 'GDS-to-LA-Submissions'
     id_field = 'nhs_number'
-    timestamp_field = 'submission_datetime'
+    check_value = (date.today() - timedelta(days=1)).strftime('%Y-%m-%d')
 
-    la_results = get_result_for_user(nhs_number, id_field, bucket, prefix, filename_prefix, timestamp_field)
-    assert len(la_results) == 1
+    results = get_result_for_user(bucket, prefix, filename_prefix, id_field, nhs_number, check_field, check_value)
+    assert len(results) == 1
 
 
-@then('nhs_number "{nhs_number}" is available in supermarket feed for yesterday')
-def assert_nhs_number_is_available_in_supermarket(context, nhs_number):
+@then('nhs_number "{nhs_number}" is available in supermarket feed with yesterday date in field "{check_field}"')
+def assert_nhs_number_is_available_in_supermarket(context, nhs_number, check_field):
     bucket = 'gds-ons-covid-19-query-results-{}'.format(env)
     prefix = 'web-app-{}-data/supermarket/feed/'.format(env)
     filename_prefix = 'GDS-to-Supermarkets-Submissions'
     id_field = 'ID'
-    timestamp_field = 'Timestamp'
-    id = hash_nhs_number(nhs_number)
+    id_value = hash_nhs_number(nhs_number)
+    check_value = (date.today() - timedelta(days=1)).strftime('%Y-%m-%d')
 
-    la_results = get_result_for_user(id, id_field, bucket, prefix, filename_prefix, timestamp_field)
-    assert len(la_results) == 1
+    results = get_result_for_user(bucket, prefix, filename_prefix, id_field, id_value, check_field, check_value)
+    assert len(results) == 1
 
 
-def get_result_for_user(id, id_field, bucket, prefix, filename_prefix, timestamp_field):
-    la_results = get_latest_file_contents(bucket, prefix, filename_prefix)
-    print("Using {}: {}".format(id_field, id))
-
-    date_stamp = (date.today() - timedelta(days=1)).strftime('%Y-%m-%d')
-    print("Checking timestamp {}".format(date_stamp))
+def get_result_for_user(bucket, prefix, filename_prefix, id_field, id_value, check_field, check_value):
+    latest_file_content = get_latest_file_contents(bucket, prefix, filename_prefix)
+    print("Using {}: {}".format(id_field, id_value))
+    print("Checking field {}: {}".format(check_field, check_value))
 
     user_results = []
-    for result in la_results:
-        if result[id_field] == id and date_stamp in result[timestamp_field]:
-            user_results.append(result)
+    for record in latest_file_content:
+        if record[id_field] == id_value and check_value in record[check_field]:
+            user_results.append(record)
     return user_results
 
 

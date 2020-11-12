@@ -4,6 +4,7 @@ from behave import then, when, given
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
+from datetime import date
 
 _BASE_URL = os.environ["WEB_APP_BASE_URL"]
 _DEFAULT_TIMEOUT = 30  # in seconds
@@ -67,3 +68,10 @@ def set_field_value_step(context, field_name, value):
     elem = context.browser.find_element_by_name(field_name)
     elem.send_keys(value)
     elem.submit()
+
+
+@when('I give the "{css_selector}" field the value "{element_value}" appended with todays date')
+def set_element_value_appended_with_today_date(context, css_selector, element_value):
+    date_stamp = date.today().strftime('%Y-%m-%d')
+    element_value_appended = element_value+'_'+date_stamp
+    set_element_value(context, css_selector, element_value_appended)
