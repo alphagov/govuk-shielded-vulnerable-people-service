@@ -70,4 +70,4 @@ def test_render_template_with_title_invokes_render_template_with_correct_form_ba
 def test_render_template_with_title_raises_error_when_invalid_template_name_supplied():
     with pytest.raises(ValueError) as error_info:
         render_template_with_title("invalid-template-name")
-        assert error_info.value == "Template names must end with '.html' for a title to be assigned"
+    assert str(error_info.value) == "Template names must end with '.html' for a title to be assigned"

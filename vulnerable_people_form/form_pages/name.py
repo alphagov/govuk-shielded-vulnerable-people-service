@@ -21,8 +21,7 @@ def get_name():
 
 @form.route("/name", methods=["POST"])
 def post_name():
-    posted_name = request_form()
-    sanitise_name(posted_name)
+    posted_name = sanitise_name(request_form())
 
     session["form_answers"] = {
         **session.setdefault("form_answers", {}),
