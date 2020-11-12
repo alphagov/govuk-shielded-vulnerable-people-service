@@ -55,9 +55,6 @@ def click_element(context, css_selector):
 def set_element_value(context, css_selector, element_value):
     html_element = context.browser.find_element_by_css_selector(css_selector)
     html_element.clear()
-    if css_selector == '#first_name':
-        date_stamp = date.today().strftime('%Y-%m-%d')
-        element_value = element_value+'_'+date_stamp
     html_element.send_keys(element_value)
 
 
@@ -71,3 +68,10 @@ def set_field_value_step(context, field_name, value):
     elem = context.browser.find_element_by_name(field_name)
     elem.send_keys(value)
     elem.submit()
+
+
+@when('I give the "{css_selector}" field the value "{element_value}" appended with todays date')
+def set_element_value_appended_with_today_date(context, css_selector, element_value):
+    date_stamp = date.today().strftime('%Y-%m-%d')
+    element_value_appended = element_value+'_'+date_stamp
+    set_element_value(context, css_selector, element_value_appended)
