@@ -296,6 +296,7 @@ def load_answers_into_session_if_available():
             "do_you_have_someone_to_go_shopping_for_you": do_you_have_someone_to_go_shopping_for_you["longValue"],
             "do_you_live_in_england": do_you_live_in_england.get("longValue"),
             "tier_at_submission": tier_at_submission.get("longValue"),
+            "tier_at_submission": tier_at_submission["longValue"],
         }
         priority_supermarket_deliveries = do_you_want_supermarket_deliveries.get("longValue")
         if priority_supermarket_deliveries is not None:
