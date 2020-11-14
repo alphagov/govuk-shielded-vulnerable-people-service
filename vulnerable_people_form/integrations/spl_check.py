@@ -8,11 +8,13 @@ init_logger(logger)
 
 
 def check_spl(nhs_number, date_of_birth):
+    test_mode = 'NO'
     records = execute_sql(
-        "CALL cv_base.is_person_currently_on_the_spl(:nhs_number, :date_of_birth)",
+        "CALL cv_base.is_person_currently_on_the_spl_new(:nhs_number, :date_of_birth, :test_mode)",
         (
             generate_string_parameter("nhs_number", nhs_number),
             generate_date_parameter("date_of_birth", date_of_birth),
+            generate_string_parameter("test_mode", test_mode),
         ),
     )["records"]
 
