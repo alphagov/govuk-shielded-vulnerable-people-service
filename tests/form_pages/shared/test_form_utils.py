@@ -4,7 +4,8 @@ from vulnerable_people_form.form_pages.shared.form_utils import (
     clean_nhs_number,
     sanitise_date,
     strip_non_digits,
-    sanitise_name)
+    sanitise_name,
+    sanitise_support_address)
 
 
 @pytest.mark.parametrize("nhs_num", ["", None])
@@ -62,33 +63,68 @@ def test_sanitise_date_of_birth_should_raise_error_when_invalid_length_dict_supp
     test_date = {"day": "13", "month": "7", "year": "1991", "random_field": "test"}
     with pytest.raises(ValueError) as exception_info:
         sanitise_date(test_date)
-        assert "Unexpected date_of_birth encountered" in str(exception_info.value)
+    assert "Unexpected date_value encountered" in str(exception_info.value)
 
 
 def test_sanitise_date_of_birth_should_raise_error_when_invalid_dict_supplied():
     test_date = {"day": "13", "month": "7", "invalid_field": "test"}
     with pytest.raises(ValueError) as exception_info:
         sanitise_date(test_date)
-        assert "Unexpected date_of_birth encountered" in str(exception_info.value)
+    assert "Unexpected date_value encountered" in str(exception_info.value)
 
 
 def test_sanitise_name_should_strip_leading_and_trailing_whitespace():
     test_name = {"first_name": "    ", "middle_name": " middle name  ", "last_name": "    Smith"}
-    sanitise_name(test_name)
-    assert test_name["first_name"] == ""
-    assert test_name["middle_name"] == "middle name"
-    assert test_name["last_name"] == "Smith"
+    sanitised_name = sanitise_name(test_name)
+    assert sanitised_name["first_name"] == ""
+    assert sanitised_name["middle_name"] == "middle name"
+    assert sanitised_name["last_name"] == "Smith"
 
 
 def test_sanitise_name_should_raise_error_when_invalid_length_dict_supplied():
     test_name = {"first_name": "Tom", "middle_name": "", "last_name": "Smith", "invalid_field": "test"}
     with pytest.raises(ValueError) as exception_info:
         sanitise_name(test_name)
-        assert "Unexpected name value encountered" in str(exception_info.value)
+    assert "Unexpected name value encountered" in str(exception_info.value)
 
 
 def test_sanitise_name_should_raise_error_when_invalid_dict_supplied():
     test_name = {"first_name": "Tom", "middle_name": "", "invalid_field": "test"}
     with pytest.raises(ValueError) as exception_info:
         sanitise_name(test_name)
-        assert "Unexpected name value encountered" in str(exception_info.value)
+    assert "Unexpected name value encountered" in str(exception_info.value)
+
+
+def test_sanitise_support_address_should_strip_leading_and_trailing_whitespace():
+    test_case_support_address = {
+        "building_and_street_line_1": " address line one   ",
+        "building_and_street_line_2": "  address line  two     ",
+        "town_city": "  test town city",
+        "postcode": "LS1 1BA  "
+    }
+    sanitised_support_address = sanitise_support_address(test_case_support_address)
+    assert sanitised_support_address["building_and_street_line_1"] == "address line one"
+    assert sanitised_support_address["building_and_street_line_2"] == "address line  two"
+    assert sanitised_support_address["town_city"] == "test town city"
+    assert sanitised_support_address["postcode"] == "LS1 1BA"
+
+
+def test_sanitise_support_address_should_raise_error_when_invalid_length_dict_supplied():
+    test_support_address = {
+        "building_and_street_line_1": "test",
+        "building_and_street_line_2": "",
+        "invalid_field": "test"
+    }
+    with pytest.raises(ValueError) as exception_info:
+        sanitise_support_address(test_support_address)
+    assert "Unexpected support_address value encountered" in str(exception_info.value)
+
+
+def test_sanitise_support_address_should_raise_error_when_invalid_dict_supplied():
+    test_support_address = {"building_and_street_line_1": "test",
+                            "building_and_street_line_2": "test",
+                            "town_city": "test",
+                            "invalid_field": "test"}
+    with pytest.raises(ValueError) as exception_info:
+        sanitise_support_address(test_support_address)
+    assert "Unexpected support_address value encountered" in str(exception_info.value)

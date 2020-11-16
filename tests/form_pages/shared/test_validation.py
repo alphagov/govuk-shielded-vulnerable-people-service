@@ -431,6 +431,64 @@ def test_validate_date_of_birth_should_return_false_when_an_invalid_date_of_birt
     )
 
 
+def test_validate_support_address_should_return_true_when_a_valid_address_is_provided():
+    with _current_app.test_request_context() as test_request_ctx:
+        test_request_ctx.session["form_answers"] = {
+            "support_address": {
+                "building_and_street_line_1": "123 Test Avenue",
+                "building_and_street_line_2": "",
+                "town_city": "Leeds",
+                "postcode": "LS11BA"
+            }
+        }
+        is_valid = validation.validate_support_address()
+
+        assert is_valid is True
+        assert "error_items" not in test_request_ctx.session
+
+
+@pytest.mark.parametrize("test_case_support_address, field_error_messages", [
+    ({
+        "building_and_street_line_1": "",
+        "building_and_street_line_2": "",
+        "town_city": "",
+        "postcode": ""
+     },
+     [{"form_field": "building_and_street_line_1", "expected_error_msg": "Enter a building and street"},
+      {"form_field": "town_city", "expected_error_msg": "Enter a town or city"},
+      {"form_field": "postcode", "expected_error_msg": "What is the postcode where you need support?"}]),
+    ({
+        "building_and_street_line_1": "address line one too long address line one too long  address line one too long address line one too long address line one too long, address line one too long address line one too long  address line one too long address line one too long address line one too long,addr ",  # noqa
+        "building_and_street_line_2": "address line two too long address line two too long address line two too long address line two too long address line two too long address line one too long address line one too long  address line one too long address line one too long address line one too long ad",  # noqa
+        "town_city": "town / city too long town / city too long town / city too long town / city too long town / city too long ",  # noqa
+        "postcode": "LS11BA"
+     },
+     [{
+         "form_field": "building_and_street_line_1",
+         "expected_error_msg": "'Address line 1' cannot be longer than 110 characters"
+      },
+      {
+         "form_field": "building_and_street_line_2",
+         "expected_error_msg": "'Address line 2' cannot be longer than 210 characters"
+      },
+      {"form_field": "town_city", "expected_error_msg": "'Town or city' cannot be longer than 50 characters"}])
+])
+def test_validate_support_address_should_return_false_when_an_invalid_address_is_provided(
+ test_case_support_address, field_error_messages
+):
+    with _current_app.test_request_context() as test_request_ctx:
+        test_request_ctx.session["form_answers"] = {
+            "support_address": test_case_support_address
+        }
+        is_valid = validation.validate_support_address()
+
+        assert is_valid is False
+        assert "error_items" in test_request_ctx.session
+        for field_error_message in field_error_messages:
+            assert test_request_ctx.session["error_items"]["support_address"][field_error_message["form_field"]] \
+                   == field_error_message["expected_error_msg"]
+
+
 def _populate_request_form_and_execute_input_validation_test_and_assert_validation_failed(
         validation_function, form_field_value, form_field, validation_error_msg, session_error_items_key=None):
     with _current_app.test_request_context(

@@ -252,13 +252,13 @@ def validate_support_address():
         [
             validate_length(
                 ("support_address", "building_and_street_line_1"),
-                75,
-                length_fstring.format("Address line 1", 75),
+                110,
+                length_fstring.format("Address line 1", 110),
             ),
             validate_length(
                 ("support_address", "building_and_street_line_2"),
-                75,
-                length_fstring.format("Address line 2", 75),
+                210,
+                length_fstring.format("Address line 2", 210),
             ),
             validate_mandatory_form_field(
                 "support_address",

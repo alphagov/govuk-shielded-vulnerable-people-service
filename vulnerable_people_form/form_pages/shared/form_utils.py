@@ -20,19 +20,36 @@ def sanitise_date(date_value):
     if date_value:
         if len(date_value.keys()) != 3 or \
           not all(k in date_value for k in ["day", "month", "year"]):
-            raise ValueError("Unexpected date_value encountered: " + str(date_value))
+            raise ValueError(f"Unexpected date_value encountered: {date_value}")
 
-        date_value["day"] = strip_non_digits(date_value["day"])
-        date_value["month"] = strip_non_digits(date_value["month"])
-        date_value["year"] = strip_non_digits(date_value["year"])
+        for k in date_value.keys():
+            date_value[k] = strip_non_digits(date_value[k])
 
 
 def sanitise_name(name_value):
     if name_value:
         if len(name_value.keys()) != 3 or \
           not all(k in name_value for k in ["first_name", "middle_name", "last_name"]):
-            raise ValueError("Unexpected name value encountered: " + str(name_value))
+            raise ValueError(f"Unexpected name value encountered: {name_value}")
 
-        name_value["first_name"] = name_value["first_name"].strip()
-        name_value["middle_name"] = name_value["middle_name"].strip()
-        name_value["last_name"] = name_value["last_name"].strip()
+        return _strip_whitespace_from_dict_values(name_value)
+
+    return name_value
+
+
+def sanitise_support_address(support_address):
+    if support_address:
+        if len(support_address.keys()) != 4 or \
+           not all(k in support_address for k in [
+               "building_and_street_line_1",
+               "building_and_street_line_2",
+               "town_city",
+               "postcode"]):
+            raise ValueError(f"Unexpected support_address value encountered: {support_address}")
+        return _strip_whitespace_from_dict_values(support_address)
+
+    return support_address
+
+
+def _strip_whitespace_from_dict_values(input_dict):
+    return {k: v.strip() for k, v in input_dict.items()}
