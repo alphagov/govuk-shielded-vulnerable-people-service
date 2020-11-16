@@ -243,7 +243,8 @@ def test_persist_answers_from_session():
             "nhs_letter": NHSLetterAnswers.YES.value,
             "basic_care_needs": YesNoAnswers.NO.value,
             "medical_conditions": MedicalConditionsAnswers.YES.value,
-            "do_you_live_in_england": LiveInEnglandAnswers.YES.value
+            "do_you_live_in_england": LiveInEnglandAnswers.YES.value,
+            "tier_at_submission": None,
         }
 
         test_request_ctx.session["nhs_sub"] = nhs_sub_value
@@ -274,7 +275,9 @@ def test_persist_answers_from_session():
             data_to_persist["basic_care_needs"],
             data_to_persist["do_you_have_someone_to_go_shopping_for_you"],
             data_to_persist["medical_conditions"],
-            data_to_persist["do_you_live_in_england"])
+            data_to_persist["do_you_live_in_england"],
+            data_to_persist["tier_at_submission"],
+        )
 
         assert test_request_ctx.session["form_uid"] == submission_ref
         assert returned_submission_ref == submission_ref

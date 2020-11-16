@@ -122,6 +122,7 @@ def test_persist_answers_should_map_parameters_correctly():
     do_you_have_someone_to_go_shopping_for_you = 1
     do_you_have_one_of_the_listed_medical_conditions = 0
     do_you_live_in_england = 1
+    tier_at_submission = 1
 
     with patch("vulnerable_people_form.integrations.persistence.execute_sql",
                return_value={"records": [[None, {"stringValue": submission_ref}]]}) as mock_execute_sql:
@@ -146,11 +147,12 @@ def test_persist_answers_should_map_parameters_correctly():
             do_you_need_help_meeting_your_basic_care_needs,
             do_you_have_someone_to_go_shopping_for_you,
             do_you_have_one_of_the_listed_medical_conditions,
-            do_you_live_in_england)
+            do_you_live_in_england,
+            tier_at_submission)
 
         assert submission_reference == submission_ref
         mock_execute_sql.assert_called_once_with(
-            sql="CALL cv_staging.create_web_submission("
+            sql="CALL cv_staging.create_web_submission_with_tier("
                 ":nhs_number,"
                 ":first_name,"
                 ":middle_name,"
@@ -171,7 +173,8 @@ def test_persist_answers_should_map_parameters_correctly():
                 ":do_you_need_help_meeting_your_basic_care_needs,"
                 ":do_you_have_someone_to_go_shopping_for_you,"
                 ":do_you_have_one_of_the_listed_medical_conditions,"
-                ":do_you_live_in_england"
+                ":do_you_live_in_england,"
+                ":tier_at_submission"
                 ")",
             parameters=(
                 {"name": "nhs_number", "value": {"stringValue": nhs_number}},
@@ -219,6 +222,10 @@ def test_persist_answers_should_map_parameters_correctly():
                 {
                     "name": "do_you_live_in_england",
                     "value": {"doubleValue": do_you_live_in_england}
+                },
+                {
+                    "name": "tier_at_submission",
+                    "value": {"doubleValue": tier_at_submission},
                 }
             )
         )
