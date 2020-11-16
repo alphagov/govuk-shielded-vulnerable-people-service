@@ -76,6 +76,44 @@ jobs:
         file: git-master/concourse/tasks/test.yml
     on_failure: *slack_alert_on_failure
 
+  - name: deploy-to-sandbox
+    serial: true
+    plan:
+      - get: git-master
+        trigger: true
+        passed: [test]
+      - task: deploy-to-paas
+        config:
+        file: git-master/concourse/tasks/deploy-to-govuk-paas.yml
+        params:
+          CF_SPACE: sandbox
+          INSTANCES: 2
+          CF_STARTUP_TIMEOUT: 5 # minutes
+          HOSTNAME: gds-shielded-vulnerable-people-service-sandbox
+          GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID: 80ea4bbd-66f1-455d-b1d2-608e2b8aa948
+          GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID: 17529024-96a3-42f1-945e-9ca50dc87617
+          GOVUK_NOTIFY_SPL_MATCH_LETTER_TEMPLATE_ID: 6a7a0e2c-5e04-47c5-b8ae-686e4a5cfbd2
+          GOVUK_NOTIFY_NO_SPL_MATCH_EMAIL_TEMPLATE_ID: ff27bf85-bddb-451d-9f49-bd862474f29d
+          GOVUK_NOTIFY_NO_SPL_MATCH_SMS_TEMPLATE_ID: b29626c4-7db2-4642-8104-dd01f1b9e663
+          GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID: a3a3f86a-b2e0-464b-a74d-ec2e7fd29ac5
+          NOTIFY_API_KEY: ((svp-form/notify-api-key-stg))
+          SECRET_KEY: ((svp-form/flask-secret-key-base-stg))
+          NHS_OIDC_AUTHORITY_URL: https://auth.sandpint.signin.nhs.uk
+          NHS_OIDC_LOGIN_CALLBACK_URL: https://localhost:5000/nhs-login-callback
+          NHS_OIDC_REGISTRATION_CALLBACK_URL: https://localhost:5000/nhs-registration-callback
+          NHS_CLIENT_ID: gds-svp-test
+          AWS_ACCESS_KEY: ((svp-form/aws-access-key-id-stg))
+          AWS_SECRET_ACCESS_KEY: ((svp-form/aws-secret-access-key-stg))
+          NHS_OIDC_LOGIN_PRIVATE_KEY: ((svp-form/nhs-login-private-key-sandbox))
+          SENTRY_DSN: ((svp-form/sentry-dns-stg))
+          GA_TRACKING_ID: UA-43115970-1
+          GA_CROSS_DOMAIN_ID: UA-145652997-7
+          ENVIRONMENT: STAGING
+          TIERING_LOGIC: True
+        on_failure: *slack_alert_on_failure
+
+
+
   - name: deploy-to-staging
     serial: true
     plan:

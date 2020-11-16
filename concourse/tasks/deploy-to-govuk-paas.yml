@@ -7,7 +7,7 @@ image_resource:
     username: ((docker_hub_username))
     password: ((docker_hub_password))
 inputs:
-  - name: git-master
+  - name: git-test
     path: src
 params:
   CF_API: https://api.london.cloud.service.gov.uk
@@ -97,7 +97,7 @@ run:
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form ENVIRONMENT "$ENVIRONMENT"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form TIERING_LOGIC "$TIERING_LOGIC"
 
-      cf push govuk-coronavirus-shielded-vulnerable-people-form --strategy rolling -i "$INSTANCES"
+      cf push govuk-coronavirus-shielded-vulnerable-people-form --strategy rolling -i "$INSTANCES" --no-route
       cf map-route govuk-coronavirus-shielded-vulnerable-people-form london.cloudapps.digital --hostname "$HOSTNAME"
       cf map-route govuk-coronavirus-shielded-vulnerable-people-form london.cloudapps.digital  --hostname "$HOSTNAME" --path metrics
 
