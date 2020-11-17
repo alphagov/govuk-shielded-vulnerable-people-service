@@ -152,7 +152,7 @@ def test_persist_answers_should_map_parameters_correctly():
 
         assert submission_reference == submission_ref
         mock_execute_sql.assert_called_once_with(
-            sql="CALL cv_staging.create_web_submission_with_tier("
+            sql="CALL cv_staging.create_web_submission("
                 ":nhs_number,"
                 ":first_name,"
                 ":middle_name,"
