@@ -431,6 +431,17 @@ def test_validate_date_of_birth_should_return_false_when_an_invalid_date_of_birt
     )
 
 
+@pytest.mark.parametrize("form_field_value",
+                         [{"day": "12", "month": "12", "year": "1987"}, {"day": 8, "month": 5, "year": 2006}])
+def test_validate_date_of_birth_should_return_true_when_a_valid_date_of_birth_is_provided(
+        form_field_value):
+    _execute_input_validation_test_and_assert_validation_passed(
+        validation.validate_date_of_birth,
+        form_field_value,
+        "date_of_birth"
+    )
+
+
 def test_validate_support_address_should_return_true_when_a_valid_address_is_provided():
     with _current_app.test_request_context() as test_request_ctx:
         test_request_ctx.session["form_answers"] = {

@@ -28,8 +28,8 @@ def post_date_of_birth():
         **session.setdefault("form_answers", {}),
         "date_of_birth": {**posted_date_of_birth},
     }
+    session["error_items"] = {}
     if not validate_date_of_birth():
         return redirect("/date-of-birth")
 
-    session["error_items"] = {}
     return route_to_next_form_page()
