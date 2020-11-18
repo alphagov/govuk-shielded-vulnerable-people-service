@@ -3,7 +3,6 @@ import logging
 from http import HTTPStatus
 
 import requests
-import sentry_sdk
 from flask import current_app
 
 from vulnerable_people_form.form_pages.shared.logger_utils import init_logger, create_log_message, log_event_names
@@ -108,14 +107,13 @@ def get_addresses_from_postcode(postcode):
                     )
             return values
     elif response.status_code == HTTPStatus.UNAUTHORIZED.value:
-        _log_postcode_lookup_failure("Unauthorised request submitted to API", postcode, response.text)
-        sentry_sdk.capture_message("Invalid ORDNANCE_SURVEY_PLACES_API_KEY", "error")
+        logger.error(_create_postcode_lookup_failure_log_message("Unauthorised request submitted to API - Invalid ORDNANCE_SURVEY_PLACES_API_KEY", postcode, response.text)) # noqa
         raise ErrorFindingAddress()
     elif response.status_code == HTTPStatus.BAD_REQUEST.value:
-        _log_postcode_lookup_failure("Invalid request submitted to API", postcode, response.text)
+        logger.warning(_create_postcode_lookup_failure_log_message("Invalid request submitted to API", postcode, response.text)) # noqa
         raise PostcodeNotFound()
     else:
-        _log_postcode_lookup_failure("Error finding address", postcode, response.text)
+        logger.error(_create_postcode_lookup_failure_log_message("Error finding address", postcode, response.text))
         raise ErrorFindingAddress()
 
 
@@ -126,7 +124,7 @@ def format_postcode(postcode):
     return None
 
 
-def _log_postcode_lookup_failure(failure_reason, postcode, response_body):
+def _create_postcode_lookup_failure_log_message(failure_reason, postcode, response_body):
     response_body_to_log = response_body if response_body else "response body empty"
-    logger.error(create_log_message(log_event_names["ORDNANCE_SURVEY_LOOKUP_FAILURE"],
-                                    f"Failure reason: {failure_reason}, Postcode: {postcode}, API response: {response_body_to_log}"))  # noqa
+    return create_log_message(log_event_names["ORDNANCE_SURVEY_LOOKUP_FAILURE"],
+                                    f"Failure reason: {failure_reason}, Postcode: {postcode}, API response: {response_body_to_log}") # noqa
