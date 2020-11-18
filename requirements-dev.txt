@@ -4,3 +4,4 @@ coverage==5.2.1
 behave==1.2.6
 selenium==3.141.0
 Faker==4.1.3
+freezegun==1.0.0
