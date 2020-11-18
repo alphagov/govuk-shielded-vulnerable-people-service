@@ -144,7 +144,7 @@ def validate_address_lookup():
     return True
 
 
-def is_number(string):
+def _is_number(string):
     try:
         int(string)
         return True
@@ -152,7 +152,7 @@ def is_number(string):
         return False
 
 
-def is_positive_int(string):
+def _is_positive_int(string):
     try:
         value = int(string)
     except ValueError:
@@ -160,25 +160,26 @@ def is_positive_int(string):
     return value == float(string) and value > 0
 
 
-def failing_field(field_bools, field_names):
+def _failing_field(field_bools, field_names):
     return field_names[field_bools.index(True)]
 
 
 def _date_field_exceeds_max_permitted_length(value, field_name):
     permitted_max_field_lengths = {"day": 2, "month": 2, "year": 4}
-    return value and len(value) > permitted_max_field_lengths[field_name]
+    return value and type(value) is str and len(value) > permitted_max_field_lengths[field_name]
 
 
 def validate_date_of_birth():
-    day = form_answers().get("date_of_birth", {}).get("day", "")
-    month = form_answers().get("date_of_birth", {}).get("month", "")
-    year = form_answers().get("date_of_birth", {}).get("year", "")
+    dob = form_answers().get("date_of_birth", {})
+    day = dob.get("day", "")
+    month = dob.get("month", "")
+    year = dob.get("year", "")
 
     fields = [month, day, year]
     field_names = ("month", "day", "year")
     fields_empty = [period == "" for period in fields]
-    fields_not_numbers = [not is_number(period) for period in fields]
-    fields_not_positive_int = [not is_positive_int(period) for period in fields]
+    fields_not_numbers = [not _is_number(period) for period in fields]
+    fields_not_positive_int = [not _is_positive_int(period) for period in fields]
     fields_invalid_length = [_date_field_exceeds_max_permitted_length(period, field_names[idx])
                              for (idx, period) in enumerate(fields)]
 
@@ -188,11 +189,11 @@ def validate_date_of_birth():
     elif any(fields_empty):
         error = "Enter your date of birth and include a day, month and a year"
     elif any(fields_not_numbers):
-        error = f"Enter {failing_field(fields_not_numbers, field_names)} as a number"
+        error = f"Enter {_failing_field(fields_not_numbers, field_names)} as a number"
     elif any(fields_not_positive_int):
-        error = f"Enter a real {failing_field(fields_not_positive_int, field_names)}"
+        error = f"Enter a real {_failing_field(fields_not_positive_int, field_names)}"
     elif any(fields_invalid_length):
-        error = f"Enter a {failing_field(fields_invalid_length, field_names)} with the correct amount of digits"
+        error = f"Enter a {_failing_field(fields_invalid_length, field_names)} with the correct amount of digits"
 
     invalid_date_message = "Enter a real date of birth"
     if error is None:
@@ -206,10 +207,11 @@ def validate_date_of_birth():
         elif (datetime.date.today() - date).days / 365.25 > 150:
             error = invalid_date_message
 
-    session["error_items"] = {
-        **session.setdefault("error_items", {}),
-        "date_of_birth": {"date_of_birth": error},
-    }
+    if error:
+        session["error_items"] = {
+            **session.setdefault("error_items", {}),
+            "date_of_birth": {"date_of_birth": error},
+        }
 
     return error is None
 
