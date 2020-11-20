@@ -13,6 +13,13 @@ resources:
     source:
       uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
       branch: update_concourse_for_sandbox_env
+  - name: git-master
+    type: git
+    icon: github-circle
+    source:
+      uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
+      branch: update_concourse_for_sandbox_env
+
 
 
 jobs:
@@ -23,13 +30,15 @@ jobs:
         trigger: true
       - get: git-test
         trigger: true
+      - get: git-master
+        trigger: true
       - set_pipeline: svp-form-sandbox
         file: git-sandbox/concourse/pipeline-sandbox.yml
 
   - name: deploy-to-sandbox
     serial: true
     plan:
-      - get: git-test
+      - get: git-master
         trigger: true
         passed: [update-pipeline]
       - get: git-sandbox
@@ -67,11 +76,11 @@ jobs:
   - name: smoke-test-sandbox
     serial: true
     plan:
-      - get: git-test
+      - get: git-master
         trigger: true
         passed: [deploy-to-sandbox]
       - task: smoke-test
-        file: git-test/concourse/tasks/smoke-test.yml
+        file: git-master/concourse/tasks/smoke-test.yml
         params:
           WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to sandbox is not serving HTTP error codes"
@@ -80,11 +89,11 @@ jobs:
   - name: e2e-test-sandbox
     serial: true
     plan:
-      - get: git-test
+      - get: git-master
         trigger: true
         passed: [smoke-test-sandbox]
       - task: e2e-test
-        file: git-test/concourse/tasks/e2e-test.yml
+        file: git-master/concourse/tasks/e2e-test.yml
         attempts: 2
         params:
           CF_SPACE: "sandbox"
