@@ -1,0 +1,58 @@
+---
+E08000011:
+  name: Knowsley Borough Council
+  restrictions:
+    - alert_level: 3
+      start_date: 2020-10-12
+      start_time: "00:01"
+E08000001:
+  name: Bolton Borough Council
+  restrictions:
+    - alert_level: 2
+      start_date: 2020-10-12
+      start_time: "00:01"
+    - alert_level: 3
+      start_date: 2020-10-23
+      start_time: "00:01"
+E08000018:
+  name: Rotherham Metropolitan Borough Council
+  restrictions:
+    - alert_level: 2
+      start_date: 2020-10-12
+      start_time: "00:01"
+    - alert_level: 3
+      start_date: 2020-10-24
+      start_time: "00:01"
+E08000012:
+  name: Liverpool City Council
+  restrictions:
+    - alert_level: 2
+      start_date: 2020-08-20
+      start_time: "00:01"
+    - alert_level: 1
+      start_date: 2020-07-20
+      start_time: "00:01"
+    - alert_level: 4
+      start_date: 2020-10-20
+      start_time: "00:01"
+    - alert_level: 3
+      start_date: 2020-09-20
+      start_time: "00:01"
+E08000015:
+  name: Wirral Borough Council
+  restrictions:
+    - alert_level: 1
+      start_date: 2020-03-29
+      start_time: "00:01"
+    - alert_level: 2
+      start_date: 2020-10-25
+      start_time: "00:01"
+E06000018:
+  name: Nottingham City Council
+  restrictions:
+    - alert_level: 1
+      start_date: 2020-05-30
+      start_time: "00:01"
+    - alert_level: 2
+      start_date: 2020-10-30
+      start_time: "00:01"

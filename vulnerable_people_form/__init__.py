@@ -10,9 +10,12 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 
 from . import form_pages
 from vulnerable_people_form.form_pages.shared.querystring_utils import append_querystring_params
+from vulnerable_people_form.tier_lookup.lacode_tier_loookup import LacodeTierLookup
 from .integrations import nhs_openconnect_id, persistence
 
 _ENV_DEVELOPMENT = "DEVELOPMENT"
+
+la_code_to_tier = LacodeTierLookup()
 
 
 def _handle_error(e):
