@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 DEFAULT_LOCAL_RESTRICTIONS_FILE = "vulnerable_people_form/tier_lookup/data/local-restrictions.yaml"
-DEFAULT_NATIONAL_ALERT_LEVEL = 3
+DEFAULT_NATIONAL_ALERT_LEVEL = 1
 
 
 class LacodeTierLookup:
