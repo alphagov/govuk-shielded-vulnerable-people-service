@@ -81,7 +81,7 @@ jobs:
     plan:
       - get: git-master
         trigger: true
-        passed: [test]
+        passed: [update-pipeline]
       - task: deploy-to-paas
         config:
         file: git-master/concourse/tasks/deploy-to-govuk-paas.yml
@@ -98,7 +98,7 @@ jobs:
           GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID: a3a3f86a-b2e0-464b-a74d-ec2e7fd29ac5
           NOTIFY_API_KEY: ((svp-form/notify-api-key-stg))
           SECRET_KEY: ((svp-form/flask-secret-key-base-stg))
-          NHS_OIDC_AUTHORITY_URL: https://auth.sandpint.signin.nhs.uk
+          NHS_OIDC_AUTHORITY_URL: https://auth.sandpit.signin.nhs.uk
           NHS_OIDC_LOGIN_CALLBACK_URL: https://localhost:5000/nhs-login-callback
           NHS_OIDC_REGISTRATION_CALLBACK_URL: https://localhost:5000/nhs-registration-callback
           NHS_CLIENT_ID: gds-svp-test
@@ -110,9 +110,34 @@ jobs:
           GA_CROSS_DOMAIN_ID: UA-145652997-7
           ENVIRONMENT: STAGING
           TIERING_LOGIC: True
-        on_failure: *slack_alert_on_failure
+
+  - name: smoke-test-sandbox
+    serial: true
+    plan:
+      - get: git-master
+        trigger: true
+        passed: [deploy-to-sandbox]
+      - task: smoke-test
+        file: git-master/concourse/tasks/smoke-test.yml
+        params:
+          WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital"
+          MESSAGE: "Checks that the application deployed to sandbox is not serving HTTP error codes"
 
 
+  - name: e2e-test-sandbox
+    serial: true
+    plan:
+      - get: git-master
+        trigger: true
+        passed: [smoke-test-sandbox]
+      - task: e2e-test
+        file: git-master/concourse/tasks/e2e-test.yml
+        attempts: 2
+        params:
+          CF_SPACE: "sandbox"
+          ENVIRONMENT: "staging"
+          URL: "https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital"
+          MESSAGE: "Checks that the application deployed to sandbox is not serving HTTP error codes"
 
   - name: deploy-to-staging
     serial: true
