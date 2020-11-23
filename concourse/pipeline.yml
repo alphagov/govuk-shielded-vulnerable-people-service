@@ -88,7 +88,7 @@ jobs:
         params:
           CF_SPACE: staging
           INSTANCES: 20
-          CF_STARTUP_TIMEOUT: 5 # minutes
+          CF_STARTUP_TIMEOUT: 10 # minutes
           HOSTNAME: gds-shielded-vulnerable-people-service-staging
           GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID: 80ea4bbd-66f1-455d-b1d2-608e2b8aa948
           GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID: 17529024-96a3-42f1-945e-9ca50dc87617
