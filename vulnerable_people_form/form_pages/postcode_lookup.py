@@ -1,8 +1,8 @@
-from flask import redirect, session
+from flask import redirect, session, current_app
 
-from vulnerable_people_form.integrations.postcode_lookup_helper import format_postcode
 from .blueprint import form
-from .postcode_tier_blueprint import postcode_tier_form
+from .shared.form_utils import format_postcode
+from .shared.postcode_tier import update_postcode_tier
 from .shared.querystring_utils import append_querystring_params
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
@@ -15,11 +15,13 @@ from .shared.session import (
 from .shared.validation import validate_postcode
 
 
-@postcode_tier_form.route("/postcode-lookup", methods=["POST"])
+@form.route("/postcode-lookup", methods=["POST"])
 def post_postcode_lookup():
     session["postcode"] = format_postcode(request_form().get("postcode"))
     if not validate_postcode(session["postcode"], "postcode"):
         return redirect("/postcode-lookup")
+
+    update_postcode_tier(session["postcode"], current_app)
 
     if not accessing_saved_answers():
         delete_answer_from_form("support_address")

@@ -51,5 +51,12 @@ def sanitise_support_address(support_address):
     return support_address
 
 
+def format_postcode(postcode):
+    if postcode:
+        return postcode.replace(" ", "").upper()
+
+    return None
+
+
 def _strip_whitespace_from_dict_values(input_dict):
     return {k: v.strip() for k, v in input_dict.items()}

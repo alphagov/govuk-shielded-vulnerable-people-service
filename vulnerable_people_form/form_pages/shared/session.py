@@ -1,6 +1,6 @@
 import datetime
 
-from flask import request, session, current_app
+from flask import request, session
 
 from .answers_enums import (
     NHSLetterAnswers,
@@ -8,7 +8,7 @@ from .answers_enums import (
     ShoppingAssistanceAnswers,
     BasicCareNeedsAnswers
 )
-from .constants import PAGE_TITLES, NHS_USER_INFO_TO_FORM_ANSWERS
+from .constants import PAGE_TITLES, NHS_USER_INFO_TO_FORM_ANSWERS, SESSION_KEY_POSTCODE_TIER
 from .querystring_utils import append_querystring_params
 from .security import sanitise_input
 
@@ -213,7 +213,7 @@ def persist_answers_from_session():
         form_answers().get("do_you_have_someone_to_go_shopping_for_you"),
         form_answers().get("medical_conditions"),
         lives_in_england,
-        session["postcode_tier"],
+        get_postcode_tier(),
     )
     session["form_uid"] = submission_reference
 
@@ -295,7 +295,6 @@ def load_answers_into_session_if_available():
             "do_you_have_someone_to_go_shopping_for_you": do_you_have_someone_to_go_shopping_for_you["longValue"],
             "do_you_live_in_england": do_you_live_in_england.get("longValue"),
             "tier_at_submission": tier_at_submission.get("longValue"),
-            "tier_at_submission": tier_at_submission["longValue"],
         }
         priority_supermarket_deliveries = do_you_want_supermarket_deliveries.get("longValue")
         if priority_supermarket_deliveries is not None:
@@ -315,6 +314,14 @@ def set_form_answers_from_nhs_user_info(nhs_user_info):
         if nhs_answer is None:
             continue
         _set_form_answer(answers_key, nhs_answer)
+
+
+def set_postcode_tier(postcode_tier):
+    session[SESSION_KEY_POSTCODE_TIER] = postcode_tier
+
+
+def get_postcode_tier():
+    return session.get(SESSION_KEY_POSTCODE_TIER, None)
 
 
 def _set_form_answer(answers_key_list, answer):

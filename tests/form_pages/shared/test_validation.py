@@ -10,8 +10,7 @@ from vulnerable_people_form.form_pages.shared.answers_enums import (
     ViewOrSetupAnswers,
     YesNoAnswers,
     PrioritySuperMarketDeliveriesAnswers)
-from vulnerable_people_form.form_pages.shared.form_utils import sanitise_name
-from vulnerable_people_form.integrations.postcode_lookup_helper import format_postcode
+from vulnerable_people_form.form_pages.shared.form_utils import sanitise_name, format_postcode
 
 _FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME = \
     "vulnerable_people_form.form_pages.shared.validation.form_answers"

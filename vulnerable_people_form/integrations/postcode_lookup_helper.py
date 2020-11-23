@@ -84,7 +84,7 @@ def entry_is_a_postal_address(result):
 
 def get_addresses_from_postcode(postcode):
     url = "https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode"
-    if "OVERRIDE_ONS_URL" in current_app.config :
+    if "OVERRIDE_ONS_URL" in current_app.config:
         url = current_app.config["OVERRIDE_ONS_URL"] + "/places/v1/address/postcode"
 
     params = {
@@ -110,24 +110,17 @@ def get_addresses_from_postcode(postcode):
                     )
             return values
     elif response.status_code == HTTPStatus.UNAUTHORIZED.value:
-        logger.error(_create_postcode_lookup_failure_log_message("Unauthorised request submitted to API - Invalid ORDNANCE_SURVEY_PLACES_API_KEY", postcode, response.text)) # noqa
+        logger.error(_create_postcode_lookup_failure_log_message("Unauthorised request submitted to API - Invalid ORDNANCE_SURVEY_PLACES_API_KEY", postcode, response.text))  # noqa
         raise ErrorFindingAddress()
     elif response.status_code == HTTPStatus.BAD_REQUEST.value:
-        logger.warning(_create_postcode_lookup_failure_log_message("Invalid request submitted to API", postcode, response.text)) # noqa
+        logger.warning(_create_postcode_lookup_failure_log_message("Invalid request submitted to API", postcode, response.text))  # noqa
         raise PostcodeNotFound()
     else:
         logger.error(_create_postcode_lookup_failure_log_message("Error finding address", postcode, response.text))
         raise ErrorFindingAddress()
 
 
-def format_postcode(postcode):
-    if postcode:
-        return postcode.replace(" ", "").upper()
-
-    return None
-
-
 def _create_postcode_lookup_failure_log_message(failure_reason, postcode, response_body):
     response_body_to_log = response_body if response_body else "response body empty"
     return create_log_message(log_event_names["ORDNANCE_SURVEY_LOOKUP_FAILURE"],
-                                    f"Failure reason: {failure_reason}, Postcode: {postcode}, API response: {response_body_to_log}") # noqa
+                              f"Failure reason: {failure_reason}, Postcode: {postcode}, API response: {response_body_to_log}")  # noqa

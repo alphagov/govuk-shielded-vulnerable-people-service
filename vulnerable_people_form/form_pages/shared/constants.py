@@ -41,6 +41,8 @@ PAGE_TITLES = {
     "nhs-registration": "Would you like to create an NHS Login you can use to retrieve your answers in the future?",
     "nhs-registration-link": "Set up an NHS login account to confirm who you are",
     "not-eligible-postcode": "Sorry, this service is only available in England",
+    "not-eligible-postcode-tier": "Sorry, this service is not available in your area",
+    "not-eligible-postcode-not-found": "Sorry, we could not find your postcode in our system",
     "not-eligible-medical": "Sorry, you’re not eligible for help through this service",
     "postcode-lookup": "What is the postcode where you need support?",
     "postcode-eligibility": "What is the postcode where you need support?",
@@ -66,6 +68,7 @@ NHS_USER_INFO_TO_FORM_ANSWERS = {
 SESSION_KEY_ADDRESS_SELECTED = "auto_populated_address_selected"
 SESSION_KEY_QUERYSTRING_PARAMS = "querystring_params_to_retain"
 SESSION_KEY_LIVES_IN_ENGLAND_REFERRER = "lives_in_england_referrer"
+SESSION_KEY_POSTCODE_TIER = "postcode_tier"
 
 GOVUK_JOURNEY_START_PAGE_URL = "https://gov.uk/coronavirus-shielding-support"
 
@@ -74,3 +77,11 @@ GOVUK_JOURNEY_START_PAGE_URL = "https://gov.uk/coronavirus-shielding-support"
 class JourneyProgress(enum.Enum):
     NHS_NUMBER = 0
     NHS_REGISTRATION = 1
+
+
+@enum.unique
+class PostcodeTier(enum.Enum):
+    MEDIUM = 1
+    HIGH = 2
+    VERY_HIGH = 3
+    VERY_HIGH_PLUS_SHIELDING = 4

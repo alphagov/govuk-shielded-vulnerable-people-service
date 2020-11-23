@@ -1,21 +1,19 @@
 from http import HTTPStatus
 
 import sentry_sdk
-from flask import Flask, render_template,  session
+from flask import Flask, render_template, session
 from flask_talisman import Talisman
 from flask_wtf.csrf import CSRFProtect
-from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
 from gds_metrics import GDSMetrics
+from jinja2 import ChoiceLoader, PackageLoader, PrefixLoader
 from sentry_sdk.integrations.flask import FlaskIntegration
 
-from . import form_pages
 from vulnerable_people_form.form_pages.shared.querystring_utils import append_querystring_params
-from vulnerable_people_form.tier_lookup.lacode_tier_loookup import LacodeTierLookup
+from . import form_pages
 from .integrations import nhs_openconnect_id, persistence
+from vulnerable_people_form.integrations import ladcode_tier_lookup
 
 _ENV_DEVELOPMENT = "DEVELOPMENT"
-
-la_code_to_tier = LacodeTierLookup()
 
 
 def _handle_error(e):
@@ -79,14 +77,14 @@ def create_app(scriptinfo):
     app.register_blueprint(form_pages.default.app_default)
     app.register_blueprint(form_pages.blueprint.form)
 
-    app.register_blueprint(form_pages.postcode_tier_blueprint.postcode_tier_form)
-
     _init_security(app)
 
     app.nhs_oidc_client = nhs_openconnect_id.NHSOIDCDetails()
     app.nhs_oidc_client.init_app(app)
 
     persistence.init_app(app)
+
+    ladcode_tier_lookup.init()
 
     app.register_error_handler(HTTPStatus.NOT_FOUND.value, _handle_error)
     app.register_error_handler(HTTPStatus.INTERNAL_SERVER_ERROR.value, _handle_error)

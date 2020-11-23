@@ -22,13 +22,6 @@ boto3_config = Config(
     }
 )
 
-_postcode_tier_map = {
-            "MEDIUM": 1,
-            "HIGH": 2,
-            "VERY_HIGH": 3,
-            "VERY_HIGH_PLUS_SHIELDING": 4
-        }
-
 
 def get_client_kwargs(app=current_app):
     return {
@@ -211,10 +204,10 @@ def persist_answers(
     do_you_have_someone_to_go_shopping_for_you,
     do_you_have_one_of_the_listed_medical_conditions,
     do_you_live_in_england,
-    tier_at_submission,
+    postcode_tier,
 ):
     result = execute_sql(
-        sql="CALL cv_staging.create_web_submission_with_tier("
+        sql="CALL cv_staging.create_web_submission("
         ":nhs_number,"
         ":first_name,"
         ":middle_name,"
@@ -275,113 +268,17 @@ def persist_answers(
                 "do_you_live_in_england",
                 do_you_live_in_england,
             ),
-            generate_int_parameter("tier_at_submission", tier_at_submission),
+            generate_int_parameter("tier_at_submission", postcode_tier)
         ),
     )
 
-    submission_reference = result["records"][0][1]["stringValue"]
-    return submission_reference
-
-
-def persist_answers_with_tier(
-    nhs_number,
-    first_name,
-    middle_name,
-    last_name,
-    date_of_birth,
-    address_line1,
-    address_line2,
-    address_town_city,
-    address_postcode,
-    address_uprn,
-    contact_number_calls,
-    contact_number_texts,
-    contact_email,
-    uid_nhs_login,
-    are_you_applying_on_behalf_of_someone_else,
-    have_you_received_an_nhs_letter,
-    do_you_want_supermarket_deliveries,
-    do_you_need_help_meeting_your_basic_care_needs,
-    do_you_have_someone_to_go_shopping_for_you,
-    do_you_have_one_of_the_listed_medical_conditions,
-    do_you_live_in_england,
-    tier_at_submission,
-):
-    result = execute_sql(
-        sql="CALL cv_staging.create_web_submission_with_tier("
-        ":nhs_number,"
-        ":first_name,"
-        ":middle_name,"
-        ":last_name,"
-        ":date_of_birth,"
-        ":address_line1,"
-        ":address_line2,"
-        ":address_town_city,"
-        ":address_postcode,"
-        ":address_uprn,"
-        ":contact_number_calls,"
-        ":contact_number_texts,"
-        ":contact_email,"
-        ":uid_nhs_login,"
-        ":are_you_applying_on_behalf_of_someone_else,"
-        ":have_you_received_an_nhs_letter,"
-        ":do_you_want_supermarket_deliveries,"
-        ":do_you_need_help_meeting_your_basic_care_needs,"
-        ":do_you_have_someone_to_go_shopping_for_you,"
-        ":do_you_have_one_of_the_listed_medical_conditions,"
-        ":do_you_live_in_england,"
-        ":tier_at_submission"
-        ")",
-        parameters=(
-            generate_string_parameter("nhs_number", nhs_number),
-            generate_int_parameter("have_you_received_an_nhs_letter", have_you_received_an_nhs_letter),
-            generate_string_parameter("first_name", first_name),
-            generate_string_parameter("middle_name", middle_name),
-            generate_string_parameter("last_name", last_name),
-            generate_string_parameter("address_line1", address_line1),
-            generate_string_parameter("address_postcode", address_postcode),
-            generate_string_parameter("address_town_city", address_town_city),
-            generate_bigint_parameter("address_uprn", address_uprn),
-            generate_string_parameter("contact_number_calls", contact_number_calls),
-            generate_string_parameter("contact_number_texts", contact_number_texts),
-            generate_string_parameter("contact_email", contact_email),
-            generate_int_parameter(
-                "do_you_have_one_of_the_listed_medical_conditions",
-                do_you_have_one_of_the_listed_medical_conditions,
-            ),
-            generate_int_parameter(
-                "are_you_applying_on_behalf_of_someone_else",
-                are_you_applying_on_behalf_of_someone_else,
-            ),
-            generate_int_parameter("do_you_want_supermarket_deliveries", do_you_want_supermarket_deliveries),
-            generate_date_parameter("date_of_birth", date_of_birth),
-            generate_int_parameter(
-                "do_you_have_someone_to_go_shopping_for_you",
-                do_you_have_someone_to_go_shopping_for_you,
-            ),
-            generate_string_parameter("uid_nhs_login", uid_nhs_login),
-            generate_string_parameter("address_line2", address_line2),
-            generate_int_parameter(
-                "do_you_need_help_meeting_your_basic_care_needs",
-                do_you_need_help_meeting_your_basic_care_needs,
-            ),
-            generate_int_parameter(
-                "do_you_live_in_england",
-                do_you_live_in_england,
-            ),
-            generate_int_parameter(
-                "tier_at_submission",
-                _postcode_tier_map[tier_at_submission],
-            )
-        ),
-    )
     submission_reference = result["records"][0][1]["stringValue"]
     return submission_reference
 
 
 def load_answers(nhs_uid):
     records = execute_sql(
-        "CALL cv_base.retrieve_latest_web_submission_with_tier_for_nhs_login(" "    :uid_nhs_login" ")",
+        "CALL cv_base.retrieve_latest_web_submission_for_nhs_login(" "    :uid_nhs_login" ")",
         (generate_string_parameter("uid_nhs_login", nhs_uid),),
     )["records"]
 

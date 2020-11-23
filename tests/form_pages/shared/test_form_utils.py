@@ -5,7 +5,8 @@ from vulnerable_people_form.form_pages.shared.form_utils import (
     sanitise_date,
     strip_non_digits,
     sanitise_name,
-    sanitise_support_address)
+    sanitise_support_address,
+    format_postcode)
 
 
 @pytest.mark.parametrize("nhs_num", ["", None])
@@ -128,3 +129,21 @@ def test_sanitise_support_address_should_raise_error_when_invalid_dict_supplied(
     with pytest.raises(ValueError) as exception_info:
         sanitise_support_address(test_support_address)
     assert "Unexpected support_address value encountered" in str(exception_info.value)
+
+
+@pytest.mark.parametrize("postcode", ["", None])
+def test_format_postcode_should_return_none_for_none_truthy_intput_values(postcode):
+    formatted_postcode = format_postcode(postcode)
+    assert formatted_postcode is None
+
+
+@pytest.mark.parametrize("postcode, expected_output", [("LS1  1BA  ", "LS11BA"), ("  SW1A 2NP  ", "SW1A2NP")])
+def test_format_postcode_should_remove_whitespace_characters(postcode, expected_output):
+    formatted_postcode = format_postcode(postcode)
+    assert formatted_postcode == expected_output
+
+
+@pytest.mark.parametrize("postcode, expected_output", [("ls11bA", "LS11BA"), ("sw1A2np", "SW1A2NP")])
+def test_format_postcode_should_convert_to_uppercase(postcode, expected_output):
+    formatted_postcode = format_postcode(postcode)
+    assert formatted_postcode == expected_output
