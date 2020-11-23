@@ -1,0 +1,27 @@
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: gdscyber/concourse-chrome-driver
+    tag: 1.1
+    username: ((docker_hub_username))
+    password: ((docker_hub_password))
+params:
+  CGO_ENABLE: "0"
+  DEBIAN_FRONTEND: "noninteractive"
+  PYTHONIOENCODING: "UTF-8"
+inputs:
+- name: git-master
+outputs:
+- name: builds
+run:
+  path: /bin/bash
+  args:
+    - -euo
+    - pipefail
+    - -c
+    - |
+      echo "running smoke tests against \"${WEB_APP_BASE_URL}\""
+      sleep 10
+      make smoke_test_sandbox
+  dir: git-master

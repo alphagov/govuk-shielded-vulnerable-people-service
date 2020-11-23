@@ -18,9 +18,20 @@ concourse_e2e:
 	behave behave/features --stop --tags=-e2e_happy_path_no_nhs_login_no_submission \
 	                              --tags=-simple_web_submission_entry --tags=-s3_outputs_check
 
+concourse_e2e_sandbox:
+	@echo "Executing e2e automated tests against the sandbox environment..."
+	# execute all scenarios except no submission and backend submissions test ( the '-' character prefix means skip)
+	behave behave/features --stop --tags=-e2e_happy_path_no_nhs_login_no_submission \
+	                              --tags=-simple_web_submission_entry --tags=-s3_outputs_check
+
 smoke_test:
 	@echo "Executing smoke test without submission..."
 	behave behave/features/5.e2e_not_eligible_postcode.feature --stop
+
+smoke_test_sandbox:
+	@echo "Executing smoke test without submission..."
+	behave behave/features/5.e2e_not_eligible_postcode.feature --stop
+
 
 test_e2e_local:
 	@echo "Executing e2e automated tests against the local environment..."
