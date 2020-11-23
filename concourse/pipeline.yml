@@ -99,8 +99,8 @@ jobs:
           NOTIFY_API_KEY: ((svp-form/notify-api-key-stg))
           SECRET_KEY: ((svp-form/flask-secret-key-base-stg))
           NHS_OIDC_AUTHORITY_URL: https://auth.sandpit.signin.nhs.uk
-          NHS_OIDC_LOGIN_CALLBACK_URL: https://localhost:5000/nhs-login-callback
-          NHS_OIDC_REGISTRATION_CALLBACK_URL: https://localhost:5000/nhs-registration-callback
+          NHS_OIDC_LOGIN_CALLBACK_URL: https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital/nhs-login-callback
+          NHS_OIDC_REGISTRATION_CALLBACK_URL: https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital/nhs-registration-callback
           NHS_CLIENT_ID: gds-svp-test
           AWS_ACCESS_KEY: ((svp-form/aws-access-key-id-stg))
           AWS_SECRET_ACCESS_KEY: ((svp-form/aws-secret-access-key-stg))
