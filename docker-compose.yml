@@ -20,6 +20,13 @@ services:
       - "5000:5000"
     links:
       - "rds-client-api"
+      - "ons-test"
+  ons-test:
+    build: 
+      dockerfile: Dockerfile
+      context: tests/ons-mock
+    ports:
+      - "8000:8000"
   coronavirus-mysql-pytest:
     image: mysql:5.6
     environment:

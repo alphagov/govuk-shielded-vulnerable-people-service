@@ -11,7 +11,7 @@ from vulnerable_people_form.form_pages.shared.answers_enums import \
     ApplyingOnOwnBehalfAnswers, MedicalConditionsAnswers, PrioritySuperMarketDeliveriesAnswers, BasicCareNeedsAnswers, \
     ShoppingAssistanceAnswers, \
     LiveInEnglandAnswers
-from vulnerable_people_form.form_pages.shared.constants import PAGE_TITLES
+from vulnerable_people_form.form_pages.shared.constants import PAGE_TITLES, PostcodeTier
 
 _current_app = Flask(__name__)
 _current_app.secret_key = 'test_secret'
@@ -220,6 +220,7 @@ def test_persist_answers_from_session():
             _current_app.test_request_context() as test_request_ctx:
         submission_ref = "submission-reference"
         nhs_sub_value = "nhs-sub-value"
+        test_request_ctx.session["postcode_tier"] = PostcodeTier.VERY_HIGH.value
         data_to_persist = {
             "nhs_number": "1234567891",
             "name": {"first_name": "Jon", "middle_name": "", "last_name": "Smith"},
@@ -244,7 +245,7 @@ def test_persist_answers_from_session():
             "basic_care_needs": YesNoAnswers.NO.value,
             "medical_conditions": MedicalConditionsAnswers.YES.value,
             "do_you_live_in_england": LiveInEnglandAnswers.YES.value,
-            "tier_at_submission": None,
+            "tier_at_submission": PostcodeTier.VERY_HIGH.value,
         }
 
         test_request_ctx.session["nhs_sub"] = nhs_sub_value

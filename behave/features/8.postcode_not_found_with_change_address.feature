@@ -58,7 +58,7 @@ Feature: COVID-19 Shielded vulnerable people service - partial user journey - po
         Given I am on the "postcode-lookup" page
         When I give the "#postcode" field the value "QJ5 7VC"
         And I submit the form
-        Then I am redirected to the "do-you-live-in-england" page
+         Then I am redirected to the "do-you-live-in-england" page
 
     Scenario: Should be re-directed to address lookup if user is in England
         Given I am on the "do-you-live-in-england" page

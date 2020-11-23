@@ -16,13 +16,13 @@ Feature: COVID-19 Shielded vulnerable people service - partial user journey - in
         And I submit the form
         Then I am redirected to the "postcode-eligibility" page
 
-  Scenario: Should be re-directed to do you live in England when unknown postcode entered
+    Scenario: Should be re-directed to do you live in England when unknown postcode entered
         Given I am on the "postcode-eligibility" page
         When I give the "#postcode" field the value "QJ5 7VC"
         And I submit the form
         Then I am redirected to the "do-you-live-in-england" page
 
-  Scenario: Should be re-directed to not eligible postcode when user is not in England
+    Scenario: Should be re-directed to not eligible postcode when user is not in England
         Given I am on the "do-you-live-in-england" page
         When I click the ".govuk-radios__item input[value='0']" element
         And I submit the form

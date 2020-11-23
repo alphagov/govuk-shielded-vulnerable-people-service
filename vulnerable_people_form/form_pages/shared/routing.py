@@ -1,4 +1,4 @@
-from flask import redirect, request, session
+from flask import redirect, request, session, current_app
 
 from ...integrations import postcode_eligibility
 from .answers_enums import (
@@ -8,7 +8,8 @@ from .answers_enums import (
     LiveInEnglandAnswers,
     YesNoAnswers,
 )
-from .constants import SESSION_KEY_ADDRESS_SELECTED, SESSION_KEY_LIVES_IN_ENGLAND_REFERRER
+from .constants import SESSION_KEY_ADDRESS_SELECTED, SESSION_KEY_LIVES_IN_ENGLAND_REFERRER, PostcodeTier
+from .postcode_tier import is_tiering_logic_enabled
 from .querystring_utils import append_querystring_params
 from .session import (
     accessing_saved_answers,
@@ -16,7 +17,7 @@ from .session import (
     get_answer_from_form,
     is_nhs_login_user,
     persist_answers_from_session,
-)
+    get_postcode_tier)
 from .validation import (
     validate_date_of_birth,
     validate_nhs_number,
@@ -145,6 +146,14 @@ def update_lives_in_england_referrer(referrer):
         session[SESSION_KEY_LIVES_IN_ENGLAND_REFERRER] = referrer
 
 
+def _get_next_form_url_based_on_postcode_tier(_redirect):
+    postcode_tier = get_postcode_tier()
+    if postcode_tier and postcode_tier in [PostcodeTier.VERY_HIGH.value, PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value]:
+        return _redirect
+    else:
+        return redirect("/not-eligible-postcode")
+
+
 def route_to_next_form_page():
     current_form = request.url_rule.rule.strip("/")
     answer = form_answers().get(current_form.replace("-", "_"))
@@ -156,6 +165,8 @@ def route_to_next_form_page():
             return redirect_to_next_form_page("/nhs-login")
         return redirect_to_next_form_page("/postcode-eligibility")
     elif current_form == "postcode-eligibility":
+        if _is_tiering_logic_enabled():
+            return _get_next_form_url_based_on_postcode_tier(redirect("/nhs-letter"))
         return return_redirect_if_postcode_valid(redirect("/nhs-letter"))
     elif current_form == "nhs-login":
         if YesNoAnswers(answer) is YesNoAnswers.YES:
@@ -203,8 +214,14 @@ def route_to_next_form_page():
     elif current_form == "nhs-number":
         return redirect_to_next_form_page(get_next_form_url_after_nhs_number())
     elif current_form == "postcode-lookup":
+        if _is_tiering_logic_enabled():
+            return _get_next_form_url_based_on_postcode_tier(redirect("/address-lookup"))
         return return_redirect_if_postcode_valid(redirect("/address-lookup"))
     elif current_form == "support-address":
+        if _is_tiering_logic_enabled():
+            return _get_next_form_url_based_on_postcode_tier(
+                redirect_to_next_form_page("/do-you-have-someone-to-go-shopping-for-you")
+            )
         return return_redirect_if_postcode_valid(
             redirect_to_next_form_page("/do-you-have-someone-to-go-shopping-for-you")
         )
@@ -230,3 +247,7 @@ def dynamic_back_url(default="/"):
 def get_back_url_for_shopping_assistance():
     back_url = "/address-lookup" if session.get(SESSION_KEY_ADDRESS_SELECTED) else "/support-address"
     return append_querystring_params(back_url)
+
+
+def _is_tiering_logic_enabled():
+    return is_tiering_logic_enabled(current_app)

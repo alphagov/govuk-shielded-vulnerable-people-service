@@ -204,7 +204,7 @@ def persist_answers(
     do_you_have_someone_to_go_shopping_for_you,
     do_you_have_one_of_the_listed_medical_conditions,
     do_you_live_in_england,
-    tier_at_submission,
+    postcode_tier,
 ):
     result = execute_sql(
         sql="CALL cv_staging.create_web_submission("
@@ -268,9 +268,10 @@ def persist_answers(
                 "do_you_live_in_england",
                 do_you_live_in_england,
             ),
-            generate_int_parameter("tier_at_submission", tier_at_submission),
+            generate_int_parameter("tier_at_submission", postcode_tier)
         ),
     )
+
     submission_reference = result["records"][0][1]["stringValue"]
     return submission_reference
 

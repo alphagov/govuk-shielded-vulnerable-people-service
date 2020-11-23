@@ -5,6 +5,7 @@ from flask import Flask
 
 from vulnerable_people_form.form_pages.shared.answers_enums import ApplyingOnOwnBehalfAnswers, YesNoAnswers, \
     MedicalConditionsAnswers, NHSLetterAnswers
+from vulnerable_people_form.form_pages.shared.constants import SESSION_KEY_POSTCODE_TIER, PostcodeTier
 from vulnerable_people_form.form_pages.shared.routing import route_to_next_form_page
 
 _ROUTING_FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME = \
@@ -134,6 +135,26 @@ def test_route_to_next_form_page_redirects_to_expected_page_with_postcode_eligib
         assert routing_result is not None
         assert routing_result.headers["location"] == expected_redirect_location
         postcode_eligibility.check_postcode.assert_called_once_with(postcode)
+
+
+@pytest.mark.parametrize("current_form_url, expected_redirect_location, get_postcode_tier_return_value",
+                         [("/postcode-eligibility", "/nhs-letter", PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value),
+                          ("/postcode-eligibility", "/nhs-letter", PostcodeTier.VERY_HIGH.value),
+                          ("/postcode-eligibility", "/not-eligible-postcode", PostcodeTier.HIGH.value),
+                          ("/postcode-eligibility", "/not-eligible-postcode", None)])
+def test_get_postcode_with_tiering_logic(current_form_url, expected_redirect_location, get_postcode_tier_return_value):
+
+    with _current_app.test_request_context() as test_request_ctx:
+        try:
+            _current_app.config["TIERING_LOGIC"] = True
+            test_request_ctx.session[SESSION_KEY_POSTCODE_TIER] = get_postcode_tier_return_value
+            test_request_ctx.request.url_rule = _create_mock_url_rule(current_form_url)
+            routing_result = route_to_next_form_page()
+        finally:
+            _current_app.config["TIERING_LOGIC"] = False
+
+        assert routing_result is not None
+        assert routing_result.headers["location"] == expected_redirect_location
 
 
 def _create_mock_url_rule(current_form_url):

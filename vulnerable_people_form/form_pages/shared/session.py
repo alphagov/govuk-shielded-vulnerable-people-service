@@ -8,7 +8,7 @@ from .answers_enums import (
     ShoppingAssistanceAnswers,
     BasicCareNeedsAnswers
 )
-from .constants import PAGE_TITLES, NHS_USER_INFO_TO_FORM_ANSWERS
+from .constants import PAGE_TITLES, NHS_USER_INFO_TO_FORM_ANSWERS, SESSION_KEY_POSTCODE_TIER
 from .querystring_utils import append_querystring_params
 from .security import sanitise_input
 
@@ -213,9 +213,8 @@ def persist_answers_from_session():
         form_answers().get("do_you_have_someone_to_go_shopping_for_you"),
         form_answers().get("medical_conditions"),
         lives_in_england,
-        None,
+        get_postcode_tier(),
     )
-
     session["form_uid"] = submission_reference
 
     return submission_reference
@@ -315,6 +314,14 @@ def set_form_answers_from_nhs_user_info(nhs_user_info):
         if nhs_answer is None:
             continue
         _set_form_answer(answers_key, nhs_answer)
+
+
+def set_postcode_tier(postcode_tier):
+    session[SESSION_KEY_POSTCODE_TIER] = postcode_tier
+
+
+def get_postcode_tier():
+    return session.get(SESSION_KEY_POSTCODE_TIER, None)
 
 
 def _set_form_answer(answers_key_list, answer):

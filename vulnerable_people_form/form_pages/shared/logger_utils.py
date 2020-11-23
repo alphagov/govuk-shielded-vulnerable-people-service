@@ -16,10 +16,20 @@ log_event_names = {
     "NHS_LOGIN_USER_CONSENT_NOT_GIVEN": "NhsLoginUserConsentNotGiven",
     "POSTCODE_INELIGIBLE": "IneligiblePostcodeEntered",
     "POSTCODE_ELIGIBLE": "EligiblePostcodeEntered",
+    "MEDIUM_POSTCODE_TIER" : "MediumPostcodeTierEntered",
+    "HIGH_POSTCODE_TIER" : "HighPostcodeTierEntered",
+    "VERY_HIGH_POSTCODE_TIER" : "VeryHighPostcodeTierEntered",
+    "VERY_HIGH_PLUS_SHIELDING_POSTCODE_TIER" : "VeryHighPlusShieldingPostcodeTierEntered",
     "ORDNANCE_SURVEY_LOOKUP_SUCCESS": "OrdnanceSurveyPlacesApiPostcodeLookupSucceeded",
     "ORDNANCE_SURVEY_LOOKUP_FAILURE": "OrdnanceSurveyPlacesApiPostcodeLookupFailed",
     "BOTO_CLIENT_ERROR": "BotoClientErrorOccurred",
-    "AWS_ARN_INIT": "AwsRdsDatabaseAndSecretArnInitialised"
+    "AWS_ARN_INIT": "AwsRdsDatabaseAndSecretArnInitialised",
+    "POSTCODE_TO_LADCODE_SUCCESS": "PostcodeToLadcodeSucceeded",
+    "LADCODE_NOT_FOUND": "LadcodeNotFoundInDbForGivenPostcode",
+    "TOO_MANY_LADCODES_FOUND": "MoreThanOneLadcodeFoundInDb",
+    "LADCODE_NOT_IN_FILE": "LadcodeNotMappedToTierNotFoundInRestrictionsFile",
+    "LADCODE_SUCCESSFULLY_MAPPED_TO_TIER": "LadcodeSuccessfullyMappedToTier",
+    "LADCODE_HAS_NO_RELEVANT_RESTRICTION": "LadcodeNotMappedToTierNoRelevantRestriction"
 }
 
 
