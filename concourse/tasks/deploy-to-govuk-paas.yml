@@ -97,7 +97,7 @@ run:
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form ENVIRONMENT "$ENVIRONMENT"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form TIERING_LOGIC "$TIERING_LOGIC"
 
-      cf push govuk-coronavirus-shielded-vulnerable-people-form --strategy rolling -i "$INSTANCES" --no-route
+      cf push govuk-coronavirus-shielded-vulnerable-people-form --strategy rolling -i "$INSTANCES"
       cf map-route govuk-coronavirus-shielded-vulnerable-people-form london.cloudapps.digital --hostname "$HOSTNAME"
       cf map-route govuk-coronavirus-shielded-vulnerable-people-form london.cloudapps.digital  --hostname "$HOSTNAME" --path metrics
 
