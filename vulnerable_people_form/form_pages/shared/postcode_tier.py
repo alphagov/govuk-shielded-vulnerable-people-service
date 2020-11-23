@@ -9,4 +9,4 @@ def update_postcode_tier(postcode, app):
 
 
 def is_tiering_logic_enabled(app):
-    return "TIERING_LOGIC" in app.config and app.config["TIERING_LOGIC"]
+    return "TIERING_LOGIC" in app.config and app.config["TIERING_LOGIC"] == "True"

@@ -25,7 +25,7 @@ def test_update_postcode_tier_should_update_session_when_tiering_logic_enabled()
     try:
         postcode = "LS11BA"
         postcode_tier = PostcodeTier.MEDIUM.value
-        _current_app.config["TIERING_LOGIC"] = True
+        _current_app.config["TIERING_LOGIC"] = "True"
         with patch("vulnerable_people_form.form_pages.shared.postcode_tier.get_postcode_tier",
                    return_value=postcode_tier) as mock_get_postcode_tier, \
             patch("vulnerable_people_form.form_pages.shared.postcode_tier.set_postcode_tier") \
@@ -34,7 +34,7 @@ def test_update_postcode_tier_should_update_session_when_tiering_logic_enabled()
             mock_get_postcode_tier.assert_called_once_with(postcode)
             mock_set_postcode_tier.assert_called_once_with(postcode_tier)
     finally:
-        _current_app.config["TIERING_LOGIC"] = False
+        _current_app.config["TIERING_LOGIC"] = "False"
 
 
 def test_is_tiering_logic_enabled_should_return_false_when_disabled():
@@ -43,7 +43,7 @@ def test_is_tiering_logic_enabled_should_return_false_when_disabled():
 
 def test_is_tiering_logic_enabled_should_return_true_when_enabled():
     try:
-        _current_app.config["TIERING_LOGIC"] = True
+        _current_app.config["TIERING_LOGIC"] = "True"
         assert is_tiering_logic_enabled(_current_app) is True
     finally:
-        _current_app.config["TIERING_LOGIC"] = False
+        _current_app.config["TIERING_LOGIC"] = "False"

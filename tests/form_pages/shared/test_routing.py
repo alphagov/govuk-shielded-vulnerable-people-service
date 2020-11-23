@@ -146,12 +146,12 @@ def test_get_postcode_with_tiering_logic(current_form_url, expected_redirect_loc
 
     with _current_app.test_request_context() as test_request_ctx:
         try:
-            _current_app.config["TIERING_LOGIC"] = True
+            _current_app.config["TIERING_LOGIC"] = "True"
             test_request_ctx.session[SESSION_KEY_POSTCODE_TIER] = get_postcode_tier_return_value
             test_request_ctx.request.url_rule = _create_mock_url_rule(current_form_url)
             routing_result = route_to_next_form_page()
         finally:
-            _current_app.config["TIERING_LOGIC"] = False
+            _current_app.config["TIERING_LOGIC"] = "False"
 
         assert routing_result is not None
         assert routing_result.headers["location"] == expected_redirect_location
