@@ -46,6 +46,7 @@ params:
   NHS_OIDC_LOGIN_PRIVATE_KEY:
   SENTRY_DSN:
   ENVIRONMENT:
+  TIERING_LOGIC:
 
 run:
   dir: src
