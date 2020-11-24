@@ -22,6 +22,13 @@ resources:
       uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
       branch: master
 
+  - name: git-sandbox
+    type: git
+    icon: github-circle
+    source:
+      uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
+      branch: task/dynamic-journey-tier-three
+
   - name: slack
     type: slack-alert
     source:
@@ -79,12 +86,12 @@ jobs:
   - name: deploy-to-sandbox
     serial: true
     plan:
-      - get: git-master
+      - get: git-sandbox
         trigger: true
         passed: [test]
       - task: deploy-to-paas
         config:
-        file: git-master/concourse/tasks/deploy-to-govuk-paas.yml
+        file: git-sandbox/concourse/tasks/deploy-to-govuk-paas.yml
         params:
           CF_SPACE: sandbox
           INSTANCES: 2
@@ -114,11 +121,11 @@ jobs:
   - name: smoke-test-sandbox
     serial: true
     plan:
-      - get: git-master
+      - get: git-sandbox
         trigger: true
         passed: [deploy-to-sandbox]
       - task: smoke-test
-        file: git-master/concourse/tasks/smoke-test.yml
+        file: git-sandbox/concourse/tasks/smoke-test.yml
         params:
           WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to sandbox is not serving HTTP error codes"
@@ -127,11 +134,11 @@ jobs:
   - name: e2e-test-sandbox
     serial: true
     plan:
-      - get: git-master
+      - get: git-sandbox
         trigger: true
         passed: [smoke-test-sandbox]
       - task: e2e-test
-        file: git-master/concourse/tasks/e2e-test.yml
+        file: git-sandbox/concourse/tasks/e2e-test.yml
         attempts: 2
         params:
           CF_SPACE: "sandbox"
