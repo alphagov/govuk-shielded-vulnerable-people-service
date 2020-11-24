@@ -81,7 +81,7 @@ jobs:
     plan:
       - get: git-master
         trigger: true
-        passed: [update-pipeline]
+        passed: [test]
       - task: deploy-to-paas
         config:
         file: git-master/concourse/tasks/deploy-to-govuk-paas.yml
