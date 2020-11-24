@@ -109,7 +109,7 @@ jobs:
           GA_TRACKING_ID: UA-43115970-1
           GA_CROSS_DOMAIN_ID: UA-145652997-7
           ENVIRONMENT: SANDBOX
-          TIERING_LOGIC: True
+          TIERING_LOGIC: "True"
 
   - name: smoke-test-sandbox
     serial: true
@@ -172,7 +172,7 @@ jobs:
           GA_TRACKING_ID: UA-43115970-1
           GA_CROSS_DOMAIN_ID: UA-145652997-7
           ENVIRONMENT: STAGING
-          TIERING_LOGIC: False
+          TIERING_LOGIC: "False"
         on_failure: *slack_alert_on_failure
 
   - name: smoke-test-staging
@@ -237,7 +237,7 @@ jobs:
           GA_TRACKING_ID: UA-43115970-1
           GA_CROSS_DOMAIN_ID: UA-145652997-1
           ENVIRONMENT: PRODUCTION
-          TIERING_LOGIC: False
+          TIERING_LOGIC: "False"
         on_failure: *slack_alert_on_failure
 
   - name: smoke-test-prod
