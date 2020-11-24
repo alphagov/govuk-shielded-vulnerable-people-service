@@ -167,6 +167,7 @@ jobs:
           AWS_ACCESS_KEY: ((svp-form/aws-access-key-id-stg))
           AWS_SECRET_ACCESS_KEY: ((svp-form/aws-secret-access-key-stg))
           NHS_OIDC_LOGIN_PRIVATE_KEY: ((svp-form/nhs-login-private-key-stg))
+          NHS_CLIENT_ID: gds-svp
           SENTRY_DSN: ((svp-form/sentry-dns-stg))
           GA_TRACKING_ID: UA-43115970-1
           GA_CROSS_DOMAIN_ID: UA-145652997-7
@@ -231,6 +232,7 @@ jobs:
           AWS_ACCESS_KEY: ((svp-form/aws-access-key-id-prod))
           AWS_SECRET_ACCESS_KEY: ((svp-form/aws-secret-access-key-prod))
           NHS_OIDC_LOGIN_PRIVATE_KEY: ((svp-form/nhs-login-private-key-prod))
+          NHS_CLIENT_ID: gds-svp
           SENTRY_DSN: ((svp-form/sentry-dns-prod))
           GA_TRACKING_ID: UA-43115970-1
           GA_CROSS_DOMAIN_ID: UA-145652997-1
