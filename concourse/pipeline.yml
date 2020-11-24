@@ -108,7 +108,7 @@ jobs:
           SENTRY_DSN: ((svp-form/sentry-dns-stg))
           GA_TRACKING_ID: UA-43115970-1
           GA_CROSS_DOMAIN_ID: UA-145652997-7
-          ENVIRONMENT: STAGING
+          ENVIRONMENT: SANDBOX
           TIERING_LOGIC: True
 
   - name: smoke-test-sandbox
@@ -135,7 +135,7 @@ jobs:
         attempts: 2
         params:
           CF_SPACE: "sandbox"
-          ENVIRONMENT: "staging"
+          ENVIRONMENT: "sandbox"
           URL: "https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to sandbox is not serving HTTP error codes"
 
