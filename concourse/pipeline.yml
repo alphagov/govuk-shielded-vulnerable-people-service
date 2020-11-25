@@ -92,7 +92,6 @@ jobs:
         file: git-sandbox/concourse/tasks/test.yml
     on_failure: *slack_alert_on_failure
 
-
   - name: deploy-to-sandbox
     serial: true
     plan:
