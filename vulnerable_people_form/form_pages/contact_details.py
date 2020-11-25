@@ -2,9 +2,8 @@ import phonenumbers
 from flask import redirect, session
 
 from .blueprint import form
-from .shared.querystring_utils import append_querystring_params
 from .shared.render import render_template_with_title
-from .shared.routing import route_to_next_form_page
+from .shared.routing import route_to_next_form_page, get_back_url_for_contact_details
 from .shared.session import form_answers, get_errors_from_session, request_form
 from .shared.validation import validate_contact_details
 
@@ -23,7 +22,7 @@ def format_phone_number_if_valid(phone_number):
 def get_contact_details():
     return render_template_with_title(
         "contact-details.html",
-        previous_path=append_querystring_params("/basic-care-needs"),
+        previous_path=get_back_url_for_contact_details(),
         values=form_answers().get("contact_details", {}),
         **get_errors_from_session("contact_details"),
     )

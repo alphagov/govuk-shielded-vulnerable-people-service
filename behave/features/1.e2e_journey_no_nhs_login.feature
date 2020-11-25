@@ -1,4 +1,4 @@
-@e2e_happy_path_no_nhs_login
+@core
 Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - no NHS login
     Scenario: can load homepage
         When I navigate to "/start"

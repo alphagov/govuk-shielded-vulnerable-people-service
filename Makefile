@@ -15,12 +15,19 @@ install:
 concourse_e2e:
 	@echo "Executing e2e automated tests against the staging environment..."
 	# execute all scenarios except no submission and backend submissions test ( the '-' character prefix means skip)
-	behave behave/features --stop --tags=-e2e_happy_path_no_nhs_login_no_submission \
-	                              --tags=-simple_web_submission_entry --tags=-s3_outputs_check
+ifeq (${TIERING_LOGIC},True)
+	behave behave/features -k --stop --tags core,feature_postcode_tier
+else
+	behave behave/features -k --stop --tags core,e2e_partial_journey_do_you_live_in_england
+endif
 
 smoke_test:
 	@echo "Executing smoke test without submission..."
+ifeq (${TIERING_LOGIC},True)
+	behave behave/features/11.e2e_not_eligible_postcode_tier.feature --stop
+else
 	behave behave/features/5.e2e_not_eligible_postcode.feature --stop
+endif
 
 test_e2e_local:
 	@echo "Executing e2e automated tests against the local environment..."

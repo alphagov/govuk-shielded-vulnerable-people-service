@@ -1,6 +1,6 @@
 import datetime
 
-from flask import request, session
+from flask import request, session, current_app
 
 from .answers_enums import (
     NHSLetterAnswers,
@@ -8,7 +8,12 @@ from .answers_enums import (
     ShoppingAssistanceAnswers,
     BasicCareNeedsAnswers
 )
-from .constants import PAGE_TITLES, NHS_USER_INFO_TO_FORM_ANSWERS, SESSION_KEY_POSTCODE_TIER
+from .constants import (
+    PAGE_TITLES,
+    NHS_USER_INFO_TO_FORM_ANSWERS,
+    SESSION_KEY_POSTCODE_TIER,
+    PostcodeTier
+)
 from .querystring_utils import append_querystring_params
 from .security import sanitise_input
 
@@ -191,6 +196,10 @@ def persist_answers_from_session():
     if lives_in_england is not None and lives_in_england == 0:
         lives_in_england = None
 
+    if current_app.is_tiering_logic_enabled and get_postcode_tier() != PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value:
+        # it is not possible to have an answer for basic_care_needs when the tier is v high + shielding
+        _set_form_answer(["basic_care_needs"], None)
+
     submission_reference = persistence.persist_answers(
         form_answers()["nhs_number"],
         form_answers()["name"]["first_name"],
@@ -209,7 +218,7 @@ def persist_answers_from_session():
         form_answers()["applying_on_own_behalf"],
         form_answers()["nhs_letter"],
         form_answers().get("priority_supermarket_deliveries"),
-        form_answers()["basic_care_needs"],
+        form_answers().get("basic_care_needs"),
         form_answers().get("do_you_have_someone_to_go_shopping_for_you"),
         form_answers().get("medical_conditions"),
         lives_in_england,
@@ -293,8 +302,7 @@ def load_answers_into_session_if_available():
             "nhs_letter": have_you_received_an_nhs_letter["longValue"],
             "basic_care_needs": do_you_need_help_meeting_your_basic_care_needs["longValue"],
             "do_you_have_someone_to_go_shopping_for_you": do_you_have_someone_to_go_shopping_for_you["longValue"],
-            "do_you_live_in_england": do_you_live_in_england.get("longValue"),
-            "tier_at_submission": tier_at_submission.get("longValue"),
+            "do_you_live_in_england": do_you_live_in_england.get("longValue")
         }
         priority_supermarket_deliveries = do_you_want_supermarket_deliveries.get("longValue")
         if priority_supermarket_deliveries is not None:
@@ -304,6 +312,7 @@ def load_answers_into_session_if_available():
         if medical_conditions is not None:
             session["medical_conditions"] = medical_conditions
         session["accessing_saved_answers"] = True
+        set_postcode_tier(tier_at_submission.get("longValue"))
         return True
     return False
 

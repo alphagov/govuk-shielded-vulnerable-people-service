@@ -1,19 +1,25 @@
 from flask import session, current_app
 
 from .blueprint import form
+from .shared.constants import PostcodeTier
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page, dynamic_back_url
-from .shared.session import persist_answers_from_session, form_answers, get_summary_rows_from_form_answers
+from .shared.session import persist_answers_from_session, form_answers, get_summary_rows_from_form_answers, \
+    get_postcode_tier
 from ..integrations import govuk_notify_client, spl_check
 
 
 @form.route("/check-your-answers", methods=["GET"])
 def get_check_your_answers():
     session["check_answers_page_seen"] = True
+    exclude_answers = None
+    if current_app.is_tiering_logic_enabled and get_postcode_tier() == PostcodeTier.VERY_HIGH.value:
+        exclude_answers = ['basic_care_needs']
+
     return render_template_with_title(
         "check-your-answers.html",
         previous_path=dynamic_back_url(),
-        summary_rows=get_summary_rows_from_form_answers(),
+        summary_rows=get_summary_rows_from_form_answers(exclude_answers)
     )
 
 

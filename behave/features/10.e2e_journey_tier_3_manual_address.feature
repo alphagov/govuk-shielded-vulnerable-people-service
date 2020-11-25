@@ -1,5 +1,5 @@
-@e2e_happy_path_no_nhs_login
-Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - no NHS login
+@feature_postcode_tier
+Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - manual address
     Scenario: can load homepage
         When I navigate to "/start"
         Then the content of element with selector ".govuk-fieldset__heading" equals "Are you using this service for yourself or for someone else?"
