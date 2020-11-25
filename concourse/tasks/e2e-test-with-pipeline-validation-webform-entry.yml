@@ -8,7 +8,6 @@ params:
   CGO_ENABLE: "0"
   DEBIAN_FRONTEND: "noninteractive"
   PYTHONIOENCODING: "UTF-8"
-  WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
 inputs:
 - name: git-master
 outputs:
