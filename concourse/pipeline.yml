@@ -83,12 +83,22 @@ jobs:
         file: git-master/concourse/tasks/test.yml
     on_failure: *slack_alert_on_failure
 
+  - name: test-sandbox
+    serial: true
+    plan:
+      - get: git-sandbox
+        trigger: true
+      - task: test
+        file: git-sandbox/concourse/tasks/test.yml
+    on_failure: *slack_alert_on_failure
+
+
   - name: deploy-to-sandbox
     serial: true
     plan:
       - get: git-sandbox
         trigger: true
-        passed: [test]
+        passed: [test-sandbox]
       - task: deploy-to-paas
         config:
         file: git-sandbox/concourse/tasks/deploy-to-govuk-paas.yml
