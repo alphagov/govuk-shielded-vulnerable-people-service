@@ -153,7 +153,7 @@ jobs:
         params:
           CF_SPACE: "sandbox"
           ENVIRONMENT: "sandbox"
-          URL: "https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital"
+          WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to sandbox is not serving HTTP error codes"
           TIERING_LOGIC: "True"
 
@@ -219,7 +219,7 @@ jobs:
         params:
           CF_SPACE: "staging"
           ENVIRONMENT: "staging"
-          URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
+          WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
           TIERING_LOGIC: "False"
         on_failure: *slack_alert_on_failure
@@ -429,9 +429,8 @@ jobs:
         params:
           CF_SPACE: "staging"
           ENVIRONMENT: "staging"
-          URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
+          WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
-          TIERING_LOGIC: "False"
         on_failure: *slack_alert_on_failure
       - task: get-aws-credentials
         file: git-master/concourse/tasks/get-gatling-tester-aws-creds.yml
