@@ -138,6 +138,7 @@ jobs:
         params:
           WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to sandbox is not serving HTTP error codes"
+          TIERING_LOGIC: "True"
 
 
   - name: e2e-test-sandbox
@@ -154,6 +155,7 @@ jobs:
           ENVIRONMENT: "sandbox"
           URL: "https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to sandbox is not serving HTTP error codes"
+          TIERING_LOGIC: "True"
 
   - name: deploy-to-staging
     serial: true
@@ -202,6 +204,7 @@ jobs:
         params:
           WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
+          TIERING_LOGIC: "False"
         on_failure: *slack_alert_on_failure
 
   - name: e2e-test-staging
@@ -218,6 +221,7 @@ jobs:
           ENVIRONMENT: "staging"
           URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
+          TIERING_LOGIC: "False"
         on_failure: *slack_alert_on_failure
 
   - name: deploy-to-prod
@@ -267,6 +271,7 @@ jobs:
         params:
           WEB_APP_BASE_URL: "https://coronavirus-shielding-support.service.gov.uk"
           MESSAGE: "Checks that the application deployed to production is not serving HTTP error codes"
+          TIERING_LOGIC: "False"
         on_failure: *slack_alert_on_failure
         on_success: *slack_alert_on_success
 
@@ -280,6 +285,7 @@ jobs:
         params:
           WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
+          TIERING_LOGIC: "False"
         on_failure: *slack_alert_on_failure
       - task: cronitor-heartbeat
         timeout: 1m
@@ -298,6 +304,7 @@ jobs:
         params:
           WEB_APP_BASE_URL: "https://coronavirus-shielding-support.service.gov.uk"
           MESSAGE: "Checks that the application deployed to production is not serving HTTP error codes"
+          TIERING_LOGIC: "False"
         on_failure:
           task: cronitor-fail
           file: git-master/concourse/tasks/cronitor.yml
