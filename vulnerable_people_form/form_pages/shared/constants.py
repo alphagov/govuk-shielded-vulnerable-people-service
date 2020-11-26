@@ -43,6 +43,8 @@ PAGE_TITLES = {
     "not-eligible-postcode": "Sorry, this service is only available in England",
     "not-eligible-postcode-tier": "Sorry, this service is not available in your area",
     "not-eligible-postcode-not-found": "Sorry, we could not find your postcode in our system",
+    "not-eligible-postcode-returning-user": "Sorry, this service is not available in your area",
+    "not-eligible-postcode-returning-user-tier-not-found": "Sorry, we could not find your postcode in our system",
     "not-eligible-medical": "Sorry, you’re not eligible for help through this service",
     "postcode-lookup": "What is the postcode where you need support?",
     "postcode-eligibility": "What is the postcode where you need support?",
@@ -80,8 +82,15 @@ class JourneyProgress(enum.Enum):
 
 
 @enum.unique
-class PostcodeTier(enum.Enum):
+class PostcodeTier(enum.IntEnum):
     MEDIUM = 1
     HIGH = 2
     VERY_HIGH = 3
     VERY_HIGH_PLUS_SHIELDING = 4
+
+
+@enum.unique
+class PostcodeTierStatus(enum.IntEnum):
+    NO_CHANGE = 1
+    INCREASED = 2
+    DECREASED = 3

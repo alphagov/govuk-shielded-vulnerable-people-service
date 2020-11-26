@@ -3,8 +3,11 @@ import logging
 from flask import abort, current_app, redirect, request, session
 
 from vulnerable_people_form.form_pages.shared.logger_utils import create_log_message, log_event_names, init_logger
-from vulnerable_people_form.form_pages.shared.routing import get_next_form_url_after_nhs_number, \
-    get_redirect_to_terminal_page
+from vulnerable_people_form.form_pages.shared.routing import (
+    get_next_form_url_after_nhs_number,
+    get_redirect_to_terminal_page,
+    get_redirect_for_returning_user_based_on_tier
+)
 from .blueprint import form
 from .shared.constants import NHS_USER_INFO_TO_FORM_ANSWERS, JourneyProgress
 from .shared.session import (
@@ -65,7 +68,7 @@ def get_nhs_registration_callback():
         last_char_of_state = state_from_query_string[len(state_from_query_string) - 1]
         journey_progress = JourneyProgress(int(last_char_of_state))
     else:
-        abort(500)
+        return abort(500)
 
     nhs_user_info = current_app.nhs_oidc_client.get_nhs_user_info_from_registration_callback(request.args)
     _log_form_and_nhs_answers_differences(nhs_user_info)
@@ -73,6 +76,8 @@ def get_nhs_registration_callback():
     session["form_answers"]["nhs_number"] = nhs_user_info["nhs_number"]
 
     if load_answers_into_session_if_available():
+        if current_app.is_tiering_logic_enabled and journey_progress is JourneyProgress.NHS_NUMBER:
+            return get_redirect_for_returning_user_based_on_tier()
         return get_redirect_to_terminal_page()
 
     if journey_progress is JourneyProgress.NHS_NUMBER:

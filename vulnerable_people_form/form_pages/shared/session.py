@@ -300,7 +300,7 @@ def load_answers_into_session_if_available():
             ),
             "applying_on_own_behalf": are_you_applying_on_behalf_of_someone_else["longValue"],
             "nhs_letter": have_you_received_an_nhs_letter["longValue"],
-            "basic_care_needs": do_you_need_help_meeting_your_basic_care_needs["longValue"],
+            "basic_care_needs": do_you_need_help_meeting_your_basic_care_needs.get("longValue"),
             "do_you_have_someone_to_go_shopping_for_you": do_you_have_someone_to_go_shopping_for_you["longValue"],
             "do_you_live_in_england": do_you_live_in_england.get("longValue")
         }

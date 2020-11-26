@@ -2,10 +2,13 @@ import logging
 
 from flask import abort, current_app, redirect, request, session
 
-from vulnerable_people_form.form_pages.shared.logger_utils import init_logger, create_log_message, log_event_names
 from .blueprint import form
-from .shared.routing import get_redirect_to_terminal_page
-from .shared.session import load_answers_into_session_if_available, set_form_answers_from_nhs_user_info
+from .shared.logger_utils import init_logger, create_log_message, log_event_names
+from .shared.routing import get_redirect_to_terminal_page, get_redirect_for_returning_user_based_on_tier
+from .shared.session import (
+    load_answers_into_session_if_available,
+    set_form_answers_from_nhs_user_info
+)
 
 logger = logging.getLogger(__name__)
 init_logger(logger)
@@ -34,6 +37,9 @@ def get_nhs_login_callback():
     session["nhs_sub"] = nhs_user_info["sub"]
 
     if load_answers_into_session_if_available():
+        if current_app.is_tiering_logic_enabled:
+            return get_redirect_for_returning_user_based_on_tier()
+
         return get_redirect_to_terminal_page()
 
     set_form_answers_from_nhs_user_info(nhs_user_info)
