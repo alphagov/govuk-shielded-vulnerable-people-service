@@ -1,3 +1,4 @@
+@e2e_partial_journey_do_you_live_in_england
 Feature: COVID-19 Shielded vulnerable people service - partial user journey - postcode not found after change address (user lives in England)
     Scenario: can load homepage
         When I navigate to "/start"

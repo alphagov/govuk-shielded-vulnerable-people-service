@@ -7,9 +7,9 @@ from .answers_enums import (
     NHSLetterAnswers,
     LiveInEnglandAnswers,
     YesNoAnswers,
-)
+    ShoppingAssistanceAnswers)
 from .constants import SESSION_KEY_ADDRESS_SELECTED, SESSION_KEY_LIVES_IN_ENGLAND_REFERRER, PostcodeTier
-from .postcode_tier import is_tiering_logic_enabled
+from .postcode_tier import is_tier_very_high_or_above
 from .querystring_utils import append_querystring_params
 from .session import (
     accessing_saved_answers,
@@ -148,10 +148,24 @@ def update_lives_in_england_referrer(referrer):
 
 def _get_next_form_url_based_on_postcode_tier(_redirect):
     postcode_tier = get_postcode_tier()
-    if postcode_tier and postcode_tier in [PostcodeTier.VERY_HIGH.value, PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value]:
+    if is_tier_very_high_or_above(postcode_tier):
         return _redirect
     else:
         return redirect("/not-eligible-postcode")
+
+
+def _get_next_form_url_after_shopping_and_priority_supermarket():
+    if _is_tiering_logic_enabled():
+        postcode_tier = get_postcode_tier()
+
+        _validate_post_code_tier_is_at_least_very_high(postcode_tier)
+
+        if postcode_tier == PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value:
+            return "/basic-care-needs"
+        elif postcode_tier == PostcodeTier.VERY_HIGH.value:
+            return "/contact-details"
+
+    return "/basic-care-needs"
 
 
 def route_to_next_form_page():
@@ -194,12 +208,12 @@ def route_to_next_form_page():
     elif current_form == "date-of-birth":
         return redirect_to_next_form_page("/address-lookup")
     elif current_form == "do-you-have-someone-to-go-shopping-for-you":
-        if YesNoAnswers(answer) is YesNoAnswers.YES:
+        if ShoppingAssistanceAnswers(answer) is ShoppingAssistanceAnswers.YES:
             blank_form_sections("priority_supermarket_deliveries")
-            return redirect_to_next_form_page("/basic-care-needs")
+            return redirect_to_next_form_page(_get_next_form_url_after_shopping_and_priority_supermarket())
         return redirect_to_next_form_page("/priority-supermarket-deliveries")
     elif current_form == "priority-supermarket-deliveries":
-        return redirect_to_next_form_page("/basic-care-needs")
+        return redirect_to_next_form_page(_get_next_form_url_after_shopping_and_priority_supermarket())
     elif current_form == "medical-conditions":
         if MedicalConditionsAnswers(answer) is MedicalConditionsAnswers.YES:
             return redirect_to_next_form_page(get_next_form_url_after_eligibility_check())
@@ -249,5 +263,29 @@ def get_back_url_for_shopping_assistance():
     return append_querystring_params(back_url)
 
 
+def get_back_url_for_contact_details():
+    back_url = "/basic-care-needs"
+
+    if _is_tiering_logic_enabled():
+        postcode_tier = get_postcode_tier()
+
+        _validate_post_code_tier_is_at_least_very_high(postcode_tier)
+
+        if postcode_tier == PostcodeTier.VERY_HIGH.value:
+            if form_answers().get("do_you_have_someone_to_go_shopping_for_you") == ShoppingAssistanceAnswers.NO.value:
+                back_url = "/priority-supermarket-deliveries"
+            else:
+                back_url = "/do-you-have-someone-to-go-shopping-for-you"
+        elif postcode_tier == PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value:
+            back_url = "/basic-care-needs"
+
+    return append_querystring_params(back_url)
+
+
 def _is_tiering_logic_enabled():
-    return is_tiering_logic_enabled(current_app)
+    return current_app.is_tiering_logic_enabled
+
+
+def _validate_post_code_tier_is_at_least_very_high(postcode_tier):
+    if not is_tier_very_high_or_above(postcode_tier):
+        raise ValueError(f"Unexpected postcode tier value encountered: {postcode_tier}")

@@ -1,4 +1,4 @@
-@e2e_partial_journey
+@core
 Feature: COVID-19 Shielded vulnerable people service - partial user journey - no medical conditions
     Scenario: can load homepage
         When I navigate to "/start"

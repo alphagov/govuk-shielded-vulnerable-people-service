@@ -10,13 +10,12 @@ from vulnerable_people_form.form_pages.shared.logger_utils import create_log_mes
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_LOCAL_RESTRICTIONS_FILE = "vulnerable_people_form/integrations/data/local-restrictions.yaml"
 DEFAULT_NATIONAL_ALERT_LEVEL = PostcodeTier.MEDIUM.value
 
 la_restrictions_data = {}
 
 
-def init(restrictions_yaml_file: str = DEFAULT_LOCAL_RESTRICTIONS_FILE):
+def init(restrictions_yaml_file: str):
     global la_restrictions_data
 
     with open(restrictions_yaml_file, 'r') as f:

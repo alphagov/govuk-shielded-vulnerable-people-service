@@ -1,5 +1,5 @@
-@e2e_partial_journey_do_you_live_in_england
-Feature: COVID-19 Shielded vulnerable people service - partial user journey - postcode not found but in England
+@feature_postcode_tier
+Feature: COVID-19 Shielded vulnerable people service - partial user journey - postcode not eligible (postcode tier 1/2)
     Scenario: can load homepage
         When I navigate to "/start"
         Then the content of element with selector ".govuk-fieldset__heading" equals "Are you using this service for yourself or for someone else?"
@@ -18,12 +18,8 @@ Feature: COVID-19 Shielded vulnerable people service - partial user journey - po
       
   Scenario: Should be re-directed to do you live in England when unknown postcode entered
         Given I am on the "postcode-eligibility" page
-        When I give the "#postcode" field the value "QJ5 7VC"
+        When I give the "#postcode" field the value "LE674AY"
         And I submit the form
-        Then I am redirected to the "do-you-live-in-england" page
+        Then I am redirected to the "not-eligible-postcode" page
+        And the content of element with selector ".govuk-heading-l" equals "Sorry, this service is not available in your area"
 
-  Scenario: Should be re-directed to NHS letter page if user is in England
-        Given I am on the "do-you-live-in-england" page
-        When I click the ".govuk-radios__item input[value='1']" element
-        And I submit the form
-        Then I am redirected to the "nhs-letter" page

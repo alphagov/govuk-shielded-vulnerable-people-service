@@ -1,5 +1,5 @@
-@e2e_happy_path_no_nhs_login_no_submission
-Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - no NHS login & no record submission
+@core
+Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - has shopping assistance
     Scenario: can load homepage
         When I navigate to "/start"
         Then the content of element with selector ".govuk-fieldset__heading" equals "Are you using this service for yourself or for someone else?"
@@ -55,14 +55,8 @@ Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - 
         When I submit the form
         Then I am redirected to the "do-you-have-someone-to-go-shopping-for-you" page
 
-    Scenario: Should be redirected to priority supermarket deliveries when no answered to shopping help
+    Scenario: Should be redirected to basic care needs when yes answered to shopping help
         Given I am on the "do-you-have-someone-to-go-shopping-for-you" page
-        When I click the ".govuk-radios__item input[value='0']" element
-        And I submit the form
-        Then I am redirected to the "priority-supermarket-deliveries" page
-
-    Scenario: Should be redirected to basic care needs when yes answered to priority shopping deliveries
-        Given I am on the "priority-supermarket-deliveries" page
         When I click the ".govuk-radios__item input[value='1']" element
         And I submit the form
         Then I am redirected to the "basic-care-needs" page
@@ -83,3 +77,11 @@ Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - 
         Given I am on the "check-contact-details" page
         When I submit the form
         Then I am redirected to the "check-your-answers" page
+
+    Scenario: Should be redirected to confirmation when no answered to basic care needs help
+        Given I am on the "check-your-answers" page
+        When I submit the form
+        Then I am redirected to the "confirmation" page
+
+
+

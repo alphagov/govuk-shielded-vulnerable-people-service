@@ -8,11 +8,13 @@ from vulnerable_people_form.form_pages.support_address import post_support_addre
 
 _current_app = Flask(__name__)
 _current_app.secret_key = "test_secret"
+_current_app.is_tiering_logic_enabled = False
 
 
 def test_post_support_address_should_redirect_to_support_address_when_form_invalid():
     user_entered_postcode = "LS1 1ba"
-    with patch("vulnerable_people_form.form_pages.support_address.form_answers", return_value={}),\
+    with _current_app.app_context(), \
+            patch("vulnerable_people_form.form_pages.support_address.form_answers", return_value={}),\
             patch("vulnerable_people_form.form_pages.support_address.format_postcode", return_value="LS11BA") \
             as mock_format_postcode,\
             patch("vulnerable_people_form.form_pages.support_address.request_form",
@@ -29,7 +31,8 @@ def test_post_support_address_should_redirect_to_support_address_when_form_inval
 
 
 def test_post_support_address_should_redirect_to_next_form_page_when_form_valid():
-    with patch("vulnerable_people_form.form_pages.support_address.form_answers", return_value={}), \
+    with _current_app.app_context(), \
+         patch("vulnerable_people_form.form_pages.support_address.form_answers", return_value={}), \
          patch("vulnerable_people_form.form_pages.support_address.route_to_next_form_page") \
             as mock_route_to_next_form_page, \
             patch("vulnerable_people_form.form_pages.support_address.request_form",

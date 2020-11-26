@@ -1,4 +1,4 @@
-@e2e_partial_journey
+@e2e_partial_journey_do_you_live_in_england
 Feature: COVID-19 Shielded vulnerable people service - partial user journey - ineligible postcode
     Scenario: can load homepage
         When I navigate to "/start"

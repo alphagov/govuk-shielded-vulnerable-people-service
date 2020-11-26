@@ -15,6 +15,7 @@ from vulnerable_people_form.form_pages.shared.constants import PAGE_TITLES, Post
 
 _current_app = Flask(__name__)
 _current_app.secret_key = 'test_secret'
+_current_app.is_tiering_logic_enabled = False
 
 
 def test_form_answers_should_return_answers_when_present_in_session():
@@ -216,8 +217,9 @@ def test_get_summary_rows_from_form_answers_should_return_ordered_summary_rows_f
 
 
 def test_persist_answers_from_session():
-    with patch("vulnerable_people_form.form_pages.shared.session.persistence") as mock_persistence, \
-            _current_app.test_request_context() as test_request_ctx:
+    with _current_app.app_context(), \
+         patch("vulnerable_people_form.form_pages.shared.session.persistence") as mock_persistence, \
+         _current_app.test_request_context() as test_request_ctx:
         submission_ref = "submission-reference"
         nhs_sub_value = "nhs-sub-value"
         test_request_ctx.session["postcode_tier"] = PostcodeTier.VERY_HIGH.value
