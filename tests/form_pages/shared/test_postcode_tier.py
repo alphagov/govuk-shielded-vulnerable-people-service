@@ -5,8 +5,8 @@ import pytest
 from vulnerable_people_form.form_pages.shared.constants import PostcodeTier
 from vulnerable_people_form.form_pages.shared.postcode_tier import (
     update_postcode_tier,
-    is_tier_very_high_or_above
-)
+    is_tier_very_high_or_above,
+    is_tier_less_than_very_high)
 
 _current_app = Flask(__name__)
 _current_app.secret_key = 'test_secret'
@@ -46,3 +46,13 @@ def test_update_postcode_tier_should_update_session_when_tiering_logic_enabled()
                           (PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value, True)])
 def test_is_tier_very_high_or_above_should_return_expected_value(postcode_tier, expected_output):
     assert is_tier_very_high_or_above(postcode_tier) == expected_output
+
+
+@pytest.mark.parametrize("postcode_tier, expected_output",
+                         [(None, False),
+                          (PostcodeTier.MEDIUM.value, True),
+                          (PostcodeTier.HIGH.value, True),
+                          (PostcodeTier.VERY_HIGH.value, False),
+                          (PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value, False)])
+def test_is_tier_less_than_very_high_should_return_expected_value(postcode_tier, expected_output):
+    assert is_tier_less_than_very_high(postcode_tier) == expected_output

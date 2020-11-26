@@ -5,8 +5,10 @@ from flask import Flask
 
 from vulnerable_people_form.form_pages.shared.answers_enums import ApplyingOnOwnBehalfAnswers, YesNoAnswers, \
     MedicalConditionsAnswers, NHSLetterAnswers, ShoppingAssistanceAnswers
-from vulnerable_people_form.form_pages.shared.constants import SESSION_KEY_POSTCODE_TIER, PostcodeTier
-from vulnerable_people_form.form_pages.shared.routing import route_to_next_form_page, get_back_url_for_contact_details
+from vulnerable_people_form.form_pages.shared.constants import SESSION_KEY_POSTCODE_TIER, PostcodeTier, \
+    PostcodeTierStatus
+from vulnerable_people_form.form_pages.shared.routing import route_to_next_form_page, get_back_url_for_contact_details,\
+    get_redirect_for_returning_user_based_on_tier
 
 _ROUTING_FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME = \
     "vulnerable_people_form.form_pages.shared.routing.form_answers"
@@ -261,6 +263,69 @@ def test_get_back_url_for_contact_details_should_return_correct_url_when_tiering
             assert back_url == expected_back_url
         finally:
             _current_app.is_tiering_logic_enabled = False
+
+
+@pytest.mark.parametrize("original_postcode_tier, get_latest_postcode_tier_return_value, expected_redirect_url",
+                         [(PostcodeTier.VERY_HIGH, None, "/not-eligible-postcode-returning-user-tier-not-found"),
+                          (PostcodeTier.VERY_HIGH,
+                           {
+                               "latest_postcode_tier": PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value,
+                               "change_status": PostcodeTierStatus.INCREASED.value
+                           },
+                          "/basic-care-needs"),
+                          (PostcodeTier.VERY_HIGH,
+                           {
+                               "latest_postcode_tier": PostcodeTier.VERY_HIGH.value,
+                               "change_status": PostcodeTierStatus.NO_CHANGE.value
+                           },
+                           "/view-answers"),
+                          (PostcodeTier.VERY_HIGH,
+                           {
+                               "latest_postcode_tier": PostcodeTier.HIGH.value,
+                               "change_status": PostcodeTierStatus.DECREASED.value
+                           },
+                           "/not-eligible-postcode-returning-user"),
+                          (PostcodeTier.VERY_HIGH,
+                           {
+                               "latest_postcode_tier": PostcodeTier.MEDIUM.value,
+                               "change_status": PostcodeTierStatus.DECREASED.value
+                           },
+                           "/not-eligible-postcode-returning-user"),
+                          (PostcodeTier.VERY_HIGH_PLUS_SHIELDING,
+                           {
+                               "latest_postcode_tier": PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value,
+                               "change_status": PostcodeTierStatus.NO_CHANGE.value
+                           },
+                           "/view-answers"),
+                          (PostcodeTier.VERY_HIGH_PLUS_SHIELDING,
+                           {
+                               "latest_postcode_tier": PostcodeTier.VERY_HIGH.value,
+                               "change_status": PostcodeTierStatus.DECREASED.value
+                           },
+                           "/view-answers"),
+                          (PostcodeTier.VERY_HIGH_PLUS_SHIELDING,
+                           {
+                               "latest_postcode_tier": PostcodeTier.HIGH.value,
+                               "change_status": PostcodeTierStatus.DECREASED.value
+                           },
+                           "/not-eligible-postcode-returning-user"),
+                          (PostcodeTier.VERY_HIGH_PLUS_SHIELDING,
+                           {
+                               "latest_postcode_tier": PostcodeTier.MEDIUM.value,
+                               "change_status": PostcodeTierStatus.DECREASED.value
+                           },
+                           "/not-eligible-postcode-returning-user")])
+def test_get_redirect_for_returning_user_based_on_tier(
+        original_postcode_tier, get_latest_postcode_tier_return_value, expected_redirect_url):
+    with patch(_ROUTING_FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME,
+               return_value={"support_address": {"postcode": "original_postcode"}}), \
+         patch("vulnerable_people_form.form_pages.shared.routing.get_latest_postcode_tier",
+               return_value=get_latest_postcode_tier_return_value), \
+         _current_app.test_request_context() as test_request_ctx:
+        test_request_ctx.session["accessing_saved_answers"] = True
+        test_request_ctx.session[SESSION_KEY_POSTCODE_TIER] = original_postcode_tier.value
+        response = get_redirect_for_returning_user_based_on_tier()
+        assert response.headers["Location"] == expected_redirect_url
 
 
 def _create_mock_url_rule(current_form_url):

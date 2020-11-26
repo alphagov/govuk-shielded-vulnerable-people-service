@@ -8,8 +8,13 @@ from .answers_enums import (
     LiveInEnglandAnswers,
     YesNoAnswers,
     ShoppingAssistanceAnswers)
-from .constants import SESSION_KEY_ADDRESS_SELECTED, SESSION_KEY_LIVES_IN_ENGLAND_REFERRER, PostcodeTier
-from .postcode_tier import is_tier_very_high_or_above
+from .constants import (
+    SESSION_KEY_ADDRESS_SELECTED,
+    SESSION_KEY_LIVES_IN_ENGLAND_REFERRER,
+    PostcodeTier,
+    PostcodeTierStatus
+)
+from .postcode_tier import is_tier_very_high_or_above, get_latest_postcode_tier
 from .querystring_utils import append_querystring_params
 from .session import (
     accessing_saved_answers,
@@ -17,7 +22,7 @@ from .session import (
     get_answer_from_form,
     is_nhs_login_user,
     persist_answers_from_session,
-    get_postcode_tier)
+    get_postcode_tier, set_postcode_tier)
 from .validation import (
     validate_date_of_birth,
     validate_nhs_number,
@@ -280,6 +285,43 @@ def get_back_url_for_contact_details():
             back_url = "/basic-care-needs"
 
     return append_querystring_params(back_url)
+
+
+def get_redirect_for_returning_user_based_on_tier():
+    original_postcode = form_answers()["support_address"]["postcode"]
+    original_postcode_tier = get_postcode_tier()
+
+    latest_postcode_tier_info = get_latest_postcode_tier(original_postcode, original_postcode_tier)
+
+    if latest_postcode_tier_info is None:
+        return redirect("/not-eligible-postcode-returning-user-tier-not-found")
+
+    latest_postcode_tier = PostcodeTier(latest_postcode_tier_info["latest_postcode_tier"])
+    set_postcode_tier(latest_postcode_tier)
+
+    postcode_tier_change_status = PostcodeTierStatus(latest_postcode_tier_info["change_status"])
+
+    if postcode_tier_change_status == PostcodeTierStatus.NO_CHANGE:
+        return get_redirect_to_terminal_page()
+    elif postcode_tier_change_status == PostcodeTierStatus.INCREASED:
+        if latest_postcode_tier == PostcodeTier.VERY_HIGH_PLUS_SHIELDING:
+            return redirect("/basic-care-needs")
+        _raise_returning_user_redirect_error(postcode_tier_change_status, original_postcode_tier, latest_postcode_tier)
+    elif postcode_tier_change_status == PostcodeTierStatus.DECREASED:
+        if latest_postcode_tier == PostcodeTier.VERY_HIGH:
+            return get_redirect_to_terminal_page()
+        elif not is_tier_very_high_or_above(latest_postcode_tier):
+            return redirect("/not-eligible-postcode-returning-user")
+        _raise_returning_user_redirect_error(postcode_tier_change_status, original_postcode_tier, latest_postcode_tier)
+
+    _raise_returning_user_redirect_error(postcode_tier_change_status, original_postcode_tier, latest_postcode_tier)
+
+
+def _raise_returning_user_redirect_error(postcode_tier_change_status, original_postcode_tier, latest_postcode_tier):
+    raise RuntimeError("Unable to determine redirect location for nhs login returning user, "
+                       + f"tier change status: {postcode_tier_change_status}, "
+                       + f"original postcode tier: {original_postcode_tier}, "
+                       + f"latest postcode tier: {latest_postcode_tier.value}")
 
 
 def _is_tiering_logic_enabled():

@@ -1,0 +1,20 @@
+{%- from "govuk_frontend_jinja/components/summary-list/macro.html" import govukSummaryList -%}
+{%- from 'govuk_frontend_jinja/components/button/macro.html' import govukButton -%}
+
+{% extends "base.html" %}
+
+{% block centered_content %}
+  <h1 class="govuk-heading-l govuk-!-margin-top-0 govuk-!-margin-bottom-8">
+    {{ title_text }}
+  </h1>
+  <p class="govuk-body">Your area is not currently in Tier 3 so you cannot get help through this service at the moment.</p>
+  <p class="govuk-body">If your area goes into Tier 3, you’ll be able to sign in to this service and update your support needs or personal details.</p>
+
+  <h2 class="govuk-heading-m">If you've changed your address</h2>
+  <p class="govuk-body">You'll be able to update your support needs or personal details if you've moved into an area that's in Tier 3.</p>
+
+  {{ govukButton({
+        "text": "I've changed my address",
+        "href": append_querystring_params("/postcode-lookup")
+      }) }}
+{% endblock %}

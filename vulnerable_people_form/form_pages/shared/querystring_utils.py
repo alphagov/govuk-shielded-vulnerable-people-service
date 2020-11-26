@@ -2,7 +2,7 @@ from flask import request, session
 
 from vulnerable_people_form.form_pages.shared.constants import SESSION_KEY_QUERYSTRING_PARAMS
 
-_QUERY_STRING_PARAMS_TO_RETAIN = ["la"]  # local authority query string param key
+_QUERY_STRING_PARAMS_TO_RETAIN = ["la", "ca"]  # local authority query string param key
 
 
 def append_querystring_params(initial_url):
