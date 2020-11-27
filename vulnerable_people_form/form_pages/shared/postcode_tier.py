@@ -7,6 +7,8 @@ def update_postcode_tier(postcode, app):
     if app.is_tiering_logic_enabled:
         postcode_tier = get_postcode_tier(postcode)
         set_postcode_tier(postcode_tier)
+    else:
+        set_postcode_tier(PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value)
 
 
 def is_tier_very_high_or_above(postcode_tier):

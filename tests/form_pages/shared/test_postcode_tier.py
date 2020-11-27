@@ -18,7 +18,7 @@ def test_update_postcode_tier_should_not_update_when_tiering_logic_disabled():
          patch("vulnerable_people_form.form_pages.shared.postcode_tier.set_postcode_tier") as mock_set_postcode_tier:
         update_postcode_tier("LS11BA", _current_app)
         mock_get_postcode_tier.assert_not_called()
-        mock_set_postcode_tier.assert_not_called()
+        mock_set_postcode_tier.assert_called_once_with(PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value)
 
 
 def test_update_postcode_tier_should_update_session_when_tiering_logic_enabled():
