@@ -60,7 +60,7 @@ Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - 
         When I give the "#building_and_street_line_1" field the value "this is a really long address line one this is a really long address line one this is a really long address"
         And I give the "#building_and_street_line_2" field the value "this is a really long address line two this is a really long address line two this is a really long address line two this is a really long address line two this is a really long address line two"
         And I give the "#town_city" field the value "Bradford"
-        And I give the "#postcode" field the value "BB1 1TA"
+        And I give the "#postcode" field the value "LE674AY"
         And I submit the form
         Then I am redirected to the "do-you-have-someone-to-go-shopping-for-you" page
 
@@ -70,15 +70,9 @@ Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - 
         And I submit the form
         Then I am redirected to the "priority-supermarket-deliveries" page
 
-    Scenario: Should be redirected to basic care needs when yes answered to priority shopping deliveries
+    Scenario: Should be redirected to contact details needs when yes answered to priority shopping deliveries
         Given I am on the "priority-supermarket-deliveries" page
         When I click the ".govuk-radios__item input[value='1']" element
-        And I submit the form
-        Then I am redirected to the "basic-care-needs" page
-
-    Scenario: Should be redirected to contact details when no answered to basic care needs help
-        Given I am on the "basic-care-needs" page
-        When I click the ".govuk-radios__item input[value='0']" element
         And I submit the form
         Then I am redirected to the "contact-details" page
 

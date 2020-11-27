@@ -18,7 +18,7 @@ Feature: COVID-19 Shielded vulnerable people service - e2e user journey - postco
 
     Scenario: Should be re-directed to shielding because vulnerable when eligible postcode entered
         Given I am on the "postcode-eligibility" page
-        When I give the "#postcode" field the value "L244AD"
+        When I give the "#postcode" field the value "LE674AY"
         And I submit the form
         Then I am redirected to the "nhs-letter" page
 

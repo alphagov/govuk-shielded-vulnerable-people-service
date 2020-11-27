@@ -338,3 +338,12 @@ def _set_form_answer(answers_key_list, answer):
     for key in answers_key_list[:-1]:
         answers = answers.setdefault(key, {})
     answers[answers_key_list[-1]] = answer
+
+
+def is_returning_nhs_login_user_without_basic_care_needs_answer():
+    # Scenario: Where the postcode tier has increased to VERY_HIGH_PLUS_SHIELDING
+    # and no answer is present for 'basic_care_needs'
+    return is_nhs_login_user() \
+           and accessing_saved_answers() \
+           and get_postcode_tier() == PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value \
+           and get_answer_from_form(["basic_care_needs"]) is None

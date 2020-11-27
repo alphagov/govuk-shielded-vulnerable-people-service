@@ -18,7 +18,7 @@ Feature: COVID-19 Shielded vulnerable people service - partial user journey - po
       
   Scenario: Should be re-directed to do you live in England when unknown postcode entered
         Given I am on the "postcode-eligibility" page
-        When I give the "#postcode" field the value "LE674AY"
+        When I give the "#postcode" field the value "L244AD"
         And I submit the form
         Then I am redirected to the "not-eligible-postcode" page
         And the content of element with selector ".govuk-heading-l" equals "Sorry, this service is not available in your area"

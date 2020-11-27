@@ -305,7 +305,7 @@ def get_redirect_for_returning_user_based_on_tier():
         return get_redirect_to_terminal_page()
     elif postcode_tier_change_status == PostcodeTierStatus.INCREASED:
         if latest_postcode_tier == PostcodeTier.VERY_HIGH_PLUS_SHIELDING:
-            return redirect("/basic-care-needs")
+            return redirect("/basic-care-needs?ca=1")
         _raise_returning_user_redirect_error(postcode_tier_change_status, original_postcode_tier, latest_postcode_tier)
     elif postcode_tier_change_status == PostcodeTierStatus.DECREASED:
         if latest_postcode_tier == PostcodeTier.VERY_HIGH:
