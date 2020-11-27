@@ -272,7 +272,7 @@ def test_get_back_url_for_contact_details_should_return_correct_url_when_tiering
                                "latest_postcode_tier": PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value,
                                "change_status": PostcodeTierStatus.INCREASED.value
                            },
-                          "/basic-care-needs"),
+                          "/basic-care-needs?ca=1"),
                           (PostcodeTier.VERY_HIGH,
                            {
                                "latest_postcode_tier": PostcodeTier.VERY_HIGH.value,
