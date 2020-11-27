@@ -1,18 +1,18 @@
 Your registration number is {{reference_number}}.
 
 {% if not has_someone_to_shop and wants_supermarket_deliveries and wants_social_care %}
- You should be able to start booking priority supermarket deliveries in the next 1 to 7 days, depending on the supermarket.
- If you do not already have an account with a supermarket delivery service, set one up now. You can set up accounts with more than one supermarket.
+ You should be able to go to a supermarket website and get priority access to deliveries in the next 1 to 7 days, depending on the supermarket.
+ If you do not already have an account with a supermarket delivery service, go to the supermarket’s website and set one up now. You can set up accounts with more than one supermarket.
  Your local authority will contact you to talk about any local support that’s available. This can take a week or so.
 {% endif %}
 
 {% if not has_someone_to_shop and wants_supermarket_deliveries and not wants_social_care %}
- You should be able to start booking priority supermarket deliveries in the next 1 to 7 days, depending on the supermarket.
- If you do not already have an account with a supermarket delivery service, set one up now. You can set up accounts with more than one supermarket.
+ You should be able to go to a supermarket website and get priority access to deliveries in the next 1 to 7 days, depending on the supermarket.
+ If you do not already have an account with a supermarket delivery service, go to the supermarket’s website and set one up now. You can set up accounts with more than one supermarket.
 {% endif %}
 
 {% if not has_someone_to_shop and not wants_supermarket_deliveries and wants_social_care %}
-Your local authority will contact you to talk about any local support that’s available. This can take a week or so.
+ Your local authority will contact you to talk about any local support that’s available. This can take a week or so.
  In the meantime, contact your local authority right away if you need urgent help and cannot rely on friends, family or neighbours: https://www.gov.uk/coronavirus-local-help
  You won’t get the help you need if you do not contact them.
 {% endif %}
