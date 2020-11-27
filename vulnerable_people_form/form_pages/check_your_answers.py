@@ -2,6 +2,7 @@ from flask import session, current_app, redirect
 
 from .blueprint import form
 from .shared.constants import PostcodeTier
+from .shared.querystring_utils import append_querystring_params
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page, dynamic_back_url
 from .shared.session import persist_answers_from_session, form_answers, get_summary_rows_from_form_answers, \
@@ -12,6 +13,7 @@ from ..integrations import govuk_notify_client, spl_check
 @form.route("/check-your-answers", methods=["GET"])
 def get_check_your_answers():
     session["check_answers_page_seen"] = True
+    exclude_answers = None
 
     if current_app.is_tiering_logic_enabled:
         if is_returning_nhs_login_user_without_basic_care_needs_answer():
