@@ -98,13 +98,13 @@ jobs:
           GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID: a3a3f86a-b2e0-464b-a74d-ec2e7fd29ac5
           NOTIFY_API_KEY: ((svp-form/notify-api-key-stg))
           SECRET_KEY: ((svp-form/flask-secret-key-base-stg))
-          NHS_OIDC_AUTHORITY_URL: https://auth.sandpit.signin.nhs.uk
+          NHS_OIDC_AUTHORITY_URL: https://auth.aos.signin.nhs.uk
           NHS_OIDC_LOGIN_CALLBACK_URL: https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital/nhs-login-callback
           NHS_OIDC_REGISTRATION_CALLBACK_URL: https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital/nhs-registration-callback
-          NHS_OIDC_CLIENT_ID: gds-svp-test
+          NHS_OIDC_CLIENT_ID: gds-svp
           AWS_ACCESS_KEY: ((svp-form/aws-access-key-id-stg))
           AWS_SECRET_ACCESS_KEY: ((svp-form/aws-secret-access-key-stg))
-          NHS_OIDC_LOGIN_PRIVATE_KEY: ((svp-form/nhs-login-private-key-sandbox))
+          NHS_OIDC_LOGIN_PRIVATE_KEY: ((svp-form/nhs-login-private-key-stg))
           SENTRY_DSN: ((svp-form/sentry-dns-stg))
           GA_TRACKING_ID: UA-43115970-1
           GA_CROSS_DOMAIN_ID: UA-145652997-7
