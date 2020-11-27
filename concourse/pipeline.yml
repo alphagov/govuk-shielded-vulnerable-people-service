@@ -125,7 +125,7 @@ jobs:
           GA_TRACKING_ID: UA-43115970-1
           GA_CROSS_DOMAIN_ID: UA-145652997-7
           ENVIRONMENT: SANDBOX
-          TIERING_LOGIC: ((svp-form/feature_tiering_logic-sandbox))
+          TIERING_LOGIC: ((svp-form/feature-tiering-logic-sandbox))
 
   - name: smoke-test-sandbox
     serial: true
@@ -138,7 +138,7 @@ jobs:
         params:
           WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to sandbox is not serving HTTP error codes"
-          TIERING_LOGIC: ((svp-form/feature_tiering_logic-sandbox))
+          TIERING_LOGIC: ((svp-form/feature-tiering-logic-sandbox))
 
 
   - name: e2e-test-sandbox
@@ -155,7 +155,7 @@ jobs:
           ENVIRONMENT: "sandbox"
           WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to sandbox is not serving HTTP error codes"
-          TIERING_LOGIC: ((svp-form/feature_tiering_logic-sandbox))
+          TIERING_LOGIC: ((svp-form/feature-tiering-logic-sandbox))
 
   - name: deploy-to-staging
     serial: true
@@ -190,7 +190,7 @@ jobs:
           GA_TRACKING_ID: UA-43115970-1
           GA_CROSS_DOMAIN_ID: UA-145652997-7
           ENVIRONMENT: STAGING
-          TIERING_LOGIC: ((svp-form/feature_tiering_logic-stg))
+          TIERING_LOGIC: ((svp-form/feature-tiering-logic-stg))
         on_failure: *slack_alert_on_failure
 
   - name: smoke-test-staging
@@ -204,7 +204,7 @@ jobs:
         params:
           WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
-          TIERING_LOGIC: ((svp-form/feature_tiering_logic-stg))
+          TIERING_LOGIC: ((svp-form/feature-tiering-logic-stg))
         on_failure: *slack_alert_on_failure
 
   - name: e2e-test-staging
@@ -221,7 +221,7 @@ jobs:
           ENVIRONMENT: "staging"
           WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
-          TIERING_LOGIC: ((svp-form/feature_tiering_logic-stg))
+          TIERING_LOGIC: ((svp-form/feature-tiering-logic-stg))
         on_failure: *slack_alert_on_failure
 
   - name: deploy-to-prod
@@ -257,7 +257,7 @@ jobs:
           GA_TRACKING_ID: UA-43115970-1
           GA_CROSS_DOMAIN_ID: UA-145652997-1
           ENVIRONMENT: PRODUCTION
-          TIERING_LOGIC: ((svp-form/feature_tiering_logic-prod))
+          TIERING_LOGIC: ((svp-form/feature-tiering-logic-prod))
         on_failure: *slack_alert_on_failure
 
   - name: smoke-test-prod
@@ -271,7 +271,7 @@ jobs:
         params:
           WEB_APP_BASE_URL: "https://coronavirus-shielding-support.service.gov.uk"
           MESSAGE: "Checks that the application deployed to production is not serving HTTP error codes"
-          TIERING_LOGIC: ((svp-form/feature_tiering_logic-prod))
+          TIERING_LOGIC: ((svp-form/feature-tiering-logic-prod))
         on_failure: *slack_alert_on_failure
         on_success: *slack_alert_on_success
 
@@ -285,7 +285,7 @@ jobs:
         params:
           WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
-          TIERING_LOGIC: ((svp-form/feature_tiering_logic-stg))
+          TIERING_LOGIC: ((svp-form/feature-tiering-logic-stg))
         on_failure: *slack_alert_on_failure
       - task: cronitor-heartbeat
         timeout: 1m
@@ -304,7 +304,7 @@ jobs:
         params:
           WEB_APP_BASE_URL: "https://coronavirus-shielding-support.service.gov.uk"
           MESSAGE: "Checks that the application deployed to production is not serving HTTP error codes"
-          TIERING_LOGIC: ((svp-form/feature_tiering_logic-prod))
+          TIERING_LOGIC: ((svp-form/feature-tiering-logic-prod))
         on_failure:
           task: cronitor-fail
           file: git-master/concourse/tasks/cronitor.yml
