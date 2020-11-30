@@ -32,7 +32,7 @@ PAGE_TITLES = {
     "do-you-have-someone-to-go-shopping-for-you": "Is there someone you can rely on to go shopping for you if you need them to?",  # noqa: E501
     "do-you-live-in-england": "Do you live in England?",  # noqa: E501
     "priority-supermarket-deliveries": "Do you want access to priority supermarket deliveries?",
-    "medical-conditions": "Do you have one of the listed medical conditions?",
+    "medical-conditions": "Do you have one of the listed conditions?",
     "name": "What is your name?	",
     "nhs-letter": "Has the NHS or your doctor told you that you’re classed as clinically extremely vulnerable to coronavirus?",  # noqa: E501
     "nhs-login": "Do you have an NHS login?",
