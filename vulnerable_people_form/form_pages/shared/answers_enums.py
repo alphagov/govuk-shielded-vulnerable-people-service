@@ -37,8 +37,8 @@ class PrioritySuperMarketDeliveriesAnswers(EnumWithText):
     NO = 0
 
     __text_values__ = {
-        YES: "Yes, I want access to priority supermarket deliveries",
-        NO: "No, I do not want access to priority supermarket deliveries",
+        YES: "Yes, I want priority access to supermarket deliveries",
+        NO: "No, I do not want priority access to supermarket deliveries",
     }
 
 
@@ -94,8 +94,8 @@ class MedicalConditionsAnswers(EnumWithText):
     NO = 0
 
     __text_values__ = {
-        YES: "Yes, I have one of the listed medical conditions",
-        NO: "No, I do not have one of the listed medical conditions",
+        YES: "Yes, I have one of the listed conditions",
+        NO: "No, I do not have one of the listed conditions",
     }
 
 
