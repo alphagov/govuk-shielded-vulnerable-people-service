@@ -11,7 +11,10 @@ from vulnerable_people_form.form_pages.shared.answers_enums import \
     ApplyingOnOwnBehalfAnswers, MedicalConditionsAnswers, PrioritySuperMarketDeliveriesAnswers, BasicCareNeedsAnswers, \
     ShoppingAssistanceAnswers, \
     LiveInEnglandAnswers
-from vulnerable_people_form.form_pages.shared.constants import PAGE_TITLES, PostcodeTier
+from vulnerable_people_form.form_pages.shared.constants import PAGE_TITLES, PostcodeTier, SESSION_KEY_POSTCODE_TIER
+from vulnerable_people_form.form_pages.shared.session import \
+    is_returning_nhs_login_user_without_basic_care_needs_answer, \
+    is_very_high_plus_shielding_without_basic_care_needs_answer
 
 _current_app = Flask(__name__)
 _current_app.secret_key = 'test_secret'
@@ -284,6 +287,39 @@ def test_persist_answers_from_session():
 
         assert test_request_ctx.session["form_uid"] == submission_ref
         assert returned_submission_ref == submission_ref
+
+
+@pytest.mark.parametrize("is_nhs_login_user, accessing_saved_answers, basic_care_needs_answer, expected_return_value",
+                         [(True, True, None, True),
+                          (False, True, 1, False),
+                          (True, False, 1, False),
+                          (True, True, 1, False)])
+def test_is_returning_nhs_login_user_without_basic_care_needs_answer_should_return_correct_value(
+        is_nhs_login_user, accessing_saved_answers, basic_care_needs_answer, expected_return_value
+):
+    with _current_app.app_context(), \
+         _current_app.test_request_context() as test_request_ctx:
+        test_request_ctx.session["accessing_saved_answers"] = accessing_saved_answers
+        test_request_ctx.session["nhs_sub"] = "nhs_sub_value" if is_nhs_login_user else None
+        test_request_ctx.session["form_answers"] = {"basic_care_needs": basic_care_needs_answer}
+        test_request_ctx.session[SESSION_KEY_POSTCODE_TIER] = PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value
+        output = is_returning_nhs_login_user_without_basic_care_needs_answer()
+        assert output == expected_return_value
+
+
+@pytest.mark.parametrize("postcode_tier, basic_care_needs_answer, expected_return_value",
+                         [(PostcodeTier.VERY_HIGH_PLUS_SHIELDING, None, True),
+                          (PostcodeTier.VERY_HIGH_PLUS_SHIELDING, 1, False),
+                          (PostcodeTier.VERY_HIGH, None, False)])
+def test_is_very_high_plus_shielding_without_basic_care_needs_answer_should_return_correct_value(
+        postcode_tier, basic_care_needs_answer, expected_return_value
+):
+    with _current_app.app_context(), \
+         _current_app.test_request_context() as test_request_ctx:
+        test_request_ctx.session["form_answers"] = {"basic_care_needs": basic_care_needs_answer}
+        test_request_ctx.session[SESSION_KEY_POSTCODE_TIER] = postcode_tier.value
+        output = is_very_high_plus_shielding_without_basic_care_needs_answer()
+        assert output == expected_return_value
 
 
 def _make_summary_row_assertions(summary_row,

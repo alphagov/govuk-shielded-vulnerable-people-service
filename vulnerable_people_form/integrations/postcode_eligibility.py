@@ -3,7 +3,7 @@ import logging
 from vulnerable_people_form.form_pages.shared.constants import PostcodeTier
 from vulnerable_people_form.form_pages.shared.logger_utils import init_logger, log_event_names, create_log_message
 from .persistence import generate_string_parameter, execute_sql
-from vulnerable_people_form.integrations import ladcode_tier_lookup
+from vulnerable_people_form.integrations.ladcode_tier_lookup import get_tier_by_ladcode
 
 logger = logging.getLogger(__name__)
 init_logger(logger)
@@ -15,7 +15,7 @@ def get_postcode_tier(postcode):
     if not ladcode:
         return None
 
-    postcode_tier = ladcode_tier_lookup.get_tier_by_ladcode(ladcode)
+    postcode_tier = get_tier_by_ladcode(ladcode)
 
     if postcode_tier not in [e.value for e in PostcodeTier]:
         raise ValueError(f"Unexpected postcode tier retrieved: {postcode_tier}")
