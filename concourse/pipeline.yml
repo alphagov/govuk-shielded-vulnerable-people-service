@@ -312,7 +312,7 @@ jobs:
       - task: gatling
         file: git-master/concourse/tasks/gatling-workflow-load-test.yml
         params: 
-          TIERING_LOGIC: ((svp-form/feature-tiering-logic-staging))
+          TIERING_LOGIC: ((svp-form/feature-tiering-logic-stg))
         ensure:
           do:
             - task: get-aws-credentials
