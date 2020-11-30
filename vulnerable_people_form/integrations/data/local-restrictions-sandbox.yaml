@@ -1730,7 +1730,7 @@ E07000169:
 E07000170:
   name: Ashfield District Council
   restrictions:
-    - alert_level: 3
+    - alert_level: 2
       start_date: 2020-11-26
       start_time: "00:01"
 E07000171:
