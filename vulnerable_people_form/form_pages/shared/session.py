@@ -196,9 +196,13 @@ def persist_answers_from_session():
     if lives_in_england is not None and lives_in_england == 0:
         lives_in_england = None
 
-    if current_app.is_tiering_logic_enabled and get_postcode_tier() != PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value:
-        # it is not possible to have an answer for basic_care_needs when the tier is v high + shielding
-        _set_form_answer(["basic_care_needs"], None)
+    if current_app.is_tiering_logic_enabled:
+        postcode_tier = get_postcode_tier()
+        if postcode_tier not in [PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value, PostcodeTier.VERY_HIGH.value]:
+            raise ValueError(f"Unexpected value encountered for postcode tier: {postcode_tier}")
+        if get_postcode_tier() != PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value:
+            # it is not possible to have an answer for basic_care_needs when the tier is v high + shielding
+            _set_form_answer(["basic_care_needs"], None)
 
     submission_reference = persistence.persist_answers(
         form_answers()["nhs_number"],
