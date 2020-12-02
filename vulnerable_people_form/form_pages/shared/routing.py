@@ -151,12 +151,12 @@ def update_lives_in_england_referrer(referrer):
         session[SESSION_KEY_LIVES_IN_ENGLAND_REFERRER] = referrer
 
 
-def _get_next_form_url_based_on_postcode_tier(_redirect):
+def _get_next_form_url_based_on_postcode_tier(redirect_url, should_redirect_to_next_form_page=False):
     postcode_tier = get_postcode_tier()
     if is_tier_very_high_or_above(postcode_tier):
-        return _redirect
-    else:
-        return redirect("/not-eligible-postcode")
+        return redirect_to_next_form_page(redirect_url) if should_redirect_to_next_form_page else redirect(redirect_url)
+
+    return redirect("/not-eligible-postcode")
 
 
 def _get_next_form_url_after_shopping_and_priority_supermarket():
@@ -185,7 +185,7 @@ def route_to_next_form_page():
         return redirect_to_next_form_page("/postcode-eligibility")
     elif current_form == "postcode-eligibility":
         if _is_tiering_logic_enabled():
-            return _get_next_form_url_based_on_postcode_tier(redirect("/nhs-letter"))
+            return _get_next_form_url_based_on_postcode_tier("/nhs-letter")
         return return_redirect_if_postcode_valid(redirect("/nhs-letter"))
     elif current_form == "nhs-login":
         if YesNoAnswers(answer) is YesNoAnswers.YES:
@@ -234,13 +234,11 @@ def route_to_next_form_page():
         return redirect_to_next_form_page(get_next_form_url_after_nhs_number())
     elif current_form == "postcode-lookup":
         if _is_tiering_logic_enabled():
-            return _get_next_form_url_based_on_postcode_tier(redirect("/address-lookup"))
+            return _get_next_form_url_based_on_postcode_tier("/address-lookup")
         return return_redirect_if_postcode_valid(redirect("/address-lookup"))
     elif current_form == "support-address":
         if _is_tiering_logic_enabled():
-            return _get_next_form_url_based_on_postcode_tier(
-                redirect_to_next_form_page("/do-you-have-someone-to-go-shopping-for-you")
-            )
+            return _get_next_form_url_based_on_postcode_tier("/do-you-have-someone-to-go-shopping-for-you", True)
         return return_redirect_if_postcode_valid(
             redirect_to_next_form_page("/do-you-have-someone-to-go-shopping-for-you")
         )
