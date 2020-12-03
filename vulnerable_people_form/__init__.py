@@ -31,14 +31,7 @@ def verify_config(app):
         "PERMANENT_SESSION_LIFETIME",
         "GA_TRACKING_ID",
         "GA_CROSS_DOMAIN_TRACKING_ID",
-        "NOTIFY_API_KEY",
         "SENTRY_DSN",
-        "GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID",
-        "GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID",
-        "GOVUK_NOTIFY_SPL_MATCH_LETTER_TEMPLATE_ID",
-        "GOVUK_NOTIFY_NO_SPL_MATCH_EMAIL_TEMPLATE_ID",
-        "GOVUK_NOTIFY_NO_SPL_MATCH_SMS_TEMPLATE_ID",
-        "GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID",
         # NHS OIDC config
         "NHS_OIDC_AUTHORITY_URL",
         "NHS_OIDC_CLIENT_ID",
@@ -49,7 +42,8 @@ def verify_config(app):
         "AWS_REGION",
         "AWS_ACCESS_KEY",
         "AWS_SECRET_ACCESS_KEY",
-        "ENVIRONMENT"
+        "ENVIRONMENT",
+        "AWS_SQS_QUEUE_URL"
     }
     present_keys = set(k for k in app.config.keys() if app.config[k] is not None)
     if not present_keys.issuperset(required_keys):

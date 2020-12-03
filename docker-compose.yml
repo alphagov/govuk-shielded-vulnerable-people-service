@@ -21,6 +21,7 @@ services:
     links:
       - "rds-client-api"
       - "ons-test"
+      - "sqs-client-api"
     volumes:
       - .:/app
   ons-test:
@@ -50,3 +51,14 @@ services:
       SECRET_ARN: 'arn:aws:secretsmanager:eu-west-2:123456789012:secret:dummy'
     ports:
       - "8080:80"
+  sqs-client-api:
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=sqs
+      - AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+      - AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      - AWS_DEFAULT_REGION=eu-west-2
+    volumes:
+      - ./scripts/create-sqs-queue.sh:/docker-entrypoint-initaws.d/create-sqs-queue.sh

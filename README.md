@@ -7,7 +7,6 @@
   - Docker
   - Google Analytics API key
   - Sentry DSN
-  - GOV.UK Notify API key
   - NHS oidc client id + private key
 
 #	Developers' guide
@@ -100,17 +99,15 @@ To set up the app for local development you need to follow these steps:
 
 4.  If you wish to test with NHS functionality place the private key file for your NHS oidc client id into the
     path `instance/private_key.pem`.
-
-5.  If you wish to test notifications locally remove DISABLE_NOTIFY environment variable from the configuration. 
-
-6. Make sure the database is up to date (following the guide in 
+ 
+5. Make sure the database is up to date (following the guide in 
    covid-engineering/database/README.md).
    ```
    cd $PATH_TO_COVID_ENGINEERING\covid-engineering\database
    alembic --config=alembic.local.ini upgrade head
 
    ```
-7. Prepopulate the local databases with postcode to ladcode lookups 
+6. Prepopulate the local databases with postcode to ladcode lookups 
    ```bash scripts/prepopulate_local_db.sh```
 		
 ### Production configuration & Deployment
@@ -156,7 +153,6 @@ The following environment variables are all stored within Concourse and pulled i
 - AWS_SECRET_ACCESS_KEY
 - NHS_OIDC_LOGIN_PRIVATE_KEY
 - ORDNANCE_SURVEY_PLACES_API_KEY
-- NOTIFY_API_KEY
 - SECRET_KEY
 
 
@@ -236,6 +232,9 @@ variables.
     `AWS_RDS_DATABASE_ARN_OVERRIDE` required\]**: This variable is used
     to retrieve the correct AWS database cluster ARN from RDS.
 
+  - `AWS_SQS_QUEUE_URL` **\[required\]**: This variable is used to send
+    messages to SQS which sends user communications.
+
   - `DATABASE_SECRET_TAGS` **\[either this or
     `AWS_RDS_DATABASE_SECRET_OVERRIDE` required\]**: This variable
     should be a list of tags that the app uses to retrieve the correct
@@ -243,25 +242,6 @@ variables.
     should be a comma-separated list of tags. If set in the `config.py`
     file, it should be a list of Python strings.
   
-  - `NOTIFY_API_KEY` **\[required\]**: This key is required to be able to send notifications via the GOV.UK Notify API.
-    
-  - `GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID` **\[required\]**: This is the email template id for the GOV.UK 
-  Notify api for when a user is matched via the SPL call.
-   
-  - `GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID` **\[required\]**: This is the SMS template id for the GOV.UK 
-  Notify api for when a user is matched via the SPL call.
-   
-  - `GOVUK_NOTIFY_SPL_MATCH_LETTER_TEMPLATE_ID` **\[required\]**: This is the letter template id for the GOV.UK 
-  Notify api for when a user is matched via the SPL call.
-  
-  - `GOVUK_NOTIFY_NO_SPL_MATCH_EMAIL_TEMPLATE_ID` **\[required\]**: This is the email template id for the GOV.UK 
-  Notify api for when a user is not matched via the SPL call.
-   
-  - `GOVUK_NOTIFY_NO_SPL_MATCH_SMS_TEMPLATE_ID` **\[required\]**: This is the SMS template id for the GOV.UK 
-  Notify api for when a user is not matched via the SPL call.
-   
-  - `GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID` **\[required\]**: This is the letter template id for the GOV.UK 
-  Notify api for when a user is not matched via the SPL call.
 
 #### Useful config variables for development
 
@@ -271,7 +251,11 @@ variables.
 
   - `LOCAL_AWS_ENDPOINT_URL` **\[not required\]**: The presence of this
     variable will configure the app to communicate with the supplied
-    endpoint URL, instead of the AWS servers.
+    endpoint URL, instead of the AWS (RDS) servers.
+
+  - `LOCAL_SQS_ENDPOINT_URL` **\[not required\]**: The presence of this
+    variable will configure the app to communicate with the supplied
+    endpoint URL, instead of the AWS (SQS) servers.
 
   - `AWS_RDS_DATABASE_ARN_OVERRIDE` **\[either this or
     `DATABASE_CLUSTER_PREFIX` required\]**: If this variable is present

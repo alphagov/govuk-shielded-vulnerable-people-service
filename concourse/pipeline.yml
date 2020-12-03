@@ -90,13 +90,6 @@ jobs:
           INSTANCES: 2
           CF_STARTUP_TIMEOUT: 5 # minutes
           HOSTNAME: gds-shielded-vulnerable-people-service-sandbox
-          GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID: 80ea4bbd-66f1-455d-b1d2-608e2b8aa948
-          GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID: 17529024-96a3-42f1-945e-9ca50dc87617
-          GOVUK_NOTIFY_SPL_MATCH_LETTER_TEMPLATE_ID: 6a7a0e2c-5e04-47c5-b8ae-686e4a5cfbd2
-          GOVUK_NOTIFY_NO_SPL_MATCH_EMAIL_TEMPLATE_ID: ff27bf85-bddb-451d-9f49-bd862474f29d
-          GOVUK_NOTIFY_NO_SPL_MATCH_SMS_TEMPLATE_ID: b29626c4-7db2-4642-8104-dd01f1b9e663
-          GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID: a3a3f86a-b2e0-464b-a74d-ec2e7fd29ac5
-          NOTIFY_API_KEY: ((svp-form/notify-api-key-stg))
           SECRET_KEY: ((svp-form/flask-secret-key-base-stg))
           NHS_OIDC_AUTHORITY_URL: https://auth.aos.signin.nhs.uk
           NHS_OIDC_LOGIN_CALLBACK_URL: https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital/nhs-login-callback
@@ -104,6 +97,7 @@ jobs:
           NHS_OIDC_CLIENT_ID: gds-svp
           AWS_ACCESS_KEY: ((svp-form/aws-access-key-id-stg))
           AWS_SECRET_ACCESS_KEY: ((svp-form/aws-secret-access-key-stg))
+          AWS_SQS_QUEUE_URL: ((svp-form/aws-sqs-queue-url-stg))
           NHS_OIDC_LOGIN_PRIVATE_KEY: ((svp-form/nhs-login-private-key-stg))
           SENTRY_DSN: ((svp-form/sentry-dns-stg))
           GA_TRACKING_ID: UA-43115970-1
@@ -155,19 +149,13 @@ jobs:
           INSTANCES: 20
           CF_STARTUP_TIMEOUT: 10 # minutes
           HOSTNAME: gds-shielded-vulnerable-people-service-staging
-          GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID: 80ea4bbd-66f1-455d-b1d2-608e2b8aa948
-          GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID: 17529024-96a3-42f1-945e-9ca50dc87617
-          GOVUK_NOTIFY_SPL_MATCH_LETTER_TEMPLATE_ID: 6a7a0e2c-5e04-47c5-b8ae-686e4a5cfbd2
-          GOVUK_NOTIFY_NO_SPL_MATCH_EMAIL_TEMPLATE_ID: ff27bf85-bddb-451d-9f49-bd862474f29d
-          GOVUK_NOTIFY_NO_SPL_MATCH_SMS_TEMPLATE_ID: b29626c4-7db2-4642-8104-dd01f1b9e663
-          GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID: a3a3f86a-b2e0-464b-a74d-ec2e7fd29ac5
-          NOTIFY_API_KEY: ((svp-form/notify-api-key-stg))
           SECRET_KEY: ((svp-form/flask-secret-key-base-stg))
           NHS_OIDC_AUTHORITY_URL: https://auth.aos.signin.nhs.uk
           NHS_OIDC_LOGIN_CALLBACK_URL: https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital/nhs-login-callback
           NHS_OIDC_REGISTRATION_CALLBACK_URL: https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital/nhs-registration-callback
           AWS_ACCESS_KEY: ((svp-form/aws-access-key-id-stg))
           AWS_SECRET_ACCESS_KEY: ((svp-form/aws-secret-access-key-stg))
+          AWS_SQS_QUEUE_URL: ((svp-form/aws-sqs-queue-url-stg))
           NHS_OIDC_LOGIN_PRIVATE_KEY: ((svp-form/nhs-login-private-key-stg))
           NHS_OIDC_CLIENT_ID: gds-svp
           SENTRY_DSN: ((svp-form/sentry-dns-stg))
@@ -222,19 +210,13 @@ jobs:
           INSTANCES: 30
           CF_STARTUP_TIMEOUT: 15 # minutes
           HOSTNAME: gds-shielded-vulnerable-people-service-prod
-          GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID: a951e38f-1dbb-4732-9cdc-ea611785c607
-          GOVUK_NOTIFY_SPL_MATCH_SMS_TEMPLATE_ID: 0d9ad0b8-5030-4676-9be9-20ec1dfebf5b
-          GOVUK_NOTIFY_SPL_MATCH_LETTER_TEMPLATE_ID: 646bb97a-593b-4c88-bee9-7907cadbf12f
-          GOVUK_NOTIFY_NO_SPL_MATCH_EMAIL_TEMPLATE_ID: c708e055-7783-4df6-8871-fb4b9b815ad2
-          GOVUK_NOTIFY_NO_SPL_MATCH_SMS_TEMPLATE_ID: 5e908e08-ee06-4baf-b37f-1001395ea51f
-          GOVUK_NOTIFY_NO_SPL_MATCH_LETTER_TEMPLATE_ID: 41f5ff60-551f-4966-bda1-d268355eb0d9
-          NOTIFY_API_KEY: ((svp-form/notify-api-key-prod))
           SECRET_KEY: ((svp-form/flask-secret-key-base-prod))
           NHS_OIDC_AUTHORITY_URL: https://auth.login.nhs.uk/
           NHS_OIDC_LOGIN_CALLBACK_URL: https://coronavirus-shielding-support.service.gov.uk/nhs-login-callback
           NHS_OIDC_REGISTRATION_CALLBACK_URL: https://coronavirus-shielding-support.service.gov.uk/nhs-registration-callback
           AWS_ACCESS_KEY: ((svp-form/aws-access-key-id-prod))
           AWS_SECRET_ACCESS_KEY: ((svp-form/aws-secret-access-key-prod))
+          AWS_SQS_QUEUE_URL: ((svp-form/aws-sqs-queue-url-prod))
           NHS_OIDC_LOGIN_PRIVATE_KEY: ((svp-form/nhs-login-private-key-prod))
           NHS_OIDC_CLIENT_ID: gds-svp
           SENTRY_DSN: ((svp-form/sentry-dns-prod))
