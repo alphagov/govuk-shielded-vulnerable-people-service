@@ -94,40 +94,24 @@ To set up the app for local development you need to follow these steps:
 2. Start rds-client-api and mysql 
     ```docker-compose up -d```
 
+3.  Fill in the missing configuration values as per the **Configuration
+    Variables Guide** section, and set the AWS environment variables as
+    per the ***Environment Variables Guide***. Otherwise it will default to talking to a local mock ons server and the mock rds-client. 
 
-3. Make sure the database is up to date (following the guide in 
+4.  If you wish to test with NHS functionality place the private key file for your NHS oidc client id into the
+    path `instance/private_key.pem`.
+
+5.  If you wish to test notifications locally remove DISABLE_NOTIFY environment variable from the configuration. 
+
+6. Make sure the database is up to date (following the guide in 
    covid-engineering/database/README.md).
    ```
    cd $PATH_TO_COVID_ENGINEERING\covid-engineering\database
    alembic --config=alembic.local.ini upgrade head
 
    ```
-
-4.  Fill in the missing configuration values as per the **Configuration
-    Variables Guide** section, and set the AWS environment variables as
-    per the ***Environment Variables Guide***.
-
-5.  Place the private key file for your NHS oidc client id into the
-    path `instance/private_key.pem`.
-
-6.  Set the `FLASK_CONFIG_FILE` environment variable so that it points at
-    the new file. (Note: the root path for Flask config is the `instance`
-    folder.) I.e.:
-    ```sh
-    export FLASK_CONFIG_FILE='config.py'
-    ```
-    
-7.  Set the Flask environment to development, and let Flask know where
-    the app file is stored:
-    ```sh
-    export FLASK_ENV='development'
-    export FLASK_APP='run.py'
-    ```
-	
-6.  Run the app:
-    ```sh
-    flask run
-    ```
+7. Prepopulate the local databases with postcode to ladcode lookups 
+   ```bash scripts/prepopulate_local_db.sh```
 		
 ### Production configuration & Deployment
 
@@ -187,6 +171,8 @@ The following environment variables are all stored within Concourse and pulled i
 
   - `FLASK_APP` **\[required\]**: The path to the Flask app's run file.
     This should be set to `run.py`.
+
+  - `OVERRIDE_ONS_URL` : Remove if you wish to test with the real ONS API with an API key
 
 ### Configuration variables guide
 

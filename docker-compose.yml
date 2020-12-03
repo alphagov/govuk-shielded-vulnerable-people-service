@@ -21,6 +21,8 @@ services:
     links:
       - "rds-client-api"
       - "ons-test"
+    volumes:
+      - .:/app
   ons-test:
     build: 
       dockerfile: Dockerfile
