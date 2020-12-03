@@ -14,6 +14,7 @@ from .constants import (
     SESSION_KEY_POSTCODE_TIER,
     PostcodeTier
 )
+from .form_utils import clean_nhs_number
 from .querystring_utils import append_querystring_params
 from .security import sanitise_input
 
@@ -321,12 +322,20 @@ def load_answers_into_session_if_available():
     return False
 
 
+def _format_nhs_user_info_answer(answers_key, nhs_answer):
+    if "nhs_number" in answers_key:
+        return clean_nhs_number(nhs_answer)
+    return nhs_answer
+
+
 def set_form_answers_from_nhs_user_info(nhs_user_info):
     for answers_key, maybe_key in NHS_USER_INFO_TO_FORM_ANSWERS.items():
         nhs_answer = maybe_key(nhs_user_info) if callable(maybe_key) else nhs_user_info.get(maybe_key)
         if nhs_answer is None:
             continue
-        _set_form_answer(answers_key, nhs_answer)
+
+        formatted_answer = _format_nhs_user_info_answer(answers_key, nhs_answer)
+        _set_form_answer(answers_key, formatted_answer)
 
 
 def set_postcode_tier(postcode_tier):

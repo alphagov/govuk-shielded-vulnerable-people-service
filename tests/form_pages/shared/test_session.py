@@ -14,7 +14,8 @@ from vulnerable_people_form.form_pages.shared.answers_enums import \
 from vulnerable_people_form.form_pages.shared.constants import PAGE_TITLES, PostcodeTier, SESSION_KEY_POSTCODE_TIER
 from vulnerable_people_form.form_pages.shared.session import \
     is_returning_nhs_login_user_without_basic_care_needs_answer, \
-    is_very_high_plus_shielding_without_basic_care_needs_answer
+    is_very_high_plus_shielding_without_basic_care_needs_answer, \
+    set_form_answers_from_nhs_user_info
 
 _current_app = Flask(__name__)
 _current_app.secret_key = 'test_secret'
@@ -320,6 +321,32 @@ def test_is_very_high_plus_shielding_without_basic_care_needs_answer_should_retu
         test_request_ctx.session[SESSION_KEY_POSTCODE_TIER] = postcode_tier.value
         output = is_very_high_plus_shielding_without_basic_care_needs_answer()
         assert output == expected_return_value
+
+
+@pytest.mark.parametrize("nhs_number, expected_return_value",
+                         [("123-123-1234", "1231231234"),
+                          ("123 123 1234", "1231231234"), (" 123456 1234 ", "1234561234")])
+def test_set_form_answers_from_nhs_user_info_should_only_format_nhs_number(nhs_number, expected_return_value):
+    with _current_app.test_request_context() as test_request_ctx:
+        test_request_ctx.session["form_answers"] = {}
+        set_form_answers_from_nhs_user_info({"nhs_number": nhs_number})
+        assert test_request_ctx.session["form_answers"]["nhs_number"] == expected_return_value
+
+
+def test_set_form_answers_from_nhs_user_info_should_not_format_other_values():
+    user_info = {
+        "sub": "00c4a4c1-6b20-4864-826a-e048f706670d",
+        "family_name": 'CARTHY',
+        "email": "test@nhs.net",
+        "phone_number": "+447839395989",
+        "nhs_number": "1234567899"
+    }
+    with _current_app.test_request_context() as test_request_ctx:
+        test_request_ctx.session["form_answers"] = {}
+        set_form_answers_from_nhs_user_info(user_info)
+        assert test_request_ctx.session["form_answers"]["contact_details"]["email"] == user_info["email"]
+        assert test_request_ctx.session["form_answers"]["name"]["last_name"] == user_info["family_name"]
+        assert test_request_ctx.session["form_answers"]["contact_details"]["phone_number_calls"] == user_info["phone_number"] # noqa
 
 
 def _make_summary_row_assertions(summary_row,
