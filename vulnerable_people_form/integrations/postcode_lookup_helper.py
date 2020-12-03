@@ -9,6 +9,7 @@ from vulnerable_people_form.form_pages.shared.logger_utils import init_logger, c
 
 logger = logging.getLogger(__name__)
 init_logger(logger)
+_ONS_URL_PATH = "/places/v1/address/postcode"
 
 
 class NoAddressesFoundAtPostcode(RuntimeError):
@@ -83,10 +84,9 @@ def entry_is_a_postal_address(result):
 
 
 def get_addresses_from_postcode(postcode):
-    url = "https://api.ordnancesurvey.co.uk/places/v1/addresses/postcode"
+    url = "https://api.ordnancesurvey.co.uk" + _ONS_URL_PATH
     if "OVERRIDE_ONS_URL" in current_app.config:
-        url = current_app.config["OVERRIDE_ONS_URL"] + "/places/v1/address/postcode"
-
+        url = current_app.config["OVERRIDE_ONS_URL"] + _ONS_URL_PATH
     params = {
         "postcode": postcode,
         "key": current_app.config.get("ORDNANCE_SURVEY_PLACES_API_KEY"),

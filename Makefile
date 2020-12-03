@@ -31,7 +31,11 @@ endif
 
 test_e2e_local:
 	@echo "Executing e2e automated tests against the local environment..."
-	docker-compose run --service-ports --rm chrome-driver bash -c "behave features/ --stop"
+ifeq (${TIERING_LOGIC},True)
+	docker-compose run --service-ports --rm chrome-driver bash -c "behave features -k --stop --tags core,feature_postcode_tier --stop"
+else
+	docker-compose run --service-ports --rm chrome-driver bash -c "behave features -k --stop --tags core,e2e_partial_journey_do_you_live_in_england --stop"
+endif
 
 concourse_e2e_with_pipeline_validation_webform_entry:
 	@echo "Executing web form entry for End to End with Pipeline Validation..."
