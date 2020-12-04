@@ -9,7 +9,7 @@ from vulnerable_people_form.form_pages.shared.logger_utils import init_logger, c
 
 logger = logging.getLogger(__name__)
 init_logger(logger)
-_ONS_URL_PATH = "/places/v1/address/postcode"
+_ONS_URL_PATH = "/places/v1/addresses/postcode"
 
 
 class NoAddressesFoundAtPostcode(RuntimeError):
