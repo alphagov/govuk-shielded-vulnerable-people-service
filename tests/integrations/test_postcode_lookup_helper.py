@@ -80,7 +80,7 @@ def api_response_and_function_result_should_match(expected_entries, addresses):
         assert addresses[i]['text'] == api_response_entry_json['LPI']['ADDRESS']
         values = json.loads(addresses[i]['value'])
         assert values['uprn'] == expected_entries[i].uprn
-        assert values['town_city'] == expected_entries[i].city.title()
+        assert values['town_city'] == f"{expected_entries[i].city.title()}, {expected_entries[i].city.title()}"
         assert values['postcode'] == expected_entries[i].postcode
         assert values['building_and_street_line_1'] == '{door_number} {street}'.format(
             door_number=expected_entries[i].door_number,
