@@ -66,7 +66,7 @@ def address_builder(lpi_info):
 
     return {
         "uprn": int(lpi_info.get("UPRN")),
-        "town_city": address_line_builder(lpi_info, ["LOCALITY_NAME", "TOWN_NAME"]).title(),
+        "town_city": address_line_builder(lpi_info, ["LOCALITY_NAME", "TOWN_NAME", "ADMINISTRATIVE_AREA"]).title(),
         "postcode": lpi_info.get("POSTCODE_LOCATOR"),
         "building_and_street_line_1": building_and_street_line_1.title(),
         "building_and_street_line_2": building_and_street_line_2.title(),
