@@ -6,13 +6,15 @@ Your registration number is {{reference_number}}.
 
 {% if not has_someone_to_shop and wants_supermarket_deliveries and wants_social_care %}
 
-You should be able to get priority access to supermarket deliveries in the next 1 to 7 days, depending on the supermarket. You’ll need to book deliveries on the supermarket’s website.
+You should be able to start booking priority supermarket deliveries in the next 1 to 7 days, depending on the supermarket. You’ll need to book deliveries on the supermarket’s website.
+
+Supermarkets have very few delivery slots left in December.
 
 #Set up a supermarket account
 
 If you do not already have an account with a supermarket delivery service, set one up now. You can set up accounts with more than one supermarket if you're worried about not getting a delivery slot. The participating supermarkets are:
 
-- ASDA: https://www.asda.com (priority access only available after 23 December)
+- ASDA: https://www.asda.com
 - Iceland: https://www.iceland.co.uk
 - Morrisons: https://www.morrisons.com
 - Ocado: https://www.ocado.com
@@ -26,13 +28,15 @@ Your local authority will contact you to talk about any local support that may b
 
 {% if not has_someone_to_shop and wants_supermarket_deliveries and not wants_social_care %}
 
-You should be able to get priority access to supermarket deliveries in the next 1 to 7 days, depending on the supermarket. You’ll need to book deliveries on the supermarket’s website.
+You should be able to start booking priority supermarket deliveries in the next 1 to 7 days, depending on the supermarket. You’ll need to book deliveries on the supermarket’s website.
+
+Supermarkets have very few delivery slots left in December.
 
 #Set up a supermarket account
 
 If you do not already have an account with a supermarket delivery service, set one up now. You can set up accounts with more than one supermarket if you're worried about not getting a delivery slot. The participating supermarkets are:
 
-- ASDA: https://www.asda.com (priority access only available after 23 December)
+- ASDA: https://www.asda.com
 - Iceland: https://www.iceland.co.uk
 - Morrisons: https://www.morrisons.com
 - Ocado: https://www.ocado.com
