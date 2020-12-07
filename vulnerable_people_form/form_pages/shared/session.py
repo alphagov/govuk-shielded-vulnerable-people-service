@@ -21,7 +21,7 @@ from .form_utils import clean_nhs_number, postcode_with_spaces
 from .querystring_utils import append_querystring_params
 from .security import sanitise_input
 
-from ...integrations import persistence
+from ...integrations import persistence, submission_tracing
 
 
 def form_answers():
@@ -204,21 +204,29 @@ def persist_answers_from_session():
         # it is not possible to have an answer for basic_care_needs when the shielding is not advised
         _set_form_answer(["basic_care_needs"], None)
 
+    _nhs_number = form_answers()["nhs_number"]
+    _date_of_birth = form_answers()["date_of_birth"]
+    _address_line_1 = form_answers()["support_address"]["building_and_street_line_1"]
+    _phone_number_calls = form_answers()["contact_details"].get("phone_number_calls")
+    _phone_number_texts = form_answers()["contact_details"].get("phone_number_texts")
+    _email = form_answers()["contact_details"].get("email")
+    _nhs_sub = session.get("nhs_sub")
+
     submission_reference = persistence.persist_answers(
-        form_answers()["nhs_number"],
+        _nhs_number,
         form_answers()["name"]["first_name"],
         form_answers()["name"].get("middle_name"),
         form_answers()["name"]["last_name"],
-        form_answers()["date_of_birth"],
-        form_answers()["support_address"]["building_and_street_line_1"],
+        _date_of_birth,
+        _address_line_1,
         form_answers()["support_address"].get("building_and_street_line_2"),
         form_answers()["support_address"]["town_city"],
         address_postcode,
         form_answers()["support_address"].get("uprn"),
-        form_answers()["contact_details"].get("phone_number_calls"),
-        form_answers()["contact_details"].get("phone_number_texts"),
-        form_answers()["contact_details"].get("email"),
-        session.get("nhs_sub"),
+        _phone_number_calls,
+        _phone_number_texts,
+        _email,
+        _nhs_sub,
         form_answers()["applying_on_own_behalf"],
         form_answers()["nhs_letter"],
         form_answers().get("priority_supermarket_deliveries"),
@@ -230,6 +238,18 @@ def persist_answers_from_session():
         get_shielding_advice(),
     )
     session["form_uid"] = submission_reference
+
+    submission_tracing.persist_answers_log(
+        submission_reference=submission_reference,
+        submission_details=[
+            _phone_number_calls,
+            _phone_number_texts,
+            _email,
+            _address_line_1,
+            address_postcode
+        ],
+        nhs_sub=_nhs_sub
+    )
 
     return submission_reference
 

@@ -41,6 +41,7 @@ params:
   SENTRY_DSN:
   ENVIRONMENT:
   POSTCODE_TIER_OVERRIDE:
+  SUBMISSION_TRACING_PEPPER:
 
 run:
   dir: src
@@ -85,6 +86,8 @@ run:
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form ENVIRONMENT "$ENVIRONMENT"
 
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form POSTCODE_TIER_OVERRIDE "$POSTCODE_TIER_OVERRIDE"
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form SUBMISSION_TRACING_PEPPER "$SUBMISSION_TRACING_PEPPER"
+
 
       cf push govuk-coronavirus-shielded-vulnerable-people-form --strategy rolling -i "$INSTANCES"
       cf map-route govuk-coronavirus-shielded-vulnerable-people-form london.cloudapps.digital --hostname "$HOSTNAME"

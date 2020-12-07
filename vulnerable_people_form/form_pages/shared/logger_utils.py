@@ -33,7 +33,8 @@ log_event_names = {
     "LADCODE_NOT_FOUND": "LadcodeNotFoundInDbForGivenPostcode",
     "TOO_MANY_LADCODES_FOUND": "MoreThanOneLadcodeFoundInDb",
     "LADCODE_NOT_IN_FILE": "LadcodeNotMappedToTierNotFoundInShieldingAdviceFile",
-    "SHIELDING_ADVICE_FOR_LADCODE_SUCCESS": "ShieldingAdviceFoundForLadcode"
+    "SHIELDING_ADVICE_FOR_LADCODE_SUCCESS": "ShieldingAdviceFoundForLadcode",
+    "SUBMISSION_TRACE": "DetailsOfCompletedSubmission"
 }
 
 
