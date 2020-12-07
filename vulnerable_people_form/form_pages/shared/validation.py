@@ -252,32 +252,34 @@ def validate_length(form_answer_key_list, max_length, error_string):
 
 def validate_support_address():
     length_fstring = "'{}' cannot be longer than {} characters"
-    value = all(
-        [
-            validate_length(
-                ("support_address", "building_and_street_line_1"),
-                110,
-                length_fstring.format("Address line 1", 110),
-            ),
-            validate_length(
-                ("support_address", "building_and_street_line_2"),
-                210,
-                length_fstring.format("Address line 2", 210),
-            ),
-            validate_mandatory_form_field(
-                "support_address",
-                "town_city",
-                "Enter a town or city",
-            ),
-            validate_length(("support_address", "town_city"), 50, length_fstring.format("Town or city", 50)),
-            validate_mandatory_form_field(
-                "support_address",
-                "building_and_street_line_1",
-                "Enter a building and street",
-            ),
-            validate_postcode(get_answer_from_form(("support_address", "postcode")), "support_address"),
-        ]
-    )
+    value = False
+    if form_answers().get("support_address", None):
+        value = all(
+            [
+                validate_length(
+                    ("support_address", "building_and_street_line_1"),
+                    110,
+                    length_fstring.format("Address line 1", 110),
+                ),
+                validate_length(
+                    ("support_address", "building_and_street_line_2"),
+                    210,
+                    length_fstring.format("Address line 2", 210),
+                ),
+                validate_mandatory_form_field(
+                    "support_address",
+                    "town_city",
+                    "Enter a town or city",
+                ),
+                validate_length(("support_address", "town_city"), 50, length_fstring.format("Town or city", 50)),
+                validate_mandatory_form_field(
+                    "support_address",
+                    "building_and_street_line_1",
+                    "Enter a building and street",
+                ),
+                validate_postcode(get_answer_from_form(("support_address", "postcode")), "support_address"),
+            ]
+        )
     return value
 
 

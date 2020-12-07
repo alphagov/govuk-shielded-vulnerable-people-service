@@ -4,6 +4,11 @@ import json
 import re
 from fake_os_places_api_entry import FakeOSPlacesAPIEntry
 
+_postcode_to_uprn = {"BB11TA": 10000000,
+                     "LE674AY": 1000,
+                     "L244AD":  2000,
+                     "QJ57VC": 3000}
+
 
 class OnsMockHandler(BaseHTTPRequestHandler):
 
@@ -41,7 +46,7 @@ class OnsMockHandler(BaseHTTPRequestHandler):
                             street="Carnegie Street",
                             door_number="1",
                             building_type="Terraced",
-                            uprn=10000000,
+                            uprn=_postcode_to_uprn[postcode],
                             usrn=10000000,
                             postal_address_code="D",
                             lpi_key="1111A111111111",
