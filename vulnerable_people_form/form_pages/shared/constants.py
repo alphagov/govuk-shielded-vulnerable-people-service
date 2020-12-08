@@ -36,7 +36,7 @@ PAGE_TITLES = {
     "name": "What is your name?	",
     "nhs-letter": "Has the NHS or your doctor told you that you’re classed as clinically extremely vulnerable to coronavirus?",  # noqa: E501
     "nhs-login": "Do you have an NHS login?",
-    "nhs-login-link": "If you've previously registered with NHS login for this service you can sign in",
+    "nhs-login-link": "Sign in to update your details or change the support you need",
     "nhs-number": "What is your NHS number?",
     "nhs-registration": "Would you like to create an NHS Login you can use to retrieve your answers in the future?",
     "nhs-registration-link": "Set up an NHS login account to confirm who you are",

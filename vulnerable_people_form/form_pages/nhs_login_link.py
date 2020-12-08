@@ -11,4 +11,5 @@ def get_nhs_login_link():
         "nhs-login-link.html",
         previous_path=dynamic_back_url(),
         nhs_login_href=current_app.nhs_oidc_client.get_authorization_url(),
+        continue_url="/postcode-eligibility"
     )
