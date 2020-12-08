@@ -125,6 +125,7 @@ def _address_with_spaces_in_postcode(address, postcode):
     spaced_postcode = postcode_with_spaces(postcode)
     return address.replace(postcode, spaced_postcode)
 
+
 def _create_postcode_lookup_failure_log_message(failure_reason, postcode, response_body):
     response_body_to_log = response_body if response_body else "response body empty"
     return create_log_message(log_event_names["ORDNANCE_SURVEY_LOOKUP_FAILURE"],
