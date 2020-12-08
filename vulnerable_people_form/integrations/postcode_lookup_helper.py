@@ -5,6 +5,7 @@ from http import HTTPStatus
 import requests
 from flask import current_app
 
+from vulnerable_people_form.form_pages.shared.form_utils import postcode_with_spaces
 from vulnerable_people_form.form_pages.shared.logger_utils import init_logger, create_log_message, log_event_names
 
 logger = logging.getLogger(__name__)
@@ -104,7 +105,7 @@ def get_addresses_from_postcode(postcode):
                 if entry_is_a_postal_address(result):
                     values.append(
                         {
-                            "text": result["LPI"]["ADDRESS"],
+                            "text": _address_with_spaces_in_postcode(result["LPI"]["ADDRESS"], postcode),
                             "value": json.dumps(address_builder(result["LPI"])),
                         }
                     )
@@ -119,6 +120,10 @@ def get_addresses_from_postcode(postcode):
         logger.error(_create_postcode_lookup_failure_log_message("Error finding address", postcode, response.text))
         raise ErrorFindingAddress()
 
+
+def _address_with_spaces_in_postcode(address, postcode):
+    spaced_postcode = postcode_with_spaces(postcode)
+    return address.replace(postcode, spaced_postcode)
 
 def _create_postcode_lookup_failure_log_message(failure_reason, postcode, response_body):
     response_body_to_log = response_body if response_body else "response body empty"
