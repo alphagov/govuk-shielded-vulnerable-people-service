@@ -7,7 +7,7 @@
   <h1 class="govuk-heading-l govuk-!-margin-top-0 govuk-!-margin-bottom-3">{{title_text}}</h1>
   <h2 class="govuk-heading-m govuk-!-margin-top-0 govuk-!-margin-bottom-3">Postcode</h2>
 <p class="govuk-body">
-<span class="govuk-!-font-weight-bold govuk-!-padding-right-3">{{postcode}}</span>
+<span class="govuk-!-font-weight-bold govuk-!-padding-right-3">{{postcode | postcode_with_spaces }}</span>
 <a href="{{ append_querystring_params("/postcode-lookup") }}" class="govuk-link govuk-link--no-visited-state" id="change-postcode">change<span class="govuk-visually-hidden"> postcode</span></a>
 </p>
 {{ 

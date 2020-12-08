@@ -20,7 +20,7 @@ govukInput({
   "attributes": {
     "spellcheck": "false"
   },
-  "value": values.get("postcode")
+  "value": values.get("postcode") | postcode_with_spaces
   }) 
 }}
 {% endblock %}

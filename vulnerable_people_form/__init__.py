@@ -10,6 +10,7 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 
 from vulnerable_people_form.form_pages.shared.querystring_utils import append_querystring_params
 from . import form_pages
+from .form_pages.shared.form_utils import postcode_with_spaces
 from .integrations import nhs_openconnect_id, persistence
 from vulnerable_people_form.integrations import ladcode_tier_lookup
 
@@ -92,6 +93,8 @@ def create_app(scriptinfo):
     app.register_error_handler(HTTPStatus.NOT_FOUND.value, _handle_error)
     app.register_error_handler(HTTPStatus.INTERNAL_SERVER_ERROR.value, _handle_error)
     app.context_processor(utility_processor)
+
+    app.add_template_filter(postcode_with_spaces)
 
     return app
 
