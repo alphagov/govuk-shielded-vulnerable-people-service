@@ -139,10 +139,10 @@ def get_summary_rows_from_form_answers(excluded_answers=None):
         value = {}
         if key == "support_address":
             address_lines = [
-                answer.get('building_and_street_line_1'),
+                answer['building_and_street_line_1'],
                 answer.get('building_and_street_line_2'),
-                answer.get('town_city'),
-                postcode_with_spaces(answer.get('postcode')),
+                answer['town_city'],
+                postcode_with_spaces(answer['postcode']),
             ]
             value["html"] = "<br>".join([line for line in address_lines if line])
         elif key == "name":

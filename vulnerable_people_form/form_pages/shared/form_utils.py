@@ -60,7 +60,7 @@ def format_postcode(postcode):
 
 def postcode_with_spaces(postcode):
     if postcode is None or len(postcode) < 3:
-        return ''
+        return postcode
 
     formatted = format_postcode(postcode)
     return f'{formatted[0:-3]} {formatted[-3:]}'
