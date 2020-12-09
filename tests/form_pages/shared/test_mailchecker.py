@@ -3,8 +3,6 @@ The mailchecker takes it's original code from https://github.com/dbarlett/pymail
 These test cases are adapted from it's original unittest versions
 """
 
-import pytest
-
 from vulnerable_people_form.form_pages.shared import mailchecker
 
 DOMAINS = (
@@ -142,9 +140,9 @@ def test_contains_periods():
 
 
 def test_contains_period_backslash():
-    parts = mailchecker.split_email('"contains.and\ symbols"@example.com')
+    parts = mailchecker.split_email('"contains.and\ symbols"@example.com')  # noqa: W605
     expected = {
-        "address": '"contains.and\ symbols"',
+        "address": '"contains.and\ symbols"',  # noqa: W605
         "domain": "example.com",
         "top_level_domain": "com",
         "second_level_domain": "example",
@@ -167,9 +165,11 @@ def test_contains_period_at_sign():
 
 def test_contains_all_symbols():
     parts = mailchecker.split_email(
-        '"()<>[]:;@,\\\"!#$%&\'*+-/=?^_`{}|\ \ \ \ \ ~\ \ \ \ \ \ \ ?\ \ \ \ \ \ \ \ \ \ \ \ ^_`{}|~.a"@allthesymbols.com')
+        '"()<>[]:;@,\\\"!#$%&\'*+-/=?^_`{}|\ \ \ \ \ ~\ \ \ \ \ \ \ ?\ \ \ \ \ \ \ \ \ \ \ \ ^_`{}|~.a"'  # noqa: W605
+        '@allthesymbols.com')
     expected = {
-        "address": '"()<>[]:;@,\\\"!#$%&\'*+-/=?^_`{}|\ \ \ \ \ ~\ \ \ \ \ \ \ ?\ \ \ \ \ \ \ \ \ \ \ \ ^_`{}|~.a"',
+        "address": '"()<>[]:;@,\\\"!#$%&\'*+-/=?^_`{}|\ \ \ \ \ ~\ \ \ \ \ \ \ ?\ \ \ \ \ \ \ '  # noqa: W605
+                   '\ \ \ \ \ ^_`{}|~.a"',  # noqa: W605
         "domain": "allthesymbols.com",
         "top_level_domain": "com",
         "second_level_domain": "allthesymbols",
@@ -232,13 +232,13 @@ def test_returns_array():
 
 
 def test_no_suggestion_returns_false():
-        assert mailchecker.suggest("contact@kicksend.com", DOMAINS) is False
+    assert mailchecker.suggest("contact@kicksend.com", DOMAINS) is False
 
 
 def test_incomplete_email_returns_false():
-        assert mailchecker.suggest("", DOMAINS) is False
-        assert mailchecker.suggest("test@", DOMAINS) is False
-        assert mailchecker.suggest("test", DOMAINS) is False
+    assert mailchecker.suggest("", DOMAINS) is False
+    assert mailchecker.suggest("test@", DOMAINS) is False
+    assert mailchecker.suggest("test", DOMAINS) is False
 
 
 def test_returns_valid_suggestions():
@@ -250,53 +250,53 @@ def test_returns_valid_suggestions():
     assert mailchecker.suggest("test@#gmail.com", DOMAINS)["domain"] == "gmail.com"
     assert mailchecker.suggest("test@comcast.nry", DOMAINS)["domain"] == "comcast.net"
     assert mailchecker.suggest(
-            "test@homail.con",
-            DOMAINS,
-            SECOND_LEVEL_DOMAINS,
-            TOP_LEVEL_DOMAINS
-        )["domain"] == "hotmail.com"
+        "test@homail.con",
+        DOMAINS,
+        SECOND_LEVEL_DOMAINS,
+        TOP_LEVEL_DOMAINS
+    )["domain"] == "hotmail.com"
     assert mailchecker.suggest(
-            "test@hotmail.co",
-            DOMAINS,
-            SECOND_LEVEL_DOMAINS,
-            TOP_LEVEL_DOMAINS
-        )["domain"] == "hotmail.com"
+        "test@hotmail.co",
+        DOMAINS,
+        SECOND_LEVEL_DOMAINS,
+        TOP_LEVEL_DOMAINS
+    )["domain"] == "hotmail.com"
     assert mailchecker.suggest(
-            "test@yajoo.com",
-            DOMAINS,
-            SECOND_LEVEL_DOMAINS,
-            TOP_LEVEL_DOMAINS
-        )["domain"] == "yahoo.com"
+        "test@yajoo.com",
+        DOMAINS,
+        SECOND_LEVEL_DOMAINS,
+        TOP_LEVEL_DOMAINS
+    )["domain"] == "yahoo.com"
     assert mailchecker.suggest(
-            "test@randomsmallcompany.cmo",
-            DOMAINS,
-            SECOND_LEVEL_DOMAINS,
-            TOP_LEVEL_DOMAINS
-        )["domain"] == "randomsmallcompany.com"
+        "test@randomsmallcompany.cmo",
+        DOMAINS,
+        SECOND_LEVEL_DOMAINS,
+        TOP_LEVEL_DOMAINS
+    )["domain"] == "randomsmallcompany.com"
 
 
 def test_idempotent_suggestions():
     assert mailchecker.suggest(
-            "test@yahooo.cmo",
-            DOMAINS,
-            SECOND_LEVEL_DOMAINS,
-            TOP_LEVEL_DOMAINS
-        )["domain"] == "yahoo.com"
+        "test@yahooo.cmo",
+        DOMAINS,
+        SECOND_LEVEL_DOMAINS,
+        TOP_LEVEL_DOMAINS
+    )["domain"] == "yahoo.com"
 
 
 def test_no_suggestions_valid_2ld_tld():
     assert mailchecker.suggest(
-            "test@yahoo.co.uk",
-            DOMAINS,
-            SECOND_LEVEL_DOMAINS,
-            TOP_LEVEL_DOMAINS
-        ) is False
+        "test@yahoo.co.uk",
+        DOMAINS,
+        SECOND_LEVEL_DOMAINS,
+        TOP_LEVEL_DOMAINS
+    ) is False
 
 
 def test_no_suggestions_valid_2ld_tld_close_domain():
     assert mailchecker.suggest(
-            "test@gmx.fr",
-            DOMAINS,
-            SECOND_LEVEL_DOMAINS,
-            TOP_LEVEL_DOMAINS
-        ) is False
+        "test@gmx.fr",
+        DOMAINS,
+        SECOND_LEVEL_DOMAINS,
+        TOP_LEVEL_DOMAINS
+    ) is False
