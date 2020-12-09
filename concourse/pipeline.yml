@@ -389,23 +389,38 @@ jobs:
         config:
           platform: linux
           image_resource:
-            type: registry-image
+            type: docker-image
             source:
-              repository: governmentpaas/awscli
+              repository: ubuntu
               tag: latest
-              username: ((docker_hub_username))
-              password: ((docker_hub_password))
           inputs:
+            - name: git-master
             - name: aws-credentials
+          params:
+            ENVIRONMENT: "staging"
+            REGION: "eu-west-2"
           run:
-            path: ash
+            path: bash
             args:
               - -c
               - |
                 set -euo pipefail
-                source aws-credentials/.env
-                aws glue start-workflow-run \
-                  --name "cv-vulnerable-people-daily-wave-two-pipeline-staging"
+                echo "Installing system dependencies:"
+                apt-get update
+                apt-get upgrade -y
+                apt-get install -y jq curl unzip git make python3 python3-pip
+
+                echo "Installing libraries required for test:"
+                source ../aws-credentials/.env
+                make install
+
+                echo "Running Python script to trigger workflow:"
+                python3 scripts/trigger_glue_workflow_and_check_outcome.py
+                         --workflow_to_trigger cv-vulnerable-people-daily-wave-two-pipeline-staging \
+                         --workflows_to_check cv-vulnerable-people-daily-wave-two-pipeline-staging,dw-etl-daily-pipeline-staging \
+                         --timeout 10800 \
+                         --wait_time 30
+            dir: git-master
 
   - name: run-e2e-test-with-pipeline-validation-in-staging
     serial: true
