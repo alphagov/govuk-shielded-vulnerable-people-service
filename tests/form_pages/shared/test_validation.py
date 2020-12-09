@@ -306,7 +306,7 @@ def test_validate_nhs_number_should_return_false_when_empty_or_invalid_length_nh
     )
 
 
-@pytest.mark.parametrize("form_field_value", ["1234567891", "abcd123456", "111~643245#5", "123 643245-5"])
+@pytest.mark.parametrize("form_field_value", ["1234567891", "abcd123456", "111~643245#5", "123 643245-5", "\t\t\t\b123 643245-5"]) # noqa
 def test_validate_nhs_number_should_return_false_when_invalid_nhs_number_entered(form_field_value):
     _execute_input_validation_test_and_assert_validation_failed(
         validation.validate_nhs_number,

@@ -215,7 +215,7 @@ def test_get_summary_rows_from_form_answers_should_return_ordered_summary_rows_f
 
         _make_summary_row_assertions(summary_rows[7],
                                      "contact-details",
-                                     "Phone number: 0113 123 4567<br>Text: 07976 152456<br>Email: tst_email@gmail.com",
+                                     "Phone number (for calls): 0113 123 4567<br>Phone number (for texts): 07976 152456<br>Email: tst_email@gmail.com", # noqa
                                      True,
                                      "Contact details")
 
