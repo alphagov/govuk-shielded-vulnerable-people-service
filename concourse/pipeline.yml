@@ -264,6 +264,7 @@ jobs:
       - get: every-2m
         trigger: true
       - get: git-master
+        passed: [e2e-test-staging]
       - task: smoke-test
         file: git-master/concourse/tasks/smoke-test.yml
         params:
@@ -283,6 +284,7 @@ jobs:
       - get: every-2m
         trigger: true
       - get: git-master
+        passed: [deploy-to-prod]
       - task: smoke-test
         file: git-master/concourse/tasks/smoke-test.yml
         params:
@@ -307,6 +309,7 @@ jobs:
   - name: gatling-workflow-load-test-in-staging
     plan:
       - get: git-master
+        passed: [e2e-test-staging]
       - get: trigger-at-1am
         trigger: true
       - task: gatling
@@ -372,6 +375,7 @@ jobs:
   - name: run-daily-and-mi-workflows-in-staging
     plan:
       - get: git-master
+        passed: [e2e-test-staging]
       - get: trigger-at-1am
         trigger: true
       - task: get-aws-credentials
@@ -407,6 +411,7 @@ jobs:
     serial: true
     plan:
       - get: git-master
+        passed: [e2e-test-staging]
       - get: trigger-at-6am
         trigger: true
       - task: webform-entry
