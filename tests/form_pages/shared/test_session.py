@@ -198,7 +198,7 @@ def test_get_summary_rows_from_form_answers_should_return_ordered_summary_rows_f
                                      "support-address",
                                      "1 Test Street<br>address line 2<br>Leeds<br>LS1 1BA",
                                      True,
-                                     "Address where support is needed",
+                                     "The address where support is needed",
                                      expected_change_url="/address-lookup")
 
         _make_summary_row_assertions(summary_rows[4],
