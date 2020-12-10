@@ -15,3 +15,4 @@ prometheus-client==0.8.0
 gds-metrics==0.2.4
 PyYAML==5.3.1
 pytz==2020.4
+PyJWT==1.7.1
