@@ -415,8 +415,7 @@ jobs:
                 make install
 
                 echo "Running Python script to trigger workflow:"
-                python3 scripts/trigger_glue_workflow_and_check_outcome.py
-                         --workflow_to_trigger cv-vulnerable-people-daily-wave-two-pipeline-staging \
+                python3 scripts/trigger_glue_workflow_and_check_outcome.py --workflow_to_trigger cv-vulnerable-people-daily-wave-two-pipeline-staging \
                          --workflows_to_check cv-vulnerable-people-daily-wave-two-pipeline-staging,dw-etl-daily-pipeline-staging \
                          --timeout 10800 \
                          --wait_time 30
