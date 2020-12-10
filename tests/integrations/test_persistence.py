@@ -15,8 +15,6 @@ from vulnerable_people_form.integrations.persistence import (
 _current_app = Flask(__name__)
 _current_app.secret_key = 'test_secret'
 
-_current_app.config["GOVUK_NOTIFY_SPL_MATCH_EMAIL_TEMPLATE_ID"] = "match_email_template_id"
-
 _AWS_ENDPOINT_URL = "endpoint_url"
 _AWS_ACCESS_KEY = "access_key"
 _AWS_SECRET_KEY = "secret_key"
