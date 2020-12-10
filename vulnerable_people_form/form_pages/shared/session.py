@@ -119,7 +119,7 @@ def get_summary_rows_from_form_answers(excluded_answers=None):
 
         answer_labels = {
             **PAGE_TITLES,
-            "support-address": "Address where support is needed",
+            "support-address": "The address where support is needed",
             "name": "Name",
             "date-of-birth": "Date of birth",
             "contact-details": "Contact details",
@@ -170,8 +170,8 @@ def get_summary_rows_from_form_answers(excluded_answers=None):
         elif key == "contact_details":
             value["html"] = "<br>".join(
                 [
-                    f"Phone number: {answer.get('phone_number_calls', '')}",
-                    f"Text: {answer.get('phone_number_texts', '')}",
+                    f"Phone number (for calls): {answer.get('phone_number_calls', '')}",
+                    f"Phone number (for texts): {answer.get('phone_number_texts', '')}",
                     f"Email: {answer.get('email', '')}",
                 ]
             )
