@@ -6,11 +6,6 @@ from lib.fake_os_places_api_response import FakeOSPlacesAPIResponse
 from vulnerable_people_form.integrations import ladcode_tier_lookup
 
 
-@pytest.fixture(scope='session', autouse=True)
-def faker_session_locale():
-    return ['en_GB']
-
-
 @pytest.fixture()
 def fake_os_places_api_entry(faker):
     return _fake_os_places_api_entry(faker)

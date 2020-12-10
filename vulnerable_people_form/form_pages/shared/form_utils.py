@@ -57,5 +57,13 @@ def format_postcode(postcode):
     return None
 
 
+def postcode_with_spaces(postcode):
+    if postcode is None or len(postcode) < 3:
+        return postcode
+
+    formatted = format_postcode(postcode)
+    return f'{formatted[0:-3]} {formatted[-3:]}'
+
+
 def _strip_whitespace_from_dict_values(input_dict):
     return {k: v.strip() for k, v in input_dict.items()}

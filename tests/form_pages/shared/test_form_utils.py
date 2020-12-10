@@ -6,7 +6,8 @@ from vulnerable_people_form.form_pages.shared.form_utils import (
     strip_non_digits,
     sanitise_name,
     sanitise_support_address,
-    format_postcode)
+    format_postcode,
+    postcode_with_spaces)
 
 
 @pytest.mark.parametrize("nhs_num", ["", None])
@@ -147,3 +148,42 @@ def test_format_postcode_should_remove_whitespace_characters(postcode, expected_
 def test_format_postcode_should_convert_to_uppercase(postcode, expected_output):
     formatted_postcode = format_postcode(postcode)
     assert formatted_postcode == expected_output
+
+
+@pytest.mark.parametrize("input_postcode, expected_output",
+                         [("A20EB", "A2 0EB"),
+                          ("A300EB", "A30 0EB"),
+                          ("NW120EB", "NW12 0EB")])
+def test_postcode_with_spaces_does_add_space(input_postcode, expected_output):
+    output = postcode_with_spaces(input_postcode)
+    assert output == expected_output
+
+
+@pytest.mark.parametrize("input_postcode, expected_output",
+                         [("aa1 1AA", "AA1 1AA"),
+                          ("aa11AA ", "AA1 1AA")])
+def test_postcode_with_spaces_does_format_as_uppercase(input_postcode, expected_output):
+    output = postcode_with_spaces(input_postcode)
+    assert output == expected_output
+
+
+@pytest.mark.parametrize("input_postcode, expected_output",
+                         [(" AA11AA", "AA1 1AA"),
+                          ("AA11AA ", "AA1 1AA"),
+                          ("AA1  1AA", "AA1 1AA")])
+def test_postcode_with_spaces_does_ignore_spaces(input_postcode, expected_output):
+    output = postcode_with_spaces(input_postcode)
+    assert output == expected_output
+
+
+def test_postcode_with_spaces_handles_short_postcodes():
+    output = postcode_with_spaces('A')
+    assert output == 'A'
+
+    output = postcode_with_spaces('AB')
+    assert output == 'AB'
+
+
+def test_postcode_with_spaces_handles_none():
+    output = postcode_with_spaces(None)
+    assert output is None

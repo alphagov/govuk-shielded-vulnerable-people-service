@@ -14,7 +14,7 @@ from .constants import (
     SESSION_KEY_POSTCODE_TIER,
     PostcodeTier
 )
-from .form_utils import clean_nhs_number
+from .form_utils import clean_nhs_number, postcode_with_spaces
 from .querystring_utils import append_querystring_params
 from .security import sanitise_input
 
@@ -137,34 +137,14 @@ def get_summary_rows_from_form_answers(excluded_answers=None):
         change_answer_url = append_querystring_params(change_answer_url)
 
         value = {}
-        row = {
-            "key": {
-                "text": question,
-                "classes": "govuk-!-width-two-thirds",
-            },
-            "value": {},
-            "actions": {
-                "items": [
-                    {
-                        "href": change_answer_url,
-                        "text": "Change",
-                        "visuallyHiddenText": question,
-                    }
-                ]
-            },
-        }
         if key == "support_address":
-            value["html"] = "<br>".join(
-                _slice(
-                    [
-                        "building_and_street_line_1",
-                        "building_and_street_line_2",
-                        "town_city",
-                        "postcode",
-                    ],
-                    answer,
-                )
-            )
+            address_lines = [
+                answer['building_and_street_line_1'],
+                answer.get('building_and_street_line_2'),
+                answer['town_city'],
+                postcode_with_spaces(answer['postcode']),
+            ]
+            value["html"] = "<br>".join([line for line in address_lines if line])
         elif key == "name":
             value["text"] = " ".join(_slice(["first_name", "middle_name", "last_name"], answer))
         elif key == "contact_details":
@@ -182,10 +162,30 @@ def get_summary_rows_from_form_answers(excluded_answers=None):
         else:
             value["text"] = answers[key]
 
-        row["value"] = value
+        row = _get_summary_row(change_answer_url, question, value)
         summary_rows.append(row)
 
     return summary_rows
+
+
+def _get_summary_row(change_answer_url, question, value):
+    row = {
+        "key": {
+            "text": question,
+            "classes": "govuk-!-width-two-thirds",
+        },
+        "value": value,
+        "actions": {
+            "items": [
+                {
+                    "href": change_answer_url,
+                    "text": "Change",
+                    "visuallyHiddenText": question,
+                }
+            ]
+        },
+    }
+    return row
 
 
 def persist_answers_from_session():
