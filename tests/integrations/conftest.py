@@ -1,7 +1,7 @@
 import pytest
 
-from lib.fake_os_places_api_entry import fake_os_places_api_entry as _fake_os_places_api_entry
-from lib.fake_os_places_api_response import FakeOSPlacesAPIResponse
+from tests.integrations.lib.fake_os_places_api_entry import fake_os_places_api_entry as _fake_os_places_api_entry
+from tests.integrations.lib.fake_os_places_api_response import FakeOSPlacesAPIResponse
 
 from vulnerable_people_form.integrations import ladcode_tier_lookup
 
