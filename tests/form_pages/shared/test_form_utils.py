@@ -178,12 +178,12 @@ def test_postcode_with_spaces_does_ignore_spaces(input_postcode, expected_output
 
 def test_postcode_with_spaces_handles_short_postcodes():
     output = postcode_with_spaces('A')
-    assert output == ''
+    assert output == 'A'
 
     output = postcode_with_spaces('AB')
-    assert output == ''
+    assert output == 'AB'
 
 
 def test_postcode_with_spaces_handles_none():
     output = postcode_with_spaces(None)
-    assert output == ''
+    assert output is None
