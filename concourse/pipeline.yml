@@ -421,6 +421,7 @@ jobs:
                          --timeout 10800 \
                          --wait_time 30
             dir: git-master
+          on_failure: *slack_alert_on_failure
 
   - name: run-e2e-test-with-pipeline-validation-in-staging
     serial: true
