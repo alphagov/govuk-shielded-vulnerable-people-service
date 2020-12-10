@@ -53,7 +53,7 @@ def check_work_flow_compeleted(work_flow_name):
             logger.error(f'Error Timeout Workflow: {work_flow_name}')
             raise Exception(f'Timeout. Workflow {work_flow_name}, ran for longer than expected')
         logger.info(f'WorkFlow: {work_flow_name}, Waiting for workflow to start')
-        time.sleep(5)
+        time.sleep(wait_time)
 
     while True:
         work_flow_dict = client.get_workflow(Name=work_flow_name)
@@ -72,7 +72,7 @@ def check_work_flow_compeleted(work_flow_name):
             logger.error('Error Timeout Workflow: ' + work_flow_name)
             raise Exception('Timeout. Workflow ran for longer than expected')
         logger.info(f'WorkFlow: {work_flow_name}, Status: {status}, Waiting for workflow to complete')
-        time.sleep(5)
+        time.sleep(wait_time)
 
     work_stats = work_flow_dict['Workflow']['LastRun']['Statistics']
 
