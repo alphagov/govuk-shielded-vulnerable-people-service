@@ -3,6 +3,7 @@ import pytest
 from vulnerable_people_form.form_pages.shared.form_utils import (
     clean_nhs_number,
     sanitise_date,
+    format_date,
     strip_non_digits,
     sanitise_name,
     sanitise_support_address,
@@ -72,6 +73,32 @@ def test_sanitise_date_of_birth_should_raise_error_when_invalid_dict_supplied():
     test_date = {"day": "13", "month": "7", "invalid_field": "test"}
     with pytest.raises(ValueError) as exception_info:
         sanitise_date(test_date)
+    assert "Unexpected date_value encountered" in str(exception_info.value)
+
+
+def test_format_date_should_add_leading_zeros():
+    test_date = {"day": "1", "month": "7", "year": "1991"}
+    formatted_date = format_date(test_date)
+    assert formatted_date == "1991/07/01"
+
+
+def test_format_date_should_not_change_correct_day_month():
+    test_date = {"day": "11", "month": "12", "year": "1991"}
+    formatted_date = format_date(test_date)
+    assert formatted_date == "1991/12/11"
+
+
+def test_format_date_should_raise_error_when_invalid_length_dict_supplied():
+    test_date = {"day": "1", "month": "7", "year": "1991", "random_field": "test"}
+    with pytest.raises(ValueError) as exception_info:
+        format_date(test_date)
+    assert "Unexpected date_value encountered" in str(exception_info.value)
+
+
+def test_format_date_should_raise_error_when_invalid_dict_supplied():
+    test_date = {"day": "1", "month": "7", "invalid_field": "test"}
+    with pytest.raises(ValueError) as exception_info:
+        format_date(test_date)
     assert "Unexpected date_value encountered" in str(exception_info.value)
 
 

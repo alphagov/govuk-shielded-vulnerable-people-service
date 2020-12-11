@@ -133,3 +133,33 @@ def test_send_message_where_optional_values_are_none():
         assert message["wants_supermarket_deliveries"] is None
         assert message["wants_social_care"] is None
         assert message["has_set_up_account"] is None
+
+
+def test_send_message_fill_leading_zero_on_date_of_birth():
+    with _current_app.test_request_context() as test_request_ctx, \
+         patch("vulnerable_people_form.integrations.notifications.boto3") as boto3:
+        test_request_ctx.session["form_answers"] = {
+            "nhs_number": "1234567890",
+            "date_of_birth": {
+                "day": "1",
+                "month": "3",
+                "year": "1994"
+            },
+            "name": {
+                "first_name": "FirstName",
+                "last_name": "LastName",
+            },
+            "contact_details": {},
+            "support_address": {
+                "building_and_street_line_1": "101 Test Block",
+                "town_city": "London",
+                "postcode": "N11AA"
+            },
+            "nhs_letter": 1
+        }
+        submission_id = "test-registration-number"
+
+        send_message(submission_id)
+        message = json.loads(boto3.mock_calls[1][2]["MessageBody"])
+
+        assert message["date_of_birth"] == "1994/03/01"

@@ -5,7 +5,7 @@ import boto3
 from botocore.config import Config
 from flask import current_app
 
-from vulnerable_people_form.form_pages.shared.form_utils import postcode_with_spaces
+from vulnerable_people_form.form_pages.shared.form_utils import postcode_with_spaces, format_date
 from vulnerable_people_form.form_pages.shared.session import form_answers
 from vulnerable_people_form.form_pages.shared.logger_utils import init_logger
 
@@ -37,12 +37,11 @@ def send_message(registration_number, app=current_app):
     client = get_sqs_client()
 
     spaced_postcode = postcode_with_spaces(form_answers()["support_address"]["postcode"])
-    date_of_birth = form_answers()["date_of_birth"]
 
     message = {
         "submission_id": registration_number,
         "nhs_number": form_answers()["nhs_number"],
-        "date_of_birth": f"{date_of_birth['year']}/{date_of_birth['month']}/{date_of_birth['day']}",
+        "date_of_birth": format_date(form_answers()["date_of_birth"]),
         "first_name": form_answers()["name"]["first_name"],
         "last_name": form_answers()["name"]["last_name"],
         "email": form_answers()["contact_details"].get("email"),

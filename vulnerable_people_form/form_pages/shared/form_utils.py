@@ -25,6 +25,13 @@ def sanitise_date(date_value):
             date_value[k] = strip_non_digits(date_value[k])
 
 
+def format_date(date_value):
+    if len(date_value.keys()) != 3 or \
+      not all(k in date_value for k in ["day", "month", "year"]):
+        raise ValueError(f"Unexpected date_value encountered: {date_value}")
+    return f"{date_value['year']}/{date_value['month']:0>2}/{date_value['day']:0>2}"
+
+
 def sanitise_name(name_value):
     if name_value:
         if len(name_value.keys()) != 3 or \
