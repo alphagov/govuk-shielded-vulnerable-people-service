@@ -18,8 +18,8 @@ concourse_e2e:
 	behave behave/features -k --stop --tags core,feature_postcode_tier
 
 smoke_test:
-	@echo "Executing smoke test without submission..."
-	behave behave/features/11.e2e_not_eligible_postcode_tier.feature --stop
+	@echo "Executing smoke test with submission..."
+	behave behave/features/12.e2e_journey_tier_3.feature --stop
 
 test_e2e_local:
 	@echo "Executing e2e automated tests against the local environment..."
