@@ -15,27 +15,15 @@ install:
 concourse_e2e:
 	@echo "Executing e2e automated tests against the staging environment..."
 	# execute all scenarios except no submission and backend submissions test ( the '-' character prefix means skip)
-ifeq (${TIERING_LOGIC},True)
 	behave behave/features -k --stop --tags core,feature_postcode_tier
-else
-	behave behave/features -k --stop --tags core,e2e_partial_journey_do_you_live_in_england
-endif
 
 smoke_test:
 	@echo "Executing smoke test without submission..."
-ifeq (${TIERING_LOGIC},True)
 	behave behave/features/11.e2e_not_eligible_postcode_tier.feature --stop
-else
-	behave behave/features/5.e2e_not_eligible_postcode.feature --stop
-endif
 
 test_e2e_local:
 	@echo "Executing e2e automated tests against the local environment..."
-ifeq (${TIERING_LOGIC},True)
 	docker-compose run --service-ports --rm chrome-driver bash -c "behave features -k --stop --tags core,feature_postcode_tier --stop"
-else
-	docker-compose run --service-ports --rm chrome-driver bash -c "behave features -k --stop --tags core,e2e_partial_journey_do_you_live_in_england --stop"
-endif
 
 concourse_e2e_with_pipeline_validation_webform_entry:
 	@echo "Executing web form entry for End to End with Pipeline Validation..."
