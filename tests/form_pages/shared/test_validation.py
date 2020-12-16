@@ -1,8 +1,9 @@
-import pytest
 from unittest.mock import patch
 
-from vulnerable_people_form.form_pages.shared import validation
+import pytest
 from flask import Flask
+
+from vulnerable_people_form.form_pages.shared import validation
 from vulnerable_people_form.form_pages.shared.answers_enums import (
     ApplyingOnOwnBehalfAnswers,
     MedicalConditionsAnswers,
@@ -31,7 +32,7 @@ def test_validate_name_should_return_true_when_first_name_and_surname_entered():
     with patch(
             _FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME,
             create_form_answers_with_first_name_and_surname), \
-            _current_app.test_request_context() as test_request_ctx:
+         _current_app.test_request_context() as test_request_ctx:
         test_request_ctx.session["form_answers"] = create_form_answers_with_first_name_and_surname()
         is_valid = validation.validate_name()
         assert len(test_request_ctx.session) == 1
@@ -46,7 +47,7 @@ def test_validate_name_should_return_false_when_only_first_name_entered(first_na
     with patch(
             _FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME,
             create_form_answers_with_first_name_only), \
-            _current_app.test_request_context() as test_request_ctx:
+         _current_app.test_request_context() as test_request_ctx:
         test_request_ctx.session["form_answers"] = create_form_answers_with_first_name_only()
         sanitise_name(test_request_ctx.session["form_answers"]["name"])
         is_valid = validation.validate_name()
@@ -63,7 +64,7 @@ def test_validate_name_should_return_false_when_only_last_name_entered():
     with patch(
             _FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME,
             create_form_answers_with_last_name_only), \
-            _current_app.test_request_context() as test_request_ctx:
+         _current_app.test_request_context() as test_request_ctx:
         test_request_ctx.session["form_answers"] = create_form_answers_with_last_name_only()
         is_valid = validation.validate_name()
 
@@ -264,7 +265,7 @@ def test_validate_postcode_should_return_false_when_no_postcode_present(postcode
         assert is_valid is False
         assert len(test_request_ctx.session) == 1
         assert test_request_ctx.session["error_items"]["postcode"]["postcode"] \
-            == "What is the postcode where you need support?"
+               == "What is the postcode where you need support?"
 
 
 @pytest.mark.parametrize("postcode", ["invalid_post_code", "ssss 12345", "LS1 1AB ABC", "NE11", "NE11 1LBC"])
@@ -306,7 +307,8 @@ def test_validate_nhs_number_should_return_false_when_empty_or_invalid_length_nh
     )
 
 
-@pytest.mark.parametrize("form_field_value", ["1234567891", "abcd123456", "111~643245#5", "123 643245-5", "\t\t\t\b123 643245-5"]) # noqa
+@pytest.mark.parametrize("form_field_value",
+                         ["1234567891", "abcd123456", "111~643245#5", "123 643245-5", "\t\t\t\b123 643245-5"])  # noqa
 def test_validate_nhs_number_should_return_false_when_invalid_nhs_number_entered(form_field_value):
     _execute_input_validation_test_and_assert_validation_failed(
         validation.validate_nhs_number,
@@ -352,7 +354,7 @@ def test_validate_email_if_present_should_return_true_when_valid_email_entered()
     with patch(
             _FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME,
             create_form_answers), \
-            _current_app.test_request_context() as test_request_ctx:
+         _current_app.test_request_context() as test_request_ctx:
         is_valid = validation.validate_email_if_present("contact_details", "email")
 
         assert is_valid is True
@@ -366,7 +368,7 @@ def test_validate_email_if_present_should_return_true_when_no_email_entered():
     with patch(
             _FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME,
             create_form_answers), \
-            _current_app.test_request_context() as test_request_ctx:
+         _current_app.test_request_context() as test_request_ctx:
         is_valid = validation.validate_email_if_present("contact_details", "email")
 
         assert is_valid is True
@@ -459,32 +461,35 @@ def test_validate_support_address_should_return_true_when_a_valid_address_is_pro
 
 @pytest.mark.parametrize("test_case_support_address, field_error_messages", [
     ({
-        "building_and_street_line_1": "",
-        "building_and_street_line_2": "",
-        "town_city": "",
-        "postcode": ""
+         "building_and_street_line_1": "",
+         "building_and_street_line_2": "",
+         "town_city": "",
+         "postcode": ""
      },
      [{"form_field": "building_and_street_line_1", "expected_error_msg": "Enter a building and street"},
       {"form_field": "town_city", "expected_error_msg": "Enter a town or city"},
       {"form_field": "postcode", "expected_error_msg": "What is the postcode where you need support?"}]),
     ({
-        "building_and_street_line_1": "address line one too long address line one too long  address line one too long address line one too long address line one too long, address line one too long address line one too long  address line one too long address line one too long address line one too long,addr ",  # noqa
-        "building_and_street_line_2": "address line two too long address line two too long address line two too long address line two too long address line two too long address line one too long address line one too long  address line one too long address line one too long address line one too long ad",  # noqa
-        "town_city": "town / city too long town / city too long town / city too long town / city too long town / city too long ",  # noqa
-        "postcode": "LS11BA"
+         "building_and_street_line_1": "address line one too long address line one too long  address line one too long address line one too long address line one too long, address line one too long address line one too long  address line one too long address line one too long address line one too long,addr ",
+         # noqa
+         "building_and_street_line_2": "address line two too long address line two too long address line two too long address line two too long address line two too long address line one too long address line one too long  address line one too long address line one too long address line one too long ad",
+         # noqa
+         "town_city": "town / city too long town / city too long town / city too long town / city too long town / city too long ",
+         # noqa
+         "postcode": "LS11BA"
      },
      [{
          "form_field": "building_and_street_line_1",
          "expected_error_msg": "'Address line 1' cannot be longer than 110 characters"
-      },
-      {
-         "form_field": "building_and_street_line_2",
-         "expected_error_msg": "'Address line 2' cannot be longer than 210 characters"
-      },
-      {"form_field": "town_city", "expected_error_msg": "'Town or city' cannot be longer than 50 characters"}])
+     },
+         {
+             "form_field": "building_and_street_line_2",
+             "expected_error_msg": "'Address line 2' cannot be longer than 210 characters"
+         },
+         {"form_field": "town_city", "expected_error_msg": "'Town or city' cannot be longer than 50 characters"}])
 ])
 def test_validate_support_address_should_return_false_when_an_invalid_address_is_provided(
- test_case_support_address, field_error_messages
+        test_case_support_address, field_error_messages
 ):
     with _current_app.test_request_context() as test_request_ctx:
         test_request_ctx.session["form_answers"] = {
@@ -527,7 +532,7 @@ def _execute_input_validation_test_and_assert_validation_passed(validation_funct
     with patch(
             _FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME,
             create_form_answers), \
-            _current_app.test_request_context() as test_request_ctx:
+         _current_app.test_request_context() as test_request_ctx:
         is_valid = validation_function()
 
         assert is_valid is True
@@ -542,7 +547,7 @@ def _execute_input_validation_test_and_assert_validation_failed(validation_funct
     with patch(
             _FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME,
             create_form_answers), \
-            _current_app.test_request_context() as test_request_ctx:
+         _current_app.test_request_context() as test_request_ctx:
         is_valid = validation_function()
 
         _make_validation_failure_assertions(is_valid, test_request_ctx.session,

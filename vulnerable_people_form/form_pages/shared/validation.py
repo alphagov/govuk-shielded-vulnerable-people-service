@@ -17,6 +17,7 @@ from .answers_enums import (
     BasicCareNeedsAnswers,
     LiveInEnglandAnswers)
 from .session import form_answers, get_answer_from_form, request_form
+from .sms_validation import validate_uk_phone_number, InvalidPhoneError
 
 
 def validate_mandatory_form_field(section_key, value_key, error_message):
@@ -285,7 +286,7 @@ def validate_phone_number_if_present(section_key, phone_number_key):
         if phone_number:
             phonenumbers.parse(phone_number, region="GB")
     except phonenumbers.NumberParseException:
-        error_message = ("Enter a telephone number, like 020 7946 0000, 07700900000 or +44 0808 157 0192",)
+        error_message = "Enter a telephone number, like 020 7946 0000, 07700900000 or +44 0808 157 0192"
         error_section = session.setdefault("error_items", {}).get(section_key, {})
         session["error_items"] = {
             **session.setdefault("error_items", {}),
@@ -293,6 +294,28 @@ def validate_phone_number_if_present(section_key, phone_number_key):
         }
         return False
     return True
+
+
+def validate_sms_phone_number_if_present(section_key, phone_number_key):
+    phone_number = form_answers()["contact_details"].get(phone_number_key, "")
+    if phone_number and phone_number_is_valid_for_notify(phone_number):
+        return True
+    else:
+        error_message = "Enter a UK mobile number, like 07700 900000 or +44 7700 900000"
+        error_section = session.setdefault("error_items", {}).get(section_key, {})
+        session["error_items"] = {
+            **session.setdefault("error_items", {}),
+            section_key: {**error_section, phone_number_key: error_message},
+        }
+        return False
+
+
+def phone_number_is_valid_for_notify(phone_number):
+    try:
+        validate_uk_phone_number(phone_number)
+        return True
+    except InvalidPhoneError:
+        return False
 
 
 def validate_email_if_present(section_key, email_key):
@@ -316,7 +339,7 @@ def validate_contact_details(section_key):
         [
             validate_email_if_present(section_key, "email"),
             validate_phone_number_if_present(section_key, "phone_number_calls"),
-            validate_phone_number_if_present(section_key, "phone_number_texts"),
+            validate_sms_phone_number_if_present(section_key, "phone_number_texts"),
         ]
     )
     return value
