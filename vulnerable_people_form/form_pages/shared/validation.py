@@ -16,6 +16,7 @@ from .answers_enums import (
     ShoppingAssistanceAnswers,
     BasicCareNeedsAnswers,
     LiveInEnglandAnswers)
+from .logger_utils import create_log_message, log_event_names
 from .session import form_answers, get_answer_from_form, request_form
 from .sms_validation import validate_notify_compatible_uk_mobile_number, InvalidPhoneError
 
@@ -296,9 +297,9 @@ def validate_phone_number_if_present(section_key, phone_number_key):
     return True
 
 
-def validate_sms_phone_number_if_present(section_key, phone_number_key):
+def validate_sms_phone_number_if_present(section_key, phone_number_key, logger=None):
     phone_number = form_answers()["contact_details"].get(phone_number_key, "")
-    if phone_number and phone_number_is_valid_for_notify(phone_number):
+    if phone_number and phone_number_is_valid_for_notify(phone_number, logger=logger):
         return True
     else:
         error_message = "Enter a UK mobile number, like 07700 900000 or +44 7700 900000"
@@ -310,11 +311,14 @@ def validate_sms_phone_number_if_present(section_key, phone_number_key):
         return False
 
 
-def phone_number_is_valid_for_notify(phone_number):
+def phone_number_is_valid_for_notify(phone_number, logger=None):
     try:
         validate_notify_compatible_uk_mobile_number(phone_number)
         return True
-    except InvalidPhoneError:
+    except InvalidPhoneError as e:
+        if logger:
+            logger.warning(create_log_message(log_event_names["NHS_LOGIN_USER_CONSENT_NOT_GIVEN"],
+                                              f"Invalid phone for receiving Notify SMS entered: {e.message}"))
         return False
 
 
@@ -334,12 +338,12 @@ def validate_email_if_present(section_key, email_key):
     return True
 
 
-def validate_contact_details(section_key):
+def validate_contact_details(section_key, logger=None):
     value = all(
         [
             validate_email_if_present(section_key, "email"),
             validate_phone_number_if_present(section_key, "phone_number_calls"),
-            validate_sms_phone_number_if_present(section_key, "phone_number_texts"),
+            validate_sms_phone_number_if_present(section_key, "phone_number_texts", logger=logger),
         ]
     )
     return value
