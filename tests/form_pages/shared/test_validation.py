@@ -475,15 +475,9 @@ def test_validate_support_address_should_return_true_when_a_valid_address_is_pro
          "town_city": "town / city too long town / city too long town / city too long town / city too long town / city too long ", # noqa
          "postcode": "LS11BA"
      },
-     [{
-         "form_field": "building_and_street_line_1",
-         "expected_error_msg": "'Address line 1' cannot be longer than 110 characters"
-     },
-         {
-             "form_field": "building_and_street_line_2",
-             "expected_error_msg": "'Address line 2' cannot be longer than 210 characters"
-         },
-         {"form_field": "town_city", "expected_error_msg": "'Town or city' cannot be longer than 50 characters"}])
+     [{"form_field": "building_and_street_line_1", "expected_error_msg": "'Address line 1' cannot be longer than 110 characters"}, # noqa
+      {"form_field": "building_and_street_line_2", "expected_error_msg": "'Address line 2' cannot be longer than 210 characters"}, # noqa
+      {"form_field": "town_city", "expected_error_msg": "'Town or city' cannot be longer than 50 characters"}])
 ])
 def test_validate_support_address_should_return_false_when_an_invalid_address_is_provided(
         test_case_support_address, field_error_messages
