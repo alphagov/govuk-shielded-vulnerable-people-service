@@ -179,6 +179,7 @@ def _get_summary_row(change_answer_url, question, value):
             "items": [
                 {
                     "href": change_answer_url,
+                    "classes": "change-link",
                     "text": "Change",
                     "visuallyHiddenText": question,
                 }
