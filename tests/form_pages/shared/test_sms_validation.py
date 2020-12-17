@@ -1,6 +1,7 @@
 import pytest
 
-from vulnerable_people_form.form_pages.shared.sms_validation import validate_uk_phone_number, InvalidPhoneError
+from vulnerable_people_form.form_pages.shared.sms_validation import validate_notify_compatible_uk_mobile_number, \
+    InvalidPhoneError
 
 valid_notify_uk_phone_numbers = [
     '7123456789',
@@ -53,10 +54,10 @@ invalid_notify_uk_phone_numbers = [
 
 @pytest.mark.parametrize("phone_number", valid_notify_uk_phone_numbers)
 def test_phone_number_is_valid_for_notify_returns_true_for_valid_notify_uk_test_cases(phone_number):
-    assert validate_uk_phone_number(phone_number)
+    assert validate_notify_compatible_uk_mobile_number(phone_number)
 
 
 @pytest.mark.parametrize("phone_number", invalid_notify_uk_phone_numbers)
 def test_phone_number_is_valid_for_notify_raises_exception_for_invalid_notify_uk_test_cases(phone_number):
     with pytest.raises(InvalidPhoneError):
-        validate_uk_phone_number(phone_number)
+        validate_notify_compatible_uk_mobile_number(phone_number)

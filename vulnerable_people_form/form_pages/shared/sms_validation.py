@@ -19,7 +19,7 @@ class InvalidPhoneError(Exception):
         super().__init__(message or 'Not a valid phone number')
 
 
-def validate_uk_phone_number(number):
+def validate_notify_compatible_uk_mobile_number(number):
     number = normalise_phone_number(number).lstrip(uk_prefix).lstrip('0')
 
     if not number.startswith('7'):

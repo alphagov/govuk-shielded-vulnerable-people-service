@@ -17,7 +17,7 @@ from .answers_enums import (
     BasicCareNeedsAnswers,
     LiveInEnglandAnswers)
 from .session import form_answers, get_answer_from_form, request_form
-from .sms_validation import validate_uk_phone_number, InvalidPhoneError
+from .sms_validation import validate_notify_compatible_uk_mobile_number, InvalidPhoneError
 
 
 def validate_mandatory_form_field(section_key, value_key, error_message):
@@ -312,7 +312,7 @@ def validate_sms_phone_number_if_present(section_key, phone_number_key):
 
 def phone_number_is_valid_for_notify(phone_number):
     try:
-        validate_uk_phone_number(phone_number)
+        validate_notify_compatible_uk_mobile_number(phone_number)
         return True
     except InvalidPhoneError:
         return False
