@@ -16,6 +16,33 @@ window.GOVUK = window.GOVUK || {};
         return '';
     };
 
+    function gaSendEvent(eventCategory, eventLabel, eventAction) {
+        ga('send', {
+            hitType: 'event',
+            eventCategory: eventCategory,
+            eventAction: eventAction,
+            eventLabel: eventLabel
+        });
+    }
+
+    function trackRadioItemsAnswers(inputSelector,eventCategory, eventLabel) {
+        document.querySelectorAll(inputSelector).forEach(item => {
+          item.addEventListener('click', event => {
+            var action = event.target.value === "1" ? "Yes" : "No";
+            gaSendEvent(eventCategory, eventLabel, action);
+          })
+        })
+    }
+
+    function trackChangeAnswerLinks(inputSelector,eventCategory) {
+        document.querySelectorAll(inputSelector).forEach(item => {
+          item.addEventListener('click', event => {
+            var changeLinkAction = event.target.baseURI.indexOf('view-answers')  !== -1 ? 'change link - view answers NHS login user' : 'change link - check your answers';
+            gaSendEvent(eventCategory, event.target.href, changeLinkAction);
+          })
+        })
+    }
+
     function Analytics() {}
     Analytics.prototype.init = function(gaTrackingId, gaCrossDomainTrackingId) {
         this.gaTrackingId = gaTrackingId;
@@ -44,6 +71,9 @@ window.GOVUK = window.GOVUK || {};
                 } else {
                     ga('send', 'pageview');
                 }
+
+                trackRadioItemsAnswers('input[name="do_you_have_someone_to_go_shopping_for_you"]', 'page interaction', window.location);
+                trackChangeAnswerLinks('.change-link', 'on-page links');
             }
 
             if (this.gaCrossDomainTrackingId) {
