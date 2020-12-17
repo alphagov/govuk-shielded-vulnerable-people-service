@@ -470,12 +470,9 @@ def test_validate_support_address_should_return_true_when_a_valid_address_is_pro
       {"form_field": "town_city", "expected_error_msg": "Enter a town or city"},
       {"form_field": "postcode", "expected_error_msg": "What is the postcode where you need support?"}]),
     ({
-         "building_and_street_line_1": "address line one too long address line one too long  address line one too long address line one too long address line one too long, address line one too long address line one too long  address line one too long address line one too long address line one too long,addr ",
-         # noqa
-         "building_and_street_line_2": "address line two too long address line two too long address line two too long address line two too long address line two too long address line one too long address line one too long  address line one too long address line one too long address line one too long ad",
-         # noqa
-         "town_city": "town / city too long town / city too long town / city too long town / city too long town / city too long ",
-         # noqa
+         "building_and_street_line_1": "address line one too long address line one too long  address line one too long address line one too long address line one too long, address line one too long address line one too long  address line one too long address line one too long address line one too long,addr ", # noqa
+         "building_and_street_line_2": "address line two too long address line two too long address line two too long address line two too long address line two too long address line one too long address line one too long  address line one too long address line one too long address line one too long ad", # noqa
+         "town_city": "town / city too long town / city too long town / city too long town / city too long town / city too long ", # noqa
          "postcode": "LS11BA"
      },
      [{
