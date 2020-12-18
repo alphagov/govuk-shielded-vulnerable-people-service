@@ -299,9 +299,8 @@ def validate_phone_number_if_present(section_key, phone_number_key):
 
 def validate_sms_phone_number_if_present(section_key, phone_number_key, logger=None):
     phone_number = form_answers()["contact_details"].get(phone_number_key, "")
-    if phone_number and phone_number_is_valid_for_notify(phone_number, logger=logger):
-        return True
-    else:
+
+    if phone_number and phone_number_is_valid_for_notify(phone_number, logger=logger) is False:
         error_message = "Enter a UK mobile number, like 07700 900000 or +44 7700 900000"
         error_section = session.setdefault("error_items", {}).get(section_key, {})
         session["error_items"] = {
@@ -309,6 +308,8 @@ def validate_sms_phone_number_if_present(section_key, phone_number_key, logger=N
             section_key: {**error_section, phone_number_key: error_message},
         }
         return False
+    else:
+        return True
 
 
 def phone_number_is_valid_for_notify(phone_number, logger=None):
