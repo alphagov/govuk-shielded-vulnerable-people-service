@@ -319,7 +319,7 @@ def phone_number_is_valid_for_notify(phone_number, logger=None):
     except InvalidPhoneError as e:
         if logger:
             logger.warning(create_log_message(log_event_names["NOT_VALID_PHONE_NUMBER_FOR_TEXTS_ENTERED"],
-                                              f"Invalid phone for receiving Notify SMS entered: {e.message}"))
+                                              f"Invalid phone for receiving Notify SMS entered: {e.msg}"))
         return False
 
 
