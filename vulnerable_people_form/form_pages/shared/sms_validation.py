@@ -17,6 +17,7 @@ class InvalidPhoneError(Exception):
 
     def __init__(self, message=None):
         super().__init__(message or 'Not a valid phone number')
+        self.msg = message or 'Not a valid phone number'
 
 
 def validate_notify_compatible_uk_mobile_number(number):

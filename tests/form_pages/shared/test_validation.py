@@ -375,6 +375,62 @@ def test_validate_email_if_present_should_return_true_when_no_email_entered():
         assert len(test_request_ctx.session) == 0
 
 
+def test_validate_contact_details_should_return_true_when_no_details_entered():
+    def create_form_answers():
+        return {"contact_details": {"email": ""}}
+
+    with patch(
+            _FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME,
+            create_form_answers), \
+         _current_app.test_request_context() as test_request_ctx:
+        is_valid = validation.validate_contact_details("contact_details")
+
+        assert is_valid is True
+        assert len(test_request_ctx.session) == 0
+
+
+def test_validate_contact_details_should_return_true_when_only_email_entered():
+    def create_form_answers():
+        return {"contact_details": {"email": "my-valid.email@gmail.com"}}
+
+    with patch(
+            _FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME,
+            create_form_answers), \
+         _current_app.test_request_context() as test_request_ctx:
+        is_valid = validation.validate_contact_details("contact_details")
+
+        assert is_valid is True
+        assert len(test_request_ctx.session) == 0
+
+
+def test_validate_contact_details_should_return_true_when_valid_sms_number_entered():
+    def create_form_answers():
+        return {"contact_details": {"phone_number_texts": "07000 000 000"}}
+
+    with patch(
+            _FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME,
+            create_form_answers), \
+         _current_app.test_request_context() as test_request_ctx:
+        is_valid = validation.validate_contact_details("contact_details")
+
+        assert is_valid is True
+        assert len(test_request_ctx.session) == 0
+
+
+def test_validate_contact_details_should_return_false_when_invalid_sms_number_entered():
+    def create_form_answers():
+        return {"contact_details": {"phone_number_texts": "071234"}}
+
+    with patch(
+            _FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME,
+            create_form_answers), \
+         _current_app.test_request_context() as test_request_ctx:
+        is_valid = validation.validate_contact_details("contact_details")
+
+        assert is_valid is False
+        assert test_request_ctx.session['error_items']['contact_details']['phone_number_texts'] is not None
+
+
 @pytest.mark.parametrize("form_field", [None, ""])
 def test_validate_phone_number_if_present_should_return_true_when_no_email_entered(form_field):
     def create_form_answers():

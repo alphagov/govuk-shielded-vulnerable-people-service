@@ -38,8 +38,8 @@ def get_contact_details():
 @form.route("/contact-details", methods=["POST"])
 def post_contact_details():
     email = request_form().get("email")
-    phone_number_calls = request_form().get("phone_number_calls")
-    phone_number_texts = request_form().get("phone_number_texts")
+    phone_number_calls = request_form().get("phone_number_calls", "").strip()
+    phone_number_texts = request_form().get("phone_number_texts", "").strip()
 
     session["form_answers"] = {
         **session.setdefault("form_answers", {}),
