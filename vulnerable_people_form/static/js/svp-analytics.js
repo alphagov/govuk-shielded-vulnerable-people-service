@@ -16,6 +16,43 @@ window.GOVUK = window.GOVUK || {};
         return '';
     };
 
+    function trackRadioItemsAnswers(inputSelector, eventCategory, eventLabel) {
+        document.querySelectorAll(inputSelector).forEach(item => {
+            item.addEventListener('click', event => {
+                var eventAction = event.target.value === "1" ? "Yes" : "No";
+                ga('send', 'event', eventCategory, eventAction, eventLabel);
+            })
+        })
+    }
+
+    function trackChangeAnswerLinks() {
+        document.querySelectorAll(".change-link").forEach((item) => {
+            item.addEventListener("click", (event) => {
+                event.preventDefault();
+                setTimeout(redirect, 1000);
+
+                var hasRedirected = false;
+                var changeLinkAction =
+                    event.target.baseURI.indexOf("view-answers") !== -1 ?
+                    "change link - view answers NHS login user" :
+                    "change link - check your answers";
+
+                function redirect() {
+                    if (!hasRedirected) {
+                        hasRedirected = true;
+                        document.location = event.target.href;
+                    }
+                }
+
+                ga("send", "event", "on-page links", changeLinkAction, event.target.href, {
+                    hitCallback: function() {
+                        redirect();
+                    },
+                });
+            });
+        });
+    }
+
     function Analytics() {}
     Analytics.prototype.init = function(gaTrackingId, gaCrossDomainTrackingId) {
         this.gaTrackingId = gaTrackingId;
@@ -44,6 +81,9 @@ window.GOVUK = window.GOVUK || {};
                 } else {
                     ga('send', 'pageview');
                 }
+
+                trackRadioItemsAnswers('input[name="do_you_have_someone_to_go_shopping_for_you"]', 'page interaction', window.location);
+                trackChangeAnswerLinks();
             }
 
             if (this.gaCrossDomainTrackingId) {
