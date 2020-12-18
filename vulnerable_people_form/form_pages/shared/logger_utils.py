@@ -22,7 +22,8 @@ log_event_names = {
     "TOO_MANY_LADCODES_FOUND": "MoreThanOneLadcodeFoundInDb",
     "LADCODE_NOT_IN_FILE": "LadcodeNotMappedToTierNotFoundInRestrictionsFile",
     "LADCODE_SUCCESSFULLY_MAPPED_TO_TIER": "LadcodeSuccessfullyMappedToTier",
-    "LADCODE_HAS_NO_RELEVANT_RESTRICTION": "LadcodeNotMappedToTierNoRelevantRestriction"
+    "LADCODE_HAS_NO_RELEVANT_RESTRICTION": "LadcodeNotMappedToTierNoRelevantRestriction",
+    "NOT_VALID_PHONE_NUMBER_FOR_TEXTS_ENTERED": "NotValidPhoneNumberForTextsEntered"
 }
 
 
