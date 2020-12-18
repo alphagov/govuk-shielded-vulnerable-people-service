@@ -51,6 +51,6 @@ def post_contact_details():
         },
     }
     session["error_items"] = {}
-    if not validate_contact_details("contact_details"):
+    if not validate_contact_details("contact_details", logger=logger):
         return redirect("/contact-details")
     return route_to_next_form_page()
