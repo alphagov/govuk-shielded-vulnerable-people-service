@@ -17,13 +17,13 @@ log_event_names = {
     "ORDNANCE_SURVEY_LOOKUP_FAILURE": "OrdnanceSurveyPlacesApiPostcodeLookupFailed",
     "BOTO_CLIENT_ERROR": "BotoClientErrorOccurred",
     "AWS_ARN_INIT": "AwsRdsDatabaseAndSecretArnInitialised",
-    "POSTCODE_TO_LADCODE_SUCCESS": "PostcodeToLadcodeSucceeded",
-    "LADCODE_NOT_FOUND": "LadcodeNotFoundInDbForGivenPostcode",
-    "TOO_MANY_LADCODES_FOUND": "MoreThanOneLadcodeFoundInDb",
-    "LADCODE_NOT_IN_FILE": "LadcodeNotMappedToTierNotFoundInRestrictionsFile",
-    "LADCODE_SUCCESSFULLY_MAPPED_TO_TIER": "LadcodeSuccessfullyMappedToTier",
-    "LADCODE_HAS_NO_RELEVANT_RESTRICTION": "LadcodeNotMappedToTierNoRelevantRestriction",
-    "NOT_VALID_PHONE_NUMBER_FOR_TEXTS_ENTERED": "NotValidPhoneNumberForTextsEntered"
+    "NOT_VALID_PHONE_NUMBER_FOR_TEXTS_ENTERED": "NotValidPhoneNumberForTextsEntered",
+    "POSTCODE_TO_TIER_SUCCESS": "PostcodeToTierSuccess",
+    "POSTCODE_TIER_NOT_FOUND": "PostcodeTierNotFound",
+    "UPRN_TO_TIER_SUCCESS": "UprnToTierSuccess",
+    "UPRN_TIER_NOT_FOUND": "UprnTierNotFound",
+    "POSTCODE_IN_ENGLAND": "PostcodeInEngland",
+    "POSTCODE_NOT_IN_ENGLAND": "PostcodeNotInEngland",
 }
 
 

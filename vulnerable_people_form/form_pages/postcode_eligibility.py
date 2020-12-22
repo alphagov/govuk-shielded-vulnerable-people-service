@@ -3,11 +3,11 @@ from flask import redirect, session, current_app
 from .blueprint import form
 from .shared.answers_enums import ApplyingOnOwnBehalfAnswers
 from .shared.form_utils import format_postcode
-from .shared.postcode_tier import update_postcode_tier
 from .shared.querystring_utils import append_querystring_params
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
 from .shared.session import get_errors_from_session, request_form, get_answer_from_form
+from .shared.location_tier import update_is_postcode_in_england
 from .shared.validation import validate_postcode
 
 
@@ -35,7 +35,7 @@ def post_postcode_verification():
     if not validate_postcode(session["postcode"], "postcode"):
         return redirect("/postcode-eligibility")
 
-    update_postcode_tier(session["postcode"], current_app)
+    update_is_postcode_in_england(session["postcode"], current_app)
 
     session["error_items"] = {}
     return route_to_next_form_page()

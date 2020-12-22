@@ -11,7 +11,8 @@ from .answers_enums import (
 from .constants import (
     PAGE_TITLES,
     NHS_USER_INFO_TO_FORM_ANSWERS,
-    SESSION_KEY_POSTCODE_TIER,
+    SESSION_KEY_LOCATION_TIER,
+    SESSION_KEY_IS_POSTCODE_IN_ENGLAND,
     PostcodeTier
 )
 from .form_utils import clean_nhs_number, postcode_with_spaces
@@ -199,10 +200,10 @@ def persist_answers_from_session():
         lives_in_england = None
 
     if current_app.is_tiering_logic_enabled:
-        postcode_tier = get_postcode_tier()
-        if postcode_tier not in [PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value, PostcodeTier.VERY_HIGH.value]:
-            raise ValueError(f"Unexpected value encountered for postcode tier: {postcode_tier}")
-        if get_postcode_tier() != PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value:
+        location_tier = get_location_tier()
+        if location_tier not in [PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value, PostcodeTier.VERY_HIGH.value]:
+            raise ValueError(f"Unexpected value encountered for location tier: {location_tier}")
+        if get_location_tier() != PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value:
             # it is not possible to have an answer for basic_care_needs when the tier is v high + shielding
             _set_form_answer(["basic_care_needs"], None)
 
@@ -228,7 +229,7 @@ def persist_answers_from_session():
         form_answers().get("do_you_have_someone_to_go_shopping_for_you"),
         form_answers().get("medical_conditions"),
         lives_in_england,
-        get_postcode_tier(),
+        get_location_tier(),
     )
     session["form_uid"] = submission_reference
 
@@ -318,7 +319,7 @@ def load_answers_into_session_if_available():
         if medical_conditions is not None:
             session["medical_conditions"] = medical_conditions
         session["accessing_saved_answers"] = True
-        set_postcode_tier(tier_at_submission.get("longValue"))
+        set_location_tier(tier_at_submission.get("longValue"))
         return True
     return False
 
@@ -339,12 +340,20 @@ def set_form_answers_from_nhs_user_info(nhs_user_info):
         _set_form_answer(answers_key, formatted_answer)
 
 
-def set_postcode_tier(postcode_tier):
-    session[SESSION_KEY_POSTCODE_TIER] = postcode_tier
+def set_location_tier(location_tier):
+    session[SESSION_KEY_LOCATION_TIER] = location_tier
 
 
-def get_postcode_tier():
-    return session.get(SESSION_KEY_POSTCODE_TIER, None)
+def get_location_tier():
+    return session.get(SESSION_KEY_LOCATION_TIER, None)
+
+
+def set_is_postcode_in_england(is_postcode_in_england):
+    session[SESSION_KEY_IS_POSTCODE_IN_ENGLAND] = is_postcode_in_england
+
+
+def get_is_postcode_in_england():
+    return session.get(SESSION_KEY_IS_POSTCODE_IN_ENGLAND, None)
 
 
 def _set_form_answer(answers_key_list, answer):
@@ -363,5 +372,5 @@ def is_returning_nhs_login_user_without_basic_care_needs_answer():
 def is_very_high_plus_shielding_without_basic_care_needs_answer():
     # Scenario: Where the postcode tier has increased to VERY_HIGH_PLUS_SHIELDING
     # and no answer is present for 'basic_care_needs'
-    return get_postcode_tier() == PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value \
+    return get_location_tier() == PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value \
            and get_answer_from_form(["basic_care_needs"]) is None

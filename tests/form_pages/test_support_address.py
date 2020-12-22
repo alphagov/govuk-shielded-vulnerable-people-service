@@ -41,7 +41,10 @@ def test_post_support_address_should_redirect_to_next_form_page_when_form_valid(
                       "building_and_street_line_2": "",
                       "town_city": "Leeds",
                       "postcode": "LS1 1BA"}), \
-            _current_app.test_request_context("/support-address") as request_context:
+            _current_app.test_request_context("/support-address") as request_context,\
+            patch("vulnerable_people_form.form_pages.support_address.update_is_postcode_in_england", return_value={}),\
+            patch("vulnerable_people_form.form_pages.support_address.update_location_tier_by_postcode",
+                  return_value={}):
         post_support_address()
 
         assert request_context.session["postcode"] == "LS11BA"

@@ -12,10 +12,8 @@ from vulnerable_people_form.form_pages.shared.querystring_utils import append_qu
 from . import form_pages
 from .form_pages.shared.form_utils import postcode_with_spaces
 from .integrations import nhs_openconnect_id, persistence
-from vulnerable_people_form.integrations import ladcode_tier_lookup
 
 _ENV_DEVELOPMENT = "DEVELOPMENT"
-_DEFAULT_LOCAL_RESTRICTIONS_FILE_PREFIX = "vulnerable_people_form/integrations/data/local-restrictions-"
 
 
 def _handle_error(e):
@@ -81,8 +79,6 @@ def create_app(scriptinfo):
     persistence.init_app(app)
 
     app.is_tiering_logic_enabled = "TIERING_LOGIC" in app.config and app.config["TIERING_LOGIC"] == "True"
-    if app.is_tiering_logic_enabled:
-        ladcode_tier_lookup.init(_get_ladcode_tier_data_path(app.config['ENVIRONMENT']))
 
     app.register_error_handler(HTTPStatus.NOT_FOUND.value, _handle_error)
     app.register_error_handler(HTTPStatus.INTERNAL_SERVER_ERROR.value, _handle_error)
@@ -91,10 +87,6 @@ def create_app(scriptinfo):
     app.add_template_filter(postcode_with_spaces)
 
     return app
-
-
-def _get_ladcode_tier_data_path(env: str):
-    return _DEFAULT_LOCAL_RESTRICTIONS_FILE_PREFIX + env.lower() + ".yaml"
 
 
 def _init_security(app):

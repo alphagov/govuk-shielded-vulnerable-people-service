@@ -5,7 +5,7 @@ from .shared.constants import PostcodeTier
 from .shared.render import render_template_with_title
 from .shared.session import (
     get_summary_rows_from_form_answers,
-    get_postcode_tier,
+    get_location_tier,
     is_returning_nhs_login_user_without_basic_care_needs_answer)
 
 
@@ -17,7 +17,7 @@ def get_view_answers():
     if current_app.is_tiering_logic_enabled:
         if is_returning_nhs_login_user_without_basic_care_needs_answer():
             return redirect("/basic-care-needs?ca=1")
-        if get_postcode_tier() == PostcodeTier.VERY_HIGH.value:
+        if get_location_tier() == PostcodeTier.VERY_HIGH.value:
             exclude_answers.append('basic_care_needs')
 
     return render_template_with_title(

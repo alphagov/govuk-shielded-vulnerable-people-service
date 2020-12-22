@@ -42,6 +42,13 @@ object ShieldedVulnerablePeople {
     .check(status.is(302)))
     .pause(Config.pauseMin, Config.pauseMax)
 
+  private val reqAddressLookupPost = exec(http("POST - Address lookup")
+    .post(PathConstants.addressLookupPath)
+    .formParam("csrf_token", "${csrfToken}")
+    .formParam("address", """{"uprn": ${uprn}, "town_city": "${town_city}", "postcode": "${postcode}", "building_and_street_line_1": "${building_and_street_line_1}", "building_and_street_line_2": "${building_and_street_line_2}"}""")
+    .check(status.is(302)))
+    .pause(Config.pauseMin, Config.pauseMax)
+
   private val reqNHSLetterPost = exec(http("POST - Are you 'shielding'")
     .post(PathConstants.nhsLetterPath)
     .formParam("csrf_token", "${csrfToken}")
@@ -71,13 +78,6 @@ object ShieldedVulnerablePeople {
     .formParam("day", "${day}")
     .formParam("month", "${month}")
     .formParam("year", "${year}")
-    .check(status.is(302)))
-    .pause(Config.pauseMin, Config.pauseMax)
-
-  private val reqAddressLookupPost = exec(http("POST - Address lookup")
-    .post(PathConstants.addressLookupPath)
-    .formParam("csrf_token", "${csrfToken}")
-    .formParam("address", """{"uprn": ${uprn}, "town_city": "${town_city}", "postcode": "${postcode}", "building_and_street_line_1": "${building_and_street_line_1}", "building_and_street_line_2": "${building_and_street_line_2}"}""")
     .check(status.is(302)))
     .pause(Config.pauseMin, Config.pauseMax)
 
@@ -149,6 +149,8 @@ object ShieldedVulnerablePeople {
     reqNhsLoginPost,
     buildGetRequest("Postcode", PathConstants.postcodePath),
     reqPostcodeEligibilityPost,
+    buildGetRequest("Address lookup", PathConstants.addressLookupPath),
+    reqAddressLookupPost,
     buildGetRequest("Are you 'shielding'", PathConstants.nhsLetterPath),
     reqNHSLetterPost,
     buildGetRequest("NHS Number", PathConstants.nhsNumberPath),
@@ -157,8 +159,6 @@ object ShieldedVulnerablePeople {
     reqNamePost,
     buildGetRequest("DoB", PathConstants.dobPath),
     reqDateOfBirthPost,
-    buildGetRequest("Address lookup", PathConstants.addressLookupPath),
-    reqAddressLookupPost,
     buildGetRequest("Shopping support", PathConstants.shoppingSupportPath),
     reqShoppingSupportPost,
     buildGetRequest("Priority supermarket deliveries", PathConstants.priorityDeliveriesPath),
