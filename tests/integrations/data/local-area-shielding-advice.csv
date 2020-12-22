@@ -1,0 +1,12 @@
+ladcode,ladname,shielding_advice,start_datetime_utc
+E06000002,Middlesbrough Borough Council,YES,2020-12-02T00:00:01
+E06000002,Middlesbrough Borough Council,NO,2020-12-10T00:00:01
+E06000003,Dummy Council,NO,2020-12-02T00:00:01
+E06000003,Dummy Council,YES,2020-12-10T00:00:01
+E08000012,Liverpool City Council,YES,2020-08-20T00:00:01
+E08000015,Wirral Borough Council,YES,2020-12-02T00:00:01
+E08000015,Wirral Borough Council,NO,2021-12-02T00:00:01
+E06000018,Nottingham City Council,NO,2020-12-02T00:00:01
+E06000018,Nottingham City Council,YES,2020-12-10T00:00:01
+E0800021,Dummy Council,NO,2020-12-02T00:00:01
+E0800021,Dummy Council,YES,2022-12-02T00:00:01
