@@ -127,11 +127,12 @@ def test_persist_answers_should_map_parameters_correctly():
             test_answers["do_you_have_someone_to_go_shopping_for_you"],
             test_answers["do_you_have_one_of_the_listed_medical_conditions"],
             test_answers["do_you_live_in_england"],
-            test_answers["postcode_tier"])
+            test_answers["postcode_tier"],
+            test_answers["shielding_advice"])
 
         assert submission_reference == submission_ref
         mock_execute_sql.assert_called_once_with(
-            sql="CALL cv_staging.create_web_submission("
+            sql="CALL cv_staging.create_web_submission_with_shielding("
                 ":nhs_number,"
                 ":first_name,"
                 ":middle_name,"
@@ -153,7 +154,8 @@ def test_persist_answers_should_map_parameters_correctly():
                 ":do_you_have_someone_to_go_shopping_for_you,"
                 ":do_you_have_one_of_the_listed_medical_conditions,"
                 ":do_you_live_in_england,"
-                ":tier_at_submission"
+                ":tier_at_submission,"
+                ":shielding_at_submission"
                 ")",
             parameters=(
                 {"name": "nhs_number", "value": {"stringValue": test_answers["nhs_number"]}},
@@ -205,6 +207,10 @@ def test_persist_answers_should_map_parameters_correctly():
                 {
                     "name": "tier_at_submission",
                     "value": {"doubleValue": PostcodeTier.MEDIUM.value},
+                },
+                {
+                    "name": "shielding_at_submission",
+                    "value": {"doubleValue": test_answers["shielding_advice"]},
                 }
             )
         )
@@ -257,5 +263,6 @@ def _create_dummy_answers():
         "do_you_have_someone_to_go_shopping_for_you":  1,
         "do_you_have_one_of_the_listed_medical_conditions":  0,
         "do_you_live_in_england":  1,
-        "postcode_tier": PostcodeTier.MEDIUM.value
+        "postcode_tier": PostcodeTier.MEDIUM.value,
+        "shielding_advice": 1
     }

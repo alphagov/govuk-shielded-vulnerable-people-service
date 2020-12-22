@@ -230,6 +230,7 @@ def persist_answers_from_session():
         form_answers().get("medical_conditions"),
         lives_in_england,
         get_location_tier(),
+        None,
     )
     session["form_uid"] = submission_reference
 
@@ -271,6 +272,7 @@ def load_answers_into_session_if_available():
             do_you_have_one_of_the_listed_medical_conditions,
             do_you_live_in_england,
             tier_at_submission,
+            shielding_at_submission,
         ) = stored_answers
 
         date_of_birth = datetime.date.fromisoformat(date_of_birth["stringValue"])
@@ -309,7 +311,8 @@ def load_answers_into_session_if_available():
             "nhs_letter": have_you_received_an_nhs_letter["longValue"],
             "basic_care_needs": do_you_need_help_meeting_your_basic_care_needs.get("longValue"),
             "do_you_have_someone_to_go_shopping_for_you": do_you_have_someone_to_go_shopping_for_you["longValue"],
-            "do_you_live_in_england": do_you_live_in_england.get("longValue")
+            "do_you_live_in_england": do_you_live_in_england.get("longValue"),
+            "shielding_at_submission": shielding_at_submission.get("longValue")
         }
         priority_supermarket_deliveries = do_you_want_supermarket_deliveries.get("longValue")
         if priority_supermarket_deliveries is not None:

@@ -252,6 +252,7 @@ def test_persist_answers_from_session():
             "medical_conditions": MedicalConditionsAnswers.YES.value,
             "do_you_live_in_england": LiveInEnglandAnswers.YES.value,
             "tier_at_submission": PostcodeTier.VERY_HIGH.value,
+            "shielding_at_submission": None,
         }
 
         test_request_ctx.session["nhs_sub"] = nhs_sub_value
@@ -284,6 +285,7 @@ def test_persist_answers_from_session():
             data_to_persist["medical_conditions"],
             data_to_persist["do_you_live_in_england"],
             data_to_persist["tier_at_submission"],
+            data_to_persist["shielding_at_submission"],
         )
 
         assert test_request_ctx.session["form_uid"] == submission_ref
