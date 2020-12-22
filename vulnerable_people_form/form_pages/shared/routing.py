@@ -189,7 +189,7 @@ def route_to_next_form_page():
 
     if current_form == "address-lookup":
         if _is_tiering_logic_enabled():
-            return _get_next_form_url_based_on_location_tier("/nhs-letter")
+            return _get_next_form_url_based_on_location_tier("/nhs-letter", True)
         return return_redirect_if_postcode_valid(redirect("/nhs-letter"))
     elif current_form == "applying-on-own-behalf":
         if ApplyingOnOwnBehalfAnswers(answer) is ApplyingOnOwnBehalfAnswers.YES:
