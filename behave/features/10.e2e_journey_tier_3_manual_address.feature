@@ -20,20 +20,6 @@ Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - 
         Given I am on the "postcode-eligibility" page
         When I give the "#postcode" field the value "BB1 1TA"
         And I submit the form
-	Then I am redirected to the "address-lookup" page
-
- Scenario: Should be redirected to support address when an address is not listed
-        Given I am on the "address-lookup" page
-        When I click the "#my-address-is-not-listed-or-wrong" element
-        Then I am redirected to the "support-address" page
-
-    Scenario: Should be redirected to shopping assistance when an address isn't listed or is wrong
-        Given I am on the "support-address" page
-        When I give the "#building_and_street_line_1" field the value "this is a really long address line one this is a really long address line one this is a really long address"
-        And I give the "#building_and_street_line_2" field the value "this is a really long address line two this is a really long address line two this is a really long address line two this is a really long address line two this is a really long address line two"
-        And I give the "#town_city" field the value "Bradford"
-        And I give the "#postcode" field the value "LE674AY"
-        And I submit the form
         Then I am redirected to the "nhs-letter" page
 
     Scenario: Should be re-directed to nhs number when yes answered to told to shield
@@ -56,11 +42,25 @@ Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - 
         And I submit the form
         Then I am redirected to the "date-of-birth" page
 
-    Scenario: Should be re-directed to shopping assistance when valid date of birth entered
+    Scenario: Should be re-directed to address lookup when valid date of birth entered
         Given I am on the "date-of-birth" page
         When I give the "#date_of_birth-day" field the value "08"
         And I give the "#date_of_birth-month" field the value "05"
         And I give the "#date_of_birth-year" field the value "2006"
+        And I submit the form
+        Then I am redirected to the "address-lookup" page
+
+    Scenario: Should be redirected to support address when an address is not listed
+        Given I am on the "address-lookup" page
+        When I click the "#my-address-is-not-listed-or-wrong" element
+        Then I am redirected to the "support-address" page
+
+    Scenario: Should be redirected to shopping assistance when an address isn't listed or is wrong
+        Given I am on the "support-address" page
+        When I give the "#building_and_street_line_1" field the value "this is a really long address line one this is a really long address line one this is a really long address"
+        And I give the "#building_and_street_line_2" field the value "this is a really long address line two this is a really long address line two this is a really long address line two this is a really long address line two this is a really long address line two"
+        And I give the "#town_city" field the value "Bradford"
+        And I give the "#postcode" field the value "LE674AY"
         And I submit the form
         Then I am redirected to the "do-you-have-someone-to-go-shopping-for-you" page
 

@@ -20,11 +20,6 @@ Feature: COVID-19 Shielded vulnerable people service - partial user journey - no
         Given I am on the "postcode-eligibility" page
         When I give the "#postcode" field the value "BB1 1TA"
         And I submit the form
-	Then I am redirected to the "address-lookup" page
-
-    Scenario: Should be redirected to shopping assistance when an address is selected
-        Given I am on the "address-lookup" page
-        When I submit the form
         Then I am redirected to the "nhs-letter" page
 
     Scenario: Should be re-directed to nhs number when yes answered to told to shield

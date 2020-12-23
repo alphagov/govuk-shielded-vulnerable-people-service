@@ -20,11 +20,6 @@ Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - 
         Given I am on the "postcode-eligibility" page
         When I give the "#postcode" field the value "BB1 1TA"
         And I submit the form
-        Then I am redirected to the "address-lookup" page
-
-    Scenario: Should be redirected to shopping assistance when an address is selected
-        Given I am on the "address-lookup" page
-        When I submit the form
         Then I am redirected to the "nhs-letter" page
 
     Scenario: Should be re-directed to nhs number when yes answered to told to shield
@@ -53,6 +48,11 @@ Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - 
         And I give the "#date_of_birth-month" field the value "05"
         And I give the "#date_of_birth-year" field the value "2006"
         And I submit the form
+        Then I am redirected to the "address-lookup" page
+
+    Scenario: Should be redirected to shopping assistance when an address is selected
+        Given I am on the "address-lookup" page
+        When I submit the form
         Then I am redirected to the "do-you-have-someone-to-go-shopping-for-you" page
 
     Scenario: Should be redirected to priority supermarket deliveries when no answered to shopping help

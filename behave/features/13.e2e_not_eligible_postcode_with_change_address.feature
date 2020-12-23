@@ -1,5 +1,5 @@
 @feature_postcode_tier
-Feature: COVID-19 Shielded vulnerable people service - e2e user journey - postcode tier 3
+Feature: COVID-19 Shielded vulnerable people service - partial user journey - postcode not found after change address (postcode tier)
     Scenario: can load homepage
         When I navigate to "/start"
         Then the content of element with selector ".govuk-fieldset__heading" equals "Are you using this service for yourself or for someone else?"
@@ -18,7 +18,7 @@ Feature: COVID-19 Shielded vulnerable people service - e2e user journey - postco
 
     Scenario: Should be re-directed to shielding because vulnerable when eligible postcode entered
         Given I am on the "postcode-eligibility" page
-        When I give the "#postcode" field the value "LE674AY"
+        When I give the "#postcode" field the value "BB1 1TA"
         And I submit the form
         Then I am redirected to the "nhs-letter" page
 
@@ -50,38 +50,13 @@ Feature: COVID-19 Shielded vulnerable people service - e2e user journey - postco
         And I submit the form
         Then I am redirected to the "address-lookup" page
 
-    Scenario: Should be redirected to shopping assistance when an address is selected
+    Scenario: Should be directed to postcode lookup when change link clicked
         Given I am on the "address-lookup" page
-        When I submit the form
-        Then I am redirected to the "do-you-have-someone-to-go-shopping-for-you" page
+        When I click the "#change-postcode" element
+        Then I am redirected to the "postcode-lookup" page
 
-    Scenario: Should be redirected to priority supermarket deliveries when no answered to shopping help
-        Given I am on the "do-you-have-someone-to-go-shopping-for-you" page
-        When I click the ".govuk-radios__item input[value='0']" element
+    Scenario: Should be directed to not eligible postcode when unrecognised postcode entered
+        Given I am on the "postcode-lookup" page
+        When I give the "#postcode" field the value "QJ5 7VC"
         And I submit the form
-        Then I am redirected to the "priority-supermarket-deliveries" page
-
-    Scenario: Should be redirected to basic care needs when yes answered to priority shopping deliveries
-        Given I am on the "priority-supermarket-deliveries" page
-        When I click the ".govuk-radios__item input[value='1']" element
-        And I submit the form
-        Then I am redirected to the "contact-details" page
-
-    Scenario: Should be redirected to check contact details when email entered
-        Given I am on the "contact-details" page
-        When I give the "#email" field the value "coronavirus-services-smoke-tests@digital.cabinet-office.gov.uk"
-        And I submit the form
-        Then I am redirected to the "check-contact-details" page
-
-    Scenario: Should be redirected to check-your-answers when form submitted
-        Given I am on the "check-contact-details" page
-        When I submit the form
-        Then I am redirected to the "check-your-answers" page
-
-    Scenario: Should be redirected to confirmation when no answered to basic care needs help
-        Given I am on the "check-your-answers" page
-        When I submit the form
-        Then I am redirected to the "confirmation" page
-
-
-
+         Then I am redirected to the "not-eligible-postcode" page

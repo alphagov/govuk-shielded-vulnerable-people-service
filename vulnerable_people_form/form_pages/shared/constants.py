@@ -70,10 +70,7 @@ NHS_USER_INFO_TO_FORM_ANSWERS = {
 SESSION_KEY_ADDRESS_SELECTED = "auto_populated_address_selected"
 SESSION_KEY_QUERYSTRING_PARAMS = "querystring_params_to_retain"
 SESSION_KEY_LIVES_IN_ENGLAND_REFERRER = "lives_in_england_referrer"
-
-# This is kept as postcode_tier to avoid breaking sessions
-SESSION_KEY_LOCATION_TIER = "postcode_tier"
-SESSION_KEY_IS_POSTCODE_IN_ENGLAND = "is_postcode_in_england"
+SESSION_KEY_POSTCODE_TIER = "postcode_tier"
 
 GOVUK_JOURNEY_START_PAGE_URL = "https://gov.uk/coronavirus-shielding-support"
 

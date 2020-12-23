@@ -1,6 +1,6 @@
 import json
 
-from flask import redirect, session, current_app
+from flask import redirect, session
 
 from ..integrations import postcode_lookup_helper
 from .blueprint import form
@@ -8,9 +8,8 @@ from .shared.constants import SESSION_KEY_ADDRESS_SELECTED
 from .shared.querystring_utils import append_querystring_params
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
-from .shared.session import get_errors_from_session, request_form, form_answers
+from .shared.session import get_errors_from_session, request_form, form_answers, is_nhs_login_user
 from .shared.validation import validate_address_lookup
-from .shared.location_tier import update_location_tier_by_uprn
 
 
 @form.route("/address-lookup", methods=["GET"])
@@ -43,7 +42,7 @@ def get_address_lookup():
         }
         return redirect("/support-address")
 
-    prev_path = append_querystring_params("/postcode-eligibility")
+    prev_path = append_querystring_params("/nhs-letter" if is_nhs_login_user() else "/date-of-birth")
 
     return render_template_with_title(
         "address-lookup.html",
@@ -61,9 +60,6 @@ def post_address_lookup():
         "support_address": {**json.loads(request_form()["address"])},
     }
     session["error_items"] = {}
-
-    uprn = {**json.loads(request_form()["address"])}.get("uprn", None)
-    update_location_tier_by_uprn(uprn, current_app)
     if not validate_address_lookup():
         return redirect("/address-lookup")
     session[SESSION_KEY_ADDRESS_SELECTED] = True

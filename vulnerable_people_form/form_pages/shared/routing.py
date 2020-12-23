@@ -1,6 +1,6 @@
 from flask import redirect, request, session, current_app
 
-from ...integrations import location_eligibility
+from ...integrations import postcode_eligibility
 from .answers_enums import (
     ApplyingOnOwnBehalfAnswers,
     MedicalConditionsAnswers,
@@ -14,7 +14,7 @@ from .constants import (
     PostcodeTier,
     PostcodeTierStatus
 )
-from .location_tier import is_tier_very_high_or_above, get_latest_location_tier
+from .postcode_tier import is_tier_very_high_or_above, get_latest_postcode_tier
 from .querystring_utils import append_querystring_params
 from .session import (
     accessing_saved_answers,
@@ -22,13 +22,11 @@ from .session import (
     get_answer_from_form,
     is_nhs_login_user,
     persist_answers_from_session,
-    get_is_postcode_in_england,
-    get_location_tier, set_location_tier)
+    get_postcode_tier, set_postcode_tier)
 from .validation import (
     validate_date_of_birth,
     validate_nhs_number,
     validate_name,
-    validate_support_address
 )
 
 FORM_PAGE_TO_DATA_CHECK_SECTION_NAME = {
@@ -69,14 +67,10 @@ def blank_form_sections(*sections_to_blank):
     }
 
 
-def get_redirect_to_terminal_page_url():
-    if accessing_saved_answers():
-        return ("/view-answers")
-    return ("/check-your-answers")
-
-
 def get_redirect_to_terminal_page():
-    return redirect(get_redirect_to_terminal_page_url())
+    if accessing_saved_answers():
+        return redirect("/view-answers")
+    return redirect("/check-your-answers")
 
 
 def get_redirect_to_terminal_page_if_applicable():
@@ -128,8 +122,6 @@ def get_next_form_url_after_eligibility_check():
 @clear_errors_after
 def get_next_form_url_after_name():
     if is_nhs_login_user() and validate_date_of_birth():
-        if validate_support_address():
-            return "/do-you-have-someone-to-go-shopping-for-you"
         return "/address-lookup"
     else:
         return "/date-of-birth"
@@ -138,15 +130,13 @@ def get_next_form_url_after_name():
 @clear_errors_after
 def get_next_form_url_after_check_contact_details():
     if is_nhs_login_user():
-        if validate_support_address():
-            return "/do-you-have-someone-to-go-shopping-for-you"
         return "/address-lookup"
     else:
         return "/nhs-number"
 
 
 def return_redirect_if_postcode_valid(_redirect):
-    if get_is_postcode_in_england():
+    if postcode_eligibility.check_postcode(session["postcode"]):
         return _redirect
     else:
         return redirect("/do-you-live-in-england")
@@ -161,9 +151,9 @@ def update_lives_in_england_referrer(referrer):
         session[SESSION_KEY_LIVES_IN_ENGLAND_REFERRER] = referrer
 
 
-def _get_next_form_url_based_on_location_tier(redirect_url, should_redirect_to_next_form_page=False):
-    location_tier = get_location_tier()
-    if is_tier_very_high_or_above(location_tier):
+def _get_next_form_url_based_on_postcode_tier(redirect_url, should_redirect_to_next_form_page=False):
+    postcode_tier = get_postcode_tier()
+    if is_tier_very_high_or_above(postcode_tier):
         return redirect_to_next_form_page(redirect_url) if should_redirect_to_next_form_page else redirect(redirect_url)
 
     return redirect("/not-eligible-postcode")
@@ -171,13 +161,13 @@ def _get_next_form_url_based_on_location_tier(redirect_url, should_redirect_to_n
 
 def _get_next_form_url_after_shopping_and_priority_supermarket():
     if _is_tiering_logic_enabled():
-        location_tier = get_location_tier()
+        postcode_tier = get_postcode_tier()
 
-        _validate_location_tier_is_at_least_very_high(location_tier)
+        _validate_post_code_tier_is_at_least_very_high(postcode_tier)
 
-        if location_tier == PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value:
+        if postcode_tier == PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value:
             return "/basic-care-needs"
-        elif location_tier == PostcodeTier.VERY_HIGH.value:
+        elif postcode_tier == PostcodeTier.VERY_HIGH.value:
             return "/contact-details"
 
     return "/basic-care-needs"
@@ -188,15 +178,15 @@ def route_to_next_form_page():
     answer = form_answers().get(current_form.replace("-", "_"))
 
     if current_form == "address-lookup":
-        if _is_tiering_logic_enabled():
-            return _get_next_form_url_based_on_location_tier("/nhs-letter")
-        return return_redirect_if_postcode_valid(redirect("/nhs-letter"))
+        return redirect_to_next_form_page("/do-you-have-someone-to-go-shopping-for-you")
     elif current_form == "applying-on-own-behalf":
         if ApplyingOnOwnBehalfAnswers(answer) is ApplyingOnOwnBehalfAnswers.YES:
             return redirect_to_next_form_page("/nhs-login")
         return redirect_to_next_form_page("/postcode-eligibility")
     elif current_form == "postcode-eligibility":
-        return redirect_to_next_form_page("/address-lookup")
+        if _is_tiering_logic_enabled():
+            return _get_next_form_url_based_on_postcode_tier("/nhs-letter")
+        return return_redirect_if_postcode_valid(redirect("/nhs-letter"))
     elif current_form == "nhs-login":
         if YesNoAnswers(answer) is YesNoAnswers.YES:
             return redirect("/nhs-login-link")
@@ -221,7 +211,7 @@ def route_to_next_form_page():
             return redirect_to_next_form_page("/check-contact-details")
         return get_redirect_to_terminal_page()
     elif current_form == "date-of-birth":
-        return redirect_to_next_form_page("/do-you-have-someone-to-go-shopping-for-you")
+        return redirect_to_next_form_page("/address-lookup")
     elif current_form == "do-you-have-someone-to-go-shopping-for-you":
         if ShoppingAssistanceAnswers(answer) is ShoppingAssistanceAnswers.YES:
             blank_form_sections("priority_supermarket_deliveries")
@@ -244,13 +234,13 @@ def route_to_next_form_page():
         return redirect_to_next_form_page(get_next_form_url_after_nhs_number())
     elif current_form == "postcode-lookup":
         if _is_tiering_logic_enabled():
-            return _get_next_form_url_based_on_location_tier("/address-lookup")
+            return _get_next_form_url_based_on_postcode_tier("/address-lookup")
         return return_redirect_if_postcode_valid(redirect("/address-lookup"))
     elif current_form == "support-address":
         if _is_tiering_logic_enabled():
-            return _get_next_form_url_based_on_location_tier("/nhs-letter", True)
+            return _get_next_form_url_based_on_postcode_tier("/do-you-have-someone-to-go-shopping-for-you", True)
         return return_redirect_if_postcode_valid(
-            redirect_to_next_form_page("/nhs-letter")
+            redirect_to_next_form_page("/do-you-have-someone-to-go-shopping-for-you")
         )
     elif current_form == "do-you-live-in-england":
         if LiveInEnglandAnswers(answer) is LiveInEnglandAnswers.NO:
@@ -272,7 +262,7 @@ def dynamic_back_url(default="/"):
 
 
 def get_back_url_for_shopping_assistance():
-    back_url = "/date-of-birth" if session.get(SESSION_KEY_ADDRESS_SELECTED) else "/support-address"
+    back_url = "/address-lookup" if session.get(SESSION_KEY_ADDRESS_SELECTED) else "/support-address"
     return append_querystring_params(back_url)
 
 
@@ -280,16 +270,16 @@ def get_back_url_for_contact_details():
     back_url = "/basic-care-needs"
 
     if _is_tiering_logic_enabled():
-        location_tier = get_location_tier()
+        postcode_tier = get_postcode_tier()
 
-        _validate_location_tier_is_at_least_very_high(location_tier)
+        _validate_post_code_tier_is_at_least_very_high(postcode_tier)
 
-        if location_tier == PostcodeTier.VERY_HIGH.value:
+        if postcode_tier == PostcodeTier.VERY_HIGH.value:
             if form_answers().get("do_you_have_someone_to_go_shopping_for_you") == ShoppingAssistanceAnswers.NO.value:
                 back_url = "/priority-supermarket-deliveries"
             else:
                 back_url = "/do-you-have-someone-to-go-shopping-for-you"
-        elif location_tier == PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value:
+        elif postcode_tier == PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value:
             back_url = "/basic-care-needs"
 
     return append_querystring_params(back_url)
@@ -297,52 +287,45 @@ def get_back_url_for_contact_details():
 
 def get_redirect_for_returning_user_based_on_tier():
     original_postcode = form_answers()["support_address"]["postcode"]
-    original_uprn = form_answers()["support_address"].get("address_uprn", None)
-    original_location_tier = get_location_tier()
+    original_postcode_tier = get_postcode_tier()
 
-    latest_location_tier = None
-    if original_uprn:
-        latest_location_tier = location_eligibility.get_uprn_tier(original_uprn)
-    else:
-        latest_location_tier = location_eligibility.get_postcode_tier(original_postcode)
+    latest_postcode_tier_info = get_latest_postcode_tier(original_postcode, original_postcode_tier)
 
-    latest_location_tier_info = get_latest_location_tier(latest_location_tier, original_location_tier)
-
-    if latest_location_tier_info is None:
+    if latest_postcode_tier_info is None:
         return redirect("/not-eligible-postcode-returning-user-tier-not-found")
 
-    latest_location_tier = PostcodeTier(latest_location_tier_info["latest_location_tier"])
-    set_location_tier(latest_location_tier)
+    latest_postcode_tier = PostcodeTier(latest_postcode_tier_info["latest_postcode_tier"])
+    set_postcode_tier(latest_postcode_tier)
 
-    location_tier_change_status = PostcodeTierStatus(latest_location_tier_info["change_status"])
+    postcode_tier_change_status = PostcodeTierStatus(latest_postcode_tier_info["change_status"])
 
-    if location_tier_change_status == PostcodeTierStatus.NO_CHANGE:
+    if postcode_tier_change_status == PostcodeTierStatus.NO_CHANGE:
         return get_redirect_to_terminal_page()
-    elif location_tier_change_status == PostcodeTierStatus.INCREASED:
-        if latest_location_tier == PostcodeTier.VERY_HIGH_PLUS_SHIELDING:
+    elif postcode_tier_change_status == PostcodeTierStatus.INCREASED:
+        if latest_postcode_tier == PostcodeTier.VERY_HIGH_PLUS_SHIELDING:
             return redirect("/basic-care-needs?ca=1")
-        _raise_returning_user_redirect_error(location_tier_change_status, original_location_tier, latest_location_tier)
-    elif location_tier_change_status == PostcodeTierStatus.DECREASED:
-        if latest_location_tier == PostcodeTier.VERY_HIGH:
+        _raise_returning_user_redirect_error(postcode_tier_change_status, original_postcode_tier, latest_postcode_tier)
+    elif postcode_tier_change_status == PostcodeTierStatus.DECREASED:
+        if latest_postcode_tier == PostcodeTier.VERY_HIGH:
             return get_redirect_to_terminal_page()
-        elif not is_tier_very_high_or_above(latest_location_tier):
+        elif not is_tier_very_high_or_above(latest_postcode_tier):
             return redirect("/not-eligible-postcode-returning-user")
-        _raise_returning_user_redirect_error(location_tier_change_status, original_location_tier, latest_location_tier)
+        _raise_returning_user_redirect_error(postcode_tier_change_status, original_postcode_tier, latest_postcode_tier)
 
-    _raise_returning_user_redirect_error(location_tier_change_status, original_location_tier, latest_location_tier)
+    _raise_returning_user_redirect_error(postcode_tier_change_status, original_postcode_tier, latest_postcode_tier)
 
 
-def _raise_returning_user_redirect_error(location_tier_change_status, original_location_tier, latest_location_tier):
+def _raise_returning_user_redirect_error(postcode_tier_change_status, original_postcode_tier, latest_postcode_tier):
     raise RuntimeError("Unable to determine redirect location for nhs login returning user, "
-                       + f"tier change status: {location_tier_change_status}, "
-                       + f"original postcode tier: {original_location_tier}, "
-                       + f"latest postcode tier: {latest_location_tier.value}")
+                       + f"tier change status: {postcode_tier_change_status}, "
+                       + f"original postcode tier: {original_postcode_tier}, "
+                       + f"latest postcode tier: {latest_postcode_tier.value}")
 
 
 def _is_tiering_logic_enabled():
     return current_app.is_tiering_logic_enabled
 
 
-def _validate_location_tier_is_at_least_very_high(location_tier):
-    if not is_tier_very_high_or_above(location_tier):
-        raise ValueError(f"Unexpected location tier value encountered: {location_tier}")
+def _validate_post_code_tier_is_at_least_very_high(postcode_tier):
+    if not is_tier_very_high_or_above(postcode_tier):
+        raise ValueError(f"Unexpected postcode tier value encountered: {postcode_tier}")
