@@ -32,3 +32,4 @@ AWS_SQS_QUEUE_URL = os.environ.get("AWS_SQS_QUEUE_URL")
 SENTRY_DSN = os.environ.get("SENTRY_DSN")
 
 TIERING_LOGIC = os.environ.get("TIERING_LOGIC")
+POSTCODE_TIER_OVERRIDE = os.environ.get("POSTCODE_TIER_OVERRIDE")

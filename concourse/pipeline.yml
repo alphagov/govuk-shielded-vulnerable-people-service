@@ -104,6 +104,7 @@ jobs:
           GA_CROSS_DOMAIN_ID: UA-145652997-7
           ENVIRONMENT: SANDBOX
           TIERING_LOGIC: ((svp-form/feature-tiering-logic-sandbox))
+          POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
 
   - name: smoke-test-sandbox
     serial: true
@@ -163,6 +164,7 @@ jobs:
           GA_CROSS_DOMAIN_ID: UA-145652997-7
           ENVIRONMENT: STAGING
           TIERING_LOGIC: ((svp-form/feature-tiering-logic-stg))
+          POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
         on_failure: *slack_alert_on_failure
 
   - name: smoke-test-staging
@@ -224,6 +226,7 @@ jobs:
           GA_CROSS_DOMAIN_ID: UA-145652997-1
           ENVIRONMENT: PRODUCTION
           TIERING_LOGIC: ((svp-form/feature-tiering-logic-prod))
+          POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
         on_failure: *slack_alert_on_failure
 
   - name: smoke-test-prod
