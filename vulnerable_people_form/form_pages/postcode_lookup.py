@@ -12,6 +12,7 @@ from .shared.session import (
     delete_answer_from_form,
     accessing_saved_answers
 )
+from .shared.location_tier import update_is_postcode_in_england
 from .shared.validation import validate_postcode
 
 
@@ -21,6 +22,7 @@ def post_postcode_lookup():
     if not validate_postcode(session["postcode"], "postcode"):
         return redirect("/postcode-lookup")
 
+    update_is_postcode_in_england(session["postcode"], current_app)
     update_location_tier_by_postcode(session["postcode"], current_app)
 
     if not accessing_saved_answers():

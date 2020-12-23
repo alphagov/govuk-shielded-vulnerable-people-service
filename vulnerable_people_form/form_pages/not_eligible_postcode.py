@@ -28,9 +28,9 @@ def _get_template_name():
         location_tier = get_location_tier()
         is_postcode_in_england = get_is_postcode_in_england()
         if not is_postcode_in_england:
-            return "not-eligible-postcode.html"
+            return "not-eligible-postcode-not-found.html"
         if is_tier_less_than_very_high(location_tier):
             return "not-eligible-postcode-tier.html"
-        return "not-eligible-postcode-tier.html" if location_tier else "not-eligible-postcode-not-found.html"
+        return "not-eligible-postcode-not-found.html"
 
     return "not-eligible-postcode.html"
