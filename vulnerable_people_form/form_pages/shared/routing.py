@@ -196,10 +196,7 @@ def route_to_next_form_page():
             return redirect_to_next_form_page("/nhs-login")
         return redirect_to_next_form_page("/postcode-eligibility")
     elif current_form == "postcode-eligibility":
-        if get_is_postcode_in_england():
-            return redirect_to_next_form_page("/address-lookup")
-        else:
-            return redirect("/not-eligible-postcode")
+        return redirect_to_next_form_page("/address-lookup")
     elif current_form == "nhs-login":
         if YesNoAnswers(answer) is YesNoAnswers.YES:
             return redirect("/nhs-login-link")

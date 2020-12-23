@@ -1,5 +1,5 @@
 @feature_postcode_tier
-Feature: COVID-19 Shielded vulnerable people service - partial user journey - postcode not eligible (not valid postcode)
+Feature: COVID-19 Shielded vulnerable people service - partial user journey - postcode not eligible (not in england)
     Scenario: can load homepage
         When I navigate to "/start"
         Then the content of element with selector ".govuk-fieldset__heading" equals "Are you using this service for yourself or for someone else?"
@@ -35,4 +35,4 @@ Feature: COVID-19 Shielded vulnerable people service - partial user journey - po
         When I give the "#postcode" field the value "QJ5 7VC"
         And I submit the form
 	Then I am redirected to the "not-eligible-postcode" page
-	And the content of element with selector ".govuk-heading-l" equals "Sorry, we could not find your postcode in our system"
+	And the content of element with selector ".govuk-heading-l" equals "Sorry, this service is only available in England"
