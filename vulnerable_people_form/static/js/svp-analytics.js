@@ -82,7 +82,7 @@ window.GOVUK = window.GOVUK || {};
                     ga('send', 'pageview');
                 }
 
-                trackRadioItemsAnswers('input[name="do_you_have_someone_to_go_shopping_for_you"]', 'page interaction', window.location);
+                trackRadioItemsAnswers('input[name="do_you_have_someone_to_go_shopping_for_you"]', 'page interaction', window.location.href);
                 trackChangeAnswerLinks();
             }
 
