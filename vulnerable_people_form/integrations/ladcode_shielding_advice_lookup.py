@@ -20,38 +20,52 @@ class LocalAuthorityShielding:
 
     def __init__(self, shielding_advice_csv_file: str):
         self.la_shielding_advice_data = {}
-        valid_applicable_records = []
 
         with open(shielding_advice_csv_file, 'r') as f:
             la_shielding_advice = csv.DictReader(f, delimiter=',')
 
-            # Find all non-future records
-            for la in la_shielding_advice:
-                now = datetime.utcnow()
-                if datetime.strptime(la['start_datetime_utc'], '%Y-%m-%dT%H:%M:%S') < now:
-                    valid_applicable_records.append(la)
             # Sort by date for every ladcode in ascending order
-            sorted_advice = sorted(
-                valid_applicable_records,
-                key=lambda k: (k['ladcode'], k['start_datetime_utc']),
-                reverse=False)
-            # Keep the latest record only.
-            for record in sorted_advice:
-                ladcode = record['ladcode']
-                self.la_shielding_advice_data[ladcode] = record
+            self.la_shielding_advice_data = sorted(la_shielding_advice,
+                                                   key=lambda k: (k['ladcode'], k['start_datetime_utc']),
+                                                   reverse=False)
 
     def get_shielding_advice_by_ladcode(self, ladcode: str):
         """
         fetches the shielding advice status for supplied LAD Code
         """
-        if ladcode not in self.la_shielding_advice_data:
+        all_ladcode_records = self.get_all_records_for_ladcode(ladcode)
+        if not all_ladcode_records:
             logger.info(create_log_message(
                 log_event_names["LADCODE_NOT_IN_FILE"],
                 f"{ladcode} not in shielding advice file. Using default: {DEFAULT_NATIONAL_SHIELDING_ADVICE}"))
             return DEFAULT_NATIONAL_SHIELDING_ADVICE
 
-        shielding_advice = self.la_shielding_advice_data[ladcode]["shielding_advice"]
+        shielding_advice = self.get_latest_valid_advice_for_ladcode(all_ladcode_records)
         logger.info(create_log_message(
             log_event_names["SHIELDING_ADVICE_FOR_LADCODE_SUCCESS"],
             f"{ladcode} has Shielding Advice {shielding_advice}"))
         return shielding_advice
+
+    def get_all_records_for_ladcode(self, ladcode):
+        """
+        fetches the all shielding advice status for supplied LAD Code
+        """
+        all_records = []
+        for record in self.la_shielding_advice_data:
+            if record['ladcode'] == ladcode:
+                all_records.append(record)
+        return all_records
+
+    def get_latest_valid_advice_for_ladcode(self, all_ladcode_records):
+        """
+        fetches the all shielding advice status for supplied LAD Code
+        """
+        latest_advice_for_ladcode = ''
+        now = datetime.utcnow()
+        for record in all_ladcode_records:
+            record_start_datetime = datetime.strptime(record['start_datetime_utc'], '%Y-%m-%dT%H:%M:%S')
+            if record_start_datetime < now:
+                latest_advice_for_ladcode = record['shielding_advice']
+            if record_start_datetime >= now:
+                break
+        return latest_advice_for_ladcode
