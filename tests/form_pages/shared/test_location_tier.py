@@ -15,6 +15,7 @@ from vulnerable_people_form.form_pages.shared.location_tier import (
 _current_app = Flask(__name__)
 _current_app.secret_key = 'test_secret'
 _current_app.is_tiering_logic_enabled = False
+_current_app.config["POSTCODE_TIER_OVERRIDE"] = {"TE22RR": 2, "TE33RR": 3, "TE44RR": 4}
 
 
 def test_update_location_tier_by_uprn_should_not_update_when_tiering_logic_disabled():
@@ -35,6 +36,7 @@ def test_update_location_tier_by_uprn_should_update_session_when_tiering_logic_e
         _current_app.shielding_advice = Mock()
         _current_app.shielding_advice.is_la_shielding = lambda ladcode: shielding_advice
         with _current_app.app_context(), \
+             _current_app.test_request_context("/test?irrelevant=1&la=3") as test_request_context, \
              patch("vulnerable_people_form.form_pages.shared.location_tier.get_uprn_tier",
                    return_value=location_tier) as mock_get_location_tier, \
              patch("vulnerable_people_form.form_pages.shared.location_tier.get_ladcode_from_uprn",
@@ -43,6 +45,7 @@ def test_update_location_tier_by_uprn_should_update_session_when_tiering_logic_e
                 as mock_set_location_tier,  \
              patch("vulnerable_people_form.form_pages.shared.location_tier.set_shielding_advice") \
                 as mock_set_shielding_advice:
+            test_request_context.session["form_answers"] = {"support_address": {"postcode": ""}}
             update_location_tier_by_uprn(uprn, _current_app)
             mock_get_ladcode_from_uprn.assert_called_once()
             mock_get_location_tier.assert_called_once_with(uprn)

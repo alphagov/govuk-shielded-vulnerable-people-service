@@ -85,16 +85,6 @@ def entry_is_a_postal_address(result):
 
 
 def get_addresses_from_postcode(postcode):
-    if postcode in current_app.config["POSTCODE_TIER_OVERRIDE"]:
-        return [{
-            "text": f"{current_app.config['POSTCODE_TIER_OVERRIDE'][postcode]}, Test Lane, City, {postcode}",
-            "value": json.dumps({"uprn": 10000000,
-                                 "town_city": "Test",
-                                 "postcode": postcode,
-                                 "building_and_street_line_1": f"{current_app.config['POSTCODE_TIER_OVERRIDE'][postcode]} Test Lane", # noqa
-                                 "building_and_street_line_2": ""})
-        }]
-
     url = "https://api.ordnancesurvey.co.uk" + _ONS_URL_PATH
     if "OVERRIDE_ONS_URL" in current_app.config:
         url = current_app.config["OVERRIDE_ONS_URL"] + _ONS_URL_PATH

@@ -18,7 +18,7 @@ Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - 
 
     Scenario: Should be re-directed to shielding because vulnerable when eligible postcode entered
         Given I am on the "postcode-eligibility" page
-        When I give the "#postcode" field the value "LS287TQ"
+        When I give the postcode field a tier 3 postcode
         And I submit the form
 	Then I am redirected to the "address-lookup" page
 
@@ -32,7 +32,7 @@ Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - 
         When I give the "#building_and_street_line_1" field the value "this is a really long address line one this is a really long address line one this is a really long address"
         And I give the "#building_and_street_line_2" field the value "this is a really long address line two this is a really long address line two this is a really long address line two this is a really long address line two this is a really long address line two"
         And I give the "#town_city" field the value "Bradford"
-        And I give the "#postcode" field the value "BD3 7DB"
+        And I give the postcode field a tier 3 postcode
         And I submit the form
         Then I am redirected to the "nhs-letter" page
 

@@ -346,11 +346,7 @@ def set_form_answers_from_nhs_user_info(nhs_user_info):
 
 
 def set_location_tier(location_tier):
-    postcode = session["postcode"]
-    if postcode in current_app.config["POSTCODE_TIER_OVERRIDE"]:
-        session[SESSION_KEY_LOCATION_TIER] = current_app.config["POSTCODE_TIER_OVERRIDE"][postcode]
-    else:
-        session[SESSION_KEY_LOCATION_TIER] = location_tier
+    session[SESSION_KEY_LOCATION_TIER] = location_tier
 
 
 def get_location_tier():
@@ -366,11 +362,7 @@ def get_shielding_advice():
 
 
 def set_is_postcode_in_england(is_postcode_in_england):
-    postcode = session["postcode"]
-    if postcode in current_app.config["POSTCODE_TIER_OVERRIDE"]:
-        session[SESSION_KEY_IS_POSTCODE_IN_ENGLAND] = True
-    else:
-        session[SESSION_KEY_IS_POSTCODE_IN_ENGLAND] = is_postcode_in_england
+    session[SESSION_KEY_IS_POSTCODE_IN_ENGLAND] = is_postcode_in_england
 
 
 def get_is_postcode_in_england():

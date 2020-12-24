@@ -27,13 +27,16 @@ def get_address_lookup():
         }
         return redirect("/support-address")
     except postcode_lookup_helper.NoAddressesFoundAtPostcode:
-        session["error_items"] = {
-            **session.setdefault("error_items", {}),
-            "support_address": {
-                "support_address": f"No addresses found for {postcode}, please enter your address manually",
-            },
-        }
-        return redirect("/support-address")
+        if postcode in current_app.config["POSTCODE_TIER_OVERRIDE"]:
+            addresses = _create_test_address(postcode)
+        else:
+            session["error_items"] = {
+                **session.setdefault("error_items", {}),
+                "support_address": {
+                    "support_address": f"No addresses found for {postcode}, please enter your address manually",
+                },
+            }
+            return redirect("/support-address")
     except postcode_lookup_helper.ErrorFindingAddress:
         session["error_items"] = {
             **session.setdefault("error_items", {}),
@@ -52,6 +55,17 @@ def get_address_lookup():
         addresses=addresses,
         **get_errors_from_session("postcode"),
     )
+
+
+def _create_test_address(postcode):
+    return [{
+        "text": f"{current_app.config['POSTCODE_TIER_OVERRIDE'][postcode]}, Test Lane, City, {postcode}",
+        "value": json.dumps({"uprn": 999,
+                             "town_city": "Test",
+                             "postcode": postcode,
+                             "building_and_street_line_1": f"{current_app.config['POSTCODE_TIER_OVERRIDE'][postcode]} Test Lane", # noqa
+                             "building_and_street_line_2": ""})
+    }]
 
 
 @form.route("/address-lookup", methods=["POST"])
