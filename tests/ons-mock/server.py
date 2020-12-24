@@ -7,6 +7,7 @@ from fake_os_places_api_entry import FakeOSPlacesAPIEntry
 _postcode_to_uprn = {"BB11TA": 10000000,
                      "LE674AY": 1000,
                      "L244AD":  2000,
+                     "LU11AA":  10000001,
                      "QJ57VC": 3000}
 
 

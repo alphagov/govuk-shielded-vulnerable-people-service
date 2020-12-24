@@ -7,7 +7,7 @@ import io.gatling.http.Predef._
 
 object ShieldedVulnerablePeople {
 
-  private val jsonUserDataFeeder = sys.env.get("TIERING_LOGIC") match { 
+  private val jsonUserDataFeeder = sys.env.get("TIERING_LOGIC") match {
     case Some("True") => (jsonFile("data/svp_submission_data_tiering_logic.json").circular.random)
     case _ => (jsonFile("data/svp_submission_data.json").circular.random)
   }
@@ -84,14 +84,14 @@ object ShieldedVulnerablePeople {
   private val reqShoppingSupportPost = exec(http("POST - Shopping support")
     .post(PathConstants.shoppingSupportPath)
     .formParam("csrf_token", "${csrfToken}")
-    .formParam("priority_supermarket_deliveries", "${priority_supermarket_deliveries}")
+    .formParam("do_you_have_someone_to_go_shopping_for_you", "${do_you_have_someone_to_go_shopping_for_you}")
     .check(status.is(302)))
     .pause(Config.pauseMin, Config.pauseMax)
 
   private val reqSupermarketDeliveriesPost = exec(http("POST - Priority supermarket deliveries")
     .post(PathConstants.priorityDeliveriesPath)
     .formParam("csrf_token", "${csrfToken}")
-    .formParam("do_you_have_someone_to_go_shopping_for_you", "${do_you_have_someone_to_go_shopping_for_you}")
+    .formParam("priority_supermarket_deliveries", "${priority_supermarket_deliveries}")
     .check(status.is(302)))
     .pause(Config.pauseMin, Config.pauseMax)
 
@@ -161,8 +161,6 @@ object ShieldedVulnerablePeople {
     reqDateOfBirthPost,
     buildGetRequest("Shopping support", PathConstants.shoppingSupportPath),
     reqShoppingSupportPost,
-    buildGetRequest("Priority supermarket deliveries", PathConstants.priorityDeliveriesPath),
-    reqSupermarketDeliveriesPost,
     buildGetRequest("Basic care needs", PathConstants.basicCareNeedsPath),
     reqCareNeedsPost,
     buildGetRequest("Contact details", PathConstants.contactDetailsPath),
