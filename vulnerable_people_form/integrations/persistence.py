@@ -205,9 +205,10 @@ def persist_answers(
     do_you_have_one_of_the_listed_medical_conditions,
     do_you_live_in_england,
     postcode_tier,
+    shielding_advice,
 ):
     result = execute_sql(
-        sql="CALL cv_staging.create_web_submission("
+        sql="CALL cv_staging.create_web_submission_with_shielding("
         ":nhs_number,"
         ":first_name,"
         ":middle_name,"
@@ -229,7 +230,8 @@ def persist_answers(
         ":do_you_have_someone_to_go_shopping_for_you,"
         ":do_you_have_one_of_the_listed_medical_conditions,"
         ":do_you_live_in_england,"
-        ":tier_at_submission"
+        ":tier_at_submission,"
+        ":shielding_at_submission"
         ")",
         parameters=(
             generate_string_parameter("nhs_number", nhs_number),
@@ -268,7 +270,8 @@ def persist_answers(
                 "do_you_live_in_england",
                 do_you_live_in_england,
             ),
-            generate_int_parameter("tier_at_submission", postcode_tier)
+            generate_int_parameter("tier_at_submission", postcode_tier),
+            generate_int_parameter("shielding_at_submission", shielding_advice)
         ),
     )
 
@@ -278,7 +281,7 @@ def persist_answers(
 
 def load_answers(nhs_uid):
     records = execute_sql(
-        "CALL cv_base.retrieve_latest_web_submission_for_nhs_login(" "    :uid_nhs_login" ")",
+        "CALL cv_base.retrieve_latest_web_submission_for_nhs_login_with_shielding(" "    :uid_nhs_login" ")",
         (generate_string_parameter("uid_nhs_login", nhs_uid),),
     )["records"]
 
