@@ -1,5 +1,4 @@
 import logging
-
 from vulnerable_people_form.form_pages.shared.logger_utils import init_logger, log_event_names, create_log_message
 from .persistence import generate_string_parameter, generate_int_parameter, execute_sql
 import json
@@ -75,3 +74,53 @@ def is_postcode_in_england(postcode):
                                    f"Postcode: {postcode} "))
 
     return is_postcode_in_england
+
+
+def get_ladcode_from_postcode(postcode):
+    records = execute_sql(
+            "CALL cv_ref.postcode_to_ladcode(:postcode)",
+            (generate_string_parameter("postcode", postcode),),)["records"]
+
+    if not records:
+        logger.info(create_log_message(log_event_names["LADCODE_NOT_FOUND"],
+                                       f"No ladcode found in the database for postcode: {postcode}"))
+        return None
+
+    if len(records) > 1:
+        logger.warning(create_log_message(
+            log_event_names["TOO_MANY_LADCODES_FOUND"],
+            f"More than 1 ladcode found in the database for postcode: {postcode}"
+        ))
+
+    ladcode = records[0][0]["stringValue"]
+
+    logger.info(create_log_message(log_event_names["POSTCODE_TO_LADCODE_SUCCESS"],
+                                   f"Successfully retrieved ladcode: {ladcode} for postcode: {postcode}"))
+
+    return ladcode
+
+
+def get_ladcode_from_uprn(uprn):
+    records = execute_sql(
+            "CALL cv_ref.uprn_to_ladcode(:uprn)",
+            (generate_string_parameter("uprn", uprn),),)["records"]
+
+    if not records:
+        logger.info(create_log_message(
+            log_event_names["LADCODE_NOT_FOUND"],
+            f"No ladcode found in the database for uprn: {uprn}"
+        ))
+        return records
+
+    if len(records) > 1:
+        logger.warning(create_log_message(
+            log_event_names["TOO_MANY_LADCODES_FOUND"],
+            f"More than 1 ladcode found in the database for uprn: {uprn}"
+        ))
+
+    ladcode = records[0][0]["stringValue"]
+
+    logger.info(create_log_message(log_event_names["UPRN_TO_LADCODE_SUCCESS"],
+                                   f"Successfully retrieved ladcode: {ladcode} for uprn: {uprn}"))
+
+    return ladcode

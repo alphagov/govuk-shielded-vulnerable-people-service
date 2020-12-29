@@ -75,6 +75,8 @@ SESSION_KEY_LIVES_IN_ENGLAND_REFERRER = "lives_in_england_referrer"
 SESSION_KEY_LOCATION_TIER = "postcode_tier"
 SESSION_KEY_IS_POSTCODE_IN_ENGLAND = "is_postcode_in_england"
 
+SESSION_KEY_SHIELDING_ADVICE = "shielding_advice"
+
 GOVUK_JOURNEY_START_PAGE_URL = "https://gov.uk/coronavirus-shielding-support"
 
 

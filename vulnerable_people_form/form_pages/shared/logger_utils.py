@@ -24,6 +24,12 @@ log_event_names = {
     "UPRN_TIER_NOT_FOUND": "UprnTierNotFound",
     "POSTCODE_IN_ENGLAND": "PostcodeInEngland",
     "POSTCODE_NOT_IN_ENGLAND": "PostcodeNotInEngland",
+    "POSTCODE_TO_LADCODE_SUCCESS": "PostcodeToLadcodeSucceeded",
+    "UPRN_TO_LADCODE_SUCCESS": "UPRNToLadcodeSucceeded",
+    "LADCODE_NOT_FOUND": "LadcodeNotFoundInDbForGivenPostcode",
+    "TOO_MANY_LADCODES_FOUND": "MoreThanOneLadcodeFoundInDb",
+    "LADCODE_NOT_IN_FILE": "LadcodeNotMappedToTierNotFoundInShieldingAdviceFile",
+    "SHIELDING_ADVICE_FOR_LADCODE_SUCCESS": "ShieldingAdviceFoundForLadcode"
 }
 
 
