@@ -42,7 +42,7 @@ Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - 
 
     Scenario: Should be re-directed to date of birth when first name and last name entered
         Given I am on the "name" page
-        When I give the "#first_name" field the value "End to end"
+        When I give the "#first_name" field the value "End to end" appended with todays date
         And I give the "#last_name" field the value "User"
         And I submit the form
         Then I am redirected to the "date-of-birth" page
