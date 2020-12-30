@@ -1,0 +1,145 @@
+ladcode,ladname,shielding_advice,start_datetime_utc
+E06000031,Peterborough City Council,YES,2020-12-20T00:01:00
+E06000032,Luton Borough Council,YES,2020-12-20T00:01:00
+E06000033,Southend-on-Sea Borough Council,YES,2020-12-20T00:01:00
+E06000034,Thurrock Council,YES,2020-12-20T00:01:00
+E06000035,Medway Council,YES,2020-12-20T00:01:00
+E06000036,Bracknell Forest Council,YES,2020-12-20T00:01:00
+E06000037,West Berkshire Council,YES,2020-12-20T00:01:00
+E06000038,Reading Borough Council,YES,2020-12-20T00:01:00
+E06000039,Slough Borough Council,YES,2020-12-20T00:01:00
+E06000040,Royal Borough of Windsor and Maidenhead,YES,2020-12-20T00:01:00
+E06000041,Wokingham Borough Council,YES,2020-12-20T00:01:00
+E06000042,Milton Keynes Council,YES,2020-12-20T00:01:00
+E06000043,Brighton and Hove City Council,YES,2020-12-26T00:01:00
+E06000044,Portsmouth City Council,YES,2020-12-20T00:01:00
+E06000045,Southampton City Council,YES,2020-12-26T00:01:00
+E06000055,Bedford Borough Council,YES,2020-12-20T00:01:00
+E06000056,Central Bedfordshire Council,YES,2020-12-20T00:01:00
+E09000023,London Borough of Lewisham,YES,2020-12-20T00:01:00
+E09000001,City of London Corporation,YES,2020-12-20T00:01:00
+E09000002,London Borough of Barking and Dagenham,YES,2020-12-20T00:01:00
+E09000003,London Borough of Barnet,YES,2020-12-20T00:01:00
+E09000004,London Borough of Bexley,YES,2020-12-20T00:01:00
+E09000005,London Borough of Brent,YES,2020-12-20T00:01:00
+E09000006,London Borough of Bromley,YES,2020-12-20T00:01:00
+E09000007,London Borough of Camden,YES,2020-12-20T00:01:00
+E09000008,London Borough of Croydon,YES,2020-12-20T00:01:00
+E09000009,London Borough of Ealing,YES,2020-12-20T00:01:00
+E09000010,London Borough of Enfield,YES,2020-12-20T00:01:00
+E09000011,Royal Borough of Greenwich,YES,2020-12-20T00:01:00
+E09000012,London Borough of Hackney,YES,2020-12-20T00:01:00
+E09000013,London Borough of Hammersmith & Fulham,YES,2020-12-20T00:01:00
+E09000014,London Borough of Haringey,YES,2020-12-20T00:01:00
+E09000015,London Borough of Harrow,YES,2020-12-20T00:01:00
+E09000016,London Borough of Havering,YES,2020-12-20T00:01:00
+E09000017,London Borough of Hillingdon,YES,2020-12-20T00:01:00
+E09000018,London Borough of Hounslow,YES,2020-12-20T00:01:00
+E09000019,London Borough of Islington,YES,2020-12-20T00:01:00
+E09000020,Royal Borough of Kensington and Chelsea,YES,2020-12-20T00:01:00
+E09000021,Royal Borough of Kingston upon Thames,YES,2020-12-20T00:01:00
+E09000022,London Borough of Lambeth,YES,2020-12-20T00:01:00
+E09000024,London Borough of Merton,YES,2020-12-20T00:01:00
+E09000025,London Borough of Newham,YES,2020-12-20T00:01:00
+E09000026,London Borough of Redbridge,YES,2020-12-20T00:01:00
+E09000027,London Borough of Richmond upon Thames,YES,2020-12-20T00:01:00
+E09000028,London Borough of Southwark,YES,2020-12-20T00:01:00
+E09000029,London Borough of Sutton,YES,2020-12-20T00:01:00
+E09000030,London Borough of Tower Hamlets,YES,2020-12-20T00:01:00
+E09000031,London Borough of Waltham Forest,YES,2020-12-20T00:01:00
+E09000032,London Borough of Wandsworth,YES,2020-12-20T00:01:00
+E09000033,City of Westminster,YES,2020-12-20T00:01:00
+E07000004,Buckinghamshire Council,YES,2020-12-20T00:01:00
+E07000005,Buckinghamshire Council,YES,2020-12-20T00:01:00
+E07000006,Buckinghamshire Council,YES,2020-12-20T00:01:00
+E07000007,Buckinghamshire Council,YES,2020-12-20T00:01:00
+E06000060,Buckinghamshire Council,YES,2020-12-20T00:01:00
+E07000008,Cambridge City Council,YES,2020-12-26T00:01:00
+E07000009,East Cambridgeshire District Council,YES,2020-12-26T00:01:00
+E07000010,Fenland District Council,YES,2020-12-26T00:01:00
+E07000011,Huntingdonshire District Council,YES,2020-12-26T00:01:00
+E07000012,South Cambridgeshire District Council,YES,2020-12-26T00:01:00
+E07000061,Eastbourne Borough Council,YES,2020-12-26T00:01:00
+E07000062,Hastings Borough Council,YES,2020-12-20T00:01:00
+E07000063,Lewes District Council,YES,2020-12-26T00:01:00
+E07000064,Rother District Council,YES,2020-12-20T00:01:00
+E07000065,Wealden District Council,YES,2020-12-26T00:01:00
+E07000066,Basildon Borough Council,YES,2020-12-20T00:01:00
+E07000067,Braintree District Council,YES,2020-12-20T00:01:00
+E07000068,Brentwood Borough Council,YES,2020-12-20T00:01:00
+E07000069,Castle Point Borough Council,YES,2020-12-20T00:01:00
+E07000070,Chelmsford City Council,YES,2020-12-20T00:01:00
+E07000071,Colchester Borough Council,YES,2020-12-26T00:01:00
+E07000072,Epping Forest District Council,YES,2020-12-20T00:01:00
+E07000073,Harlow Council,YES,2020-12-20T00:01:00
+E07000074,Maldon District Council,YES,2020-12-20T00:01:00
+E07000075,Rochford District Council,YES,2020-12-20T00:01:00
+E07000203,Mid Suffolk District Council,YES,2020-12-26T00:01:00
+E07000244,East Suffolk District Council,YES,2020-12-26T00:01:00
+E07000245,West Suffolk District Council,YES,2020-12-26T00:01:00
+E07000207,Elmbridge Borough Council,YES,2020-12-20T00:01:00
+E07000208,Epsom and Ewell Borough Council,YES,2020-12-20T00:01:00
+E07000209,Guildford Borough Council,YES,2020-12-20T00:01:00
+E07000210,Mole Valley District Council,YES,2020-12-20T00:01:00
+E07000211,Reigate and Banstead Borough Council,YES,2020-12-20T00:01:00
+E07000212,Runnymede Borough Council,YES,2020-12-20T00:01:00
+E07000213,Spelthorne Borough Council,YES,2020-12-20T00:01:00
+E07000214,Surrey Heath Borough Council,YES,2020-12-20T00:01:00
+E07000215,Tandridge District Council,YES,2020-12-20T00:01:00
+E07000216,Waverley Borough Council,YES,2020-12-26T00:01:00
+E07000217,Woking Borough Council,YES,2020-12-20T00:01:00
+E07000223,Adur District Council,YES,2020-12-26T00:01:00
+E07000224,Arun District Council,YES,2020-12-26T00:01:00
+E07000225,Chichester District Council,YES,2020-12-26T00:01:00
+E07000226,Crawley Borough Council,YES,2020-12-26T00:01:00
+E07000227,Horsham District Council,YES,2020-12-26T00:01:00
+E07000228,Mid Sussex District Council,YES,2020-12-26T00:01:00
+E07000229,Worthing Borough Council,YES,2020-12-26T00:01:00
+E07000076,Tendring District Council,YES,2020-12-26T00:01:00
+E07000077,Uttlesford District Council,YES,2020-12-26T00:01:00
+E07000084,Basingstoke and Deane Borough Council,YES,2020-12-26T00:01:00
+E07000085,East Hampshire District Council,YES,2020-12-26T00:01:00
+E07000086,Eastleigh Borough Council,YES,2020-12-26T00:01:00
+E07000087,Fareham Borough Council,YES,2020-12-26T00:01:00
+E07000088,Gosport Borough Council,YES,2020-12-20T00:01:00
+E07000089,Hart District Council,YES,2020-12-26T00:01:00
+E07000090,Havant Borough Council,YES,2020-12-20T00:01:00
+E07000092,Rushmoor Borough Council,YES,2020-12-26T00:01:00
+E07000093,Test Valley Borough Council,YES,2020-12-26T00:01:00
+E07000094,Winchester City Council,YES,2020-12-26T00:01:00
+E07000095,Borough of Broxbourne,YES,2020-12-20T00:01:00
+E07000096,Dacorum Borough Council,YES,2020-12-20T00:01:00
+E07000098,Hertsmere Borough Council,YES,2020-12-20T00:01:00
+E07000099,North Hertfordshire District Council,YES,2020-12-20T00:01:00
+E07000102,Three Rivers District Council,YES,2020-12-20T00:01:00
+E07000103,Watford Borough Council,YES,2020-12-20T00:01:00
+E07000240,St Albans City and District Council,YES,2020-12-20T00:01:00
+E07000241,Welwyn Hatfield Council,YES,2020-12-20T00:01:00
+E07000242,East Hertfordshire District Council,YES,2020-12-20T00:01:00
+E07000243,Stevenage Borough Council,YES,2020-12-20T00:01:00
+E07000105,Ashford Borough Council,YES,2020-12-20T00:01:00
+E07000106,Canterbury City Council,YES,2020-12-20T00:01:00
+E07000107,Dartford Borough Council,YES,2020-12-20T00:01:00
+E07000108,Dover District Council,YES,2020-12-20T00:01:00
+E07000109,Gravesham Borough Council,YES,2020-12-20T00:01:00
+E07000110,Maidstone Borough Council,YES,2020-12-20T00:01:00
+E07000111,Sevenoaks District Council,YES,2020-12-20T00:01:00
+E07000112,Folkestone and Hythe,YES,2020-12-20T00:01:00
+E07000113,Swale Borough Council,YES,2020-12-20T00:01:00
+E07000114,Thanet District Council,YES,2020-12-20T00:01:00
+E07000115,Tonbridge and Malling Borough Council,YES,2020-12-20T00:01:00
+E07000116,Tunbridge Wells Borough Council,YES,2020-12-20T00:01:00
+E07000143,Breckland Council,YES,2020-12-26T00:01:00
+E07000144,Broadland District Council,YES,2020-12-26T00:01:00
+E07000145,Great Yarmouth Borough Council,YES,2020-12-26T00:01:00
+E07000146,Borough Council of Kings Lynn and West Norfolk,YES,2020-12-26T00:01:00
+E07000147,North Norfolk District Council,YES,2020-12-26T00:01:00
+E07000148,Norwich City Council,YES,2020-12-26T00:01:00
+E07000149,South Norfolk District Council,YES,2020-12-26T00:01:00
+E07000177,Cherwell District Council,YES,2020-12-26T00:01:00
+E07000178,Oxford City Council,YES,2020-12-26T00:01:00
+E07000179,South Oxfordshire District Council,YES,2020-12-26T00:01:00
+E07000180,Vale of White Horse District Council,YES,2020-12-26T00:01:00
+E07000181,West Oxfordshire District Council,YES,2020-12-26T00:01:00
+E07000200,Babergh District Council,YES,2020-12-26T00:01:00
+E07000202,Ipswich Borough Council,YES,2020-12-26T00:01:00
