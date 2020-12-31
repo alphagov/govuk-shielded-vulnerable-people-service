@@ -12,6 +12,7 @@ from .constants import (
     PAGE_TITLES,
     NHS_USER_INFO_TO_FORM_ANSWERS,
     SESSION_KEY_LOCATION_TIER,
+    SESSION_KEY_SHIELDING_ADVICE,
     SESSION_KEY_IS_POSTCODE_IN_ENGLAND,
     PostcodeTier
 )
@@ -230,7 +231,7 @@ def persist_answers_from_session():
         form_answers().get("medical_conditions"),
         lives_in_england,
         get_location_tier(),
-        None,
+        get_shielding_advice(),
     )
     session["form_uid"] = submission_reference
 
@@ -323,6 +324,7 @@ def load_answers_into_session_if_available():
             session["medical_conditions"] = medical_conditions
         session["accessing_saved_answers"] = True
         set_location_tier(tier_at_submission.get("longValue"))
+        set_shielding_advice(shielding_at_submission.get("longValue"))
         return True
     return False
 
@@ -349,6 +351,14 @@ def set_location_tier(location_tier):
 
 def get_location_tier():
     return session.get(SESSION_KEY_LOCATION_TIER, None)
+
+
+def set_shielding_advice(shielding_advice):
+    session[SESSION_KEY_SHIELDING_ADVICE] = shielding_advice
+
+
+def get_shielding_advice():
+    return session.get(SESSION_KEY_SHIELDING_ADVICE, None)
 
 
 def set_is_postcode_in_england(is_postcode_in_england):

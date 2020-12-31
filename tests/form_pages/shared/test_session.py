@@ -227,6 +227,7 @@ def test_persist_answers_from_session():
         submission_ref = "submission-reference"
         nhs_sub_value = "nhs-sub-value"
         test_request_ctx.session["postcode_tier"] = PostcodeTier.VERY_HIGH.value
+        test_request_ctx.session["shielding_advice"] = YesNoAnswers.NO.value
         data_to_persist = {
             "nhs_number": "1234567891",
             "name": {"first_name": "Jon", "middle_name": "", "last_name": "Smith"},
@@ -252,7 +253,7 @@ def test_persist_answers_from_session():
             "medical_conditions": MedicalConditionsAnswers.YES.value,
             "do_you_live_in_england": LiveInEnglandAnswers.YES.value,
             "tier_at_submission": PostcodeTier.VERY_HIGH.value,
-            "shielding_at_submission": None,
+            "shielding_at_submission": YesNoAnswers.NO.value,
         }
 
         test_request_ctx.session["nhs_sub"] = nhs_sub_value
