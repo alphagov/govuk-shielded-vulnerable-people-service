@@ -75,8 +75,8 @@ def get_nhs_registration_callback():
     session["nhs_sub"] = nhs_user_info["sub"]
     session["form_answers"]["nhs_number"] = nhs_user_info["nhs_number"]
 
-    if load_answers_into_session_if_available():
-        if current_app.is_tiering_logic_enabled and journey_progress is JourneyProgress.NHS_NUMBER:
+    if load_answers_into_session_if_available() and journey_progress is JourneyProgress.NHS_NUMBER:
+        if current_app.is_tiering_logic_enabled:
             return get_redirect_for_returning_user_based_on_tier()
         return get_redirect_to_terminal_page()
 
