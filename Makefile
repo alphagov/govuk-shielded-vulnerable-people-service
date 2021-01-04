@@ -19,7 +19,7 @@ concourse_e2e:
 
 smoke_test:
 	@echo "Executing smoke test with submission..."
-	behave behave/features/12.e2e_journey_tier_3.feature --stop
+	behave behave/features/1.e2e_journey_no_nhs_login.feature --stop
 
 test_e2e_local:
 	@echo "Executing e2e automated tests against the local environment..."
