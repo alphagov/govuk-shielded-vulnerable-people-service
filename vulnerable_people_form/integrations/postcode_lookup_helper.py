@@ -56,11 +56,31 @@ def address_builder(lpi_info):
 
     return {
         "uprn": int(lpi_info.get("UPRN")),
-        "town_city": address_line_builder(lpi_info, ["LOCALITY_NAME", "TOWN_NAME", "ADMINISTRATIVE_AREA"]).title(),
+        "town_city": town_city_builder(lpi_info).title(),
         "postcode": lpi_info.get("POSTCODE_LOCATOR"),
         "building_and_street_line_1": building_and_street_line_1.title(),
         "building_and_street_line_2": building_and_street_line_2.title(),
     }
+
+
+def town_city_builder(lpi_info):
+    locality = lpi_info.get('LOCALITY_NAME')
+    town = lpi_info.get('TOWN_NAME')
+    administrative_area = lpi_info.get('ADMINISTRATIVE_AREA')
+
+    non_null_sections = [item for item in [locality, town, administrative_area] if item]
+
+    unique_sections = unique_values_preserving_order(non_null_sections)
+
+    return ', '.join(unique_sections)
+
+
+def unique_values_preserving_order(sections):
+    unique_sections = []
+    for section in sections:
+        if section not in unique_sections:
+            unique_sections.append(section)
+    return unique_sections
 
 
 def property_identifier(start_number, start_suffix, end_number, end_suffix, text_value):
@@ -79,7 +99,7 @@ def property_identifier(start_number, start_suffix, end_number, end_suffix, text
 
 def build_building_and_street_lines(primary_property_identifier, primary_property_identifier_is_a_building,
                                     secondary_property_identifier, street):
-    if secondary_property_identifier != "":
+    if secondary_property_identifier:
         building_and_street_line_1 = secondary_property_identifier + ', ' + primary_property_identifier
         building_and_street_line_2 = street
     elif primary_property_identifier_is_a_building:
