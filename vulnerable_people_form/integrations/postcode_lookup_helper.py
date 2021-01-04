@@ -55,7 +55,7 @@ def address_builder(lpi_info):
                                                                                            organisation)
 
     return {
-        "uprn": int(lpi_info.get("UPRN")),
+        "uprn": int(lpi_info.get("UPRN")) if lpi_info.get("UPRN") else None,
         "town_city": town_city_builder(lpi_info).title(),
         "postcode": lpi_info.get("POSTCODE_LOCATOR"),
         "building_and_street_line_1": building_and_street_line_1.title(),
