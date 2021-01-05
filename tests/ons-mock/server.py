@@ -4,7 +4,8 @@ import json
 import re
 from fake_os_places_api_entry import FakeOSPlacesAPIEntry
 
-_postcode_to_uprn = {"BB11TA": 10000000,
+_postcode_to_uprn = {"LS287TQ": 10000000,
+                     "BB11TA": 1000000,
                      "LE674AY": 1000,
                      "L244AD":  2000,
                      "LU11AA":  10000001,
