@@ -16,7 +16,7 @@ from .shared.session import (
     set_form_answers_from_nhs_user_info,
     load_answers_into_session_if_available
 )
-from ..integrations import google_analytics
+from ..integrations import google_analytics, persistence
 
 _CONFIRMATION_URL = "/confirmation"
 logger = logging.getLogger(__name__)
@@ -75,10 +75,7 @@ def get_nhs_registration_callback():
     session["nhs_sub"] = nhs_user_info["sub"]
     session["form_answers"]["nhs_number"] = nhs_user_info["nhs_number"]
 
-    if load_answers_into_session_if_available() and journey_progress is JourneyProgress.NHS_NUMBER:
-        if current_app.is_tiering_logic_enabled:
-            return get_redirect_for_returning_user_based_on_tier()
-        return get_redirect_to_terminal_page()
+    has_existing_submission = persistence.load_answers(session["nhs_sub"])
 
     if journey_progress is JourneyProgress.NHS_NUMBER:
         set_form_answers_from_nhs_user_info(nhs_user_info)
@@ -89,7 +86,13 @@ def get_nhs_registration_callback():
     else:
         raise ValueError("Unexpected JourneyProgress value extracted from state: " + last_char_of_state)
 
-    return redirect(redirect_url)
+    if not has_existing_submission:
+        return redirect(redirect_url)
+
+    if load_answers_into_session_if_available():
+        if current_app.is_tiering_logic_enabled:
+            return get_redirect_for_returning_user_based_on_tier()
+        return get_redirect_to_terminal_page()
 
 
 def _log_no_consent(error, error_description):

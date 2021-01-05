@@ -27,8 +27,7 @@ from .session import (
 from .validation import (
     validate_date_of_birth,
     validate_nhs_number,
-    validate_name,
-    validate_support_address
+    validate_name
 )
 
 FORM_PAGE_TO_DATA_CHECK_SECTION_NAME = {
@@ -128,21 +127,10 @@ def get_next_form_url_after_eligibility_check():
 @clear_errors_after
 def get_next_form_url_after_name():
     if is_nhs_login_user() and validate_date_of_birth():
-        if validate_support_address():
-            return "/do-you-have-someone-to-go-shopping-for-you"
-        return "/address-lookup"
+        return "/do-you-have-someone-to-go-shopping-for-you"
+
     else:
         return "/date-of-birth"
-
-
-@clear_errors_after
-def get_next_form_url_after_check_contact_details():
-    if is_nhs_login_user():
-        if validate_support_address():
-            return "/do-you-have-someone-to-go-shopping-for-you"
-        return "/address-lookup"
-    else:
-        return "/nhs-number"
 
 
 def return_redirect_if_postcode_valid(_redirect):
