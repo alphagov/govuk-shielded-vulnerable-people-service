@@ -25,10 +25,6 @@ class ErrorFindingAddress(RuntimeError):
     pass
 
 
-def address_line_builder(lpi_info, slice):
-    return ", ".join({k: v for k, v in lpi_info.items() if k in slice}.values())
-
-
 def address_builder(lpi_info):
     primary_property_identifier = property_identifier(start_number=lpi_info.get('PAO_START_NUMBER'),
                                                       start_suffix=lpi_info.get('PAO_START_SUFFIX'),
@@ -88,7 +84,8 @@ def property_identifier(start_number, start_suffix, end_number, end_suffix, text
         return f'{a}{b}' if b else f'{a}'
 
     if text_value:
-        return text_value
+        number_identifier = property_identifier(start_number, start_suffix, end_number, end_suffix, None)
+        return f'{text_value}, {number_identifier}' if number_identifier else text_value
     elif end_number:
         return f'{number_suffix(start_number, start_suffix)}-{number_suffix(end_number, end_suffix)}'
     elif start_number:
@@ -165,11 +162,11 @@ def get_addresses_from_postcode(postcode):
     elif response.status_code == HTTPStatus.UNAUTHORIZED.value:
         logger.error(_create_postcode_lookup_failure_log_message(
             "Unauthorised request submitted to API - Invalid ORDNANCE_SURVEY_PLACES_API_KEY", postcode,
-            response.text))  # noqa
+            response.text))
         raise ErrorFindingAddress()
     elif response.status_code == HTTPStatus.BAD_REQUEST.value:
         logger.warning(_create_postcode_lookup_failure_log_message("Invalid request submitted to API", postcode,
-                                                                   response.text))  # noqa
+                                                                   response.text))
         raise PostcodeNotFound()
     else:
         logger.error(_create_postcode_lookup_failure_log_message("Error finding address", postcode, response.text))
