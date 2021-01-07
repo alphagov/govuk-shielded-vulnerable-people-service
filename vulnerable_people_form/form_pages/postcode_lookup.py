@@ -2,7 +2,7 @@ from flask import redirect, session, current_app
 
 from .blueprint import form
 from .shared.form_utils import format_postcode
-from .shared.location_tier import update_location_tier_by_postcode
+from .shared.location_tier import update_location_status_by_postcode
 from .shared.querystring_utils import append_querystring_params
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
@@ -23,7 +23,7 @@ def post_postcode_lookup():
         return redirect("/postcode-lookup")
 
     update_is_postcode_in_england(session["postcode"], current_app)
-    update_location_tier_by_postcode(session["postcode"], current_app)
+    update_location_status_by_postcode(session["postcode"], current_app)
 
     if not accessing_saved_answers():
         delete_answer_from_form("support_address")

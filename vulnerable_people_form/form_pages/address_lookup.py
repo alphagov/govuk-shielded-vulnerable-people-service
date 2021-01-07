@@ -10,7 +10,7 @@ from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
 from .shared.session import get_errors_from_session, request_form, form_answers
 from .shared.validation import validate_address_lookup
-from .shared.location_tier import update_location_tier_by_uprn, update_location_tier_by_postcode
+from .shared.location_tier import update_location_status_by_uprn, update_location_status_by_postcode
 
 
 @form.route("/address-lookup", methods=["GET"])
@@ -27,7 +27,7 @@ def get_address_lookup():
         }
         return redirect("/support-address")
     except postcode_lookup_helper.NoAddressesFoundAtPostcode:
-        if postcode in current_app.config["POSTCODE_TIER_OVERRIDE"]:
+        if postcode in current_app.postcode_tier_override:
             addresses = _create_test_address(postcode)
         else:
             session["error_items"] = {
@@ -59,7 +59,7 @@ def get_address_lookup():
 
 def _create_test_address(postcode):
     return [{
-        "text": f"{current_app.config['POSTCODE_TIER_OVERRIDE'][postcode]}, Test Lane, City, {postcode}",
+        "text": f"{current_app.postcode_tier_override[postcode]}, Test Lane, City, {postcode}",
         "value": json.dumps({"uprn": None,
                              "town_city": "Test",
                              "postcode": postcode,
@@ -82,9 +82,9 @@ def post_address_lookup():
     uprn = {**json.loads(request_form()["address"])}.get("uprn", None)
 
     if uprn and location_eligibility.get_uprn_tier(uprn):
-        update_location_tier_by_uprn(uprn, current_app)
+        update_location_status_by_uprn(uprn, current_app)
     else:
-        update_location_tier_by_postcode(session["postcode"], current_app)
+        update_location_status_by_postcode(session["postcode"], current_app)
 
     session[SESSION_KEY_ADDRESS_SELECTED] = True
     return route_to_next_form_page()

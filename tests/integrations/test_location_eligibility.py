@@ -1,13 +1,20 @@
 from unittest.mock import patch
 
 import pytest
+from flask import Flask
 
 from vulnerable_people_form.integrations.location_eligibility import (is_postcode_in_england,
                                                                       get_postcode_tier, get_uprn_tier,
+                                                                      get_shielding_advice_by_uprn,
+                                                                      get_shielding_advice_by_postcode,
                                                                       get_ladcode_from_postcode,
                                                                       get_ladcode_from_uprn)
 
 from vulnerable_people_form.form_pages.shared.constants import PostcodeTier
+from vulnerable_people_form.integrations.ladcode_shielding_advice_lookup import LocalAuthorityShielding
+
+_current_app = Flask(__name__)
+_current_app.shielding_advice = LocalAuthorityShielding('tests/integrations/data/local-area-shielding-advice.csv')
 
 
 def test_get_uprn_tier_should_raise_err():
@@ -52,6 +59,26 @@ def test_is_postcode_in_england_should_return_correct_eligibility_value(
                return_value={"records": [[{"stringValue": stored_proc_return_value}]]}):
         postcode_in_england = is_postcode_in_england("LS1 1BA")
     assert postcode_in_england == expected_output
+
+
+@pytest.mark.parametrize("stored_proc_return_value, expected_output",
+                         [("E06000002", 0), ("E08000012", 1)])
+def test_get_shielding_advice_by_uprn_should_return_correct_eligibility_value(
+        stored_proc_return_value, expected_output):
+    with patch("vulnerable_people_form.integrations.location_eligibility.execute_sql",
+               return_value={"records": [[{"stringValue": stored_proc_return_value}]]}):
+        uprn_shielding = get_shielding_advice_by_uprn("10000000", _current_app)
+    assert uprn_shielding == expected_output
+
+
+@pytest.mark.parametrize("stored_proc_return_value, expected_output",
+                         [("E06000002", 0), ("E08000012", 1)])
+def test_get_shielding_advice_by_postcode_should_return_correct_eligibility_value(
+        stored_proc_return_value, expected_output):
+    with patch("vulnerable_people_form.integrations.location_eligibility.execute_sql",
+               return_value={"records": [[{"stringValue": stored_proc_return_value}]]}):
+        postcode_shielding = get_shielding_advice_by_postcode("BB1 1TA", _current_app)
+    assert postcode_shielding == expected_output
 
 
 def test_get_ladcode_should_return_empty_result_set_if_postcode_not_found():
