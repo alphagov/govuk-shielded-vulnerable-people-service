@@ -1,7 +1,16 @@
 from vulnerable_people_form.form_pages.shared.constants import PostcodeTier, PostcodeTierStatus
-from vulnerable_people_form.form_pages.shared.session import set_location_tier, set_is_postcode_in_england
-from vulnerable_people_form.integrations.location_eligibility import get_uprn_tier, get_postcode_tier, \
-                                                                     is_postcode_in_england
+from vulnerable_people_form.form_pages.shared.session import (
+        set_location_tier,
+        set_is_postcode_in_england,
+        set_shielding_advice
+        )
+from vulnerable_people_form.integrations.location_eligibility import (
+        get_uprn_tier,
+        get_postcode_tier,
+        is_postcode_in_england,
+        get_ladcode_from_postcode,
+        get_ladcode_from_uprn
+        )
 
 
 def update_is_postcode_in_england(postcode, app):
@@ -13,6 +22,8 @@ def update_location_tier_by_uprn(uprn, app):
     if app.is_tiering_logic_enabled:
         location_tier = get_uprn_tier(uprn)
         set_location_tier(location_tier)
+        lad_code = get_ladcode_from_uprn(uprn)
+        set_shielding_advice(app.shielding_advice.is_la_shielding(lad_code))
     else:
         set_location_tier(PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value)
 
@@ -21,6 +32,8 @@ def update_location_tier_by_postcode(postcode, app):
     if app.is_tiering_logic_enabled:
         location_tier = get_postcode_tier(postcode)
         set_location_tier(location_tier)
+        lad_code = get_ladcode_from_postcode(postcode)
+        set_shielding_advice(app.shielding_advice.is_la_shielding(lad_code))
     else:
         set_location_tier(PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value)
 

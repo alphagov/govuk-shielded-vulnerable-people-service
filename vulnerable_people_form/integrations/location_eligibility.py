@@ -103,7 +103,7 @@ def get_ladcode_from_postcode(postcode):
 def get_ladcode_from_uprn(uprn):
     records = execute_sql(
             "CALL cv_ref.uprn_to_ladcode(:uprn)",
-            (generate_string_parameter("uprn", uprn),),)["records"]
+            (generate_int_parameter("uprn", uprn),),)["records"]
 
     if not records:
         logger.info(create_log_message(
