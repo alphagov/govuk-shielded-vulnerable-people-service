@@ -94,6 +94,12 @@ class PostcodeTier(enum.IntEnum):
 
 
 @enum.unique
+class ShieldingAdvice(enum.IntEnum):
+    NOT_ADVISED_TO_SHIELD = 0
+    ADVISED_TO_SHIELD = 1
+
+
+@enum.unique
 class PostcodeTierStatus(enum.IntEnum):
     NO_CHANGE = 1
     INCREASED = 2

@@ -12,6 +12,7 @@ from .constants import (
     SESSION_KEY_ADDRESS_SELECTED,
     SESSION_KEY_LIVES_IN_ENGLAND_REFERRER,
     PostcodeTier,
+    ShieldingAdvice,
     PostcodeTierStatus
 )
 from .location_tier import is_tier_very_high_or_above, get_latest_location_tier
@@ -22,7 +23,8 @@ from .session import (
     is_nhs_login_user,
     persist_answers_from_session,
     get_is_postcode_in_england,
-    get_location_tier, set_location_tier)
+    get_location_tier, set_location_tier,
+    get_shielding_advice)
 from .validation import (
     validate_date_of_birth,
     validate_nhs_number,
@@ -158,10 +160,11 @@ def _get_next_form_url_based_on_location_tier(redirect_url, should_redirect_to_n
 def _get_next_form_url_after_shopping_and_priority_supermarket():
     if _is_tiering_logic_enabled():
         location_tier = get_location_tier()
+        shielding_advice = get_shielding_advice()
 
         _validate_location_tier_is_at_least_very_high(location_tier)
 
-        if location_tier == PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value:
+        if shielding_advice == ShieldingAdvice.ADVISED_TO_SHIELD.value:
             return "/basic-care-needs"
         elif location_tier == PostcodeTier.VERY_HIGH.value:
             return "/contact-details"
