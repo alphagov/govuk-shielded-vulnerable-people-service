@@ -25,53 +25,102 @@ class ErrorFindingAddress(RuntimeError):
     pass
 
 
-def address_line_builder(lpi_info, slice):
-    return ", ".join({k: v for k, v in lpi_info.items() if k in slice}.values())
-
-
 def address_builder(lpi_info):
-    sao = address_line_builder(
-        lpi_info,
-        [
-            "ORGANISATION",
-            "SAO_START_NUMBER",
-            "SAO_START_SUFFIX",
-            "SAO_END_NUMBER",
-            "SAO_END_SUFFIX",
-            "SAO_TEXT",
-        ],
-    )
-    pao = address_line_builder(
-        lpi_info,
-        [
-            "PAO_START_NUMBER",
-            "PAO_START_SUFFIX",
-            "PAO_END_NUMBER",
-            "PAO_END_SUFFIX",
-            "PAO_TEXT",
-        ],
-    )
+    primary_property_identifier = property_identifier(start_number=lpi_info.get('PAO_START_NUMBER'),
+                                                      start_suffix=lpi_info.get('PAO_START_SUFFIX'),
+                                                      end_number=lpi_info.get('PAO_END_NUMBER'),
+                                                      end_suffix=lpi_info.get('PAO_END_SUFFIX'),
+                                                      text_value=lpi_info.get('PAO_TEXT'))
+    primary_property_identifier_is_a_building = True if lpi_info.get('PAO_TEXT') else False
 
-    building_and_street_line_1 = ""
-    building_and_street_line_2 = ""
+    secondary_property_identifier = property_identifier(start_number=lpi_info.get('SAO_START_NUMBER'),
+                                                        start_suffix=lpi_info.get('SAO_START_SUFFIX'),
+                                                        end_number=lpi_info.get('SAO_END_NUMBER'),
+                                                        end_suffix=lpi_info.get('SAO_END_SUFFIX'),
+                                                        text_value=lpi_info.get('SAO_TEXT'))
+
     street = lpi_info.get("STREET_DESCRIPTION", "")
+    organisation = lpi_info.get("ORGANISATION", "")
 
-    if sao != "":
-        building_and_street_line_1 = sao
-        building_and_street_line_2 = pao + " " + street
-    elif lpi_info.get("PAO_TEXT"):
-        building_and_street_line_1 = pao
-        building_and_street_line_2 = street
-    else:
-        building_and_street_line_1 = pao + " " + street
+    building_and_street_line_1, building_and_street_line_2 = build_building_and_street_lines(
+        primary_property_identifier, primary_property_identifier_is_a_building, secondary_property_identifier, street)
+
+    if organisation:
+        building_and_street_line_1, building_and_street_line_2 = include_organisation_name(building_and_street_line_1,
+                                                                                           building_and_street_line_2,
+                                                                                           organisation)
 
     return {
-        "uprn": int(lpi_info.get("UPRN")),
-        "town_city": address_line_builder(lpi_info, ["LOCALITY_NAME", "TOWN_NAME", "ADMINISTRATIVE_AREA"]).title(),
+        "uprn": int(lpi_info.get("UPRN")) if lpi_info.get("UPRN") else None,
+        "town_city": town_city_builder(lpi_info).title(),
         "postcode": lpi_info.get("POSTCODE_LOCATOR"),
         "building_and_street_line_1": building_and_street_line_1.title(),
         "building_and_street_line_2": building_and_street_line_2.title(),
     }
+
+
+def town_city_builder(lpi_info):
+    locality = lpi_info.get('LOCALITY_NAME')
+    town = lpi_info.get('TOWN_NAME')
+    administrative_area = lpi_info.get('ADMINISTRATIVE_AREA')
+
+    non_null_sections = [item for item in [locality, town, administrative_area] if item]
+
+    unique_sections = unique_values_preserving_order(non_null_sections)
+
+    return ', '.join(unique_sections)
+
+
+def unique_values_preserving_order(sections):
+    unique_sections = []
+    for section in sections:
+        if section not in unique_sections:
+            unique_sections.append(section)
+    return unique_sections
+
+
+def property_identifier(start_number, start_suffix, end_number, end_suffix, text_value):
+    def number_suffix(a, b):
+        return f'{a}{b}' if b else f'{a}'
+
+    if text_value:
+        number_identifier = property_identifier(start_number, start_suffix, end_number, end_suffix, None)
+        return f'{text_value}, {number_identifier}' if number_identifier else text_value
+    elif end_number:
+        return f'{number_suffix(start_number, start_suffix)}-{number_suffix(end_number, end_suffix)}'
+    elif start_number:
+        return number_suffix(start_number, start_suffix)
+    else:
+        return None
+
+
+def build_building_and_street_lines(primary_property_identifier, primary_property_identifier_is_a_building,
+                                    secondary_property_identifier, street):
+    if secondary_property_identifier:
+        building_and_street_line_1 = secondary_property_identifier + ', ' + primary_property_identifier
+        building_and_street_line_2 = street
+    elif primary_property_identifier_is_a_building:
+        building_and_street_line_1 = primary_property_identifier
+        building_and_street_line_2 = street
+    else:
+        building_and_street_line_1 = primary_property_identifier + " " + street
+        building_and_street_line_2 = ''
+    return building_and_street_line_1, building_and_street_line_2
+
+
+def include_organisation_name(building_and_street_line_1, building_and_street_line_2, organisation):
+    if building_and_street_line_2 == '':
+        building_and_street_line_2 = building_and_street_line_1
+        building_and_street_line_1 = organisation
+    else:
+        option_1 = organisation + ', ' + building_and_street_line_1
+        option_2 = building_and_street_line_1 + ', ' + building_and_street_line_2
+        if len(option_1) <= len(option_2):
+            building_and_street_line_1 = option_1
+        else:
+            building_and_street_line_1 = organisation
+            building_and_street_line_2 = option_2
+    return building_and_street_line_1, building_and_street_line_2
 
 
 def entry_is_a_postal_address(result):
@@ -111,10 +160,13 @@ def get_addresses_from_postcode(postcode):
                     )
             return values
     elif response.status_code == HTTPStatus.UNAUTHORIZED.value:
-        logger.error(_create_postcode_lookup_failure_log_message("Unauthorised request submitted to API - Invalid ORDNANCE_SURVEY_PLACES_API_KEY", postcode, response.text))  # noqa
+        logger.error(_create_postcode_lookup_failure_log_message(
+            "Unauthorised request submitted to API - Invalid ORDNANCE_SURVEY_PLACES_API_KEY", postcode,
+            response.text))
         raise ErrorFindingAddress()
     elif response.status_code == HTTPStatus.BAD_REQUEST.value:
-        logger.warning(_create_postcode_lookup_failure_log_message("Invalid request submitted to API", postcode, response.text))  # noqa
+        logger.warning(_create_postcode_lookup_failure_log_message("Invalid request submitted to API", postcode,
+                                                                   response.text))
         raise PostcodeNotFound()
     else:
         logger.error(_create_postcode_lookup_failure_log_message("Error finding address", postcode, response.text))
