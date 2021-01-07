@@ -22,8 +22,12 @@ def update_location_tier_by_uprn(uprn, app):
     if app.is_tiering_logic_enabled:
         location_tier = get_uprn_tier(uprn)
         set_location_tier(location_tier)
+
         lad_code = get_ladcode_from_uprn(uprn)
-        set_shielding_advice(app.shielding_advice.is_la_shielding(lad_code))
+        if app.shielding_advice.is_la_shielding(lad_code):
+            set_shielding_advice(1)
+        else:
+            set_shielding_advice(0)
     else:
         set_location_tier(PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value)
 
@@ -32,8 +36,12 @@ def update_location_tier_by_postcode(postcode, app):
     if app.is_tiering_logic_enabled:
         location_tier = get_postcode_tier(postcode)
         set_location_tier(location_tier)
+
         lad_code = get_ladcode_from_postcode(postcode)
-        set_shielding_advice(app.shielding_advice.is_la_shielding(lad_code))
+        if app.shielding_advice.is_la_shielding(lad_code):
+            set_shielding_advice(1)
+        else:
+            set_shielding_advice(0)
     else:
         set_location_tier(PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value)
 
