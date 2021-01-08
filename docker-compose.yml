@@ -8,7 +8,7 @@ services:
     command: bash
     environment:
       WEB_APP_BASE_URL: http://webform:5000
-      POSTCODE_TIER_OVERRIDE: '{"TE22RR" : 2, "TE33RR": 3, "TE44RR":4}'
+      POSTCODE_TIER_OVERRIDE: '{"TE22RR" : {"tier": 2, "shielding": 0}, "TE33RR": {"tier": 3, "shielding": 0 }, "TE44RR": {"tier": 4, "shielding": 1}, "TS33RR": {"tier": 3, "shielding": 1}}'
     ports:
       - "8081:8081"
     links:

@@ -48,7 +48,7 @@ class OnsMockHandler(BaseHTTPRequestHandler):
                             street="Carnegie Street",
                             door_number="1",
                             building_type="Terraced",
-                            uprn=_postcode_to_uprn[postcode],
+                            uprn=10000000,
                             usrn=10000000,
                             postal_address_code="D",
                             lpi_key="1111A111111111",

@@ -35,7 +35,9 @@ def update_location_tier_by_uprn(uprn, app):
             set_shielding_advice(ShieldingAdvice.NOT_ADVISED_TO_SHIELD.value)
 
         if form_answers()["support_address"]["postcode"] in app.config["POSTCODE_TIER_OVERRIDE"]:
-            set_location_tier(app.config["POSTCODE_TIER_OVERRIDE"][form_answers()["support_address"]["postcode"]])
+            postcode = form_answers()["support_address"]["postcode"]
+            set_location_tier(app.config["POSTCODE_TIER_OVERRIDE"][postcode]["tier"])
+            set_shielding_advice(app.config["POSTCODE_TIER_OVERRIDE"][postcode]["shielding"])
 
     else:
         set_location_tier(PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value)
@@ -53,7 +55,8 @@ def update_location_tier_by_postcode(postcode, app):
             set_shielding_advice(ShieldingAdvice.NOT_ADVISED_TO_SHIELD.value)
 
         if postcode in app.config["POSTCODE_TIER_OVERRIDE"]:
-            set_location_tier(app.config["POSTCODE_TIER_OVERRIDE"][postcode])
+            set_location_tier(app.config["POSTCODE_TIER_OVERRIDE"][postcode]["tier"])
+            set_shielding_advice(app.config["POSTCODE_TIER_OVERRIDE"][postcode]["shielding"])
 
     else:
         set_location_tier(PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value)
