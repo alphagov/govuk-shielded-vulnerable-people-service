@@ -95,10 +95,9 @@ def set_postcode_value(context, tier):
 def set_postcode_value_for_shielding(context, tier):
     postcode = ""
     for key, value in _POSTCODE_TIER_OVERRIDE.items():
-        print(value)
         if value["tier"] == int(tier) and value["shielding"] == 1:
             postcode = key
-    
+
     html_element = context.browser.find_element_by_css_selector("#postcode")
     html_element.clear()
     html_element.send_keys(postcode)
