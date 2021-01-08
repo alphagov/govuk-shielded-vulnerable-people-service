@@ -14,7 +14,6 @@ object PathConstants {
   val priorityDeliveriesPath:String  = "/priority-supermarket-deliveries"
   val basicCareNeedsPath:String  = "/basic-care-needs"
   val contactDetailsPath:String  = "/contact-details"
-  val checkContactDetailsPath:String  = "/check-contact-details"
   val checkAnswersPath:String  = "/check-your-answers"
   val confirmationPath:String  = "/confirmation"
 }

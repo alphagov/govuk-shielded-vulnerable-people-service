@@ -111,13 +111,6 @@ object ShieldedVulnerablePeople {
     .check(status.is(302)))
     .pause(Config.pauseMin, Config.pauseMax)
 
-  private val reqCheckContactDetailsPost = exec(http("POST - Check contact details")
-    .post(PathConstants.checkContactDetailsPath)
-    .formParam("csrf_token", "${csrfToken}")
-    .formParam("email", "${email}")
-    .check(status.is(302)))
-    .pause(Config.pauseMin, Config.pauseMax)
-
   private val reqCheckAnswersPost = exec(http("POST - Check your answers and submit")
     .post(PathConstants.checkAnswersPath)
     .formParam("csrf_token", "${csrfToken}")
@@ -165,8 +158,6 @@ object ShieldedVulnerablePeople {
     reqCareNeedsPost,
     buildGetRequest("Contact details", PathConstants.contactDetailsPath),
     reqContactDetailsPost,
-    buildGetRequest("Check contact details", PathConstants.checkContactDetailsPath),
-    reqCheckContactDetailsPost,
     buildGetRequest("Check answers and submit", PathConstants.checkAnswersPath),
     reqCheckAnswersPost,
     reqConfirmation
