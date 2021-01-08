@@ -19,7 +19,6 @@ from .querystring_utils import append_querystring_params
 from .session import (
     accessing_saved_answers,
     form_answers,
-    get_answer_from_form,
     is_nhs_login_user,
     persist_answers_from_session,
     get_is_postcode_in_england,
