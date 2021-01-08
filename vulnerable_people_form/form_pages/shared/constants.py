@@ -25,7 +25,6 @@ PAGE_TITLES = {
     "cookies": "Cookies",
     "address-lookup": "What is the address where you need support?",
     "basic-care-needs": "Do you need someone to contact you about local support that might be available?",
-    "check-contact-details": "Check this is correct",
     "check-your-answers": "Check your answers before submitting",
     "contact-details": "What are your contact details?",
     "date-of-birth": "What is your date of birth?",

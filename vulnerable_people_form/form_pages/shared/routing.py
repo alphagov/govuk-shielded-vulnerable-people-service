@@ -34,7 +34,6 @@ FORM_PAGE_TO_DATA_CHECK_SECTION_NAME = {
     "address-lookup": "support_address",
     "applying-on-own-behalf": "applying_on_own_behalf",
     "basic-care-needs": "basic_care_needs",
-    "check-contact-details": "check_contact_details",
     "check-your-answers": "basic_care_needs",
     "contact-details": "contact_details",
     "date-of-birth": "date_of_birth",

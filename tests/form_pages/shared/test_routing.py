@@ -51,7 +51,6 @@ _current_app.is_tiering_logic_enabled = False
                                 "email": "test@email.com",
                                 "phone_number_texts": "07976123456"}
                             }),
-                          ("check-contact-details", "/check-your-answers", None),
                           ("/do-you-have-someone-to-go-shopping-for-you", "/basic-care-needs",
                            {"do_you_have_someone_to_go_shopping_for_you": YesNoAnswers.YES.value}),
                           ("/do-you-have-someone-to-go-shopping-for-you", "/priority-supermarket-deliveries",
@@ -78,7 +77,6 @@ def test_route_to_next_form_page_redirects_to_expected_page(
 
 @pytest.mark.parametrize("current_form_url, expected_redirect_location, form_answers, session_variables",
                          [("/check-your-answers", "/confirmation", None, {"nhs_sub": "value"}),
-                          ("/check-contact-details", "/view-answers", None, {"accessing_saved_answers": True}),
                           ("/basic-care-needs", "/contact-details", None, {"accessing_saved_answers": True}),
                           ("/medical-conditions",
                            "/nhs-number",
