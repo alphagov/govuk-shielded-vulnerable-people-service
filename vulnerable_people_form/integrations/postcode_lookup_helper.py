@@ -146,6 +146,8 @@ def get_addresses_from_postcode(postcode):
     if response.status_code == HTTPStatus.OK.value:
         response_json = response.json()
         if response_json["header"]["totalresults"] == 0:
+            logger.info(create_log_message(log_event_names["ORDNANCE_SURVEY_LOOKUP_NO_ADDRESSES_RETURNED"],
+                                           f"Postcode: {postcode}"))
             raise NoAddressesFoundAtPostcode()
         else:
             logger.info(create_log_message(log_event_names["ORDNANCE_SURVEY_LOOKUP_SUCCESS"], f"Postcode: {postcode}"))
@@ -162,14 +164,15 @@ def get_addresses_from_postcode(postcode):
     elif response.status_code == HTTPStatus.UNAUTHORIZED.value:
         logger.error(_create_postcode_lookup_failure_log_message(
             "Unauthorised request submitted to API - Invalid ORDNANCE_SURVEY_PLACES_API_KEY", postcode,
-            response.text))
+            response.status_code, response.text))
         raise ErrorFindingAddress()
     elif response.status_code == HTTPStatus.BAD_REQUEST.value:
         logger.warning(_create_postcode_lookup_failure_log_message("Invalid request submitted to API", postcode,
-                                                                   response.text))
+                                                                   response.status_code, response.text))
         raise PostcodeNotFound()
     else:
-        logger.error(_create_postcode_lookup_failure_log_message("Error finding address", postcode, response.text))
+        logger.error(_create_postcode_lookup_failure_log_message("Error finding address", postcode,
+                                                                 response.status_code, response.text))
         raise ErrorFindingAddress()
 
 
@@ -178,7 +181,7 @@ def _address_with_spaces_in_postcode(address, postcode):
     return address.replace(postcode, spaced_postcode)
 
 
-def _create_postcode_lookup_failure_log_message(failure_reason, postcode, response_body):
+def _create_postcode_lookup_failure_log_message(failure_reason, postcode, response_code, response_body):
     response_body_to_log = response_body if response_body else "response body empty"
     return create_log_message(log_event_names["ORDNANCE_SURVEY_LOOKUP_FAILURE"],
-                              f"Failure reason: {failure_reason}, Postcode: {postcode}, API response: {response_body_to_log}")  # noqa
+                              f"Failure reason: {failure_reason}, Postcode: {postcode}, API response - {response_code}: {response_body_to_log}")  # noqa

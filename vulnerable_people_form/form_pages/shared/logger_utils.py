@@ -15,6 +15,7 @@ log_event_names = {
     "VERY_HIGH_PLUS_SHIELDING_POSTCODE_TIER" : "VeryHighPlusShieldingPostcodeTierEntered",
     "ORDNANCE_SURVEY_LOOKUP_SUCCESS": "OrdnanceSurveyPlacesApiPostcodeLookupSucceeded",
     "ORDNANCE_SURVEY_LOOKUP_FAILURE": "OrdnanceSurveyPlacesApiPostcodeLookupFailed",
+    "ORDNANCE_SURVEY_LOOKUP_NO_ADDRESSES_RETURNED": "OrdnanceSurveyPlacesApiPostcodeLookupNoAddressesReturned",
     "BOTO_CLIENT_ERROR": "BotoClientErrorOccurred",
     "AWS_ARN_INIT": "AwsRdsDatabaseAndSecretArnInitialised",
     "NOT_VALID_PHONE_NUMBER_FOR_TEXTS_ENTERED": "NotValidPhoneNumberForTextsEntered",
