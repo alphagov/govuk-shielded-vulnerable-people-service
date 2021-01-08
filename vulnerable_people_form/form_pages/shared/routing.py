@@ -205,11 +205,7 @@ def route_to_next_form_page():
             return redirect("/confirmation")
         else:
             return redirect("/nhs-registration")
-    elif current_form == "check-contact-details":
-        return get_redirect_to_terminal_page()
     elif current_form == "contact-details":
-        if get_answer_from_form(("contact_details", "email")):
-            return redirect_to_next_form_page("/check-contact-details")
         return get_redirect_to_terminal_page()
     elif current_form == "date-of-birth":
         return redirect_to_next_form_page("/do-you-have-someone-to-go-shopping-for-you")
