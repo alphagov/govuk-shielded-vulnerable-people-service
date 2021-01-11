@@ -2,7 +2,7 @@ import json
 
 from flask import redirect, session, current_app
 
-from ..integrations import postcode_lookup_helper
+from ..integrations import postcode_lookup_helper, location_eligibility
 from .blueprint import form
 from .shared.constants import SESSION_KEY_ADDRESS_SELECTED
 from .shared.querystring_utils import append_querystring_params
@@ -10,7 +10,7 @@ from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
 from .shared.session import get_errors_from_session, request_form, form_answers
 from .shared.validation import validate_address_lookup
-from .shared.location_tier import update_location_tier_by_uprn
+from .shared.location_tier import update_location_tier_by_uprn, update_location_tier_by_postcode
 
 
 @form.route("/address-lookup", methods=["GET"])
@@ -62,9 +62,15 @@ def post_address_lookup():
     }
     session["error_items"] = {}
 
-    uprn = {**json.loads(request_form()["address"])}.get("uprn", None)
-    update_location_tier_by_uprn(uprn, current_app)
     if not validate_address_lookup():
         return redirect("/address-lookup")
+
+    uprn = {**json.loads(request_form()["address"])}.get("uprn", None)
+
+    if uprn and location_eligibility.get_uprn_tier(uprn):
+        update_location_tier_by_uprn(uprn, current_app)
+    else:
+        update_location_tier_by_postcode(session["postcode"], current_app)
+
     session[SESSION_KEY_ADDRESS_SELECTED] = True
     return route_to_next_form_page()
