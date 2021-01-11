@@ -75,7 +75,8 @@ Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - 
 
     Scenario: Should be redirected to check your answers page from contact details
         Given I am on the "contact-details" page
-        When I submit the form
+        When I give the "#email" field the value "coronavirus-services-smoke-tests+E2E@digital.cabinet-office.gov.uk"
+        And I submit the form
         Then I am redirected to the "check-your-answers" page
 
     Scenario: Should be redirected to confirmation when no answered to basic care needs help
