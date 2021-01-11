@@ -7,7 +7,6 @@ from . import (
     applying_on_own_behalf,
     basic_care_needs,
     blueprint,
-    check_contact_details,
     check_your_answers,
     confirmation,
     contact_details,

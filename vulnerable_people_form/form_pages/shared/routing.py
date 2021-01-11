@@ -19,7 +19,6 @@ from .querystring_utils import append_querystring_params
 from .session import (
     accessing_saved_answers,
     form_answers,
-    get_answer_from_form,
     is_nhs_login_user,
     persist_answers_from_session,
     get_is_postcode_in_england,
@@ -34,7 +33,6 @@ FORM_PAGE_TO_DATA_CHECK_SECTION_NAME = {
     "address-lookup": "support_address",
     "applying-on-own-behalf": "applying_on_own_behalf",
     "basic-care-needs": "basic_care_needs",
-    "check-contact-details": "check_contact_details",
     "check-your-answers": "basic_care_needs",
     "contact-details": "contact_details",
     "date-of-birth": "date_of_birth",
@@ -205,11 +203,7 @@ def route_to_next_form_page():
             return redirect("/confirmation")
         else:
             return redirect("/nhs-registration")
-    elif current_form == "check-contact-details":
-        return get_redirect_to_terminal_page()
     elif current_form == "contact-details":
-        if get_answer_from_form(("contact_details", "email")):
-            return redirect_to_next_form_page("/check-contact-details")
         return get_redirect_to_terminal_page()
     elif current_form == "date-of-birth":
         return redirect_to_next_form_page("/do-you-have-someone-to-go-shopping-for-you")
