@@ -11,6 +11,7 @@ params:
   ENVIRONMENT: "staging"
   REGION: "eu-west-2"
   SALT: "1rjoBuOtDYaid83fYRJBFU5ouUi0nSueev2BhyoEhnw"
+  POSTCODE_TIER_OVERRIDE:
 run:
   path: bash
   args:
