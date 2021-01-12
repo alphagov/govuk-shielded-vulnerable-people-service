@@ -18,7 +18,7 @@ Feature: COVID-19 Shielded vulnerable people service - partial user journey - po
    
     Scenario: Should be redirected to address lookup
 	Given I am on the "postcode-eligibility" page
-        When I give the "#postcode" field the value "L244AD"
+        When I give the postcode field a tier 3 postcode
         And I submit the form
 	Then I am redirected to the "address-lookup" page
 

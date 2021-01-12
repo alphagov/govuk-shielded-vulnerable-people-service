@@ -1,4 +1,5 @@
 import os
+import json
 
 from behave import then, when, given
 from selenium.webdriver.common.by import By
@@ -8,6 +9,8 @@ from datetime import date
 
 _BASE_URL = os.environ["WEB_APP_BASE_URL"]
 _DEFAULT_TIMEOUT = 30  # in seconds
+_POSTCODE_TIER_OVERRIDE = json.loads(os.environ["POSTCODE_TIER_OVERRIDE"])
+_TIER_TO_POSTCODE = {value: key for key, value in _POSTCODE_TIER_OVERRIDE.items()}
 
 
 @then('I am redirected to the "{next_page_url}" page')
@@ -75,3 +78,11 @@ def set_element_value_appended_with_today_date(context, css_selector, element_va
     date_stamp = date.today().strftime('%Y-%m-%d')
     element_value_appended = element_value+'_'+date_stamp
     set_element_value(context, css_selector, element_value_appended)
+
+
+@when('I give the postcode field a tier {tier} postcode')
+def set_postcode_value(context, tier):
+    postcode = _TIER_TO_POSTCODE[int(tier)]
+    html_element = context.browser.find_element_by_css_selector("#postcode")
+    html_element.clear()
+    html_element.send_keys(postcode)

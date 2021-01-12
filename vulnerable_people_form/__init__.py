@@ -1,4 +1,5 @@
 from http import HTTPStatus
+import json
 
 import sentry_sdk
 from flask import Flask, render_template, session
@@ -42,7 +43,8 @@ def verify_config(app):
         "AWS_ACCESS_KEY",
         "AWS_SECRET_ACCESS_KEY",
         "ENVIRONMENT",
-        "AWS_SQS_QUEUE_URL"
+        "AWS_SQS_QUEUE_URL",
+        "POSTCODE_TIER_OVERRIDE"
     }
     present_keys = set(k for k in app.config.keys() if app.config[k] is not None)
     if not present_keys.issuperset(required_keys):
@@ -89,7 +91,7 @@ def create_app(scriptinfo):
     app.context_processor(utility_processor)
 
     app.add_template_filter(postcode_with_spaces)
-
+    app.config["POSTCODE_TIER_OVERRIDE"] = json.loads(app.config["POSTCODE_TIER_OVERRIDE"])
     return app
 
 
