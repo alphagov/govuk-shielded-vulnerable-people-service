@@ -41,6 +41,7 @@ params:
   SENTRY_DSN:
   ENVIRONMENT:
   TIERING_LOGIC:
+  POSTCODE_TIER_OVERRIDE:
 
 run:
   dir: src
@@ -84,6 +85,8 @@ run:
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form SENTRY_DSN "$SENTRY_DSN"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form ENVIRONMENT "$ENVIRONMENT"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form TIERING_LOGIC "$TIERING_LOGIC"
+
+      cf set-env govuk-coronavirus-shielded-vulnerable-people-form POSTCODE_TIER_OVERRIDE "$POSTCODE_TIER_OVERRIDE"
 
       cf push govuk-coronavirus-shielded-vulnerable-people-form --strategy rolling -i "$INSTANCES"
       cf map-route govuk-coronavirus-shielded-vulnerable-people-form london.cloudapps.digital --hostname "$HOSTNAME"
