@@ -136,6 +136,7 @@ jobs:
           WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to sandbox is not serving HTTP error codes"
           TIERING_LOGIC: ((svp-form/feature-tiering-logic-sandbox))
+          POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
 
   - name: deploy-to-staging
     serial: true
