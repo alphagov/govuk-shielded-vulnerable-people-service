@@ -8,6 +8,7 @@ params:
   CGO_ENABLE: "0"
   DEBIAN_FRONTEND: "noninteractive"
   PYTHONIOENCODING: "UTF-8"
+  POSTCODE_TIER_OVERRIDE:
 inputs:
 - name: git-master
 outputs:

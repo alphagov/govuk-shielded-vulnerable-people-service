@@ -198,6 +198,7 @@ jobs:
           WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
           TIERING_LOGIC: ((svp-form/feature-tiering-logic-stg))
+          POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
         on_failure: *slack_alert_on_failure
 
   - name: deploy-to-prod
@@ -243,6 +244,7 @@ jobs:
           WEB_APP_BASE_URL: "https://coronavirus-shielding-support.service.gov.uk"
           MESSAGE: "Checks that the application deployed to production is not serving HTTP error codes"
           TIERING_LOGIC: ((svp-form/feature-tiering-logic-prod))
+          POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
         on_failure: *slack_alert_on_failure
         on_success: *slack_alert_on_success
 
@@ -440,4 +442,5 @@ jobs:
           ENVIRONMENT: "staging"
           REGION: "eu-west-2"
           SALT: "1rjoBuOtDYaid83fYRJBFU5ouUi0nSueev2BhyoEhnw"
+          POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
         on_failure: *slack_alert_on_failure
