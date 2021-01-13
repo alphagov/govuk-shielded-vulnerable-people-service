@@ -42,7 +42,7 @@ def get_uprn_tier(uprn):
     if not records:
         logger.info(create_log_message(
             log_event_names["UPRN_TIER_NOT_FOUND"],
-            f"No tier found in the database for uprn: {uprn}"
+            f"No tier found in the database for uprn: <redacted>"
         ))
         return records
 
@@ -52,7 +52,7 @@ def get_uprn_tier(uprn):
         raise ValueError(f"RDS procedure returned unrecognised value {records}")
 
     logger.info(create_log_message(log_event_names["UPRN_TO_TIER_SUCCESS"],
-                                   f"Successfully retrieved tier: {tier} for uprn: {uprn}"))
+                                   f"Successfully retrieved tier: {tier} for uprn: <redacted>"))
 
     return tier
 
@@ -108,19 +108,19 @@ def get_ladcode_from_uprn(uprn):
     if not records:
         logger.info(create_log_message(
             log_event_names["LADCODE_NOT_FOUND"],
-            f"No ladcode found in the database for uprn: {uprn}"
+            f"No ladcode found in the database for uprn: <redacted>"
         ))
         return records
 
     if len(records) > 1:
         logger.warning(create_log_message(
             log_event_names["TOO_MANY_LADCODES_FOUND"],
-            f"More than 1 ladcode found in the database for uprn: {uprn}"
+            f"More than 1 ladcode found in the database for uprn: <redacted>"
         ))
 
     ladcode = records[0][0]["stringValue"]
 
     logger.info(create_log_message(log_event_names["UPRN_TO_LADCODE_SUCCESS"],
-                                   f"Successfully retrieved ladcode: {ladcode} for uprn: {uprn}"))
+                                   f"Successfully retrieved ladcode: {ladcode} for uprn: <redacted>"))
 
     return ladcode
