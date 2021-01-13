@@ -25,17 +25,31 @@ window.GOVUK = window.GOVUK || {};
         })
     }
 
-    function trackChangeAnswerLinks() {
-        document.querySelectorAll(".change-link").forEach((item) => {
+    function getLinkTrackingData(event){
+        var gaData = {};
+
+        if (event.target.className.indexOf("change-link") !== -1) {
+            gaData.action = event.target.baseURI.indexOf("view-answers") !== -1 ?
+                "change link - view answers NHS login user" :
+                "change link - check your answers";
+        } else {
+            gaData.action = event.target.text;
+        }
+
+        gaData.category ="on-page links";
+        gaData.link = event.target.href;
+
+        return gaData;
+    }
+
+    function trackLinkClicks() {
+        document.querySelectorAll("a").forEach((item) => {
             item.addEventListener("click", (event) => {
                 event.preventDefault();
                 setTimeout(redirect, 1000);
 
                 var hasRedirected = false;
-                var changeLinkAction =
-                    event.target.baseURI.indexOf("view-answers") !== -1 ?
-                    "change link - view answers NHS login user" :
-                    "change link - check your answers";
+                var linkTrackingData = getLinkTrackingData(event);
 
                 function redirect() {
                     if (!hasRedirected) {
@@ -44,7 +58,7 @@ window.GOVUK = window.GOVUK || {};
                     }
                 }
 
-                ga("send", "event", "on-page links", changeLinkAction, event.target.href, {
+                ga("send", "event", linkTrackingData.category, linkTrackingData.action, linkTrackingData.link, {
                     hitCallback: function() {
                         redirect();
                     },
@@ -83,7 +97,7 @@ window.GOVUK = window.GOVUK || {};
                 }
 
                 trackRadioItemsAnswers('input[name="do_you_have_someone_to_go_shopping_for_you"]', 'page interaction', window.location.href);
-                trackChangeAnswerLinks();
+                trackLinkClicks();
             }
 
             if (this.gaCrossDomainTrackingId) {
