@@ -429,6 +429,7 @@ jobs:
           ENVIRONMENT: "staging"
           WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
+          POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
         on_failure: *slack_alert_on_failure
       - task: get-aws-credentials
         file: git-master/concourse/tasks/get-gatling-tester-aws-creds.yml
