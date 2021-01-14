@@ -27,7 +27,7 @@ def get_address_lookup():
         }
         return redirect("/support-address")
     except postcode_lookup_helper.NoAddressesFoundAtPostcode:
-        if postcode in current_app.config["POSTCODE_TIER_OVERRIDE"]:
+        if postcode in current_app.postcode_tier_overrride:
             addresses = _create_test_address(postcode)
         else:
             session["error_items"] = {
@@ -59,7 +59,7 @@ def get_address_lookup():
 
 def _create_test_address(postcode):
     return [{
-        "text": f"{current_app.config['POSTCODE_TIER_OVERRIDE'][postcode]}, Test Lane, City, {postcode}",
+        "text": f"{current_app.postcode_tier_override[postcode]}, Test Lane, City, {postcode}",
         "value": json.dumps({"uprn": None,
                              "town_city": "Test",
                              "postcode": postcode,

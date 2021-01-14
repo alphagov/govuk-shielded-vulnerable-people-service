@@ -15,7 +15,7 @@ from vulnerable_people_form.form_pages.shared.location_tier import (
 _current_app = Flask(__name__)
 _current_app.secret_key = 'test_secret'
 _current_app.is_tiering_logic_enabled = False
-_current_app.config["POSTCODE_TIER_OVERRIDE"] = """{"TE22RR" : {"tier": 2, "shielding": 0},
+_current_app.postcode_tier_override = """{"TE22RR" : {"tier": 2, "shielding": 0},
                                                   "TE33RR": {"tier": 3, "shielding": 0 },
                                                   "TE44RR": {"tier": 4, "shielding": 1},
                                                   "TS33RR": {"tier": 3, "shielding": 1}}"""

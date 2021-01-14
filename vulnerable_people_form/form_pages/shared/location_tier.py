@@ -17,7 +17,7 @@ from vulnerable_people_form.integrations.location_eligibility import (
 def update_is_postcode_in_england(postcode, app):
     postcode_in_england = is_postcode_in_england(postcode)
 
-    if postcode in app.config["POSTCODE_TIER_OVERRIDE"]:
+    if postcode in app.postcode_tier_override:
         postcode_in_england = True
 
     set_is_postcode_in_england(postcode_in_england)
@@ -34,10 +34,10 @@ def update_location_tier_by_uprn(uprn, app):
         else:
             set_shielding_advice(ShieldingAdvice.NOT_ADVISED_TO_SHIELD.value)
 
-        if form_answers()["support_address"]["postcode"] in app.config["POSTCODE_TIER_OVERRIDE"]:
+        if form_answers()["support_address"]["postcode"] in app.postcode_tier_override:
             postcode = form_answers()["support_address"]["postcode"]
-            set_location_tier(app.config["POSTCODE_TIER_OVERRIDE"][postcode]["tier"])
-            set_shielding_advice(app.config["POSTCODE_TIER_OVERRIDE"][postcode]["shielding"])
+            set_location_tier(app.postcode_tier_override[postcode]["tier"])
+            set_shielding_advice(app.postcode_tier_override[postcode]["shielding"])
 
     else:
         set_location_tier(PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value)
@@ -54,9 +54,9 @@ def update_location_tier_by_postcode(postcode, app):
         else:
             set_shielding_advice(ShieldingAdvice.NOT_ADVISED_TO_SHIELD.value)
 
-        if postcode in app.config["POSTCODE_TIER_OVERRIDE"]:
-            set_location_tier(app.config["POSTCODE_TIER_OVERRIDE"][postcode]["tier"])
-            set_shielding_advice(app.config["POSTCODE_TIER_OVERRIDE"][postcode]["shielding"])
+        if postcode in app.postcode_tier_override:
+            set_location_tier(app.postcode_tier_override[postcode]["tier"])
+            set_shielding_advice(app.postcode_tier_override[postcode]["shielding"])
 
     else:
         set_location_tier(PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value)

@@ -91,7 +91,7 @@ def create_app(scriptinfo):
     app.context_processor(utility_processor)
 
     app.add_template_filter(postcode_with_spaces)
-    app.config["POSTCODE_TIER_OVERRIDE"] = json.loads(app.config["POSTCODE_TIER_OVERRIDE"])
+    app.postcode_tier_override = json.loads(app.config["POSTCODE_TIER_OVERRIDE"])
     return app
 
 
