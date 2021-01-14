@@ -108,14 +108,14 @@ def get_ladcode_from_uprn(uprn):
     if not records:
         logger.info(create_log_message(
             log_event_names["LADCODE_NOT_FOUND"],
-            f"No ladcode found in the database for uprn: <redacted>"
+            "No ladcode found in the database for uprn: <redacted>"
         ))
         return records
 
     if len(records) > 1:
         logger.warning(create_log_message(
             log_event_names["TOO_MANY_LADCODES_FOUND"],
-            f"More than 1 ladcode found in the database for uprn: <redacted>"
+            "More than 1 ladcode found in the database for uprn: <redacted>"
         ))
 
     ladcode = records[0][0]["stringValue"]
