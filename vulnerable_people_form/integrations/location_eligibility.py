@@ -42,7 +42,7 @@ def get_uprn_tier(uprn):
     if not records:
         logger.info(create_log_message(
             log_event_names["UPRN_TIER_NOT_FOUND"],
-            f"No tier found in the database for uprn: <redacted>"
+            "No tier found in the database for uprn: <redacted>"
         ))
         return records
 
