@@ -24,14 +24,15 @@
       },
       "items": radio_items,
     }) }}
-    <p class="govuk-body">If you want deliveries you’ll need an online account with a supermarket delivery service. If you do not have one already, go to the supermarket’s website and set up an account when you’ve finished using this service.</p>
     {{ govukDetails({
       "summaryText": "What information about you is shared with supermarkets?",
       "html": "
       <div class='govuk-body'>
-      <p>We share your name, address and contact details with supermarkets so they can find you in their system and offer you priority deliveries.</p>
-      <p>Supermarkets will keep this information until it’s clear that clinically extremely vulnerable people will not need this kind of support in future.</p>
-      <p>Supermarkets involved:</p>
+        <p>1. When you’ve finished using this service, go to a participating supermarket’s website and register for online shopping. If you’re already registered with one of the participating supermarkets, you can skip this step.</p>
+        <p>2. If you’re worried about not getting a delivery slot, register with more than one of the participating supermarkets.</p>
+        <p>3. Go to the supermarket’s website and book a delivery in the normal way. The supermarket should recognise you as a priority customer 1 to 7 days from when we confirm to them that you’re eligible for support. We’ll send you an email, text message or letter when we’ve confirmed that you’re eligible.</p>
+      <p>If you give us an email address, we’ll send you an email with this information when you’ve finished using this service.</p>
+      <p>Participating supermarkets:</p>
       <ul class='govuk-list govuk-list--bullet'>
           <li>ASDA</li>
           <li>Iceland</li>
@@ -41,6 +42,8 @@
           <li>Tesco</li>
           <li>Waitrose</li>
       </ul>
+        <p>We share your name, address and contact details with participating supermarkets so they can find you in their system and offer you priority access to deliveries.</p>
+        <p>Supermarkets will keep this information until it’s clear that clinically extremely vulnerable people will not need this kind of support in future.</p>
       </div>
       "
     }) }}
