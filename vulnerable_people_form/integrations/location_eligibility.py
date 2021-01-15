@@ -10,6 +10,16 @@ init_logger(logger)
 _DEFAULT_TIER = 1
 
 
+def get_uprn_shielding(uprn, app):
+    ladcode = get_ladcode_from_uprn(uprn)
+    return (app.shielding_advice.advice_from_la_shielding(ladcode))
+
+
+def get_postcode_shielding(postcode, app):
+    ladcode = get_ladcode_from_postcode(postcode)
+    return (app.shielding_advice.advice_from_la_shielding(ladcode))
+
+
 def get_postcode_tier(postcode):
     records = execute_sql(
             "CALL cv_ref.postcode_to_tier(:postcode)",

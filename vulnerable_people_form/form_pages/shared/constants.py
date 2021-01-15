@@ -104,3 +104,10 @@ class PostcodeTierStatus(enum.IntEnum):
     NO_CHANGE = 1
     INCREASED = 2
     DECREASED = 3
+
+
+@enum.unique
+class ShieldingAdviceStatus(enum.IntEnum):
+    NO_CHANGE = 1
+    INCREASED = 2
+    DECREASED = 3

@@ -10,7 +10,7 @@ from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
 from .shared.session import get_errors_from_session, request_form, form_answers
 from .shared.validation import validate_address_lookup
-from .shared.location_tier import update_location_tier_by_uprn, update_location_tier_by_postcode
+from .shared.location_tier import update_location_status_by_uprn, update_location_status_by_postcode
 
 
 @form.route("/address-lookup", methods=["GET"])
@@ -82,9 +82,9 @@ def post_address_lookup():
     uprn = {**json.loads(request_form()["address"])}.get("uprn", None)
 
     if uprn and location_eligibility.get_uprn_tier(uprn):
-        update_location_tier_by_uprn(uprn, current_app)
+        update_location_status_by_uprn(uprn, current_app)
     else:
-        update_location_tier_by_postcode(session["postcode"], current_app)
+        update_location_status_by_postcode(session["postcode"], current_app)
 
     session[SESSION_KEY_ADDRESS_SELECTED] = True
     return route_to_next_form_page()

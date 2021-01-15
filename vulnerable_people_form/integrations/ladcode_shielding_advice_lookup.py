@@ -3,10 +3,11 @@ from datetime import datetime
 import logging
 
 from vulnerable_people_form.form_pages.shared.logger_utils import create_log_message, log_event_names
+from vulnerable_people_form.form_pages.shared.constants import ShieldingAdvice
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_NATIONAL_SHIELDING_ADVICE = False
+DEFAULT_NATIONAL_SHIELDING_ADVICE = ShieldingAdvice.NOT_ADVISED_TO_SHIELD.value
 FIELDNAMES = [
     'ladcode',
     'ladname',
@@ -29,7 +30,7 @@ class LocalAuthorityShielding:
                                                    key=lambda k: (k['ladcode'], k['start_datetime_utc']),
                                                    reverse=False)
 
-    def is_la_shielding(self, ladcode: str):
+    def advice_from_la_shielding(self, ladcode: str):
         """
         fetches the shielding advice status for supplied LAD Code
         """
@@ -44,7 +45,7 @@ class LocalAuthorityShielding:
         logger.info(create_log_message(
             log_event_names["SHIELDING_ADVICE_FOR_LADCODE_SUCCESS"],
             f"{ladcode} has Shielding Advice {shielding_advice}"))
-        return shielding_advice == 'YES'
+        return shielding_advice
 
     def get_all_records_for_ladcode(self, ladcode):
         """
@@ -68,4 +69,6 @@ class LocalAuthorityShielding:
                 latest_advice_for_ladcode = record['shielding_advice']
             if record_start_datetime >= now:
                 break
-        return latest_advice_for_ladcode
+
+        return (ShieldingAdvice.ADVISED_TO_SHIELD.value if latest_advice_for_ladcode == 'YES'
+                else ShieldingAdvice.NOT_ADVISED_TO_SHIELD.value)
