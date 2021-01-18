@@ -28,16 +28,16 @@ window.GOVUK = window.GOVUK || {};
     function getLinkTrackingData(event){
         var gaData = {};
 
-        if (event.target.className.indexOf("change-link") !== -1) {
-            gaData.action = event.target.baseURI.indexOf("view-answers") !== -1 ?
+        if (event.currentTarget.className.indexOf("change-link") !== -1) {
+            gaData.action = event.currentTarget.baseURI.indexOf("view-answers") !== -1 ?
                 "change link - view answers NHS login user" :
                 "change link - check your answers";
         } else {
-            gaData.action = event.target.text;
+            gaData.action = event.currentTarget.text;
         }
 
         gaData.category ="on-page links";
-        gaData.link = event.target.href;
+        gaData.link = event.currentTarget.href;
 
         return gaData;
     }
@@ -45,7 +45,11 @@ window.GOVUK = window.GOVUK || {};
     function trackLinkClicks() {
         document.querySelectorAll("a").forEach((item) => {
             item.addEventListener("click", (event) => {
+                if (event.currentTarget.tagName !== 'A'){
+                    return;
+                }
                 event.preventDefault();
+                var redirectLocation = event.currentTarget.href;
                 setTimeout(redirect, 1000);
 
                 var hasRedirected = false;
@@ -54,7 +58,7 @@ window.GOVUK = window.GOVUK || {};
                 function redirect() {
                     if (!hasRedirected) {
                         hasRedirected = true;
-                        document.location = event.target.href;
+                        document.location = redirectLocation;
                     }
                 }
 
