@@ -60,7 +60,7 @@ def get_address_lookup():
 def _create_test_address(postcode):
     return [{
         "text": f"{current_app.config['POSTCODE_TIER_OVERRIDE'][postcode]}, Test Lane, City, {postcode}",
-        "value": json.dumps({"uprn": 999,
+        "value": json.dumps({"uprn": None,
                              "town_city": "Test",
                              "postcode": postcode,
                              "building_and_street_line_1": f"{current_app.config['POSTCODE_TIER_OVERRIDE'][postcode]} Test Lane", # noqa
