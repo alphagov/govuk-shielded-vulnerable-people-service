@@ -375,11 +375,11 @@ def test_get_redirect_for_returning_user_based_on_tier(
                return_value=get_latest_location_tier_return_value), \
          patch("vulnerable_people_form.integrations.location_eligibility.get_uprn_tier",
                return_value=None), \
-         patch("vulnerable_people_form.integrations.location_eligibility.get_uprn_shielding",
+         patch("vulnerable_people_form.integrations.location_eligibility.get_shielding_advice_by_uprn",
                return_value=None), \
          patch("vulnerable_people_form.integrations.location_eligibility.get_postcode_tier",
                return_value=latest_location_tier), \
-         patch("vulnerable_people_form.integrations.location_eligibility.get_postcode_shielding",
+         patch("vulnerable_people_form.integrations.location_eligibility.get_shielding_advice_by_postcode",
                return_value=latest_shielding_advice), \
          _current_app.test_request_context() as test_request_ctx:
         test_request_ctx.session["accessing_saved_answers"] = True

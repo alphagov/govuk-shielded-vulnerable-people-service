@@ -5,8 +5,8 @@ from flask import Flask
 
 from vulnerable_people_form.integrations.location_eligibility import (is_postcode_in_england,
                                                                       get_postcode_tier, get_uprn_tier,
-                                                                      get_postcode_shielding,
-                                                                      get_uprn_shielding,
+                                                                      get_shielding_advice_by_uprn,
+                                                                      get_shielding_advice_by_postcode,
                                                                       get_ladcode_from_postcode,
                                                                       get_ladcode_from_uprn)
 
@@ -63,21 +63,21 @@ def test_is_postcode_in_england_should_return_correct_eligibility_value(
 
 @pytest.mark.parametrize("stored_proc_return_value, expected_output",
                          [("E06000002", 0), ("E08000012", 1)])
-def test_get_uprn_shielding_should_return_correct_eligibility_value(
+def test_get_shielding_advice_by_uprn_should_return_correct_eligibility_value(
         stored_proc_return_value, expected_output):
     with patch("vulnerable_people_form.integrations.location_eligibility.execute_sql",
                return_value={"records": [[{"stringValue": stored_proc_return_value}]]}):
-        uprn_shielding = get_uprn_shielding("10000000", _current_app)
+        uprn_shielding = get_shielding_advice_by_uprn("10000000", _current_app)
     assert uprn_shielding == expected_output
 
 
 @pytest.mark.parametrize("stored_proc_return_value, expected_output",
                          [("E06000002", 0), ("E08000012", 1)])
-def test_get_postcode_shielding_should_return_correct_eligibility_value(
+def test_get_shielding_advice_by_postcode_should_return_correct_eligibility_value(
         stored_proc_return_value, expected_output):
     with patch("vulnerable_people_form.integrations.location_eligibility.execute_sql",
                return_value={"records": [[{"stringValue": stored_proc_return_value}]]}):
-        postcode_shielding = get_postcode_shielding("BB1 1TA", _current_app)
+        postcode_shielding = get_shielding_advice_by_postcode("BB1 1TA", _current_app)
     assert postcode_shielding == expected_output
 
 

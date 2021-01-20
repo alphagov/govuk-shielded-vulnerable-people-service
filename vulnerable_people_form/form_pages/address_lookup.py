@@ -27,7 +27,7 @@ def get_address_lookup():
         }
         return redirect("/support-address")
     except postcode_lookup_helper.NoAddressesFoundAtPostcode:
-        if postcode in current_app.postcode_tier_overrride:
+        if postcode in current_app.postcode_tier_override:
             addresses = _create_test_address(postcode)
         else:
             session["error_items"] = {

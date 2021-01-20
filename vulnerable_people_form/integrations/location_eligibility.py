@@ -10,12 +10,12 @@ init_logger(logger)
 _DEFAULT_TIER = 1
 
 
-def get_uprn_shielding(uprn, app):
+def get_shielding_advice_by_uprn(uprn, app):
     ladcode = get_ladcode_from_uprn(uprn)
     return (app.shielding_advice.advice_from_la_shielding(ladcode))
 
 
-def get_postcode_shielding(postcode, app):
+def get_shielding_advice_by_postcode(postcode, app):
     ladcode = get_ladcode_from_postcode(postcode)
     return (app.shielding_advice.advice_from_la_shielding(ladcode))
 
