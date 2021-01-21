@@ -24,6 +24,7 @@ _current_app.secret_key = 'test_secret'
 _current_app.nhs_oidc_client = MagicMock()
 _current_app.nhs_oidc_client.get_authorization_url = MagicMock(return_value=_NHS_AUTH_URL)
 _current_app.is_tiering_logic_enabled = False
+_current_app.postcode_tier_override = {}
 
 
 @pytest.mark.parametrize("current_form_url, expected_redirect_location, form_answers",
@@ -379,7 +380,6 @@ def test_get_redirect_for_returning_user_based_on_tier(
         latest_shielding_advice = get_latest_shielding_advice_return_value["latest_shielding_advice"]
     else:
         latest_shielding_advice = None
-
     with patch(_ROUTING_FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME,
                return_value={"support_address": {"postcode": "original_postcode"}}), \
          patch("vulnerable_people_form.form_pages.shared.routing.get_latest_location_tier",

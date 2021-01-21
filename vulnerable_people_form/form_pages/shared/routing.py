@@ -296,8 +296,13 @@ def get_redirect_for_returning_user_based_on_tier():
         latest_location_tier = location_eligibility.get_uprn_tier(original_uprn)
         latest_shielding_advice = location_eligibility.get_shielding_advice_by_uprn(original_uprn)
     else:
-        latest_location_tier = location_eligibility.get_postcode_tier(original_postcode)
-        latest_shielding_advice = location_eligibility.get_shielding_advice_by_postcode(original_postcode)
+        if original_postcode in current_app.postcode_tier_override:
+            latest_location_tier = current_app.postcode_tier_override[original_postcode]["tier"]
+            latest_shielding_advice = current_app.postcode_tier_override[original_postcode]["shielding"]
+        else:
+            latest_location_tier = location_eligibility.get_postcode_tier(original_postcode)
+            latest_shielding_advice = location_eligibility.get_shielding_advice_by_postcode(original_postcode)
+
     latest_location_tier_info = get_latest_location_tier(latest_location_tier, original_location_tier)
     latest_shielding_advice_info = get_latest_shielding_advice(latest_shielding_advice, original_shielding_advice)
     if latest_location_tier_info is None:
