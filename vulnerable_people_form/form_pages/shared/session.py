@@ -205,7 +205,7 @@ def persist_answers_from_session():
         location_tier = get_location_tier()
         if location_tier not in [PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value, PostcodeTier.VERY_HIGH.value]:
             raise ValueError(f"Unexpected value encountered for location tier: {location_tier}")
-        if get_shielding_advice() == ShieldingAdvice.ADVISED_TO_SHIELD.value:
+        if get_shielding_advice() == ShieldingAdvice.NOT_ADVISED_TO_SHIELD.value:
             # it is not possible to have an answer for basic_care_needs when the shielding is not advised
             _set_form_answer(["basic_care_needs"], None)
 
