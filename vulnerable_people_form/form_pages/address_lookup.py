@@ -63,7 +63,7 @@ def _create_test_address(postcode):
         "value": json.dumps({"uprn": None,
                              "town_city": "Test",
                              "postcode": postcode,
-                             "building_and_street_line_1": f"{current_app.config['POSTCODE_TIER_OVERRIDE'][postcode]} Test Lane", # noqa
+                             "building_and_street_line_1": f"{current_app.postcode_tier_override[postcode]} Test Lane", # noqa
                              "building_and_street_line_2": ""})
     }]
 
