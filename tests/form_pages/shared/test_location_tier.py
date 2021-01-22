@@ -32,7 +32,6 @@ def test_update_location_status_by_uprn_should_not_update_when_tiering_logic_dis
 def test_update_location_status_by_uprn_should_update_session_when_tiering_logic_enabled():
     try:
         uprn = 110000
-        la = "E06000008"
         location_tier = PostcodeTier.MEDIUM.value
         shielding_advice = YesNoAnswers.YES.value
         _current_app.is_tiering_logic_enabled = True
@@ -42,15 +41,15 @@ def test_update_location_status_by_uprn_should_update_session_when_tiering_logic
              _current_app.test_request_context("/test?irrelevant=1&la=3") as test_request_context, \
              patch("vulnerable_people_form.form_pages.shared.location_tier.get_uprn_tier",
                    return_value=location_tier) as mock_get_location_tier, \
-             patch("vulnerable_people_form.form_pages.shared.location_tier.get_ladcode_from_uprn",
-                   return_value=la) as mock_get_ladcode_from_uprn, \
              patch("vulnerable_people_form.form_pages.shared.location_tier.set_location_tier") \
                 as mock_set_location_tier,  \
+             patch("vulnerable_people_form.form_pages.shared.location_tier.get_shielding_advice_by_uprn",
+                   return_value=shielding_advice) as mock_get_shielding_advice_by_uprn, \
              patch("vulnerable_people_form.form_pages.shared.location_tier.set_shielding_advice") \
                 as mock_set_shielding_advice:
             test_request_context.session["form_answers"] = {"support_address": {"postcode": "DB11TA"}}
             update_location_status_by_uprn(uprn, _current_app)
-            mock_get_ladcode_from_uprn.assert_called_once()
+            mock_get_shielding_advice_by_uprn.assert_called_once()
             mock_get_location_tier.assert_called_once_with(uprn)
             mock_set_location_tier.assert_called_once_with(location_tier)
             mock_set_shielding_advice.assert_called_once_with(shielding_advice)
@@ -69,7 +68,6 @@ def test_update_location_status_by_postcode_should_not_update_when_tiering_logic
 def test_update_location_status_by_postcode_should_update_session_when_tiering_logic_enabled():
     try:
         postcode = "LS11BA"
-        la = "E06000008"
         location_tier = PostcodeTier.MEDIUM.value
         shielding_advice = YesNoAnswers.YES.value
         _current_app.is_tiering_logic_enabled = True
@@ -78,15 +76,15 @@ def test_update_location_status_by_postcode_should_update_session_when_tiering_l
         with _current_app.app_context(), \
              patch("vulnerable_people_form.form_pages.shared.location_tier.get_postcode_tier",
                    return_value=location_tier) as mock_get_location_tier, \
-             patch("vulnerable_people_form.form_pages.shared.location_tier.get_ladcode_from_postcode",
-                   return_value=la) as mock_get_ladcode_from_postcode, \
              patch("vulnerable_people_form.form_pages.shared.location_tier.set_location_tier") \
                 as mock_set_location_tier, \
+             patch("vulnerable_people_form.form_pages.shared.location_tier.get_shielding_advice_by_postcode",
+                   return_value=shielding_advice) as mock_get_shielding_advice_by_postcode, \
              patch("vulnerable_people_form.form_pages.shared.location_tier.set_shielding_advice") \
                 as mock_set_shielding_advice:
 
             update_location_status_by_postcode(postcode, _current_app)
-            mock_get_ladcode_from_postcode.assert_called_once()
+            mock_get_shielding_advice_by_postcode.assert_called_once()
             mock_get_location_tier.assert_called_once_with(postcode)
             mock_set_location_tier.assert_called_once_with(location_tier)
             mock_set_shielding_advice.assert_called_once_with(shielding_advice)
