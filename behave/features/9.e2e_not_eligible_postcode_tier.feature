@@ -1,4 +1,4 @@
-@feature_postcode_tier
+@core
 Feature: COVID-19 Shielded vulnerable people service - partial user journey - postcode not eligible (not valid postcode)
     Scenario: can load homepage
         When I navigate to "/start"

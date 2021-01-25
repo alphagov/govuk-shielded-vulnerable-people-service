@@ -1,4 +1,4 @@
-from flask import session, current_app, redirect
+from flask import session, redirect
 
 from .blueprint import form
 from .shared.constants import ShieldingAdvice
@@ -15,11 +15,10 @@ def get_check_your_answers():
     session["check_answers_page_seen"] = True
     exclude_answers = None
 
-    if current_app.is_tiering_logic_enabled:
-        if is_shielding_without_basic_care_needs_answer():
-            return redirect(append_querystring_params("/basic-care-needs"))
-        if get_shielding_advice() == ShieldingAdvice.NOT_ADVISED_TO_SHIELD.value:
-            exclude_answers = ['basic_care_needs']
+    if is_shielding_without_basic_care_needs_answer():
+        return redirect(append_querystring_params("/basic-care-needs"))
+    if get_shielding_advice() == ShieldingAdvice.NOT_ADVISED_TO_SHIELD.value:
+        exclude_answers = ['basic_care_needs']
 
     return render_template_with_title(
         "check-your-answers.html",

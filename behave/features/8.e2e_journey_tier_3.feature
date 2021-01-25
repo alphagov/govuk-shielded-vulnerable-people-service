@@ -1,4 +1,4 @@
-@feature_postcode_tier
+@core
 Feature: COVID-19 Shielded vulnerable people service - e2e user journey - postcode tier 3
     Scenario: can load homepage
         When I navigate to "/start"

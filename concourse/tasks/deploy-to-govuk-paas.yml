@@ -40,7 +40,6 @@ params:
   NHS_OIDC_LOGIN_PRIVATE_KEY:
   SENTRY_DSN:
   ENVIRONMENT:
-  TIERING_LOGIC:
   POSTCODE_TIER_OVERRIDE:
 
 run:
@@ -84,7 +83,6 @@ run:
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form NHS_OIDC_LOGIN_PRIVATE_KEY "$NHS_OIDC_LOGIN_PRIVATE_KEY"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form SENTRY_DSN "$SENTRY_DSN"
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form ENVIRONMENT "$ENVIRONMENT"
-      cf set-env govuk-coronavirus-shielded-vulnerable-people-form TIERING_LOGIC "$TIERING_LOGIC"
 
       cf set-env govuk-coronavirus-shielded-vulnerable-people-form POSTCODE_TIER_OVERRIDE "$POSTCODE_TIER_OVERRIDE"
 

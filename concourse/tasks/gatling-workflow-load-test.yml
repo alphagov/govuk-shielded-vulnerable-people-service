@@ -12,8 +12,6 @@ inputs:
 outputs:
   - name: gatling-results
     path: git-master/loadtests/target/gatling
-params:
-  TIERING_LOGIC:
 run:
   path: /bin/bash
   args:

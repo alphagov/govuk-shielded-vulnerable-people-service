@@ -1,5 +1,3 @@
-from flask import current_app
-
 from vulnerable_people_form.form_pages.shared.location_tier import is_tier_less_than_very_high
 from vulnerable_people_form.form_pages.shared.session import get_location_tier, get_is_postcode_in_england
 from .blueprint import form
@@ -24,13 +22,11 @@ def get_not_eligible_postcode_returning_user_tier_not_found():
 
 
 def _get_template_name():
-    if current_app.is_tiering_logic_enabled:
-        location_tier = get_location_tier()
-        is_postcode_in_england = get_is_postcode_in_england()
-        if not is_postcode_in_england:
-            return "not-eligible-postcode-not-found.html"
-        if is_tier_less_than_very_high(location_tier):
-            return "not-eligible-postcode-tier.html"
+    location_tier = get_location_tier()
+    is_postcode_in_england = get_is_postcode_in_england()
+    if not is_postcode_in_england:
         return "not-eligible-postcode-not-found.html"
+    if is_tier_less_than_very_high(location_tier):
+        return "not-eligible-postcode-tier.html"
 
-    return "not-eligible-postcode.html"
+    return "not-eligible-postcode-not-found.html"

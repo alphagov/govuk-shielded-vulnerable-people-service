@@ -8,7 +8,6 @@ from vulnerable_people_form.form_pages.support_address import post_support_addre
 
 _current_app = Flask(__name__)
 _current_app.secret_key = "test_secret"
-_current_app.is_tiering_logic_enabled = False
 
 
 def test_post_support_address_should_redirect_to_support_address_when_form_invalid():

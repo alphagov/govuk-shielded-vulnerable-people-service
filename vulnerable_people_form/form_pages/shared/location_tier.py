@@ -31,25 +31,19 @@ def override_location_status_if_test_postcode(postcode, app):
 
 
 def update_location_status_by_uprn(uprn, app):
-    if app.is_tiering_logic_enabled:
-        location_tier = get_uprn_tier(uprn)
-        set_location_tier(location_tier)
-        shielding_advice = get_shielding_advice_by_uprn(uprn)
-        set_shielding_advice(shielding_advice)
-        override_location_status_if_test_postcode(form_answers()["support_address"]["postcode"], app)
-    else:
-        set_location_tier(PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value)
+    location_tier = get_uprn_tier(uprn)
+    set_location_tier(location_tier)
+    shielding_advice = get_shielding_advice_by_uprn(uprn)
+    set_shielding_advice(shielding_advice)
+    override_location_status_if_test_postcode(form_answers()["support_address"]["postcode"], app)
 
 
 def update_location_status_by_postcode(postcode, app):
-    if app.is_tiering_logic_enabled:
-        location_tier = get_postcode_tier(postcode)
-        set_location_tier(location_tier)
-        shielding_advice = get_shielding_advice_by_postcode(postcode)
-        set_shielding_advice(shielding_advice)
-        override_location_status_if_test_postcode(postcode, app)
-    else:
-        set_location_tier(PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value)
+    location_tier = get_postcode_tier(postcode)
+    set_location_tier(location_tier)
+    shielding_advice = get_shielding_advice_by_postcode(postcode)
+    set_shielding_advice(shielding_advice)
+    override_location_status_if_test_postcode(postcode, app)
 
 
 def is_tier_very_high_or_above(location_tier):

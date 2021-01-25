@@ -5,7 +5,6 @@ from flask import abort, current_app, redirect, request, session
 from vulnerable_people_form.form_pages.shared.logger_utils import create_log_message, log_event_names, init_logger
 from vulnerable_people_form.form_pages.shared.routing import (
     get_next_form_url_after_nhs_number,
-    get_redirect_to_terminal_page,
     get_redirect_for_returning_user_based_on_tier
 )
 from .blueprint import form
@@ -90,9 +89,7 @@ def get_nhs_registration_callback():
         return redirect(redirect_url)
 
     if load_answers_into_session_if_available():
-        if current_app.is_tiering_logic_enabled:
-            return get_redirect_for_returning_user_based_on_tier()
-        return get_redirect_to_terminal_page()
+        return get_redirect_for_returning_user_based_on_tier()
 
 
 def _log_no_consent(error, error_description):

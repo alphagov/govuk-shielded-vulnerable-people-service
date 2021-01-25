@@ -1,5 +1,5 @@
-@feature_postcode_tier
-Feature: COVID-19 Shielded vulnerable people service - e2e user journey - postcode tier 3 with shielding
+@core
+Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - manual address
     Scenario: can load homepage
         When I navigate to "/start"
         Then the content of element with selector ".govuk-fieldset__heading" equals "Are you using this service for yourself or for someone else?"
@@ -18,13 +18,22 @@ Feature: COVID-19 Shielded vulnerable people service - e2e user journey - postco
 
     Scenario: Should be re-directed to shielding because vulnerable when eligible postcode entered
         Given I am on the "postcode-eligibility" page
-        When I give the postcode field a tier 3 postcode with shielding
+        When I give the postcode field a tier 3 postcode
         And I submit the form
 	Then I am redirected to the "address-lookup" page
 
-    Scenario: Should be redirected to shopping assistance when an address is selected
+ Scenario: Should be redirected to support address when an address is not listed
         Given I am on the "address-lookup" page
-        When I submit the form
+        When I click the "#my-address-is-not-listed-or-wrong" element
+        Then I am redirected to the "support-address" page
+
+    Scenario: Should be redirected to shopping assistance when an address isn't listed or is wrong
+        Given I am on the "support-address" page
+        When I give the "#building_and_street_line_1" field the value "this is a really long address line one this is a really long address line one this is a really long address"
+        And I give the "#building_and_street_line_2" field the value "this is a really long address line two this is a really long address line two this is a really long address line two this is a really long address line two this is a really long address line two"
+        And I give the "#town_city" field the value "Bradford"
+        And I give the postcode field a tier 3 postcode
+        And I submit the form
         Then I am redirected to the "nhs-letter" page
 
     Scenario: Should be re-directed to nhs number when yes answered to told to shield
@@ -47,7 +56,7 @@ Feature: COVID-19 Shielded vulnerable people service - e2e user journey - postco
         And I submit the form
         Then I am redirected to the "date-of-birth" page
 
-    Scenario: Should be re-directed to address lookup when valid date of birth entered
+    Scenario: Should be re-directed to shopping assistance when valid date of birth entered
         Given I am on the "date-of-birth" page
         When I give the "#date_of_birth-day" field the value "08"
         And I give the "#date_of_birth-month" field the value "05"
@@ -61,19 +70,13 @@ Feature: COVID-19 Shielded vulnerable people service - e2e user journey - postco
         And I submit the form
         Then I am redirected to the "priority-supermarket-deliveries" page
 
-    Scenario: Should be redirected to basic care needs when yes answered to priority shopping deliveries
+    Scenario: Should be redirected to contact details needs when yes answered to priority shopping deliveries
         Given I am on the "priority-supermarket-deliveries" page
         When I click the ".govuk-radios__item input[value='1']" element
         And I submit the form
-        Then I am redirected to the "basic-care-needs" page
-
-    Scenario: Should be redirected to contact details when no answered to basic care needs help
-        Given I am on the "basic-care-needs" page
-        When I click the ".govuk-radios__item input[value='0']" element
-        And I submit the form
         Then I am redirected to the "contact-details" page
 
-    Scenario: Should be redirected to check contact details when email entered
+    Scenario: Should be redirected to check your answers page from contact details
         Given I am on the "contact-details" page
         When I give the "#email" field the value "coronavirus-services-smoke-tests@digital.cabinet-office.gov.uk"
         And I submit the form
@@ -83,4 +86,6 @@ Feature: COVID-19 Shielded vulnerable people service - e2e user journey - postco
         Given I am on the "check-your-answers" page
         When I submit the form
         Then I am redirected to the "confirmation" page
+
+
 
