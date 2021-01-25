@@ -5,8 +5,9 @@ from flask import Flask
 
 from vulnerable_people_form.form_pages.shared.answers_enums import ApplyingOnOwnBehalfAnswers, YesNoAnswers, \
     MedicalConditionsAnswers, NHSLetterAnswers, ShoppingAssistanceAnswers
-from vulnerable_people_form.form_pages.shared.constants import SESSION_KEY_LOCATION_TIER, PostcodeTier, \
-    PostcodeTierStatus
+from vulnerable_people_form.form_pages.shared.constants import SESSION_KEY_LOCATION_TIER, \
+    SESSION_KEY_SHIELDING_ADVICE, PostcodeTier, PostcodeTierStatus, ShieldingAdvice, \
+    ShieldingAdviceStatus
 from vulnerable_people_form.form_pages.shared.routing import route_to_next_form_page, get_back_url_for_contact_details,\
     get_redirect_for_returning_user_based_on_tier
 
@@ -23,6 +24,7 @@ _current_app.secret_key = 'test_secret'
 _current_app.nhs_oidc_client = MagicMock()
 _current_app.nhs_oidc_client.get_authorization_url = MagicMock(return_value=_NHS_AUTH_URL)
 _current_app.is_tiering_logic_enabled = False
+_current_app.postcode_tier_override = {}
 
 
 @pytest.mark.parametrize("current_form_url, expected_redirect_location, form_answers",
@@ -237,6 +239,7 @@ def test_get_back_url_for_contact_details_should_return_basic_care_needs_when_ti
         try:
             _current_app.is_tiering_logic_enabled = True
             test_request_ctx.session[SESSION_KEY_LOCATION_TIER] = PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value
+            test_request_ctx.session[SESSION_KEY_SHIELDING_ADVICE] = ShieldingAdvice.ADVISED_TO_SHIELD.value
             back_url = get_back_url_for_contact_details()
             assert back_url == "/basic-care-needs"
         finally:
@@ -255,18 +258,27 @@ def test_get_back_url_for_contact_details_should_return_correct_url_when_tiering
         try:
             _current_app.is_tiering_logic_enabled = True
             test_request_ctx.session[SESSION_KEY_LOCATION_TIER] = PostcodeTier.VERY_HIGH.value
+            test_request_ctx.session[SESSION_KEY_SHIELDING_ADVICE] = ShieldingAdvice.NOT_ADVISED_TO_SHIELD.value
             back_url = get_back_url_for_contact_details()
             assert back_url == expected_back_url
         finally:
             _current_app.is_tiering_logic_enabled = False
 
 
-@pytest.mark.parametrize("original_postcode_tier, get_latest_location_tier_return_value, expected_redirect_url",
-                         [(PostcodeTier.VERY_HIGH, None, "/not-eligible-postcode-returning-user-tier-not-found"),
+@pytest.mark.parametrize("""original_postcode_tier, get_latest_location_tier_return_value,
+                            original_shielding_advice, get_latest_shielding_advice_return_value,
+                            expected_redirect_url""",
+                         [(PostcodeTier.VERY_HIGH, None, ShieldingAdvice.NOT_ADVISED_TO_SHIELD, None,
+                           "/not-eligible-postcode-returning-user-tier-not-found"),
                           (PostcodeTier.VERY_HIGH,
                            {
-                               "latest_location_tier": PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value,
-                               "change_status": PostcodeTierStatus.INCREASED.value
+                               "latest_location_tier": PostcodeTier.VERY_HIGH.value,
+                               "change_status": PostcodeTierStatus.NO_CHANGE.value
+                           },
+                           ShieldingAdvice.NOT_ADVISED_TO_SHIELD,
+                           {
+                               "latest_shielding_advice": ShieldingAdvice.ADVISED_TO_SHIELD.value,
+                               "change_status": ShieldingAdviceStatus.INCREASED.value
                            },
                           "/basic-care-needs?ca=1"),
                           (PostcodeTier.VERY_HIGH,
@@ -274,17 +286,43 @@ def test_get_back_url_for_contact_details_should_return_correct_url_when_tiering
                                "latest_location_tier": PostcodeTier.VERY_HIGH.value,
                                "change_status": PostcodeTierStatus.NO_CHANGE.value
                            },
+                           ShieldingAdvice.ADVISED_TO_SHIELD,
+                           {
+                               "latest_shielding_advice": ShieldingAdvice.ADVISED_TO_SHIELD.value,
+                               "change_status": ShieldingAdviceStatus.NO_CHANGE.value
+                           },
+                           "/view-answers"),
+                          (PostcodeTier.VERY_HIGH,
+                           {
+                               "latest_location_tier": PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value,
+                               "change_status": PostcodeTierStatus.INCREASED.value
+                           },
+                           ShieldingAdvice.ADVISED_TO_SHIELD,
+                           {
+                               "latest_shielding_advice": ShieldingAdvice.ADVISED_TO_SHIELD.value,
+                               "change_status": ShieldingAdviceStatus.NO_CHANGE.value
+                           },
                            "/view-answers"),
                           (PostcodeTier.VERY_HIGH,
                            {
                                "latest_location_tier": PostcodeTier.HIGH.value,
                                "change_status": PostcodeTierStatus.DECREASED.value
                            },
+                           ShieldingAdvice.NOT_ADVISED_TO_SHIELD,
+                           {
+                               "latest_shielding_advice": ShieldingAdvice.NOT_ADVISED_TO_SHIELD.value,
+                               "change_status": ShieldingAdviceStatus.NO_CHANGE.value
+                           },
                            "/not-eligible-postcode-returning-user"),
                           (PostcodeTier.VERY_HIGH,
                            {
                                "latest_location_tier": PostcodeTier.MEDIUM.value,
                                "change_status": PostcodeTierStatus.DECREASED.value
+                           },
+                           ShieldingAdvice.NOT_ADVISED_TO_SHIELD,
+                           {
+                               "latest_shielding_advice": ShieldingAdvice.NOT_ADVISED_TO_SHIELD.value,
+                               "change_status": ShieldingAdviceStatus.NO_CHANGE.value
                            },
                            "/not-eligible-postcode-returning-user"),
                           (PostcodeTier.VERY_HIGH_PLUS_SHIELDING,
@@ -292,11 +330,21 @@ def test_get_back_url_for_contact_details_should_return_correct_url_when_tiering
                                "latest_location_tier": PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value,
                                "change_status": PostcodeTierStatus.NO_CHANGE.value
                            },
+                           ShieldingAdvice.ADVISED_TO_SHIELD,
+                           {
+                               "latest_shielding_advice": ShieldingAdvice.ADVISED_TO_SHIELD.value,
+                               "change_status": ShieldingAdviceStatus.NO_CHANGE.value
+                           },
                            "/view-answers"),
                           (PostcodeTier.VERY_HIGH_PLUS_SHIELDING,
                            {
                                "latest_location_tier": PostcodeTier.VERY_HIGH.value,
                                "change_status": PostcodeTierStatus.DECREASED.value
+                           },
+                           ShieldingAdvice.ADVISED_TO_SHIELD,
+                           {
+                               "latest_shielding_advice": ShieldingAdvice.NOT_ADVISED_TO_SHIELD.value,
+                               "change_status": ShieldingAdviceStatus.DECREASED.value
                            },
                            "/view-answers"),
                           (PostcodeTier.VERY_HIGH_PLUS_SHIELDING,
@@ -304,30 +352,50 @@ def test_get_back_url_for_contact_details_should_return_correct_url_when_tiering
                                "latest_location_tier": PostcodeTier.HIGH.value,
                                "change_status": PostcodeTierStatus.DECREASED.value
                            },
+                           ShieldingAdvice.NOT_ADVISED_TO_SHIELD,
+                           {
+                               "latest_shielding_advice": ShieldingAdvice.NOT_ADVISED_TO_SHIELD.value,
+                               "change_status": ShieldingAdviceStatus.NO_CHANGE.value
+                           },
                            "/not-eligible-postcode-returning-user"),
                           (PostcodeTier.VERY_HIGH_PLUS_SHIELDING,
                            {
                                "latest_location_tier": PostcodeTier.MEDIUM.value,
                                "change_status": PostcodeTierStatus.DECREASED.value
                            },
+                           ShieldingAdvice.NOT_ADVISED_TO_SHIELD,
+                           {
+                               "latest_shielding_advice": ShieldingAdvice.NOT_ADVISED_TO_SHIELD.value,
+                               "change_status": ShieldingAdviceStatus.NO_CHANGE.value
+                           },
                            "/not-eligible-postcode-returning-user")])
 def test_get_redirect_for_returning_user_based_on_tier(
-        original_postcode_tier, get_latest_location_tier_return_value, expected_redirect_url):
+        original_postcode_tier, get_latest_location_tier_return_value,
+        original_shielding_advice, get_latest_shielding_advice_return_value,  expected_redirect_url):
     if get_latest_location_tier_return_value:
         latest_location_tier = get_latest_location_tier_return_value["latest_location_tier"]
     else:
         latest_location_tier = None
+    if get_latest_shielding_advice_return_value:
+        latest_shielding_advice = get_latest_shielding_advice_return_value["latest_shielding_advice"]
+    else:
+        latest_shielding_advice = None
     with patch(_ROUTING_FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME,
                return_value={"support_address": {"postcode": "original_postcode"}}), \
          patch("vulnerable_people_form.form_pages.shared.routing.get_latest_location_tier",
                return_value=get_latest_location_tier_return_value), \
          patch("vulnerable_people_form.integrations.location_eligibility.get_uprn_tier",
                return_value=None), \
+         patch("vulnerable_people_form.integrations.location_eligibility.get_shielding_advice_by_uprn",
+               return_value=None), \
          patch("vulnerable_people_form.integrations.location_eligibility.get_postcode_tier",
                return_value=latest_location_tier), \
+         patch("vulnerable_people_form.integrations.location_eligibility.get_shielding_advice_by_postcode",
+               return_value=latest_shielding_advice), \
          _current_app.test_request_context() as test_request_ctx:
         test_request_ctx.session["accessing_saved_answers"] = True
         test_request_ctx.session[SESSION_KEY_LOCATION_TIER] = original_postcode_tier.value
+        test_request_ctx.session[SESSION_KEY_SHIELDING_ADVICE] = original_shielding_advice.value
         response = get_redirect_for_returning_user_based_on_tier()
         assert response.headers["Location"] == expected_redirect_url
 

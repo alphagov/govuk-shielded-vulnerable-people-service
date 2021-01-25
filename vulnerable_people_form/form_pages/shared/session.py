@@ -14,7 +14,8 @@ from .constants import (
     SESSION_KEY_LOCATION_TIER,
     SESSION_KEY_SHIELDING_ADVICE,
     SESSION_KEY_IS_POSTCODE_IN_ENGLAND,
-    PostcodeTier
+    PostcodeTier,
+    ShieldingAdvice
 )
 from .form_utils import clean_nhs_number, postcode_with_spaces
 from .querystring_utils import append_querystring_params
@@ -204,8 +205,8 @@ def persist_answers_from_session():
         location_tier = get_location_tier()
         if location_tier not in [PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value, PostcodeTier.VERY_HIGH.value]:
             raise ValueError(f"Unexpected value encountered for location tier: {location_tier}")
-        if get_location_tier() != PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value:
-            # it is not possible to have an answer for basic_care_needs when the tier is v high + shielding
+        if get_shielding_advice() == ShieldingAdvice.NOT_ADVISED_TO_SHIELD.value:
+            # it is not possible to have an answer for basic_care_needs when the shielding is not advised
             _set_form_answer(["basic_care_needs"], None)
 
     submission_reference = persistence.persist_answers(
@@ -379,11 +380,11 @@ def _set_form_answer(answers_key_list, answer):
 def is_returning_nhs_login_user_without_basic_care_needs_answer():
     # Scenario: Where the postcode tier has increased to VERY_HIGH_PLUS_SHIELDING
     # and no answer is present for 'basic_care_needs'
-    return is_nhs_login_user() and accessing_saved_answers() and is_very_high_plus_shielding_without_basic_care_needs_answer()  # noqa
+    return is_nhs_login_user() and accessing_saved_answers() and is_shielding_without_basic_care_needs_answer()  # noqa
 
 
-def is_very_high_plus_shielding_without_basic_care_needs_answer():
-    # Scenario: Where the postcode tier has increased to VERY_HIGH_PLUS_SHIELDING
+def is_shielding_without_basic_care_needs_answer():
+    # Scenario: Where the location they are in have been advised to shield
     # and no answer is present for 'basic_care_needs'
-    return get_location_tier() == PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value \
+    return get_shielding_advice() == ShieldingAdvice.ADVISED_TO_SHIELD.value \
            and get_answer_from_form(["basic_care_needs"]) is None

@@ -18,7 +18,7 @@ Feature: COVID-19 Shielded vulnerable people service - partial user journey - no
 
     Scenario: Should be re-directed to shielding because vulnerable when eligible postcode entered
         Given I am on the "postcode-eligibility" page
-        When I give the postcode field a tier 4 postcode
+        When I give the postcode field a tier 4 postcode with shielding
         And I submit the form
 	Then I am redirected to the "address-lookup" page
 

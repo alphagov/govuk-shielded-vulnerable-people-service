@@ -12,9 +12,10 @@ from .constants import (
     SESSION_KEY_ADDRESS_SELECTED,
     SESSION_KEY_LIVES_IN_ENGLAND_REFERRER,
     PostcodeTier,
-    PostcodeTierStatus
+    ShieldingAdvice,
+    ShieldingAdviceStatus
 )
-from .location_tier import is_tier_very_high_or_above, get_latest_location_tier
+from .location_tier import is_tier_very_high_or_above, get_latest_location_tier, get_latest_shielding_advice
 from .querystring_utils import append_querystring_params
 from .session import (
     accessing_saved_answers,
@@ -22,7 +23,9 @@ from .session import (
     is_nhs_login_user,
     persist_answers_from_session,
     get_is_postcode_in_england,
-    get_location_tier, set_location_tier)
+    get_location_tier, set_location_tier,
+    set_shielding_advice,
+    get_shielding_advice)
 from .validation import (
     validate_date_of_birth,
     validate_nhs_number,
@@ -158,10 +161,11 @@ def _get_next_form_url_based_on_location_tier(redirect_url, should_redirect_to_n
 def _get_next_form_url_after_shopping_and_priority_supermarket():
     if _is_tiering_logic_enabled():
         location_tier = get_location_tier()
+        shielding_advice = get_shielding_advice()
 
         _validate_location_tier_is_at_least_very_high(location_tier)
 
-        if location_tier == PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value:
+        if shielding_advice == ShieldingAdvice.ADVISED_TO_SHIELD.value:
             return "/basic-care-needs"
         elif location_tier == PostcodeTier.VERY_HIGH.value:
             return "/contact-details"
@@ -266,15 +270,16 @@ def get_back_url_for_contact_details():
 
     if _is_tiering_logic_enabled():
         location_tier = get_location_tier()
+        shielding_advise = get_shielding_advice()
 
         _validate_location_tier_is_at_least_very_high(location_tier)
 
-        if location_tier == PostcodeTier.VERY_HIGH.value:
+        if location_tier >= PostcodeTier.VERY_HIGH.value and shielding_advise == ShieldingAdvice.NOT_ADVISED_TO_SHIELD:
             if form_answers().get("do_you_have_someone_to_go_shopping_for_you") == ShoppingAssistanceAnswers.NO.value:
                 back_url = "/priority-supermarket-deliveries"
             else:
                 back_url = "/do-you-have-someone-to-go-shopping-for-you"
-        elif location_tier == PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value:
+        elif location_tier >= PostcodeTier.VERY_HIGH.value and shielding_advise == ShieldingAdvice.ADVISED_TO_SHIELD :
             back_url = "/basic-care-needs"
 
     return append_querystring_params(back_url)
@@ -284,44 +289,36 @@ def get_redirect_for_returning_user_based_on_tier():
     original_postcode = form_answers()["support_address"]["postcode"]
     original_uprn = form_answers()["support_address"].get("address_uprn", None)
     original_location_tier = get_location_tier()
-
+    original_shielding_advice = get_shielding_advice()
     latest_location_tier = None
+    latest_shielding_advice = None
     if original_uprn:
         latest_location_tier = location_eligibility.get_uprn_tier(original_uprn)
+        latest_shielding_advice = location_eligibility.get_shielding_advice_by_uprn(original_uprn)
     else:
-        latest_location_tier = location_eligibility.get_postcode_tier(original_postcode)
+        if original_postcode in current_app.postcode_tier_override:
+            latest_location_tier = current_app.postcode_tier_override[original_postcode]["tier"]
+            latest_shielding_advice = current_app.postcode_tier_override[original_postcode]["shielding"]
+        else:
+            latest_location_tier = location_eligibility.get_postcode_tier(original_postcode)
+            latest_shielding_advice = location_eligibility.get_shielding_advice_by_postcode(original_postcode)
 
     latest_location_tier_info = get_latest_location_tier(latest_location_tier, original_location_tier)
-
+    latest_shielding_advice_info = get_latest_shielding_advice(latest_shielding_advice, original_shielding_advice)
     if latest_location_tier_info is None:
         return redirect("/not-eligible-postcode-returning-user-tier-not-found")
-
     latest_location_tier = PostcodeTier(latest_location_tier_info["latest_location_tier"])
+    latest_shielding_advice = ShieldingAdvice(latest_shielding_advice_info["latest_shielding_advice"])
     set_location_tier(latest_location_tier)
-
-    location_tier_change_status = PostcodeTierStatus(latest_location_tier_info["change_status"])
-
-    if location_tier_change_status == PostcodeTierStatus.NO_CHANGE:
-        return get_redirect_to_terminal_page()
-    elif location_tier_change_status == PostcodeTierStatus.INCREASED:
-        if latest_location_tier == PostcodeTier.VERY_HIGH_PLUS_SHIELDING:
-            return redirect("/basic-care-needs?ca=1")
-        _raise_returning_user_redirect_error(location_tier_change_status, original_location_tier, latest_location_tier)
-    elif location_tier_change_status == PostcodeTierStatus.DECREASED:
-        if latest_location_tier == PostcodeTier.VERY_HIGH:
-            return get_redirect_to_terminal_page()
-        elif not is_tier_very_high_or_above(latest_location_tier):
+    set_shielding_advice(latest_shielding_advice)
+    shielding_advice_change_status = ShieldingAdviceStatus(latest_shielding_advice_info["change_status"])
+    if (shielding_advice_change_status == ShieldingAdviceStatus.INCREASED
+       and latest_shielding_advice == ShieldingAdvice.ADVISED_TO_SHIELD):
+        return redirect("/basic-care-needs?ca=1")
+    else:
+        if not is_tier_very_high_or_above(latest_location_tier):
             return redirect("/not-eligible-postcode-returning-user")
-        _raise_returning_user_redirect_error(location_tier_change_status, original_location_tier, latest_location_tier)
-
-    _raise_returning_user_redirect_error(location_tier_change_status, original_location_tier, latest_location_tier)
-
-
-def _raise_returning_user_redirect_error(location_tier_change_status, original_location_tier, latest_location_tier):
-    raise RuntimeError("Unable to determine redirect location for nhs login returning user, "
-                       + f"tier change status: {location_tier_change_status}, "
-                       + f"original postcode tier: {original_location_tier}, "
-                       + f"latest postcode tier: {latest_location_tier.value}")
+    return get_redirect_to_terminal_page()
 
 
 def _is_tiering_logic_enabled():

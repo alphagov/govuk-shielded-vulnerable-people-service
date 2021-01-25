@@ -7,7 +7,10 @@ GA_TRACKING_ID = "TEMP"
 GA_CROSS_DOMAIN_TRACKING_ID = "TEMP"
 SENTRY_DSN = "https://abc@sentry.io/123/321"
 
-POSTCODE_TIER_OVERRIDE = '{"TE22RR": 2, "TE33RR": 3, "TE44RR": 4}'
+POSTCODE_TIER_OVERRIDE = """{"TE22RR" : {"tier": 2, "shielding": 0},
+                             "TE33RR": {"tier": 3, "shielding": 0 },
+                             "TE44RR": {"tier": 4, "shielding": 1},
+                             "TS33RR": {"tier": 3, "shielding": 1}}"""
 
 # NHS OIDC config
 NHS_OIDC_AUTHORITY_URL = "https://auth.sandpit.signin.nhs.uk"

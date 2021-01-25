@@ -1,11 +1,11 @@
 from flask import session, current_app, redirect
 
 from .blueprint import form
-from .shared.constants import PostcodeTier
+from .shared.constants import ShieldingAdvice
 from .shared.render import render_template_with_title
 from .shared.session import (
     get_summary_rows_from_form_answers,
-    get_location_tier,
+    get_shielding_advice,
     is_returning_nhs_login_user_without_basic_care_needs_answer)
 
 
@@ -17,7 +17,7 @@ def get_view_answers():
     if current_app.is_tiering_logic_enabled:
         if is_returning_nhs_login_user_without_basic_care_needs_answer():
             return redirect("/basic-care-needs?ca=1")
-        if get_location_tier() == PostcodeTier.VERY_HIGH.value:
+        if get_shielding_advice() == ShieldingAdvice.NOT_ADVISED_TO_SHIELD.value:
             exclude_answers.append('basic_care_needs')
 
     return render_template_with_title(
