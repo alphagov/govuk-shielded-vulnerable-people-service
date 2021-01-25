@@ -6,15 +6,11 @@ from flask import Flask
 from vulnerable_people_form.integrations.location_eligibility import (is_postcode_in_england,
                                                                       get_postcode_tier, get_uprn_tier,
                                                                       get_shielding_advice_by_uprn,
-                                                                      get_shielding_advice_by_postcode,
-                                                                      get_ladcode_from_postcode,
-                                                                      get_ladcode_from_uprn)
+                                                                      get_shielding_advice_by_postcode)
 
 from vulnerable_people_form.form_pages.shared.constants import PostcodeTier
-from vulnerable_people_form.integrations.ladcode_shielding_advice_lookup import LocalAuthorityShielding
 
 _current_app = Flask(__name__)
-_current_app.shielding_advice = LocalAuthorityShielding('tests/integrations/data/local-area-shielding-advice.csv')
 
 
 def test_get_uprn_tier_should_raise_err():
@@ -95,35 +91,3 @@ def test_get_shielding_advice_by_postcode_should_return_correct_eligibility_valu
                return_value={"records": [[{"longValue": stored_proc_return_value}]]}):
         postcode_shielding = get_shielding_advice_by_postcode("BB1 1TA")
     assert postcode_shielding == expected_output
-
-
-def test_get_ladcode_should_return_empty_result_set_if_postcode_not_found():
-    with patch("vulnerable_people_form.integrations.location_eligibility.execute_sql",
-               return_value={"records": []}):
-        lad_code = get_ladcode_from_postcode("BD3 1BA")
-        assert not lad_code
-
-
-@pytest.mark.parametrize("stored_proc_return_value, expected_output", [("E08000014", "E08000014")])
-def test_get_ladcode_should_return_valid_ladcode_if_postcode_found(
-        stored_proc_return_value, expected_output):
-    with patch("vulnerable_people_form.integrations.location_eligibility.execute_sql",
-               return_value={"records": [[{"stringValue": stored_proc_return_value}]]}):
-        ladcode = get_ladcode_from_postcode("B21 1BA")
-        assert ladcode == expected_output
-
-
-def test_get_ladcode_should_return_empty_result_set_if_uprn_not_found():
-    with patch("vulnerable_people_form.integrations.location_eligibility.execute_sql",
-               return_value={"records": []}):
-        lacode = get_ladcode_from_uprn("123456789")
-        assert not lacode
-
-
-@pytest.mark.parametrize("stored_proc_return_value, expected_output", [("E08000014", "E08000014")])
-def test_get_ladcode_should_return_valid_ladcode_if_uprn_found(
-        stored_proc_return_value, expected_output):
-    with patch("vulnerable_people_form.integrations.location_eligibility.execute_sql",
-               return_value={"records": [[{"stringValue": stored_proc_return_value}]]}):
-        ladcode = get_ladcode_from_uprn("123456789")
-        assert ladcode == expected_output

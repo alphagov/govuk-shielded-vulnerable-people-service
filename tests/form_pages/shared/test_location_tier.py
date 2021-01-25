@@ -36,7 +36,6 @@ def test_update_location_status_by_uprn_should_update_session_when_tiering_logic
         shielding_advice = YesNoAnswers.YES.value
         _current_app.is_tiering_logic_enabled = True
         _current_app.shielding_advice = Mock()
-        _current_app.shielding_advice.advice_from_la_shielding = lambda ladcode: shielding_advice
         with _current_app.app_context(), \
              _current_app.test_request_context("/test?irrelevant=1&la=3") as test_request_context, \
              patch("vulnerable_people_form.form_pages.shared.location_tier.get_uprn_tier",
@@ -72,7 +71,6 @@ def test_update_location_status_by_postcode_should_update_session_when_tiering_l
         shielding_advice = YesNoAnswers.YES.value
         _current_app.is_tiering_logic_enabled = True
         _current_app.shielding_advice = Mock()
-        _current_app.shielding_advice.advice_from_la_shielding = lambda ladcode: shielding_advice
         with _current_app.app_context(), \
              patch("vulnerable_people_form.form_pages.shared.location_tier.get_postcode_tier",
                    return_value=location_tier) as mock_get_location_tier, \

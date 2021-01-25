@@ -24,10 +24,6 @@ def update_is_postcode_in_england(postcode, app):
     set_is_postcode_in_england(postcode_in_england)
 
 
-def update_shielding_advice(lad_code, app):
-    set_shielding_advice(app.shielding_advice.advice_from_la_shielding(lad_code))
-
-
 def override_location_status_if_test_postcode(postcode, app):
     if postcode in app.postcode_tier_override:
         set_location_tier(app.postcode_tier_override[postcode]["tier"])
