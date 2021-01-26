@@ -9,8 +9,7 @@ from vulnerable_people_form.form_pages.shared.answers_enums import \
     NHSLetterAnswers, \
     YesNoAnswers, \
     ApplyingOnOwnBehalfAnswers, MedicalConditionsAnswers, PrioritySuperMarketDeliveriesAnswers, BasicCareNeedsAnswers, \
-    ShoppingAssistanceAnswers, \
-    LiveInEnglandAnswers
+    ShoppingAssistanceAnswers
 from vulnerable_people_form.form_pages.shared.constants import PAGE_TITLES, PostcodeTier, \
     SESSION_KEY_SHIELDING_ADVICE, ShieldingAdvice
 from vulnerable_people_form.form_pages.shared.session import \
@@ -20,7 +19,6 @@ from vulnerable_people_form.form_pages.shared.session import \
 
 _current_app = Flask(__name__)
 _current_app.secret_key = 'test_secret'
-_current_app.is_tiering_logic_enabled = False
 
 
 def test_form_answers_should_return_answers_when_present_in_session():
@@ -252,7 +250,7 @@ def test_persist_answers_from_session():
             "nhs_letter": NHSLetterAnswers.YES.value,
             "basic_care_needs": YesNoAnswers.NO.value,
             "medical_conditions": MedicalConditionsAnswers.YES.value,
-            "do_you_live_in_england": LiveInEnglandAnswers.YES.value,
+            "do_you_live_in_england": None,
             "tier_at_submission": PostcodeTier.VERY_HIGH.value,
             "shielding_at_submission": YesNoAnswers.NO.value,
         }

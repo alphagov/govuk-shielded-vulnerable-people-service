@@ -1,6 +1,6 @@
 import datetime
 
-from flask import request, session, current_app
+from flask import request, session
 
 from .answers_enums import (
     NHSLetterAnswers,
@@ -197,17 +197,12 @@ def persist_answers_from_session():
     if len(address_postcode) == 6 and " " not in address_postcode:
         address_postcode = f"{address_postcode[:3]} {address_postcode[3:]}"
 
-    lives_in_england = form_answers().get("do_you_live_in_england")
-    if lives_in_england is not None and lives_in_england == 0:
-        lives_in_england = None
-
-    if current_app.is_tiering_logic_enabled:
-        location_tier = get_location_tier()
-        if location_tier not in [PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value, PostcodeTier.VERY_HIGH.value]:
-            raise ValueError(f"Unexpected value encountered for location tier: {location_tier}")
-        if get_shielding_advice() == ShieldingAdvice.NOT_ADVISED_TO_SHIELD.value:
-            # it is not possible to have an answer for basic_care_needs when the shielding is not advised
-            _set_form_answer(["basic_care_needs"], None)
+    location_tier = get_location_tier()
+    if location_tier not in [PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value, PostcodeTier.VERY_HIGH.value]:
+        raise ValueError(f"Unexpected value encountered for location tier: {location_tier}")
+    if get_shielding_advice() == ShieldingAdvice.NOT_ADVISED_TO_SHIELD.value:
+        # it is not possible to have an answer for basic_care_needs when the shielding is not advised
+        _set_form_answer(["basic_care_needs"], None)
 
     submission_reference = persistence.persist_answers(
         form_answers()["nhs_number"],
@@ -230,7 +225,7 @@ def persist_answers_from_session():
         form_answers().get("basic_care_needs"),
         form_answers().get("do_you_have_someone_to_go_shopping_for_you"),
         form_answers().get("medical_conditions"),
-        lives_in_england,
+        None,
         get_location_tier(),
         get_shielding_advice(),
     )

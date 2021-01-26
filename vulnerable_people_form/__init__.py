@@ -80,8 +80,6 @@ def create_app(scriptinfo):
 
     persistence.init_app(app)
 
-    app.is_tiering_logic_enabled = "TIERING_LOGIC" in app.config and app.config["TIERING_LOGIC"] == "True"
-
     app.register_error_handler(HTTPStatus.NOT_FOUND.value, _handle_error)
     app.register_error_handler(HTTPStatus.INTERNAL_SERVER_ERROR.value, _handle_error)
     app.context_processor(utility_processor)

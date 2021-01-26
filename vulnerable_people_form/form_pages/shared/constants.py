@@ -29,7 +29,6 @@ PAGE_TITLES = {
     "contact-details": "What are your contact details?",
     "date-of-birth": "What is your date of birth?",
     "do-you-have-someone-to-go-shopping-for-you": "Is there someone you can rely on to go shopping for you if you need them to?",  # noqa: E501
-    "do-you-live-in-england": "Do you live in England?",  # noqa: E501
     "priority-supermarket-deliveries": "Do you want priority access to supermarket deliveries?",
     "medical-conditions": "Do you have one of the listed conditions?",
     "name": "What is your name?	",
@@ -68,7 +67,6 @@ NHS_USER_INFO_TO_FORM_ANSWERS = {
 
 SESSION_KEY_ADDRESS_SELECTED = "auto_populated_address_selected"
 SESSION_KEY_QUERYSTRING_PARAMS = "querystring_params_to_retain"
-SESSION_KEY_LIVES_IN_ENGLAND_REFERRER = "lives_in_england_referrer"
 
 # This is kept as postcode_tier to avoid breaking sessions
 SESSION_KEY_LOCATION_TIER = "postcode_tier"

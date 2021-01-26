@@ -7,10 +7,7 @@ import io.gatling.http.Predef._
 
 object ShieldedVulnerablePeople {
 
-  private val jsonUserDataFeeder = sys.env.get("TIERING_LOGIC") match {
-    case Some("True") => (jsonFile("data/svp_submission_data_tiering_logic.json").circular.random)
-    case _ => (jsonFile("data/svp_submission_data.json").circular.random)
-  }
+  private val jsonUserDataFeeder = (jsonFile("data/svp_submission.json").circular.random)
 
   private val reqStart = exec(flushHttpCache).exec(http("App start")
     .get(PathConstants.startPath)

@@ -99,17 +99,6 @@ class MedicalConditionsAnswers(EnumWithText):
     }
 
 
-@enum.unique
-class LiveInEnglandAnswers(EnumWithText):
-    YES = 1
-    NO = 0
-
-    __text_values__ = {
-        YES: "Yes, I live in England",
-        NO: "No, I do not live in England",
-    }
-
-
 def get_radio_options_from_enum(target_enum, selected_value):
     return [
         {

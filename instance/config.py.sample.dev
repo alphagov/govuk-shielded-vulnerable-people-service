@@ -31,7 +31,6 @@ AWS_SECRET_ACCESS_KEY = "TEMP"
 LOCAL_AWS_ENDPOINT_URL="http://rds-client-api:80"
 LOCAL_SQS_ENDPOINT_URL="http://sqs-client-api:4566"
 
-TIERING_LOGIC="True"
 OVERRIDE_ONS_URL="http://ons-test:8000"
 
 AWS_RDS_DATABASE_ARN_OVERRIDE =  "arn:aws:rds:eu-west-2:123456789012:cluster:dummy"

@@ -14,8 +14,7 @@ from .answers_enums import (
     YesNoAnswers,
     PrioritySuperMarketDeliveriesAnswers,
     ShoppingAssistanceAnswers,
-    BasicCareNeedsAnswers,
-    LiveInEnglandAnswers)
+    BasicCareNeedsAnswers)
 from .logger_utils import create_log_message, log_event_names
 from .session import form_answers, get_answer_from_form, request_form
 from .sms_validation import validate_notify_compatible_uk_mobile_number, InvalidPhoneError
@@ -399,12 +398,4 @@ def validate_do_you_have_someone_to_go_shopping_for_you():
         ShoppingAssistanceAnswers,
         "do_you_have_someone_to_go_shopping_for_you",
         "Select yes if you have someone who can go shopping for you",
-    )
-
-
-def validate_do_you_live_in_england():
-    return validate_radio_button(
-        LiveInEnglandAnswers,
-        "do_you_live_in_england",
-        "Select yes if you live in England",
     )

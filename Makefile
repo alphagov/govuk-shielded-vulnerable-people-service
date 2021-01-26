@@ -15,7 +15,7 @@ install:
 concourse_e2e:
 	@echo "Executing e2e automated tests against the staging environment..."
 	# execute all scenarios except no submission and backend submissions test ( the '-' character prefix means skip)
-	behave behave/features -k --stop --tags core,feature_postcode_tier
+	behave behave/features -k --stop --tags core
 
 smoke_test:
 	@echo "Executing smoke test with submission..."
