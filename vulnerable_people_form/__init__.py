@@ -12,10 +12,9 @@ from sentry_sdk.integrations.flask import FlaskIntegration
 from vulnerable_people_form.form_pages.shared.querystring_utils import append_querystring_params
 from . import form_pages
 from .form_pages.shared.form_utils import postcode_with_spaces
-from .integrations import nhs_openconnect_id, persistence, ladcode_shielding_advice_lookup
+from .integrations import nhs_openconnect_id, persistence
 
 _ENV_DEVELOPMENT = "DEVELOPMENT"
-_DEFAULT_SHIELDING_ADVICE_FILE_PREFIX = "vulnerable_people_form/integrations/data/local-area-shielding-advice-"
 
 
 def _handle_error(e):
@@ -83,9 +82,6 @@ def create_app(scriptinfo):
 
     app.is_tiering_logic_enabled = "TIERING_LOGIC" in app.config and app.config["TIERING_LOGIC"] == "True"
 
-    app.shielding_advice = ladcode_shielding_advice_lookup.LocalAuthorityShielding(
-            _get_shielding_advice_data_path(app.config['ENVIRONMENT']))
-
     app.register_error_handler(HTTPStatus.NOT_FOUND.value, _handle_error)
     app.register_error_handler(HTTPStatus.INTERNAL_SERVER_ERROR.value, _handle_error)
     app.context_processor(utility_processor)
@@ -127,10 +123,6 @@ def _init_security(app):
         content_security_policy=csp,
         content_security_policy_nonce_in=['script-src']
     )
-
-
-def _get_shielding_advice_data_path(env: str):
-    return _DEFAULT_SHIELDING_ADVICE_FILE_PREFIX + env.lower() + ".csv"
 
 
 def utility_processor():
