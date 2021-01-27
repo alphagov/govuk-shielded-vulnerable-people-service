@@ -50,7 +50,7 @@ PAGE_TITLES = {
     "support-address": "What is the address where you need support?",
     "view-or-setup": "Do you want to set up this service, or access an existing account?",
     "view-answers": "Your saved details",
-    "nhs-login-landing": "Sign in to update your details or change the support you need",
+    "nhs-login-landing": "You have successfully signed out",
     "nhs-login-no-consent": "You have decided not to share your NHS login information",
 }
 
