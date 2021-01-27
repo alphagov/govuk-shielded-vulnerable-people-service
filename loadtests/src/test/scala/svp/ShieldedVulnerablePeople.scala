@@ -7,7 +7,7 @@ import io.gatling.http.Predef._
 
 object ShieldedVulnerablePeople {
 
-  private val jsonUserDataFeeder = (jsonFile("data/svp_submission.json").circular.random)
+  private val jsonUserDataFeeder = (jsonFile("data/svp_submission_data.json").circular.random)
 
   private val reqStart = exec(flushHttpCache).exec(http("App start")
     .get(PathConstants.startPath)
