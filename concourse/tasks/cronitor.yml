@@ -11,6 +11,6 @@ run:
     - -c
     - |
       set -ue
-      echo 'Curling cronitor ${CRONITOR_ENDPOINT}...'
+      echo "Curling cronitor ${CRONITOR_ENDPOINT}..."
       curl --fail "${CRONITOR_URL}${CRONITOR_ENDPOINT}"
       echo 'Curled cronitor successfully.'
