@@ -5,6 +5,7 @@ from behave import then, when, given
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support.select import Select
 from datetime import date
 
 _BASE_URL = os.environ["WEB_APP_BASE_URL"]
@@ -89,6 +90,12 @@ def set_postcode_value(context, tier):
     html_element = context.browser.find_element_by_css_selector("#postcode")
     html_element.clear()
     html_element.send_keys(postcode)
+
+
+@when('I select the first address')
+def select_first_address(context):
+    address_select = Select(context.browser.find_element_by_id('address'))
+    address_select.select_by_index(1)
 
 
 @when('I give the postcode field a tier {tier} postcode with shielding')
