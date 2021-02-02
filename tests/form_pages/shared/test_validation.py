@@ -229,14 +229,17 @@ def test_validate_do_you_have_someone_to_go_shopping_for_you_should_return_false
     )
 
 
-@pytest.mark.parametrize("form_field_value", ["", None])
-def test_validate_address_lookup_should_return_false_when_no_address_present(form_field_value):
+@pytest.mark.parametrize("form_field_value", ["",
+                                              None,
+                                              '{"response": "1 address found"}',
+                                              '{"response": "3 addresses found"}'])
+def test_validate_address_lookup_should_return_false_when_no_address_present_or_default_values(form_field_value):
     _populate_request_form_and_execute_input_validation_test_and_assert_validation_failed(
         validation.validate_address_lookup,
         form_field_value,
         "address",
         "You must select an address",
-        "address_lookup"
+        "postcode"
     )
 
 

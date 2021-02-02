@@ -134,10 +134,11 @@ def validate_medical_conditions():
 
 
 def validate_address_lookup():
-    if not request_form().get("address"):
+    if (not request_form().get("address") or
+       re.match(r'{"response": "\d+ address(es)? found"}', request_form().get("address"))):
         session["error_items"] = {
             **session.setdefault("error_items", {}),
-            "address_lookup": {
+            "postcode": {
                 "address": "You must select an address",
             },
         }

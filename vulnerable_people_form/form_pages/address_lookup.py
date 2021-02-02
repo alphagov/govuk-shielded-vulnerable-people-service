@@ -13,6 +13,24 @@ from .shared.validation import validate_address_lookup
 from .shared.location_tier import update_location_status_by_uprn, update_location_status_by_postcode
 
 
+def add_initial_dropdown_option(addresses):
+    if len(addresses) == 1:
+        addresses.insert(0, {"text": "1 address found", "value": json.dumps({"response": "1 address found"})})
+    elif len(addresses) > 1:
+        addresses.insert(0,
+                         {"text": f"{len(addresses)} addresses found",
+                          "value": json.dumps({"response": f"{len(addresses)} addresses found"})})
+    return addresses
+
+
+_ADDRESS_ERROR_MESSAGES = {
+    postcode_lookup_helper.PostcodeNotFound.__name__: "Could not find postcode, please enter your address manually",
+    postcode_lookup_helper.NoAddressesFoundAtPostcode.__name__:
+        "No addresses found for {}, please enter your address manually",
+    postcode_lookup_helper.ErrorFindingAddress.__name__: "An error has occurred, please enter your address manually"
+}
+
+
 @form.route("/address-lookup", methods=["GET"])
 def get_address_lookup():
     postcode = session.get("postcode")
@@ -20,32 +38,19 @@ def get_address_lookup():
         postcode = form_answers()["support_address"]["postcode"]
     try:
         addresses = postcode_lookup_helper.get_addresses_from_postcode(postcode)
-    except postcode_lookup_helper.PostcodeNotFound:
-        session["error_items"] = {
-            **session.setdefault("error_items", {}),
-            "support_address": {"postcode": "Could not find postcode, please enter your address manually"},
-        }
-        return redirect("/support-address")
-    except postcode_lookup_helper.NoAddressesFoundAtPostcode:
-        if postcode in current_app.postcode_tier_override:
+    except (postcode_lookup_helper.PostcodeNotFound,
+            postcode_lookup_helper.NoAddressesFoundAtPostcode,
+            postcode_lookup_helper.ErrorFindingAddress) as e:
+        if postcode in current_app.config["POSTCODE_TIER_OVERRIDE"]:
             addresses = _create_test_address(postcode)
         else:
             session["error_items"] = {
                 **session.setdefault("error_items", {}),
-                "support_address": {
-                    "support_address": f"No addresses found for {postcode}, please enter your address manually",
-                },
+                "support_address": {"postcode": _ADDRESS_ERROR_MESSAGES[e.__class__.__name__].format(postcode)},
             }
             return redirect("/support-address")
-    except postcode_lookup_helper.ErrorFindingAddress:
-        session["error_items"] = {
-            **session.setdefault("error_items", {}),
-            "support_address": {
-                "support_address": "An error has occurred, please enter your address manually",
-            },
-        }
-        return redirect("/support-address")
 
+    addresses = add_initial_dropdown_option(addresses)
     prev_path = append_querystring_params("/postcode-eligibility")
 
     return render_template_with_title(
