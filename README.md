@@ -90,7 +90,7 @@ To set up the app for local development you need to follow these steps:
     ```sh
     cp instance/config.py.sample.dev instance/config.py
     ```
-2. Start rds-client-api and mysql 
+2. Start rds-client-api and mysql, and sqs server
     ```docker-compose up -d```
 
 3.  Fill in the missing configuration values as per the **Configuration
@@ -107,8 +107,10 @@ To set up the app for local development you need to follow these steps:
    alembic --config=alembic.local.ini upgrade head
 
    ```
-6. Prepopulate the local databases with postcode to ladcode lookups 
-   ```bash scripts/prepopulate_local_db.sh```
+6. Create a local queue in sqs. You need to have [awslocal](https://github.com/localstack/awscli-local) installed
+   ```
+   scripts/create-sqs-queue.sh 
+   ```
 		
 ### Production configuration & Deployment
 
