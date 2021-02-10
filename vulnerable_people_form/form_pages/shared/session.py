@@ -1,4 +1,5 @@
 import datetime
+import logging
 
 from flask import request, session
 
@@ -22,6 +23,11 @@ from .querystring_utils import append_querystring_params
 from .security import sanitise_input
 
 from ...integrations import persistence, submission_tracing
+
+from .logger_utils import init_logger, log_event_names, create_log_message
+
+logger = logging.getLogger(__name__)
+init_logger(logger)
 
 
 def form_answers():
@@ -193,6 +199,7 @@ def _get_summary_row(change_answer_url, question, value):
 
 
 def persist_answers_from_session():
+    """Persist answers to DB, then log anonymised submission trace."""
     address_postcode = form_answers()["support_address"]["postcode"]
     if len(address_postcode) == 6 and " " not in address_postcode:
         address_postcode = f"{address_postcode[:3]} {address_postcode[3:]}"
@@ -239,7 +246,7 @@ def persist_answers_from_session():
     )
     session["form_uid"] = submission_reference
 
-    submission_tracing.persist_answers_log(
+    submission_log_entry = submission_tracing.anonymised_submission_log(
         submission_reference=submission_reference,
         submission_details=[
             _phone_number_calls,
@@ -250,6 +257,11 @@ def persist_answers_from_session():
         ],
         nhs_sub=_nhs_sub
     )
+
+    logger.info(create_log_message(
+        log_event_names["SUBMISSION_TRACE"],
+        submission_log_entry
+    ))
 
     return submission_reference
 

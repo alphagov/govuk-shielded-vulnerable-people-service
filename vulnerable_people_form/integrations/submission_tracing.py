@@ -2,14 +2,8 @@ import json
 import time
 import hashlib
 import random
-import logging
 
 from flask import request, current_app
-
-from vulnerable_people_form.form_pages.shared.logger_utils import init_logger, log_event_names, create_log_message
-
-logger = logging.getLogger(__name__)
-init_logger(logger)
 
 
 def _client_ip():
@@ -45,7 +39,7 @@ def _peppering(obj, pepper):
     return m.hexdigest()[:32]
 
 
-def persist_answers_log(
+def anonymised_submission_log(
     submission_reference=None, submission_details=[], nhs_sub=None
 ):
     log_output = {}
@@ -71,7 +65,4 @@ def persist_answers_log(
     except Exception as e:
         log_output = {"time": time.time(), "event": "persist_answers", "error": str(e)}
 
-    logger.info(create_log_message(
-        log_event_names["SUBMISSION_TRACE"],
-        json.dumps(log_output)
-    ))
+    return json.dumps(log_output)
