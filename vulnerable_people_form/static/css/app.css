@@ -104,3 +104,7 @@ svg .cls-3 { fill: #fff; }
         right: 5px;
     }
 }
+
+.bottom-margin-25{
+     margin-bottom: 25px !important;
+}
