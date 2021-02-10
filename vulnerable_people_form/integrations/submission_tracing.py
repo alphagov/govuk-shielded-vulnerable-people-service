@@ -38,9 +38,10 @@ def _peppering(obj, pepper):
     # return first 32 characters of the 64 character hash hex
     return m.hexdigest()[:32]
 
+
 def _hash_without_peppering(obj):
     """Hashes obj without a pepper for easier cross-referencing
-    with other log data. Use _peppering instead where this is 
+    with other log data. Use _peppering instead where this is
     not required."""
     m = hashlib.sha256()
     # convert to string and lower case
