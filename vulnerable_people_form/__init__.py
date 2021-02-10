@@ -43,7 +43,8 @@ def verify_config(app):
         "AWS_SECRET_ACCESS_KEY",
         "ENVIRONMENT",
         "AWS_SQS_QUEUE_URL",
-        "POSTCODE_TIER_OVERRIDE"
+        "POSTCODE_TIER_OVERRIDE",
+        "SUBMISSION_TRACING_PEPPER"
     }
     present_keys = set(k for k in app.config.keys() if app.config[k] is not None)
     if not present_keys.issuperset(required_keys):

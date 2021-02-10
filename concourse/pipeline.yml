@@ -104,6 +104,7 @@ jobs:
           GA_CROSS_DOMAIN_ID: UA-145652997-7
           ENVIRONMENT: SANDBOX
           POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
+          SUBMISSION_TRACING_PEPPER: ((submission-tracing-pepper-sandbox))
 
   - name: smoke-test-sandbox
     serial: true
@@ -163,6 +164,7 @@ jobs:
           GA_CROSS_DOMAIN_ID: UA-145652997-7
           ENVIRONMENT: STAGING
           POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
+          SUBMISSION_TRACING_PEPPER: ((submission-tracing-pepper-stg))
         on_failure: *slack_alert_on_failure
 
   - name: smoke-test-staging
@@ -224,6 +226,7 @@ jobs:
           GA_CROSS_DOMAIN_ID: UA-145652997-1
           ENVIRONMENT: PRODUCTION
           POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
+          SUBMISSION_TRACING_PEPPER: ((submission-tracing-pepper-prod))
         on_failure: *slack_alert_on_failure
 
   - name: smoke-test-prod

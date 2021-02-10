@@ -25,7 +25,7 @@ NHS_OIDC_LOGIN_PRIVATE_KEY = ""
 AWS_RDS_DATABASE_NAME = "coronavirus"
 AWS_REGION= "eu-west-2"
 AWS_ACCESS_KEY = "TEMP"
-AWS_SECRET_ACCESS_KEY = "TEMP" 
+AWS_SECRET_ACCESS_KEY = "TEMP"
 
 
 LOCAL_AWS_ENDPOINT_URL="http://rds-client-api:80"
@@ -36,3 +36,5 @@ OVERRIDE_ONS_URL="http://ons-test:8000"
 AWS_RDS_DATABASE_ARN_OVERRIDE =  "arn:aws:rds:eu-west-2:123456789012:cluster:dummy"
 AWS_RDS_SECRET_ARN_OVERRIDE = "arn:aws:secretsmanager:eu-west-2:123456789012:secret:dummy"
 AWS_SQS_QUEUE_URL = "http://localhost:4566/000000000000/submissions-message"
+
+SUBMISSION_TRACING_PEPPER="secret key for peppering hashes"
