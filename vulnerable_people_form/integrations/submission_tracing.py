@@ -38,6 +38,20 @@ def _peppering(obj, pepper):
     # return first 32 characters of the 64 character hash hex
     return m.hexdigest()[:32]
 
+def _hash_without_peppering(obj):
+    """Hashes obj without a pepper for easier cross-referencing
+    with other log data. Use _peppering instead where this is 
+    not required."""
+    m = hashlib.sha256()
+    # convert to string and lower case
+    objstr = str(obj).lower()
+    # get only the alphanumeric characters
+    objstr = "".join(e for e in objstr if e.isalnum())
+    # generate hash
+    m.update(f"{objstr}".encode())
+    # return first 32 characters of the 64 character hash hex
+    return m.hexdigest()[:32]
+
 
 def anonymised_submission_log(
     submission_reference=None, submission_details=[], nhs_sub=None
@@ -56,7 +70,7 @@ def anonymised_submission_log(
             "event": "persist_answers",
             "client_ip": _client_ip(),
             "user_agent": _user_agent(),
-            "submission_reference": _peppering(submission_reference, pepper),
+            "submission_reference": _hash_without_peppering(submission_reference),
             "submission_details": [
                 _peppering(sd, pepper) for sd in submission_details if sd is not None
             ],
