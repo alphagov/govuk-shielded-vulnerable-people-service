@@ -94,8 +94,8 @@ class MedicalConditionsAnswers(EnumWithText):
     NO = 0
 
     __text_values__ = {
-        YES: "Yes, I have one of the listed conditions",
-        NO: "No, I do not have one of the listed conditions",
+        YES: "Yes, one or more of the above apply",
+        NO: "No, none of the above apply",
     }
 
 
