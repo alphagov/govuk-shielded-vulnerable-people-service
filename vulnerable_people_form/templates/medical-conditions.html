@@ -20,14 +20,11 @@
 
 
 
-<p class="govuk-body">You have one of the listed conditions if you:</p>
+<p class="govuk-body">1. Your clinician or GP has added you to the Shielded Patient List because, based on their clinical judgement, they deem you to be at high risk of serious illness if you catch the virus</p>
+<p class="govuk-body">2. You have been identified through the COVID-19 Population Risk Assessment as potentially being at high risk of serious illness if you catch the virus (more information is at <a class="govuk-link" rel="noreferrer noopener" target="_blank" href="https://digital.nhs.uk/coronavirus/risk-assessment/population">https://digital.nhs.uk/coronavirus/risk-assessment/population</a>).</p>
+<p class="govuk-body">3. You </p>
 
-    {{ govukRadios({
-      "idPrefix": "medical_conditions",
-      "name": "medical_conditions",
-      "errorMessage": error_messages.get('medical_conditions'),
-      "hint": {"html": govukInsetText({
-            "html": '<ul class="govuk-list govuk-list--bullet app-list--spaced">
+<ul class="govuk-list govuk-list--bullet app-list--spaced">
   <li>have had a solid organ transplant</li>
   <li>have any cancer and are getting chemotherapy</li>
   <li>have lung cancer and are getting radical radiotherapy</li>
@@ -42,9 +39,12 @@
   <li>are an adult with chronic kidney disease (Stage 5)</li>
   <li>are pregnant, and have a significant congenital or acquired heart disease</li>
   <li>have another medical condition that your doctor has told you means you’re classed as clinically extremely vulnerable</li>
-</ul>'
-      })
-      },
+</ul>
+
+    {{ govukRadios({
+      "idPrefix": "medical_conditions",
+      "name": "medical_conditions",
+      "errorMessage": error_messages.get('medical_conditions'),
       "items": radio_items}) }}
 
 {% endcall %}
