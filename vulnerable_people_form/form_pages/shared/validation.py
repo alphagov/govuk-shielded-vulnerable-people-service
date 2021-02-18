@@ -104,7 +104,7 @@ def validate_nhs_login():
     return validate_radio_button(
         YesNoAnswers,
         "nhs_login",
-        "Select yes if you want log in with you NHS details",
+        "Select yes if you want to log in with your NHS details",
     )
 
 
@@ -116,7 +116,7 @@ def validate_register_with_nhs():
         session["error_items"] = {
             **session.setdefault("error_items", {}),
             "nhs_registration": {
-                "nhs_registration": "You need to select if you want to register an account with the NHS in order to retrieve your answers at a alater point."  # noqa: E501
+                "nhs_registration": "You need to select if you want to register an account with the NHS in order to retrieve your answers at a later point."  # noqa: E501
             },
         }
         return False
