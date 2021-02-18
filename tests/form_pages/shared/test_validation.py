@@ -137,7 +137,7 @@ def test_validate_register_with_nhs_should_return_false_when_invalid_answer_sele
         form_field_value,
         "nhs_registration",
         "You need to select if you want to register an account with the NHS"
-        + " in order to retrieve your answers at a alater point."
+        + " in order to retrieve your answers at a later point."
     )
 
 
