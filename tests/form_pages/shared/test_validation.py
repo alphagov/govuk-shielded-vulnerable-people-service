@@ -117,7 +117,7 @@ def test_validate_nhs_login_should_return_false_when_invalid_answer_selected(for
         validation.validate_nhs_login,
         form_field_value,
         "nhs_login",
-        "Select yes if you want log in with you NHS details"
+        "Select yes if you want to log in with your NHS details"
     )
 
 

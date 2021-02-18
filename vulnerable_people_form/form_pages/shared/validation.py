@@ -104,7 +104,7 @@ def validate_nhs_login():
     return validate_radio_button(
         YesNoAnswers,
         "nhs_login",
-        "Select yes if you want log in with you NHS details",
+        "Select yes if you want to log in with your NHS details",
     )
 
 
