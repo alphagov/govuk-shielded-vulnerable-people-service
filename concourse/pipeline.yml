@@ -27,6 +27,8 @@ resources:
     source:
       url: ((slack_hook_automate))
       channel: covid-engineering-team
+      username: ((readonly_team_name))
+      password: ((readonly_local_user_password))
 
   - name: every-2m
     type: time
@@ -56,6 +58,11 @@ slack_alert_on_success: &slack_alert_on_success
   params:
     alert_type: success
 
+slack_alert_on_fixed: &slack_alert_on_fixed
+  put: slack
+  params:
+    alert_type: fixed
+
 jobs:
   - name: update-pipeline
     serial: true
@@ -65,6 +72,7 @@ jobs:
       - set_pipeline: svp-form
         file: git-master/concourse/pipeline.yml
     on_failure: *slack_alert_on_failure
+    on_success: *slack_alert_on_fixed
 
   - name: test
     serial: true
@@ -75,6 +83,7 @@ jobs:
       - task: test
         file: git-master/concourse/tasks/test.yml
     on_failure: *slack_alert_on_failure
+    on_success: *slack_alert_on_fixed
 
   - name: deploy-to-sandbox
     serial: true
@@ -166,6 +175,7 @@ jobs:
           POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
           SUBMISSION_TRACING_PEPPER: ((submission-tracing-pepper-stg))
         on_failure: *slack_alert_on_failure
+        on_success: *slack_alert_on_fixed
 
   - name: smoke-test-staging
     serial: true
@@ -180,6 +190,7 @@ jobs:
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
           POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
         on_failure: *slack_alert_on_failure
+        on_success: *slack_alert_on_fixed
 
   - name: e2e-test-staging
     serial: true
@@ -197,6 +208,7 @@ jobs:
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
           POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
         on_failure: *slack_alert_on_failure
+        on_success: *slack_alert_on_fixed
 
   - name: deploy-to-prod
     serial: true
@@ -228,6 +240,7 @@ jobs:
           POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
           SUBMISSION_TRACING_PEPPER: ((submission-tracing-pepper-prod))
         on_failure: *slack_alert_on_failure
+        on_success: *slack_alert_on_fixed
 
   - name: smoke-test-prod
     serial: true
@@ -257,6 +270,7 @@ jobs:
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
           POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
         on_failure: *slack_alert_on_failure
+        on_success: *slack_alert_on_fixed
       - task: cronitor-heartbeat
         timeout: 1m
         params:
@@ -284,6 +298,7 @@ jobs:
             CRONITOR_URL: ((svp-form/cronitor-heartbeat-prod))
             CRONITOR_ENDPOINT: "/fail"
           ensure: *slack_alert_on_failure
+        on_success: *slack_alert_on_fixed
       - task: cronitor-heartbeat
         timeout: 1m
         params:
@@ -354,6 +369,8 @@ jobs:
                       source aws-credentials/.env
                       aws glue start-job-run \
                         --job-name "rds-clean-gatling-test-data"
+    on_failure: *slack_alert_on_failure
+    on_success: *slack_alert_on_fixed
 
   - name: run-daily-and-mi-workflows-in-staging
     plan:
@@ -404,6 +421,7 @@ jobs:
                          --wait_time 30
             dir: git-master
           on_failure: *slack_alert_on_failure
+          on_success: *slack_alert_on_fixed
 
   - name: run-e2e-test-with-pipeline-validation-in-staging
     serial: true
@@ -422,6 +440,7 @@ jobs:
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
           POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
         on_failure: *slack_alert_on_failure
+        on_success: *slack_alert_on_fixed
       - task: get-aws-credentials
         file: git-master/concourse/tasks/get-gatling-tester-aws-creds.yml
         params:
@@ -437,3 +456,4 @@ jobs:
           SALT: "1rjoBuOtDYaid83fYRJBFU5ouUi0nSueev2BhyoEhnw"
           POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
         on_failure: *slack_alert_on_failure
+        on_success: *slack_alert_on_fixed
