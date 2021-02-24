@@ -52,6 +52,7 @@ PAGE_TITLES = {
     "view-answers": "Your saved details",
     "nhs-login-landing": "You have successfully signed out",
     "nhs-login-no-consent": "You have decided not to share your NHS login information",
+    "nhs-login-shielding-advice": "Shielding advice has changed"
 }
 
 NHS_USER_INFO_TO_FORM_ANSWERS = {

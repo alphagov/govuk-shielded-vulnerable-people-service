@@ -249,7 +249,7 @@ def test_get_back_url_for_contact_details_should_return_correct_url_when_very_hi
                                "latest_shielding_advice": ShieldingAdvice.ADVISED_TO_SHIELD.value,
                                "change_status": ShieldingAdviceStatus.INCREASED.value
                            },
-                          "/basic-care-needs?ca=1"),
+                          "/shielding-advice?ca=1"),
                           (PostcodeTier.VERY_HIGH,
                            {
                                "latest_location_tier": PostcodeTier.VERY_HIGH.value,

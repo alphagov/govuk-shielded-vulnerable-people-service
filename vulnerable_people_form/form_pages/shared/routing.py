@@ -262,7 +262,7 @@ def get_redirect_for_returning_user_based_on_tier():
     shielding_advice_change_status = ShieldingAdviceStatus(latest_shielding_advice_info["change_status"])
     if (shielding_advice_change_status == ShieldingAdviceStatus.INCREASED
        and latest_shielding_advice == ShieldingAdvice.ADVISED_TO_SHIELD):
-        return redirect("/basic-care-needs?ca=1")
+        return redirect("/shielding-advice?ca=1")
     else:
         if not is_tier_very_high_or_above(latest_location_tier):
             return redirect("/not-eligible-postcode-returning-user")
