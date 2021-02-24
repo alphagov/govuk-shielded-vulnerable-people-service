@@ -4,7 +4,7 @@
 {% extends form_base_template %}
 
 {% block centered_content %}
-    <form method="post" novalidate>
+    <form id="svp-form" method="post" novalidate>
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         {% if error_list != None and error_list|length > 0 %}
             {{ govukErrorSummary({
@@ -17,7 +17,7 @@
         {{ govukButton({
           "text": button_text|default("Continue", true),
           "type": "Submit",
-          "preventDoubleClick": true,
+          "preventDoubleClick": true
         }) }}
         {% block form_end %}
         {% endblock %}
