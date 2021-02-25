@@ -382,7 +382,7 @@ def validate_priority_supermarket_deliveries():
     return validate_radio_button(
         PrioritySuperMarketDeliveriesAnswers,
         "priority_supermarket_deliveries",
-        "Select if you want priority supermarket deliveries",
+        "Select yes if you want priority supermarket deliveries",
     )
 
 

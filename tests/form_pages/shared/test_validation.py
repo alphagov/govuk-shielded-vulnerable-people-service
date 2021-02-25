@@ -204,7 +204,7 @@ def test_validate_priority_supermarket_deliveries_should_return_false_when_inval
         validation.validate_priority_supermarket_deliveries,
         form_field_value,
         "priority_supermarket_deliveries",
-        "Select if you want priority supermarket deliveries"
+        "Select yes if you want priority supermarket deliveries"
     )
 
 
