@@ -3,6 +3,16 @@ window.GOVUK = window.GOVUK || {};
 (function (module, cookieSettings, stripPII) {
     "use strict";
 
+    var pagesToTrackPaths = [
+        "applying-on-own-behalf",
+        "nhs-login",
+        "do-you-have-someone-to-go-shopping-for-you",
+        "priority-supermarket-deliveries",
+        "medical-conditions",
+        "basic-care-needs",
+        "nhs-letter"
+    ];
+
     function getQueryParam(param) {
         var query = window.location.search.substring(1);
         var params = query.split("&");
@@ -13,16 +23,35 @@ window.GOVUK = window.GOVUK || {};
                 return pair[1] === undefined ? '' : decodeURIComponent(pair[1]);
             }
         }
-        return '';
+        return "";
     };
 
-    function trackRadioItemsAnswers(inputSelector, eventCategory, eventLabel) {
-        document.querySelectorAll(inputSelector).forEach(item => {
-            item.addEventListener('click', event => {
-                var eventAction = event.target.value === "1" ? "Yes" : "No";
-                ga('send', 'event', eventCategory, eventAction, eventLabel);
-            })
-        })
+    function trackPageValuesOnSubmit(pagesToTrack) {
+        var submitButton = document.querySelector('button[type="Submit"]');
+        submitButton.addEventListener('click', (event)=>{
+            event.preventDefault();
+
+            var form = document.getElementById("svp-form");
+            var hasFormSubmitted = false;
+
+            setTimeout(formSubmit, 1000);
+
+            function formSubmit() {
+                if (!hasFormSubmitted) {
+                    hasFormSubmitted = true;
+                    form.submit();
+                }
+            }
+
+            if(pagesToTrack.indexOf(window.location.pathname.substring(1)) >= 0) {
+                var radioButtonLabel = form.querySelector('input[type="radio"]:checked').labels[0].textContent.trim();
+                ga("send", "event", "Page interaction", document.title, radioButtonLabel, {
+                    hitCallback: function() {
+                        formSubmit();
+                    },
+                });
+            }
+        });
     }
 
     function getLinkTrackingData(event){
@@ -45,15 +74,15 @@ window.GOVUK = window.GOVUK || {};
     function trackLinkClicks() {
         document.querySelectorAll("a").forEach((item) => {
             item.addEventListener("click", (event) => {
-                if (event.currentTarget.tagName !== 'A'){
+                if (event.currentTarget.tagName !== "A"){
                     return;
                 }
                 event.preventDefault();
-                var redirectLocation = event.currentTarget.href;
-                setTimeout(redirect, 1000);
 
+                var redirectLocation = event.currentTarget.href;
                 var hasRedirected = false;
-                var linkTrackingData = getLinkTrackingData(event);
+
+                setTimeout(redirect, 1000);
 
                 function redirect() {
                     if (!hasRedirected) {
@@ -61,6 +90,8 @@ window.GOVUK = window.GOVUK || {};
                         document.location = redirectLocation;
                     }
                 }
+
+                var linkTrackingData = getLinkTrackingData(event);
 
                 ga("send", "event", linkTrackingData.category, linkTrackingData.action, linkTrackingData.link, {
                     hitCallback: function() {
@@ -100,7 +131,7 @@ window.GOVUK = window.GOVUK || {};
                     ga('send', 'pageview');
                 }
 
-                trackRadioItemsAnswers('input[name="do_you_have_someone_to_go_shopping_for_you"]', 'page interaction', window.location.href);
+                trackPageValuesOnSubmit(pagesToTrackPaths);
                 trackLinkClicks();
             }
 
