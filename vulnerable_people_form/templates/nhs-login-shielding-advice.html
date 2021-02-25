@@ -1,0 +1,13 @@
+{%- from 'govuk_frontend_jinja/components/button/macro.html' import govukButton -%}
+
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="govuk-heading-l govuk-!-margin-top-0 govuk-!-margin-bottom-6">{{ title_text }}</h1>
+    <p class="govuk-body">You are now advised to follow shielding advice since you last registered.</p>
+    <p class="govuk-body">This means we will need to ask you an additional question..</p>
+    {{ govukButton({
+        "text": "Continue",
+        "href": continue_url
+    }) }}
+{% endblock %}
