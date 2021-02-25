@@ -16,6 +16,7 @@ def render_template_with_title(template_name, *args, **kwargs):
         template_name,
         *args,
         title_text=PAGE_TITLES[template_name[:-5]],
+        page_has_validation_error='error_list' in kwargs and kwargs["error_list"],
         ga_tracking_id=current_app.config.get("GA_TRACKING_ID"),
         ga_cross_domain_tracking_id=cross_domain_tracking_id if cross_domain_tracking_id is not None else "",
         cookie_preferences_set=cookies_preferences_set,

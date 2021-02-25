@@ -5,7 +5,7 @@
 
 {% set assetPath = url_for('static', filename='').rstrip('/') %}
 {% block pageTitle %}
-  {{title_text}} - coronavirus shielding support - GOV.UK
+  {% if page_has_validation_error %}Error:{% endif %} {{title_text}} - coronavirus shielding support - GOV.UK
 {% endblock %}
 
 {% block head %}

@@ -29,6 +29,7 @@ def test_render_template_with_title_invokes_render_template_with_correct_argumen
 
         mock_render_template.assert_called_with("postcode-lookup.html",
                                                 title_text="What is the postcode where you need support?",
+                                                page_has_validation_error=False,
                                                 ga_tracking_id="ga-id",
                                                 ga_cross_domain_tracking_id="cd-ga-id",
                                                 cookie_preferences_set=False,
@@ -55,6 +56,7 @@ def test_render_template_with_title_invokes_render_template_with_correct_form_ba
 
         mock_render_template.assert_called_with("date-of-birth.html",
                                                 title_text="What is your date of birth?",
+                                                page_has_validation_error=False,
                                                 ga_tracking_id="ga-id",
                                                 ga_cross_domain_tracking_id="cd-ga-id",
                                                 cookie_preferences_set=False,
