@@ -23,12 +23,14 @@
     },
     "id": "nhs_number",
     "name": "nhs_number",
+    "inputmode": "numeric",
+    "pattern": "[0-9]*",
     "errorMessage": error_messages.get("nhs_number"),
     "attributes": {
       "spellcheck": "false"
     },
     "value": values.get("nhs_number")
-    }) 
+    })
 }}
 
 {% set applying_on_own_behalf_detail_html %}

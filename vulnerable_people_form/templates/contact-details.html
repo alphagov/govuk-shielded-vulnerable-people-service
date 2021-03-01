@@ -11,6 +11,8 @@ govukInput({
   "label": { "text": "Phone number (for phone calls)" },
   "id": "phone_number_calls",
   "name": "phone_number_calls",
+  "inputmode": "tel",
+  "pattern": "[0-9]*",
   "autocomplete": "tel",
   "errorMessage": error_messages.get("phone_number_calls"),
   "attributes": {
@@ -24,6 +26,8 @@ govukInput({
   "label": { "text": "Phone number (for text messages)" },
   "id": "phone_number_texts",
   "name": "phone_number_texts",
+  "inputmode": "tel",
+  "pattern": "[0-9]*",
   "autocomplete": "tel",
   "errorMessage": error_messages.get("phone_number_texts"),
   "attributes": {
