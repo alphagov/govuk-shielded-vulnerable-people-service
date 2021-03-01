@@ -37,11 +37,11 @@
     <li class="bottom-margin-25"><a class="govuk-link" rel="noreferrer noopener" target="_blank" href="https://www.nhs.uk/nhs-services/online-services/find-nhs-number/">get a reminder of your NHS number </a></li>
     <li><a class="govuk-link" href="{{ append_querystring_params("/nhs-registration-link") }}">try using NHS login</a></li>
 </ul>
-<p class="govuk-body">If you do not have an NHS number <a class="govuk-link" href="https://www.nhs.uk/using-the-nhs/nhs-services/gps/how-to-register-with-a-gp-practice/">register with a GP</a>  to get one.</p>
+<p class="govuk-body">If you do not have an NHS number <a rel="noreferrer noopener" target="_blank" class="govuk-link" href="https://www.nhs.uk/using-the-nhs/nhs-services/gps/how-to-register-with-a-gp-practice/">register with a GP</a>  to get one.</p>
 <p class="govuk-body">You cannot use one of the old NHS numbers with fewer than 10 digits. Look on NHS letters or ask your GP to find your new NHS number.</p>
 {% endset %}
 {% set applying_on_others_behalf_detail_html %}
-  <p class="govuk-body">If you do not have an NHS number <a class="govuk-link" href="https://www.nhs.uk/using-the-nhs/nhs-services/gps/how-to-register-with-a-gp-practice/">register with a GP</a> to get one.</p>
+  <p class="govuk-body">If you do not have an NHS number <a rel="noreferrer noopener" target="_blank" class="govuk-link" href="https://www.nhs.uk/using-the-nhs/nhs-services/gps/how-to-register-with-a-gp-practice/">register with a GP</a> to get one.</p>
   <p class="govuk-body">You cannot use an old NHS number with fewer than 10 digits. Look on NHS letters or ask your GP to find your new NHS number.</p>
 {% endset %}
 {% set is_applying_on_others_behalf = values.get("applying_on_own_behalf") and values.get("applying_on_own_behalf") == 1 %}
