@@ -28,6 +28,9 @@ window.GOVUK = window.GOVUK || {};
 
     function trackPageValuesOnSubmit(pagesToTrack) {
         var submitButton = document.querySelector('button[type="Submit"]');
+        if(!submitButton){
+            return;
+        }
         submitButton.addEventListener('click', (event)=>{
             event.preventDefault();
 
