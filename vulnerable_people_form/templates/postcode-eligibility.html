@@ -4,20 +4,23 @@
 
 
 {% block form_fields %}
+
     <h1 class="govuk-heading-l govuk-!-margin-top-0 govuk-!-margin-bottom-3">
         <label class="govuk-label govuk-label--l" for="postcode">{{ title_text }}</label>
     </h1>
+    <div class="govuk-body" id="postcode-hint">Answer for the person who needs support</div>
 {{ 
 govukInput({
   "label": {
-    "text": "Answer for the person who needs support"
+    "text": ""
   },
   "id": "postcode",
   "name": "postcode",
   "autocomplete": "postal-code",
   "errorMessage": error_messages.get("postcode"),
   "attributes": {
-    "spellcheck": "false"
+    "spellcheck": "false",
+    "aria-describedby": "postcode-hint"
   },
   "value": values.get("postcode")
   }) 

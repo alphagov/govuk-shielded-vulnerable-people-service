@@ -2,20 +2,23 @@
 
 {% extends "form-base.html" %}
 
+
+
+
 {% block form_fields %}
+<legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+  
+<h1 class="govuk-heading-l govuk-!-margin-top-0 govuk-!-margin-bottom-3">
+        <label class="govuk-label govuk-label--l" for="do_you_have_someone_to_go_shopping_for_you">{{ title_text }}</label>
+    </h1>
+  </legend>
+<div class="govuk-body" ><p>For example a friend, family member or partner.</p><p>If you do not have someone you can rely on to go shopping for you, you’ll be able to ask for priority access to supermarket deliveries so you can avoid unnecessary trips to the shops.</p><p>If this changes you’ll need to come back and tell us.</p>
+    </div>
     {{ govukRadios({
       "idPrefix": "do_you_have_someone_to_go_shopping_for_you",
       "name": "do_you_have_someone_to_go_shopping_for_you",
       "errorMessage": error_messages.get('do_you_have_someone_to_go_shopping_for_you'),
-      "hint": {
-        "html": "<p>For example a friend, family member or partner.</p><p>If you do not have someone you can rely on to go shopping for you, you’ll be able to ask for priority access to supermarket deliveries so you can avoid unnecessary trips to the shops.</p><p>If this changes you’ll need to come back and tell us.</p>"
-      },
       "fieldset": {
-        "legend": {
-          "text": title_text,
-          "isPageHeading": true,
-          "classes": "govuk-fieldset__legend--l"
-        }
       },
       "items": radio_items,
     }) }}
