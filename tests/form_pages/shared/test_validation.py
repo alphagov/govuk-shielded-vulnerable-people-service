@@ -268,7 +268,7 @@ def test_validate_postcode_should_return_false_when_no_postcode_present(postcode
         assert is_valid is False
         assert len(test_request_ctx.session) == 1
         assert test_request_ctx.session["error_items"]["postcode"]["postcode"] \
-               == "What is the postcode where you need support?"
+               == "Enter a valid postcode"
 
 
 @pytest.mark.parametrize("postcode", ["invalid_post_code", "ssss 12345", "LS1 1AB ABC", "NE11", "NE11 1LBC"])
@@ -506,7 +506,7 @@ def test_validate_support_address_should_return_true_when_a_valid_address_is_pro
      },
      [{"form_field": "building_and_street_line_1", "expected_error_msg": "Enter a building and street"},
       {"form_field": "town_city", "expected_error_msg": "Enter a town or city"},
-      {"form_field": "postcode", "expected_error_msg": "What is the postcode where you need support?"}]),
+      {"form_field": "postcode", "expected_error_msg": "Enter a valid postcode"}]),
     ({
          "building_and_street_line_1": "address line one too long address line one too long  address line one too long address line one too long address line one too long, address line one too long address line one too long  address line one too long address line one too long address line one too long,addr ", # noqa
          "building_and_street_line_2": "address line two too long address line two too long address line two too long address line two too long address line two too long address line one too long address line one too long  address line one too long address line one too long address line one too long ad", # noqa
