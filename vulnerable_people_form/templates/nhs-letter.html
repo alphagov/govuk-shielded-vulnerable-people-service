@@ -1,4 +1,5 @@
 {%- from "govuk_frontend_jinja/components/radios/macro.html" import govukRadios -%}
+{%- from 'govuk_frontend_jinja/components/details/macro.html' import govukDetails -%}
 
 {% extends "form-base.html" %}
 
@@ -20,4 +21,9 @@
         }
       },
       "items": radio_items}) }}
+    {{ govukDetails({
+      "summaryText": "Who is classified as Clinically Extremely Vulnerable",
+      "html": "<p class='govuk-body'>The NHS has <a class='govuk-link' rel='noreferrer noopener' target='_blank' href='https://www.nhs.uk/conditions/coronavirus-covid-19/people-at-higher-risk/'>information on who is classed as clinically extremely vulnerable</a>.</p>"
+    }) }}
 {% endblock %}
+
