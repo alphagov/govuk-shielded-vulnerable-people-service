@@ -36,10 +36,17 @@ def post_support_address():
 
 @form.route("/support-address", methods=["GET"])
 def get_support_address():
-
+    _order_support_address_errors()
     return render_template_with_title(
         "support-address.html",
         previous_path=append_querystring_params("/address-lookup"),
         values=form_answers().get("support_address", {}),
         **get_errors_from_session("support_address"),
     )
+
+
+def _order_support_address_errors():
+    if session["error_items"] and 'support_address' in session["error_items"] \
+            and 'postcode' in session["error_items"]['support_address']:
+        errors = session["error_items"]['support_address']
+        errors['postcode'] = errors.pop('postcode')

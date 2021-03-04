@@ -223,7 +223,7 @@ def validate_postcode(postcode, error_section_name):
     postcode_regex = r"^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([A-Za-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9][A-Za-z]?))))\s?[0-9][A-Za-z]{2})$"  # noqa: E501
     error = None
     if not postcode:
-        error = "What is the postcode where you need support?"
+        error = "Enter a valid postcode"
     elif re.match(character_limiting_regex, postcode) is None or \
             re.match(postcode_regex, postcode.upper()) is None:
         error = "Enter a real postcode"
@@ -233,7 +233,6 @@ def validate_postcode(postcode, error_section_name):
             **session.setdefault("error_items", {}),
             error_section_name: {**error_section, "postcode": error},
         }
-
     return error is None
 
 
