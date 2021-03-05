@@ -6,7 +6,7 @@ from .shared.form_utils import format_postcode
 from .shared.querystring_utils import append_querystring_params
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
-from .shared.session import get_errors_from_session, request_form, get_answer_from_form
+from .shared.session import get_errors_from_session, request_form, get_answer_from_form, is_nhs_login_user
 from .shared.location_tier import update_is_postcode_in_england
 from .shared.validation import validate_postcode
 
@@ -15,7 +15,11 @@ from .shared.validation import validate_postcode
 def get_postcode_eligibility():
     applying_on_own_behalf_answer = get_answer_from_form(["applying_on_own_behalf"])
     if applying_on_own_behalf_answer == ApplyingOnOwnBehalfAnswers.YES.value:
-        prev_path = "/nhs-login"
+        if is_nhs_login_user():
+            prev_path = "/nhs-login-link"
+        else:
+            prev_path = "/nhs-login"
+
     elif applying_on_own_behalf_answer == ApplyingOnOwnBehalfAnswers.NO.value:
         prev_path = "/applying-on-own-behalf"
     else:
