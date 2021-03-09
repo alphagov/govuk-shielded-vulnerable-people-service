@@ -8,7 +8,7 @@ from vulnerable_people_form.form_pages.shared.answers_enums import ApplyingOnOwn
 from vulnerable_people_form.form_pages.shared.constants import SESSION_KEY_LOCATION_TIER, \
     SESSION_KEY_SHIELDING_ADVICE, PostcodeTier, PostcodeTierStatus, ShieldingAdvice, \
     ShieldingAdviceStatus
-from vulnerable_people_form.form_pages.shared.routing import route_to_next_form_page, get_back_url_for_contact_details,\
+from vulnerable_people_form.form_pages.shared.routing import route_to_next_form_page, \
     get_redirect_for_returning_user_based_on_tier
 
 _ROUTING_FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME = \
@@ -200,38 +200,6 @@ def test_route_to_next_form_page_raises_a_value_error_invalid_postcode_tier_pres
         with pytest.raises(ValueError) as err_info:
             route_to_next_form_page()
         assert str(err_info.value) == f"Unexpected location tier value encountered: {get_postcode_tier_return_value}"  # noqa
-
-
-def test_get_back_url_for_contact_details_should_raise_value_error_when_invalid_postcode_tier():  # noqa
-    with _current_app.app_context(), \
-         _current_app.test_request_context() as test_request_ctx:
-        test_request_ctx.session[SESSION_KEY_LOCATION_TIER] = PostcodeTier.HIGH.value
-        with pytest.raises(ValueError) as err_info:
-            get_back_url_for_contact_details()
-        assert f"Unexpected location tier value encountered: {PostcodeTier.HIGH.value}" == str(err_info.value)
-
-def test_get_back_url_for_contact_details_should_return_basic_care_needs_when_very_high_plus_shielding_tier():  # noqa
-    with _current_app.app_context(), \
-         _current_app.test_request_context() as test_request_ctx:
-        test_request_ctx.session[SESSION_KEY_LOCATION_TIER] = PostcodeTier.VERY_HIGH_PLUS_SHIELDING.value
-        test_request_ctx.session[SESSION_KEY_SHIELDING_ADVICE] = ShieldingAdvice.ADVISED_TO_SHIELD.value
-        back_url = get_back_url_for_contact_details()
-        assert back_url == "/basic-care-needs"
-
-
-@pytest.mark.parametrize("shopping_question_answer, expected_back_url",
-                         [(ShoppingAssistanceAnswers.NO.value, "/priority-supermarket-deliveries"),
-                          (ShoppingAssistanceAnswers.YES.value, "/do-you-have-someone-to-go-shopping-for-you")])
-def test_get_back_url_for_contact_details_should_return_correct_url_when_very_high_tier(
-        shopping_question_answer, expected_back_url):
-    with _current_app.app_context(),\
-         _current_app.test_request_context() as test_request_ctx, \
-         patch(_ROUTING_FORM_ANSWERS_FUNCTION_FULLY_QUALIFIED_NAME,
-               return_value={"do_you_have_someone_to_go_shopping_for_you": shopping_question_answer}):
-        test_request_ctx.session[SESSION_KEY_LOCATION_TIER] = PostcodeTier.VERY_HIGH.value
-        test_request_ctx.session[SESSION_KEY_SHIELDING_ADVICE] = ShieldingAdvice.NOT_ADVISED_TO_SHIELD.value
-        back_url = get_back_url_for_contact_details()
-        assert back_url == expected_back_url
 
 
 @pytest.mark.parametrize("""original_postcode_tier, get_latest_location_tier_return_value,

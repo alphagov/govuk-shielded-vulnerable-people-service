@@ -3,7 +3,6 @@ from flask import redirect, session, current_app
 from .blueprint import form
 from .shared.form_utils import format_postcode
 from .shared.location_tier import update_location_status_by_postcode
-from .shared.querystring_utils import append_querystring_params
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
 from .shared.session import (
@@ -36,7 +35,6 @@ def post_postcode_lookup():
 def get_postcode_lookup():
     return render_template_with_title(
         "postcode-lookup.html",
-        previous_path=append_querystring_params("/address-lookup"),
         values={"postcode": session.get("postcode", "")},
         **get_errors_from_session("postcode"),
     )

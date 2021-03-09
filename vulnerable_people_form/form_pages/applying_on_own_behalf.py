@@ -5,7 +5,6 @@ from .shared.answers_enums import (
     ApplyingOnOwnBehalfAnswers,
     get_radio_options_from_enum,
 )
-from .shared.constants import GOVUK_JOURNEY_START_PAGE_URL
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
 from .shared.session import (
@@ -23,7 +22,6 @@ def get_apply_on_own_behalf():
         radio_items=get_radio_options_from_enum(
             ApplyingOnOwnBehalfAnswers, form_answers().get("applying_on_own_behalf")
         ),
-        previous_path=GOVUK_JOURNEY_START_PAGE_URL,
         **get_errors_from_session("applying_on_own_behalf"),
     )
 

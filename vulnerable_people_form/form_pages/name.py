@@ -2,7 +2,6 @@ from flask import redirect, session
 
 from .blueprint import form
 from .shared.form_utils import sanitise_name
-from .shared.querystring_utils import append_querystring_params
 from .shared.render import render_template_with_title
 from .shared.routing import route_to_next_form_page
 from .shared.session import form_answers, get_errors_from_session, request_form
@@ -14,7 +13,6 @@ def get_name():
     return render_template_with_title(
         "name.html",
         values=form_answers().get("name", {}),
-        previous_path=append_querystring_params("/nhs-number"),
         **get_errors_from_session("name"),
     )
 

@@ -2,13 +2,12 @@ from vulnerable_people_form.form_pages.shared.location_tier import is_tier_less_
 from vulnerable_people_form.form_pages.shared.session import get_location_tier, get_is_postcode_in_england
 from .blueprint import form
 from .shared.render import render_template_with_title
-from .shared.routing import dynamic_back_url
 
 
 @form.route("/not-eligible-postcode", methods=["GET"])
 def get_not_eligible_postcode():
     template_name = _get_template_name()
-    return render_template_with_title(template_name, previous_path=dynamic_back_url())
+    return render_template_with_title(template_name)
 
 
 @form.route("/not-eligible-postcode-returning-user", methods=["GET"])
