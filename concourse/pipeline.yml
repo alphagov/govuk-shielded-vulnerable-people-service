@@ -22,6 +22,13 @@ resources:
       uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
       branch: master
 
+  - name: git-backlink
+    type: git
+    icon: github-circle
+    source:
+      uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
+      branch: test_session_based_backlink
+
   - name: slack
     type: slack-alert
     source:
@@ -88,7 +95,7 @@ jobs:
   - name: deploy-to-sandbox
     serial: true
     plan:
-      - get: git-master
+      - get: git-backlink
         trigger: true
         passed: [test]
       - task: deploy-to-paas
@@ -118,7 +125,7 @@ jobs:
   - name: smoke-test-sandbox
     serial: true
     plan:
-      - get: git-master
+      - get: git-backlink
         trigger: true
         passed: [deploy-to-sandbox]
       - task: smoke-test
@@ -132,7 +139,7 @@ jobs:
   - name: e2e-test-sandbox
     serial: true
     plan:
-      - get: git-master
+      - get: git-backlink
         trigger: true
         passed: [smoke-test-sandbox]
       - task: e2e-test
