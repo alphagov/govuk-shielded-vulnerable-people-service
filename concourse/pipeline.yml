@@ -22,6 +22,13 @@ resources:
       uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
       branch: master
 
+  - name: git-backlink
+    type: git
+    icon: github-circle
+    source:
+      uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
+      branch: test_session_based_backlink
+
   - name: slack
     type: slack-alert
     source:
@@ -71,6 +78,7 @@ jobs:
         trigger: true
       - set_pipeline: svp-form
         file: git-master/concourse/pipeline.yml
+      - get: git-backlink
     on_failure: *slack_alert_on_failure
     on_success: *slack_alert_on_fixed
 
@@ -85,15 +93,30 @@ jobs:
     on_failure: *slack_alert_on_failure
     on_success: *slack_alert_on_fixed
 
+  - name: test-sandbox
+    serial: true
+    plan:
+      - get: git-backlink
+        trigger: true
+      - get: git-master
+        trigger: true
+      - task: test
+        file: git-sandbox/concourse/tasks/test.yml
+    on_failure: *slack_alert_on_failure
+
+
   - name: deploy-to-sandbox
     serial: true
     plan:
       - get: git-master
         trigger: true
-        passed: [test]
+        passed: [test-sandbox]
+      - get: git-backlink
+        trigger: true
+        passed: [test-sandbox]
       - task: deploy-to-paas
         config:
-        file: git-master/concourse/tasks/deploy-to-govuk-paas.yml
+        file: git-master/concourse/tasks/deploy-to-govuk-sandbox.yml
         params:
           CF_SPACE: sandbox
           INSTANCES: 2
