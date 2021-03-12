@@ -108,7 +108,7 @@ jobs:
   - name: deploy-to-sandbox
     serial: true
     plan:
-      - get: git-backlink
+      - get: git-master
         trigger: true
         passed: [test-sandbox]
       - get: git-backlink
