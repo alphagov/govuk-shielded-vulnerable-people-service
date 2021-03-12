@@ -101,7 +101,7 @@ jobs:
       - get: git-master
         trigger: true
       - task: test
-        file: git-sandbox/concourse/tasks/test.yml
+        file: git-master/concourse/tasks/test.yml
     on_failure: *slack_alert_on_failure
 
 
