@@ -70,7 +70,8 @@ Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - 
 
     Scenario: Should be redirected to contact details when no answered to basic care needs help
         Given I am on the "basic-care-needs" page
-        When I click the ".govuk-radios__item input[value='0']" element
+        # This change of answer means that submission should appear on churn report
+        When I answer the care needs question differently to last submission for nhs_number "9999999999" in hub "london-borough-of-tower-hamlets"
         And I submit the form
         Then I am redirected to the "contact-details" page
 

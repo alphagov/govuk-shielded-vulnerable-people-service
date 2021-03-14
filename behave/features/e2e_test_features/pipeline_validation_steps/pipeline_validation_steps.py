@@ -56,6 +56,17 @@ def assert_nhs_number_is_available_in_supermarket(context, nhs_number, check_fie
     assert len(results) == 1
 
 
+@then('nhs_number "{nhs_number}" is in churn report for "{hub}" with "{check_value}" in field "{check_field}"')
+def assert_nhs_number_is_available_in_hub_churn_report(context, nhs_number, hub, check_field, check_value):
+    bucket = 'gds-ons-covid-19-query-results-{}'.format(env)
+    prefix = 'web-app-{}-data/local_authority/{}/'.format(env, hub)
+    filename_prefix = 'GDS-to-LA-ChurnReport'
+    id_field = 'nhs_number'
+
+    results = get_result_for_user(bucket, prefix, filename_prefix, id_field, nhs_number, check_field, check_value)
+    assert len(results) == 1
+
+
 def get_result_for_user(bucket, prefix, filename_prefix, id_field, id_value, check_field, check_value):
     latest_file_content = get_latest_file_contents(bucket, prefix, filename_prefix)
     print("Using {}: {}".format(id_field, id_value))
