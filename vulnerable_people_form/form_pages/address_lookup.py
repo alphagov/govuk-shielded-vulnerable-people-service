@@ -75,16 +75,20 @@ def _create_test_address(postcode):
 
 @form.route("/address-lookup", methods=["POST"])
 def post_address_lookup():
-    session["form_answers"] = {
-        **session.setdefault("form_answers", {}),
-        "support_address": {**json.loads(request_form()["address"])},
-    }
+
     session["error_items"] = {}
 
     if not validate_address_lookup():
         return redirect("/address-lookup")
-
-    uprn = {**json.loads(request_form()["address"])}.get("uprn", None)
+    support_address = {**json.loads(request_form()["address"])}
+    session["form_answers"] = {
+        **session.setdefault("form_answers", {}),
+        "support_address": support_address,
+    }
+    postcode = support_address.get("postcode", None)
+    if postcode is not None:
+        session["postcode"] = postcode
+    uprn = support_address.get("uprn", None)
 
     if uprn and location_eligibility.get_uprn_tier(uprn):
         update_location_status_by_uprn(uprn, current_app)
