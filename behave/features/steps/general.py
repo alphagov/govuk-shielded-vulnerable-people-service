@@ -1,6 +1,7 @@
 import os
 import json
 
+from datetime import datetime
 from behave import then, when, given
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
@@ -108,3 +109,11 @@ def set_postcode_value_for_shielding(context, tier):
     html_element = context.browser.find_element_by_css_selector("#postcode")
     html_element.clear()
     html_element.send_keys(postcode)
+
+
+@when('I answer the care needs question differently to last submission for nhs_number "{nhs_number}" in hub "{hub}"')
+def click_basic_care_needs_element(context, nhs_number, hub):
+    # change the care needs response each day
+    new_care_answer = '0' if datetime.now().toordinal() % 2 else '1'
+    html_element = context.browser.find_element_by_css_selector(f".govuk-radios__item input[value='{new_care_answer}']")
+    html_element.click()
