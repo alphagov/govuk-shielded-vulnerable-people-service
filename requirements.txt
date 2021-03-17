@@ -2,7 +2,7 @@ email-validator==1.1.2
 Flask==1.1.2
 Flask-WTF==0.14.3
 govuk-frontend-jinja==0.2.1
-phonenumbers==8.12.6
+phonenumbers==8.12.19
 boto3==1.17.28
 python-stdnum==1.16
 oic==1.2.1
