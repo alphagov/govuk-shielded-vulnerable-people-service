@@ -10,8 +10,8 @@
 
 {% block head %}
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/app.css') }}" />
-  <!--[if gt IE 8]><!--><link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='govuk-frontend-3.7.0.min.css') }}" /><!--<![endif]-->
-  <!--[if IE 8]><link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='govuk-frontend-ie8-3.7.0.min.css') }}" /><![endif]-->
+  <!--[if gt IE 8]><!--><link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='govuk-frontend-3.11.0.min.css') }}" /><!--<![endif]-->
+  <!--[if IE 8]><link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='govuk-frontend-ie8-3.11.0.min.css') }}" /><![endif]-->
   {% block meta_tags %}
   {% endblock %}
 {% endblock %}
@@ -67,7 +67,7 @@
   <script src="{{ url_for('static', filename='js/govuk-cookie-banner.js') }}"></script>
   <script src="{{ url_for('static', filename='js/application.js') }}"></script>
   <!--[if gt IE 8]><!-->
-  <script src="{{ url_for('static', filename='govuk-frontend-3.7.0.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='govuk-frontend-3.11.0.min.js') }}"></script>
   <!--<![endif]-->
   <script nonce="{{ csp_nonce() }}">appInit("{{ga_tracking_id}}","{{ga_cross_domain_tracking_id}}");</script>
 {% endblock %}
