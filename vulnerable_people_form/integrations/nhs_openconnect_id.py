@@ -117,4 +117,4 @@ class NHSOIDCDetails:
             },
             key=self.private_key,
             algorithm="RS512",
-        ).decode("utf-8")
+        )
