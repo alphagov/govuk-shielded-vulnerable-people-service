@@ -3,12 +3,13 @@ from http import HTTPStatus
 from flask import (
     Blueprint,
     redirect,
-    render_template
+    render_template,
+    request
 )
 from flask_wtf.csrf import CSRFError
 
 from vulnerable_people_form.form_pages.shared.querystring_utils import append_querystring_params
-from vulnerable_people_form.form_pages.shared.session import has_started_form
+from vulnerable_people_form.form_pages.shared.session import has_started_form, record_current_path
 
 form = Blueprint("form", __name__)
 
@@ -28,6 +29,12 @@ def add_caching_headers(response):
     response.headers["Cache-Control"] = "no-store"
     response.headers["Pragma"] = "no-cache"
     return response
+
+
+@form.before_request
+def record_page_to_session():
+    if request.method == "GET" :
+        record_current_path(request.path)
 
 
 @form.errorhandler(CSRFError)

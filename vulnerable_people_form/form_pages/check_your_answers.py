@@ -4,7 +4,7 @@ from .blueprint import form
 from .shared.constants import ShieldingAdvice
 from .shared.querystring_utils import append_querystring_params
 from .shared.render import render_template_with_title
-from .shared.routing import route_to_next_form_page, dynamic_back_url
+from .shared.routing import route_to_next_form_page
 from .shared.session import persist_answers_from_session, get_summary_rows_from_form_answers, \
      is_shielding_without_basic_care_needs_answer, get_shielding_advice
 from ..integrations import notifications
@@ -22,7 +22,6 @@ def get_check_your_answers():
 
     return render_template_with_title(
         "check-your-answers.html",
-        previous_path=dynamic_back_url(),
         summary_rows=get_summary_rows_from_form_answers(exclude_answers)
     )
 

@@ -11,11 +11,12 @@ from vulnerable_people_form.form_pages.shared.answers_enums import \
     ApplyingOnOwnBehalfAnswers, MedicalConditionsAnswers, PrioritySuperMarketDeliveriesAnswers, BasicCareNeedsAnswers, \
     ShoppingAssistanceAnswers
 from vulnerable_people_form.form_pages.shared.constants import PAGE_TITLES, PostcodeTier, \
-    SESSION_KEY_SHIELDING_ADVICE, ShieldingAdvice
+    SESSION_KEY_SHIELDING_ADVICE, ShieldingAdvice, GOVUK_JOURNEY_START_PAGE_URL
 from vulnerable_people_form.form_pages.shared.session import \
     is_returning_nhs_login_user_without_basic_care_needs_answer, \
     is_shielding_without_basic_care_needs_answer, \
-    set_form_answers_from_nhs_user_info
+    set_form_answers_from_nhs_user_info, get_previous_path, \
+    record_current_path
 
 _current_app = Flask(__name__)
 _current_app.secret_key = 'test_secret'
@@ -81,6 +82,25 @@ def test_should_contact_gp_should_return_true_when_yes_value_present_in_session(
 
         assert should_contact_gp is True
         assert len(test_request_ctx.session) == 1
+
+
+@pytest.mark.parametrize("path_list, expected_back_link",
+                         [([], GOVUK_JOURNEY_START_PAGE_URL),
+                          (['/page1', '/page2'], '/page1'),
+                          (['/page1', '/page2', '/page3'], '/page2'),
+                          (['/page1', '/page2', '/page1'], GOVUK_JOURNEY_START_PAGE_URL),
+                          (['/page1', '/page2', '/page3', '/page4', '/page3'], '/page2'),
+                          (['/page1', '/page2', '/check-your-answers', '/page-3', '/check-your-answers'], '/page-3'),
+                          (['/page1', '/page2', '/page3', '/page4', '/page4'], '/page3'),
+                          ])
+def test_should_return_correct_back_link(path_list, expected_back_link):
+
+    with _current_app.test_request_context() as test_request_ctx:
+        test_request_ctx.session['previous_paths'] = []
+        for path in path_list:
+            record_current_path(path)
+        previous_path = get_previous_path()
+        assert expected_back_link == previous_path
 
 
 @pytest.mark.parametrize("nhs_letter_form_field_value", [NHSLetterAnswers.NO.value, NHSLetterAnswers.NOT_SURE.value])

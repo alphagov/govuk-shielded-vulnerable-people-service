@@ -16,7 +16,8 @@ from .constants import (
     SESSION_KEY_SHIELDING_ADVICE,
     SESSION_KEY_IS_POSTCODE_IN_ENGLAND,
     PostcodeTier,
-    ShieldingAdvice
+    ShieldingAdvice,
+    GOVUK_JOURNEY_START_PAGE_URL
 )
 from .form_utils import clean_nhs_number, postcode_with_spaces
 from .querystring_utils import append_querystring_params
@@ -88,6 +89,52 @@ def is_nhs_login_user():
 
 def has_started_form():
     return "form_started" in session
+
+
+# This functions states whether a path is likely to be in a direct loop, and thus not a back button press
+def is_looping_path(path):
+    return path in ['/check-your-answers']
+
+
+def record_current_path(path):
+    previous_paths = session.get("previous_paths", None)
+
+    previous_path = session.get("current_path", None)
+    session["current_path"] = path
+
+    if previous_paths is None:
+        previous_paths = []
+    if len(previous_paths) > 0:
+        if path == previous_path:
+            # We haven't changed path, don't add to paths
+            pass
+        elif path == previous_paths[0] and not is_looping_path(path):
+            # We have gone back, ignore previous path
+            previous_paths.pop(0)
+        else:
+            previous_paths.insert(0, previous_path)
+
+        session["previous_paths"] = previous_paths
+
+    else:
+        if previous_path is not None and "previous_paths" in session:
+            previous_paths.insert(0, previous_path)
+            session["previous_paths"] = previous_paths
+
+        elif previous_path is not None:
+            session["previous_paths"] = [previous_path]
+        else:
+            session["previous_paths"] = []
+
+
+def get_previous_path():
+    paths = session.get("previous_paths", None)
+
+    if paths is not None and len(paths) > 0:
+        path = append_querystring_params(paths[0])
+    else:
+        return GOVUK_JOURNEY_START_PAGE_URL
+    return path
 
 
 def should_contact_gp():

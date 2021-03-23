@@ -1,7 +1,7 @@
 from flask import render_template, current_app, request
 
 from .constants import PAGE_TITLES
-from .session import accessing_saved_answers, is_nhs_login_user
+from .session import accessing_saved_answers, is_nhs_login_user, get_previous_path
 
 
 def render_template_with_title(template_name, *args, **kwargs):
@@ -23,6 +23,7 @@ def render_template_with_title(template_name, *args, **kwargs):
         form_base_template="base.html" if is_changing_form_answer else "base-with-back-link.html",
         **{
             "nhs_user": is_nhs_login_user(),
+            "previous_path": get_previous_path(),
             "button_text": "Save and continue" if accessing_saved_answers() else "Continue",
             **kwargs,
         },
