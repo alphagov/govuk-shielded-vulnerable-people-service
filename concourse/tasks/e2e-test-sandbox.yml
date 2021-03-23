@@ -1,0 +1,30 @@
+---
+platform: linux
+image_resource:
+  type: registry-image
+  source:
+    repository: gdscyber/concourse-chrome-driver
+    tag: latest
+    username: ((docker_hub_username))
+    password: ((docker_hub_password))
+params:
+  CGO_ENABLE: "0"
+  DEBIAN_FRONTEND: "noninteractive"
+  PYTHONIOENCODING: "UTF-8"
+  POSTCODE_TIER_OVERRIDE:
+inputs:
+- name: git-sandbox
+outputs:
+- name: builds
+run:
+  path: /bin/bash
+  args:
+    - -euo
+    - pipefail
+    - -c
+    - |
+      echo "running e2e tests against \"${WEB_APP_BASE_URL}\""
+      root=$(pwd)
+      sleep 10
+      make concourse_e2e
+  dir: git-master
