@@ -11,6 +11,10 @@ params:
   DEBIAN_FRONTEND: "noninteractive"
   PYTHONIOENCODING: "UTF-8"
   POSTCODE_TIER_OVERRIDE:
+  NHS_EMAIL:
+  NHS_OTP:
+  NHS_BASE_URL:
+  NHS_PASSWORD:
 inputs:
 - name: git-sandbox
 outputs:
@@ -25,4 +29,4 @@ run:
       echo "running smoke tests against \"${WEB_APP_BASE_URL}\""
       sleep 10
       make smoke_test
-  dir: git-master
+  dir: git-sandbox

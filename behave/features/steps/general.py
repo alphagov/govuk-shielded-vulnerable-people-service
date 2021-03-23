@@ -9,15 +9,42 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support.select import Select
 from datetime import date
 
+import re
+
 _BASE_URL = os.environ["WEB_APP_BASE_URL"]
 _DEFAULT_TIMEOUT = 30  # in seconds
 _POSTCODE_TIER_OVERRIDE = json.loads(os.environ["POSTCODE_TIER_OVERRIDE"])
+
+
+_NHS_BASE_URL = os.environ["NHS_BASE_URL"]
+_NHS_EMAIL = os.environ["NHS_EMAIL"]
+_NHS_PASSWORD = os.environ["NHS_PASSWORD"]
+_NHS_OTP = os.environ["NHS_OTP"]
+
+
+def get_url_match(url_pattern):
+    def url_match(c):
+        return re.match(url_pattern, c.current_url)
+
+    return url_match
 
 
 @then('I am redirected to the "{next_page_url}" page')
 def wait_until_url_present(context, next_page_url):
     WebDriverWait(context.browser, _DEFAULT_TIMEOUT).until(
         expected_conditions.url_to_be(f"{_BASE_URL}/{next_page_url}"))
+
+
+@then('I am redirected to a page that matches "{next_page_url}"')
+def wait_until_url_match(context, next_page_url):
+    WebDriverWait(context.browser, _DEFAULT_TIMEOUT).until(get_url_match(
+        f".*/{next_page_url}.*"))
+
+
+@then('I am redirected to the "{next_page_url}" nhs page')
+def wait_until_nhs_url_present(context, next_page_url):
+    WebDriverWait(context.browser, _DEFAULT_TIMEOUT).until(
+        expected_conditions.url_to_be(f"{_NHS_BASE_URL}/{next_page_url}"))
 
 
 @then('I am redirected to the external page with URL "{next_page_url}"')
@@ -49,6 +76,11 @@ def assert_on_specified_page(context, expected_page):
     assert context.browser.current_url == f"{_BASE_URL}/{expected_page}"
 
 
+@given('I am on the "{expected_page}" nhs page')
+def assert_on_specified_nhs_page(context, expected_page):
+    assert context.browser.current_url == f"{_NHS_BASE_URL}/{expected_page}"
+
+
 @when('I click the "{css_selector}" element')
 def click_element(context, css_selector):
     html_element = context.browser.find_element_by_css_selector(css_selector)
@@ -60,6 +92,27 @@ def set_element_value(context, css_selector, element_value):
     html_element = context.browser.find_element_by_css_selector(css_selector)
     html_element.clear()
     html_element.send_keys(element_value)
+
+
+@when('I give the "{css_selector}" field the nhs email value')
+def set_nhs_email_value(context, css_selector):
+    html_element = context.browser.find_element_by_css_selector(css_selector)
+    html_element.clear()
+    html_element.send_keys(_NHS_EMAIL)
+
+
+@when('I give the "{css_selector}" field the nhs otp value')
+def set_nhs_otp_value(context, css_selector):
+    html_element = context.browser.find_element_by_css_selector(css_selector)
+    html_element.clear()
+    html_element.send_keys(_NHS_OTP)
+
+
+@when('I give the "{css_selector}" field the nhs password value')
+def set_nhs_password_value(context, css_selector):
+    html_element = context.browser.find_element_by_css_selector(css_selector)
+    html_element.clear()
+    html_element.send_keys(_NHS_PASSWORD)
 
 
 @when('I submit the form')
