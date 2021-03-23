@@ -68,10 +68,10 @@ Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - 
         And I submit the form
         Then I am redirected to the "basic-care-needs" page
 
-    Scenario: Should be redirected to contact details when no answered to basic care needs help
+    Scenario: Should be redirected to contact details when basic care needs help answered
         Given I am on the "basic-care-needs" page
         # This change of answer means that submission should appear on churn report
-        When I answer the care needs question differently to last submission for nhs_number "9999999999" in hub "london-borough-of-tower-hamlets"
+        When I answer the care needs question differently to last submission
         And I submit the form
         Then I am redirected to the "contact-details" page
 
@@ -81,7 +81,7 @@ Feature: COVID-19 Shielded vulnerable people service - basic e2e user journey - 
         And I submit the form
         Then I am redirected to the "check-your-answers" page
 
-    Scenario: Should be redirected to confirmation when no answered to basic care needs help
+    Scenario: Should be redirected to confirmation from check your answers page
         Given I am on the "check-your-answers" page
         When I submit the form
         Then I am redirected to the "confirmation" page
