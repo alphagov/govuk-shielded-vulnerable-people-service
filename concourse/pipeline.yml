@@ -22,12 +22,12 @@ resources:
       uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
       branch: master
 
-  - name: git-backlink
+  - name: git-sandbox
     type: git
     icon: github-circle
     source:
       uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
-      branch: test_session_based_backlink
+      branch: nhs_smoke_test
 
   - name: slack
     type: slack-alert
@@ -78,7 +78,7 @@ jobs:
         trigger: true
       - set_pipeline: svp-form
         file: git-master/concourse/pipeline.yml
-      - get: git-backlink
+      - get: git-sandbox
     on_failure: *slack_alert_on_failure
     on_success: *slack_alert_on_fixed
 
@@ -96,7 +96,7 @@ jobs:
   - name: test-sandbox
     serial: true
     plan:
-      - get: git-backlink
+      - get: git-sandbox
         trigger: true
       - get: git-master
         trigger: true
@@ -111,7 +111,7 @@ jobs:
       - get: git-master
         trigger: true
         passed: [test-sandbox]
-      - get: git-backlink
+      - get: git-sandbox
         trigger: true
         passed: [test-sandbox]
       - task: deploy-to-paas
@@ -141,11 +141,11 @@ jobs:
   - name: smoke-test-sandbox
     serial: true
     plan:
-      - get: git-backlink
+      - get: git-sandbox
         trigger: true
         passed: [deploy-to-sandbox]
       - task: smoke-test
-        file: git-master/concourse/tasks/smoke-test.yml
+        file: git-master/concourse/tasks/smoke-test-sandbox.yml
         params:
           WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to sandbox is not serving HTTP error codes"
@@ -155,11 +155,11 @@ jobs:
   - name: e2e-test-sandbox
     serial: true
     plan:
-      - get: git-backlink
+      - get: git-sandbox
         trigger: true
         passed: [smoke-test-sandbox]
       - task: e2e-test
-        file: git-master/concourse/tasks/e2e-test.yml
+        file: git-sandbox/concourse/tasks/e2e-test-sandbox.yml
         attempts: 2
         params:
           CF_SPACE: "sandbox"

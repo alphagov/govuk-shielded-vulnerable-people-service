@@ -7,7 +7,7 @@ image_resource:
     username: ((docker_hub_username))
     password: ((docker_hub_password))
 inputs:
-  - name: git-backlink
+  - name: git-sandbox
     path: src
 params:
   CF_API: https://api.london.cloud.service.gov.uk
