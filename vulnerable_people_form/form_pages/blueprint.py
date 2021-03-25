@@ -1,5 +1,7 @@
 from http import HTTPStatus
 
+import re
+
 from flask import (
     Blueprint,
     redirect,
@@ -33,7 +35,7 @@ def add_caching_headers(response):
 
 @form.before_request
 def record_page_to_session():
-    if request.method == "GET" :
+    if request.method == "GET" and not re.match("/nhs-login-callback.*", request.path):
         record_current_path(request.path)
 
 
