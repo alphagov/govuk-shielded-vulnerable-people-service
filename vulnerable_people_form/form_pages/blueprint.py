@@ -33,9 +33,13 @@ def add_caching_headers(response):
     return response
 
 
+def _is_callback_path(path):
+    return re.match("/nhs-.*-callback.*", path)
+
+
 @form.before_request
 def record_page_to_session():
-    if request.method == "GET" and not re.match("/nhs-login-callback.*", request.path):
+    if request.method == "GET" and not _is_callback_path(request.path) :
         record_current_path(request.path)
 
 
