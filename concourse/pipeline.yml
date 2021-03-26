@@ -249,8 +249,8 @@ jobs:
           HOSTNAME: gds-shielded-vulnerable-people-service-prod
           SECRET_KEY: ((svp-form/flask-secret-key-base-prod))
           NHS_OIDC_AUTHORITY_URL: https://auth.login.nhs.uk/
-          NHS_OIDC_LOGIN_CALLBACK_URL: https://coronavirus-shielding-support.service.gov.uk/nhs-login-callback
-          NHS_OIDC_REGISTRATION_CALLBACK_URL: https://coronavirus-shielding-support.service.gov.uk/nhs-registration-callback
+          NHS_OIDC_LOGIN_CALLBACK_URL: 	https://gds-shielded-vulnerable-people-service-prod.london.cloudapps.digital/nhs-login-callback
+          NHS_OIDC_REGISTRATION_CALLBACK_URL: https://gds-shielded-vulnerable-people-service-prod.london.cloudapps.digital/nhs-registration-callback
           AWS_ACCESS_KEY: ((svp-form/aws-access-key-id-prod))
           AWS_SECRET_ACCESS_KEY: ((svp-form/aws-secret-access-key-prod))
           AWS_SQS_QUEUE_URL: ((svp-form/aws-sqs-queue-url-prod))
@@ -274,7 +274,7 @@ jobs:
       - task: smoke-test
         file: git-master/concourse/tasks/smoke-test.yml
         params:
-          WEB_APP_BASE_URL: "https://coronavirus-shielding-support.service.gov.uk"
+          WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-prod.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to production is not serving HTTP error codes"
           POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
         on_failure: *slack_alert_on_failure
@@ -310,7 +310,7 @@ jobs:
       - task: smoke-test
         file: git-master/concourse/tasks/smoke-test.yml
         params:
-          WEB_APP_BASE_URL: "https://coronavirus-shielding-support.service.gov.uk"
+          WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-prod.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to production is not serving HTTP error codes"
           POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
         on_failure:
