@@ -3,7 +3,7 @@ Flask==1.1.2
 Flask-WTF==0.14.3
 govuk-frontend-jinja==1.2.1
 phonenumbers==8.12.19
-boto3==1.17.28
+boto3==1.17.39
 python-stdnum==1.16
 oic==1.2.1
 blinker==1.4
