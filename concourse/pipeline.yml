@@ -145,7 +145,7 @@ jobs:
         trigger: true
         passed: [deploy-to-sandbox]
       - task: smoke-test
-        file: git-master/concourse/tasks/smoke-test-sandbox.yml
+        file: git-sandbox/concourse/tasks/smoke-test-sandbox.yml
         params:
           WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to sandbox is not serving HTTP error codes"
