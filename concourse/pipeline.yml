@@ -150,7 +150,7 @@ jobs:
           WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to sandbox is not serving HTTP error codes"
           POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
-          NHS_BASE_URL: https://access.aos.signin.nhs.uk/
+          NHS_BASE_URL: https://access.aos.signin.nhs.uk
           NHS_EMAIL: ((svp-form/nhs-email-stg))
           NHS_OTP: ((svp-form/nhs-otp-stg))
           NHS_PASSWORD: ((svp-form/nhs-password-stg))
