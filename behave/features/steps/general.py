@@ -1,5 +1,6 @@
 import os
 import json
+import logging
 
 from datetime import datetime
 from behave import then, when, given
@@ -35,6 +36,7 @@ def wait_until_element_present(context, timeout_seconds, element_css_selector):
 @when('I navigate to "{path}"')
 def user_path_step(context, path):
     context.browser.get(_BASE_URL + path)
+    logging.error(context.browser.get_log("browser"))
 
 
 @then('the content of element with selector "{element_css_selector}" equals "{expected_element_content}"')
