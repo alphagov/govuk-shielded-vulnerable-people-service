@@ -17,10 +17,10 @@ _DEFAULT_TIMEOUT = 30  # in seconds
 _POSTCODE_TIER_OVERRIDE = json.loads(os.environ["POSTCODE_TIER_OVERRIDE"])
 
 
-_NHS_BASE_URL = os.environ["NHS_BASE_URL"]
-_NHS_EMAIL = os.environ["NHS_EMAIL"]
-_NHS_PASSWORD = os.environ["NHS_PASSWORD"]
-_NHS_OTP = os.environ["NHS_OTP"]
+_NHS_BASE_URL = os.environ.get("NHS_BASE_URL")
+_NHS_EMAIL = os.environ.get("NHS_EMAIL")
+_NHS_PASSWORD = os.environ.get("NHS_PASSWORD")
+_NHS_OTP = os.environ.get("NHS_OTP")
 
 
 def get_url_match(url_pattern):
