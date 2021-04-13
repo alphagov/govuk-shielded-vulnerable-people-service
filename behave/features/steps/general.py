@@ -35,8 +35,11 @@ def wait_until_element_present(context, timeout_seconds, element_css_selector):
 
 @when('I navigate to "{path}"')
 def user_path_step(context, path):
+    logging.info(f"Requesting \"{_BASE_URL + path}\"")
     context.browser.get(_BASE_URL + path)
-    logging.error(context.browser.get_log("browser"))
+    logging.info(f"Got \"{_BASE_URL + path}\"")
+    logging.info(context.browser.get_log("browser"))
+    logging.info(context.browser.page_source)
 
 
 @then('the content of element with selector "{element_css_selector}" equals "{expected_element_content}"')
