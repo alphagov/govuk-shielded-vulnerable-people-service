@@ -145,7 +145,9 @@ def set_nhs_password_value(context, css_selector):
 @when('I submit the form')
 @log_page_response
 def submit_the_form(context):
-    click_element(context, "button[type='Submit']")
+    element = WebDriverWait(context.browser, _DEFAULT_TIMEOUT).until(
+            expected_conditions.element_to_be_clickable((By.CSS_SELECTOR, "button[type='Submit']")))
+    element.click()
 
 
 @when('I enter the value "{value}" in the field with name "{field_name}"')
