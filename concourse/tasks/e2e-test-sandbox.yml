@@ -12,6 +12,10 @@ params:
   DEBIAN_FRONTEND: "noninteractive"
   PYTHONIOENCODING: "UTF-8"
   POSTCODE_TIER_OVERRIDE:
+  NHS_BASE_URL:
+  NHS_EMAIL: 
+  NHS_OTP:
+  NHS_PASSWORD:  
 inputs:
 - name: git-sandbox
 outputs:
@@ -27,4 +31,4 @@ run:
       root=$(pwd)
       sleep 10
       make concourse_e2e
-  dir: git-master
+  dir: git-sandbox

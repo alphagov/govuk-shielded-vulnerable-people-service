@@ -27,7 +27,7 @@ resources:
     icon: github-circle
     source:
       uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
-      branch: nhs_smoke_test
+      branch: master
 
   - name: slack
     type: slack-alert
@@ -170,6 +170,10 @@ jobs:
           WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-sandbox.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to sandbox is not serving HTTP error codes"
           POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
+          NHS_BASE_URL: https://access.aos.signin.nhs.uk
+          NHS_EMAIL: ((svp-form/nhs-email-stg))
+          NHS_OTP: ((svp-form/nhs-otp-stg))
+          NHS_PASSWORD: ((svp-form/nhs-password-stg))
 
   - name: deploy-to-staging
     serial: true
@@ -233,6 +237,10 @@ jobs:
           WEB_APP_BASE_URL: "https://gds-shielded-vulnerable-people-service-staging.london.cloudapps.digital"
           MESSAGE: "Checks that the application deployed to staging is not serving HTTP error codes"
           POSTCODE_TIER_OVERRIDE: ((svp-form/postcode-tier-override))
+          NHS_BASE_URL: https://access.aos.signin.nhs.uk
+          NHS_EMAIL: ((svp-form/nhs-email-stg))
+          NHS_OTP: ((svp-form/nhs-otp-stg))
+          NHS_PASSWORD: ((svp-form/nhs-password-stg))
         on_failure: *slack_alert_on_failure
         on_success: *slack_alert_on_fixed
 

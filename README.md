@@ -111,6 +111,7 @@ To set up the app for local development you need to follow these steps:
    ```
    scripts/create-sqs-queue.sh 
    ```
+
 		
 ### Production configuration & Deployment
 
@@ -290,10 +291,17 @@ coverage report -m
 ### Running locally
 The flask web application should be running locally on port 5000 (http://localhost:5000) as per the above instructions.
 
+In order to get them to pass the following nhs tests you need to add in variables in the docker-compose.yml 
+* NHS_EMAIL
+* NHS_PASSWORD
+* NHS_OTP
+
+
 The tests can then be executed using the following command from the root of the project:
 ```
 make test_e2e_local
 ```
+
 
 ## Licence
 

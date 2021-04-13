@@ -9,6 +9,10 @@ services:
     environment:
       WEB_APP_BASE_URL: http://webform:5000
       POSTCODE_TIER_OVERRIDE: '{"TE22RR" : {"tier": 2, "shielding": 0}, "TE33RR": {"tier": 3, "shielding": 0 }, "TE44RR": {"tier": 4, "shielding": 1}, "TS33RR": {"tier": 3, "shielding": 1}}'
+      NHS_BASE_URL: https://access.sandpit.signin.nhs.uk
+      NHS_EMAIL: 
+      NHS_PASSWORD: 
+      NHS_OTP: 
     ports:
       - "8081:8081"
     links:
