@@ -2,7 +2,7 @@ platform: linux
 image_resource:
   type: registry-image
   source:
-    repository: gdscyber/concourse-chrome-driver
+    repository: vulnerablepeopleservice/chrome-driver
     tag: latest
 params:
   CGO_ENABLE: "0"
