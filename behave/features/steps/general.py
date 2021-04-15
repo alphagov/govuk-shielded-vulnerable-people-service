@@ -32,12 +32,15 @@ def get_url_match(url_pattern):
 
 def log_page_response(func):
     def wrapper(context, *args, **kwargs):
-        logging.info(f"URL:         {context.browser.current_url}")
-        logging.info(f"Title:       {context.browser.title}")
-        logging.info(f"""Browser Log: {context.browser.get_log("browser")}""")
-        logging.info("Source:")
-        logging.info(context.browser.page_source)
-        func(context, *args, **kwargs)
+        try:
+            func(context, *args, **kwargs)
+        except Exception as exc:
+            logging.info(f"URL:         {context.browser.current_url}")
+            logging.info(f"Title:       {context.browser.title}")
+            logging.info(f"""Browser Log: {context.browser.get_log("browser")}""")
+            logging.info("Source:")
+            logging.info(context.browser.page_source)
+            raise exc
 
     return wrapper
 
