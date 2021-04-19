@@ -16,7 +16,7 @@ def before_all(context):
     chrome_options.add_argument("--disable-gpu")
 
     context.browser = webdriver.Chrome(options=chrome_options)
-    context.browser.set_page_load_timeout(time_to_wait=30)
+    context.browser.set_page_load_timeout(time_to_wait=60)
     context.browser.delete_all_cookies()
 
     context.config.setup_logging(os.environ.get("LOG_LEVEL", "ERROR"))
