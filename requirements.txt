@@ -1,5 +1,5 @@
 email-validator==1.1.2
-Flask==1.1.2
+Flask==2.0.0
 Flask-WTF==0.14.3
 govuk-frontend-jinja==1.2.1
 phonenumbers==8.12.21
