@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.options import Options
 
 def before_all(context):
     chrome_options = Options()
-    chrome_options.binary = "bin/headless-chromium"
+    chrome_options.binary = "/usr/bin/google-chrome-stable"
     chrome_options.headless = True
 
     chrome_options.add_argument("--no-sandbox")  # Bypass OS security model
