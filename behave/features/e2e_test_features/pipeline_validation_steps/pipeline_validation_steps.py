@@ -84,7 +84,7 @@ def get_latest_file_contents(bucket, prefix, filename_prefix):
     paginator = s3.get_paginator('list_objects_v2')
     bucket_items = paginator.paginate(Bucket=bucket, Prefix=prefix)
 
-    filenames =[]
+    filenames = []
     for item in bucket_items:
         for object in item['Contents']:
             filenames.append(object['Key'])
