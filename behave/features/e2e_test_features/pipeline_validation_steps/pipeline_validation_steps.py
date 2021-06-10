@@ -81,8 +81,13 @@ def get_result_for_user(bucket, prefix, filename_prefix, id_field, id_value, che
 
 def get_latest_file_contents(bucket, prefix, filename_prefix):
     print('Prefix is :%s' % (prefix))
-    filenames = [obj['Key'] for obj in s3.list_objects_v2(
-        Bucket=bucket, Prefix=prefix)['Contents']]
+    paginator = s3.get_paginator('list_objects_v2')
+    bucket_items = paginator.paginate(Bucket=bucket, Prefix=prefix)
+
+    filenames =[]
+    for item in bucket_items:
+        for object in item['Contents']:
+            filenames.append(object['Key'])
 
     # find the latest file with filename prefix in filename
     # e.g. web-app-{env}-data/local_authority/Barnsley/2020/10/10/GDS-to-LA-Submissions20200917-162656.csv
