@@ -37,21 +37,16 @@ resources:
       username: ((readonly_team_name))
       password: ((readonly_local_user_password))
 
-  - name: every-2m
-    type: time
-    source:
-      interval: 2m
-
-  - name: trigger-at-1am
+  - name: trigger-at-6pm-sunday
     type: cron-resource
     source:
-      expression: "0 1 * * *"
+      expression: "0 18 * * 0"
       location: "Local"
 
-  - name: trigger-at-6am
+  - name: trigger-at-9pm-sunday
     type: cron-resource
     source:
-      expression: "0 6 * * *"
+      expression: "0 21 * * 0"
       location: "Local"
 
 # Anchors for later
@@ -293,7 +288,7 @@ jobs:
 
   - name: continuous-smoke-test-staging
     plan:
-      - get: every-2m
+      - get:  trigger-at-6pm-sunday
         trigger: true
       - get: git-master
         passed: [e2e-test-staging]
@@ -314,7 +309,7 @@ jobs:
 
   - name: continuous-smoke-test-prod
     plan:
-      - get: every-2m
+      - get:  trigger-at-6pm-sunday
         trigger: true
       - get: git-master
         passed: [deploy-to-prod]
@@ -344,7 +339,7 @@ jobs:
     plan:
       - get: git-master
         passed: [e2e-test-staging]
-      - get: trigger-at-1am
+      - get: trigger-at-6pm-sunday
         trigger: true
       - task: gatling
         file: git-master/concourse/tasks/gatling-workflow-load-test.yml
@@ -410,7 +405,7 @@ jobs:
     plan:
       - get: git-master
         passed: [e2e-test-staging]
-      - get: trigger-at-1am
+      - get: trigger-at-6pm-sunday
         trigger: true
       - task: get-aws-credentials
         file: git-master/concourse/tasks/get-gatling-tester-aws-creds.yml
@@ -462,7 +457,7 @@ jobs:
     plan:
       - get: git-master
         passed: [e2e-test-staging]
-      - get: trigger-at-6am
+      - get: trigger-at-9pm-sunday
         trigger: true
       - do:
         - task: webform-entry
