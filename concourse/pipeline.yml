@@ -37,11 +37,6 @@ resources:
       username: ((readonly_team_name))
       password: ((readonly_local_user_password))
 
-  - name: every-2m
-    type: time
-    source:
-      interval: 2m
-
   - name: trigger-at-1am
     type: cron-resource
     source:
@@ -293,7 +288,7 @@ jobs:
 
   - name: continuous-smoke-test-staging
     plan:
-      - get: every-2m
+      - get: trigger-at-6am
         trigger: true
       - get: git-master
         passed: [e2e-test-staging]
@@ -314,7 +309,7 @@ jobs:
 
   - name: continuous-smoke-test-prod
     plan:
-      - get: every-2m
+      - get: trigger-at-6am
         trigger: true
       - get: git-master
         passed: [deploy-to-prod]
