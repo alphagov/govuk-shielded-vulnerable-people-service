@@ -17,6 +17,7 @@ resource_types:
 resources:
   - name: git-master
     type: git
+    check_every: never # this line added for decommissioning, prevents this trigger from firing
     icon: github-circle
     source:
       uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
@@ -24,6 +25,7 @@ resources:
 
   - name: git-sandbox
     type: git
+    check_every: never # this line added for decommissioning, prevents this trigger from firing
     icon: github-circle
     source:
       uri: https://github.com/alphagov/govuk-shielded-vulnerable-people-service
